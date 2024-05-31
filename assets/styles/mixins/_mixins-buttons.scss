@@ -1,0 +1,42 @@
+@mixin btn($color, $background, $hover-color: '', $hover-background: '', $border: '') {
+  @include paragraph-style-3;
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 20px;
+  font-size: rem-calc(20px);
+  color: $color;
+  font-weight: 700;
+  text-decoration: none;
+  background-color: $background;
+  border: 4px solid;
+  border-radius: 100px;
+
+  @include breakpoint(large) {
+    padding: 1.3vh 1.389vw;
+    font-size: 1.389vw; // 20px / 1440px
+    border: 0.278vw solid;
+  }
+
+  @if $border == '' {
+    border-color: $color;
+  }
+
+  @else {
+    border-color: $border;
+  }
+
+  &:hover {
+    @if $hover-color == '' {
+      color: $color;
+    }
+
+    @else {
+      color: $hover-color;
+    }
+
+    background-color: $hover-background;
+    border-color: $color;
+  }
+}

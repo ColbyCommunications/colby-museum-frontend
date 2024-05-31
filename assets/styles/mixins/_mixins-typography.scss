@@ -1,0 +1,131 @@
+@mixin heading-style-1() {
+  font-family: $font-primary;
+  font-size: rem-calc(32px);
+  font-weight: 700;
+  font-style: normal;
+  line-height: 105%;
+  letter-spacing: rem-calc(-0.64px);
+
+  @include breakpoint(large) {
+    font-size: 3.472vw; // 50px / 1440px
+    letter-spacing: -0.069vw;
+  }
+}
+
+@mixin heading-style-2() {
+  font-family: $font-primary;
+  font-size: rem-calc(32px); // 40px / 1440px
+  font-weight: 700;
+  font-style: normal;
+  line-height: 110%;
+  letter-spacing: -0.056vw; // .8 / 1440
+
+  @include breakpoint(large) {
+    font-size: 2.778vw; // 40px / 1440px
+  }
+}
+
+@mixin heading-style-3() {
+  font-family: $font-primary;
+  font-size: rem-calc(24px);
+  font-weight: 700;
+  font-style: normal;
+  line-height: 115%;
+  letter-spacing: rem-calc(-0.5px);
+
+  @include breakpoint(large) {
+    font-size: 1.944vw; // 28px / 1440px
+    letter-spacing: -0.039vw;
+  }
+}
+
+@mixin subheading-style-1() {
+  font-family: $font-primary;
+  font-size: rem-calc(24px);
+  font-weight: 400;
+  font-style: normal;
+  line-height: 105%;
+
+  @include breakpoint(large) {
+    font-size: 3.611vw; // 52px / 1440px
+    font-weight: 300;
+    letter-spacing: -0.069vw;
+  }
+}
+
+@mixin subheading-style-2() {
+  font-family: $font-primary;
+  font-size: rem-calc(30px); // 40px / 1440px
+  font-weight: 300;
+  font-style: normal;
+  line-height: 110%;
+  letter-spacing: -0.056vw;
+
+  @include breakpoint(large) {
+    font-size: 2.778vw; // 40px / 1440px
+  }
+}
+
+@mixin subheading-style-3() {
+  font-family: $font-primary;
+  font-size: 1.944vw; // 28px / 1440px
+  font-weight: 300;
+  font-style: normal;
+  line-height: 115%;
+  letter-spacing: -0.039vw;
+}
+
+@mixin subheading-style-4() {
+  font-family: $font-primary;
+  font-size: rem-calc(14px);
+  font-weight: 500;
+  font-style: normal;
+  line-height: 120%;
+
+  @include breakpoint(large) {
+    font-size: 0.972vw; // 14px / 1440px
+    letter-spacing: -0.010vw;
+  }
+}
+
+@mixin paragraph-style-1() {
+  font-family: $font-primary;
+  font-size: 24px; // 32px / 1440px
+  font-weight: 300;
+  font-style: normal;
+  line-height: 115%;
+  letter-spacing: -0.48px;
+
+  @include breakpoint(large) {
+    font-size: 2.222vw; // 32px / 1440px
+    letter-spacing: -0.044vw;
+  }
+}
+
+@mixin paragraph-style-2() {
+  font-family: $font-primary;
+  font-size: rem-calc(20px);
+  font-weight: 400;
+  font-style: normal;
+  line-height: 140%;
+  letter-spacing: rem-calc(-0.4px);
+
+  @include breakpoint(large) {
+    font-size: 1.667vw; // 24px / 1440px
+    letter-spacing: -0.033vw;
+  }
+}
+
+@mixin paragraph-style-3() {
+  font-family: $font-primary;
+  font-size: rem-calc(14px);
+  font-weight: 400;
+  font-style: normal;
+  line-height: 120%;
+  letter-spacing: rem-calc(0.14px);
+
+  @include breakpoint(large) {
+    font-size: 1.389vw; // 20px / 1440px
+    letter-spacing: -0.028vw;
+  }
+}

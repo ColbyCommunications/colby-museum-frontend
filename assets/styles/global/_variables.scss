@@ -1,0 +1,81 @@
+@import '../mixins/mixins-foundation';
+@import "../../../node_modules/@glidejs/glide/src/assets/sass/glide.core.scss";
+
+
+// Colors
+$black: #171717;
+$white: #ffffff;
+
+$scarlet: #d21f44;
+$sangria: #480101;
+$salmon: #ffabab;
+$coral: #fff4f4;
+
+$cobalt: #0075ff;
+$midnight: #012148;
+$sky: #abd7ff;
+$bluebird: #f4fcff;
+
+$green: #34d399;
+$red: #f87171;
+$yellow: #fbbf24;
+
+// Fonts
+$font-primary: 'Libre Franklin', sans-serif;
+
+// Grid
+$grid-max-width: 100vw;
+$grid-column-gutter: (
+  small: 20px,
+  large: 40px,
+);
+
+// Easing
+$ease-default: ease-in-out;
+
+// Transitions
+$transition-default: 0.2s $ease-default;
+
+// // Layout
+// $layout-colors: (
+//   color: $black,
+//   background: $coral,
+//   accent: $white,
+//   ambiant: $scarlet,
+//   hover: $salmon
+// );
+
+$layout-colors: (
+  color: $black,
+  background: $bluebird,
+  accent: $white,
+  ambiant: $cobalt,
+  hover: $sky
+);
+
+// $layout-dm-colors: (
+//   color: $white,
+//   background: $sangria,
+//   accent: $black,
+//   ambiant: $scarlet,
+//   hover: $salmon
+// );
+
+$layout-dm-colors: (
+  color: $white,
+  background: $midnight,
+  accent: $black,
+  ambiant: $cobalt,
+  hover: $sky
+);
+
+$signal-colors: (
+  open: $green,
+  closed: $red,
+  caution: $yellow,
+);
+
+$border-global: (
+  mobile: 4px solid,
+  desktop: 0.492vh solid,
+);

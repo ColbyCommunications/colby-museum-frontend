@@ -1,0 +1,16 @@
+@use "sass:map";
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: map.get($grid-column-gutter, small);
+  width: 100%;
+  max-width: $grid-max-width;
+  padding: 0 calc(map.get($grid-column-gutter, large) / 2);
+  margin: 0 auto;
+
+  @include breakpoint(medium) {
+    column-gap: map.get($grid-column-gutter, large);
+    padding: 0 4.167vw; // 60px
+  }
+}

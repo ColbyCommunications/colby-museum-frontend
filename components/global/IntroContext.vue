@@ -1,0 +1,101 @@
+<template>
+  <div
+    class="intro-context"
+    :class="{'intro-context--buttoned': button}"
+  >
+    <div class="intro-context__inner grid">
+      <div class="intro-context__main">
+        <Context
+          :size="'xlarge'"
+          :heading="heading"
+          :subheading="subheading"
+          :subheading2="subheading2"
+        />
+        <BigArrowBtn
+          v-if="button"
+          v-bind="button"
+        />
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  props: {
+    heading: {
+      // type: String,
+      required: true,
+    },
+    subheading: {
+      type: String,
+      required: false,
+    },
+    subheading2: {
+      type: String,
+      required: false,
+    },
+    button: {
+      required: false,
+    }
+  }
+}
+</script>
+
+<style lang="scss">
+.intro-context {
+  &__main {
+    grid-column: span 12 / span 12;
+
+    display: flex;
+    flex-direction: column;
+
+    @include breakpoint(medium) {
+      .intro-context--buttoned & {
+        flex-direction: row;
+        justify-content: space-between;
+      }
+    }
+  }
+
+  .context + .big-arrow-btn {
+    margin-top: 32px;
+
+    @include breakpoint(medium) {
+      margin-top: 0;
+    }
+  }
+
+  + div {
+    margin-top: 40px;
+
+    @include breakpoint(large) {
+      margin-top: 5.9vh; // 813px / 48px
+    }
+  }
+
+  + .intro-context {
+    margin-top: 100px;
+
+    @include breakpoint(large) {
+      margin-top: 14.76vh;
+    }
+  }
+
+  + .article-grid--posts {
+    margin-top: 100px;
+
+    @include breakpoint(large) {
+      margin-top: 14.76vh;
+    }
+  }
+
+  // + .media-context {
+  //   margin-top: 80px;
+
+  //   @include breakpoint(medium) {
+  //     margin-top: 9.84vh;
+  //   }
+  // }
+}
+</style>

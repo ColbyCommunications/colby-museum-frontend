@@ -1,0 +1,100 @@
+@use "sass:map";
+
+// Buttons
+/* ------------------------------------- */
+
+.btn {
+
+  &--light {
+    @include btn($black, $white, $white, $cobalt);
+
+    .dark-mode & {
+      @include btn($white, $black, $white, $cobalt);
+    }
+  }
+
+  &--small {
+    padding: 13px 15px;
+    font-size: 14px;
+    border: 3px solid;
+
+    .dark-mode & {
+      font-size: 14px;
+    }
+
+    @include breakpoint(medium) {
+      padding: 1vh 1.042vw;
+      font-size: 0.972vw;
+      border: 0.208vw solid;
+      
+      .dark-mode & {
+        font-size: 0.972vw;
+        border: 0.208vw solid;
+      }
+    }
+  }
+
+  .btn-curtain {
+    top: -4px;
+    right: -4px;
+    // left: -4px;
+    height: calc(100% + 8px);
+    border-radius: 100px;
+
+    @include breakpoint(large) {
+      top: -0.278vw;
+      right: -0.3vw;
+      // margin-right: -0.28vw !important;
+      // margin-left: -0.28vw !important;
+      height: calc(100% + 0.556vw);
+    }
+  }
+}
+
+.text-btn {
+  @extend .paragraph-style-2;
+
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+  color: map.get($layout-colors, color);
+
+  .dark-mode & {
+    color: map.get($layout-dm-colors, color);
+  }
+
+  &:hover {
+    color: map.get($layout-colors, ambiant);
+    text-decoration: underline;
+
+    .dark-mode & {
+      color: map.get($layout-dm-colors, ambiant);
+    }
+  }
+}
+
+#skip-to-main-content-btn {
+  z-index: 101;
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  opacity: 0;
+
+  &:focus {
+    pointer-events: all;
+    opacity: 1;
+  }
+}
+
+#browse-no-filter {
+  pointer-events: none;
+  opacity: 0;
+  height: 0;
+
+  &:focus {
+    height: auto;
+    pointer-events: all;
+    opacity: 1;
+  }
+}

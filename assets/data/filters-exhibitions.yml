@@ -1,0 +1,6 @@
+-
+  name: location
+  items:
+    - 'campus'
+    - 'downtown'
+    - 'elsewhere'

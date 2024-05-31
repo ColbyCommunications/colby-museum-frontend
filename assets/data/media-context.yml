@@ -1,0 +1,26 @@
+-
+  heading: "Works by Agnes Pelton and Edmonia Lewis Among Colby College Museum of Art's Newest Acquisitions"
+  subheading: July 27, 2023
+  paragraph: Works by groundbreaking female artists Agnes Pelton and Edmonia Lewis are key among more than 300 new acquisitions approved by the Colby College Museum of Art's Board of Governors during the 2022-2023 academic year.
+  image:
+    sizes:
+      desktop: https://museum-exhibitions.colby.edu/wp-content/uploads/2023/02/Citadel-Tony-Abeyta.png
+      mobile: https://via.placeholder.com/530x390
+    caption: Caption lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus elementum et lacus.
+    alt: Test alt text lorem
+  button:
+    title: Read Story
+    url: https://museum.colby.edu/
+-
+  heading: "Painted: Our Bodies, Hearts, and Village"
+  subheading: May 19, 2023 - July 28, 2024
+  paragraph: "Painted: Our Bodies, Hearts, and Village centers Pueblo perspectives on the context that informed the social and cultural landscape of Taos from 1915 to 1927, when the Taos Society of Artists (TSA), a group of Anglo-American painters, was active. It also sheds light on issues that affect Native people today, in the S..."
+  image:
+    sizes:
+      desktop: https://museum-exhibitions.colby.edu/wp-content/uploads/2023/03/008.2011_001_am-2048x1628.png
+      mobile: https://via.placeholder.com/530x390
+    caption: Caption lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus elementum et lacus a elementum. Suspendisse potenti. Ut ac nibh dui. Pellentesque accumsan malesuada orci, sed elementum turpis rhoncus.
+    alt: Test alt text lorem
+  button:
+    title: Read Story
+    url: https://museum.colby.edu/

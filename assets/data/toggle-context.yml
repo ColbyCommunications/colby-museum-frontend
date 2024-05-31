@@ -1,0 +1,78 @@
+paragraph: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam nunc felis, suscipit id tellus nec, dictum condimentum arcu. Pellentesque eget consectetur felis, ac lacinia magna. Vivamus non magna scelerisque, posuere ante nec, cursus dolor. Vivamus rutrum arcu id ligula efficitu.  Lorem ipsum dolor sit amet
+items:
+  -
+    button:
+      title: K-12 Engagement
+      url: https://museum.colby.edu/
+    image:
+      sizes:
+        desktop: https://via.placeholder.com/350x390
+        mobile: https://via.placeholder.com/350x390
+      caption: Caption lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus elementum et lacus.
+      alt: Test alt text lorem
+  -
+    button:
+      title: Collegiate Engagement
+      url: https://museum.colby.edu/
+    image:
+      sizes:
+        desktop: https://via.placeholder.com/350x390
+        mobile: https://via.placeholder.com/350x390
+      caption: Caption lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus elementum et lacus.
+      alt: Test alt text lorem
+  -
+    button:
+      title: Community Engagement
+      url: https://museum.colby.edu/
+    image:
+      sizes:
+        desktop: https://via.placeholder.com/350x390
+        mobile: https://via.placeholder.com/350x390
+      caption: Caption lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus elementum et lacus.
+      alt: Test alt text lorem
+  -
+    button:
+      title: Schedule a Tour
+      url: https://museum.colby.edu/
+    image:
+      sizes:
+        desktop: https://via.placeholder.com/350x390
+        mobile: https://via.placeholder.com/350x390
+      caption: Caption lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus elementum et lacus.
+      alt: Test alt text lorem
+  -
+    button:
+      title: Publications
+      url: https://museum.colby.edu/
+    image:
+      sizes:
+        desktop: https://via.placeholder.com/350x390
+        mobile: https://via.placeholder.com/350x390
+      caption: Caption lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus elementum et lacus.
+      alt: Test alt text lorem
+  -
+    button:
+      title: Media Archive
+      url: https://museum.colby.edu/
+    image:
+      sizes:
+        desktop: https://via.placeholder.com/350x390
+        mobile: https://via.placeholder.com/350x390
+      caption: Caption lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus elementum et lacus.
+      alt: Test alt text lorem
+  -
+    button:
+      title: Skowhegan Lecture
+      url: https://museum.colby.edu/
+    image:
+      sizes:
+        desktop: https://via.placeholder.com/350x390
+        mobile: https://via.placeholder.com/350x390
+      caption: Caption lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus elementum et lacus.
+      alt: Test alt text lorem
+image:
+  sizes:
+    desktop: https://via.placeholder.com/350x390
+    mobile: https://via.placeholder.com/350x390
+  caption: Caption lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus elementum et lacus.
+  alt: Test alt text lorem

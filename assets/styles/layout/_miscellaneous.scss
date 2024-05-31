@@ -1,0 +1,41 @@
+@use "sass:map";
+
+body {
+  color: map.get($layout-colors, color);
+  background-color: map.get($layout-colors, background);
+  transition: 0.2s background-color $ease-default;
+
+  &.dark-mode {
+    color: map.get($layout-dm-colors, color);
+    background-color: map.get($layout-dm-colors, background);
+  }
+}
+
+img {
+  width: 100%;
+}
+
+strong {
+  font-weight: 700;
+}
+
+::selection {
+  color: $white;
+  background: map.get($layout-colors, ambiant);
+}
+
+.object-cover {
+  object-fit: cover;
+  height: 100%;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}

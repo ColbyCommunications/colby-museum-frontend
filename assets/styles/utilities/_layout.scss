@@ -1,0 +1,155 @@
+@use "sass:map";
+
+img {
+  a & {
+    display: block;
+    outline-offset: -6px;
+    outline: solid transparent 6px;
+
+    &:hover {
+      outline: solid map.get($layout-colors, ambiant) 6px;
+    }
+  }
+}
+
+.activity-signal {
+  display: inline-block;
+  content: '';
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+  background-color: map.get($signal-colors, open);
+  border-radius: 100%;
+
+  .closed & {
+    background-color: map.get($signal-colors, closed) !important;
+  }
+
+  .caution & {
+    background-color: map.get($signal-colors, caution);
+  }
+
+  @include breakpoint(medium) {
+    width: 1.667vw;
+    height: 1.667vw;
+    margin-right: 0.556vw;
+  }
+}
+
+div:not(.article-grid) + .intro-context {
+  margin-top: 80px;
+
+  @include breakpoint(large) {
+    margin-top: 14.76vh;
+  }
+}
+
+.horizontal-curtain,
+.vertical-curtain,
+.btn-curtain {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  right: 0;
+  display: block;
+  height: 100%;
+  width: 100%;
+  background-color: map.get($layout-colors, background);
+
+  .dark-mode & {
+    background-color: map.get($layout-dm-colors, background);
+  }
+}
+
+.border-global {
+  &--top,
+  &--bottom,
+  &--all {
+    --border-width: 100%;
+
+    position: relative;
+
+    &::before {
+      position: absolute;
+      z-index: 1;
+      content: '';
+      width: var(--border-width);
+      height: 4px;
+      background-color: map.get($layout-colors, background);
+  
+      .dark-mode & {
+        background-color: map.get($layout-dm-colors, background);
+      }
+
+      @include breakpoint(large) {
+        height: 0.492vh;
+      }
+    }
+  }
+
+  &--top {
+    border-top: 4px solid map.get($layout-colors, color);
+
+    .dark-mode & {
+      border-top: 4px solid map.get($layout-dm-colors, color);
+    }
+
+    @include breakpoint(large) {
+      border-top: 0.492vh solid map.get($layout-colors, color);
+
+      .dark-mode & {
+        border-top: 0.492vh solid map.get($layout-dm-colors, color);
+      }
+    }
+
+    &::before {
+      top: -4px;
+      right: 0;
+  
+      @include breakpoint(large) {
+        top: -0.492vh;
+      }
+    }
+  }
+
+  &--bottom {
+    border-bottom: 4px solid map.get($layout-colors, color);
+
+    .dark-mode & {
+      border-bottom: 4px solid map.get($layout-dm-colors, color);
+    }
+
+    @include breakpoint(large) {
+      border-bottom: 0.492vh solid map.get($layout-colors, color);
+
+      .dark-mode & {
+        border-bottom: 0.492vh solid map.get($layout-dm-colors, color);
+      }
+    }
+
+    &::before {
+      bottom: -4px;
+      right: 0;
+  
+      @include breakpoint(large) {
+        bottom: -0.492vh;
+      }
+    }
+  }
+
+  &--all {
+    border: 4px solid map.get($layout-colors, color);
+
+    .dark-mode & {
+      border: 4px solid map.get($layout-dm-colors, color);
+    }
+
+    @include breakpoint(large) {
+      border: 0.492vh solid map.get($layout-colors, color);
+
+      .dark-mode & {
+        border: 0.492vh solid map.get($layout-dm-colors, color);
+      }
+    }
+  }
+}

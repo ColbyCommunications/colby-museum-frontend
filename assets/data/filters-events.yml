@@ -1,0 +1,17 @@
+-
+  name: location
+  items:
+    - 'campus'
+    - 'downtown'
+    - 'virtual'
+    - 'elsewhere'
+-
+  name: time
+  items:
+    # - 'future'
+    - 'current'
+    - 'past'
+# -
+#   name: source
+#   items:
+#     - 'lunder Institute'

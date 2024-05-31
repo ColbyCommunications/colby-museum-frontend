@@ -1,0 +1,169 @@
+@use "sass:map";
+
+.pagination {
+  &__main {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    grid-column: span 12 / span 12;
+  }
+
+  ul {
+    display: flex;
+
+    li.active {
+      button,
+      a {
+        color: map.get($layout-colors, ambiant);
+
+        .dark-mode & {
+          color: map.get($layout-dm-colors, ambiant); 
+        }
+      }
+    }
+
+    button,
+    a {
+      @include paragraph-style-1;
+
+      display: flex;
+      align-items: center;
+      padding: 0;
+      font-weight: 700;
+      color: map.get($layout-colors, color);
+      text-decoration: none;
+      appearance: none;
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+
+      .dark-mode & {
+        color: map.get($layout-dm-colors, color); 
+      }
+
+      &:hover {
+        color: map.get($layout-colors, ambiant);
+
+        .dark-mode & {
+          color: map.get($layout-dm-colors, ambiant); 
+        }
+      }
+
+      svg {
+        transform: rotate(-90deg);
+      }
+    }
+  }
+
+  li + li {
+    margin-left: 12px;
+
+    @include breakpoint(medium) {
+      margin-left: 0.833vw;
+    }
+  }
+
+  svg {
+    width: 20px;
+    margin-left: 16px;
+    fill: map.get($layout-colors, color);
+
+    .dark-mode & {
+      fill: map.get($layout-dm-colors, color); 
+    }
+
+    @include breakpoint(medium) {
+      width: 1.875vw;
+      margin-left: 1.111vw;
+    }
+  }
+
+  &__btn {
+    @include paragraph-style-1;
+
+    display: flex;
+    align-items: center;
+    padding: 0;
+    width: 50%;
+    font-weight: 700;
+    text-decoration: none;
+    color: map.get($layout-colors, color);
+    appearance: none;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+
+    @include breakpoint(medium) {
+      width: auto;
+    }
+
+    .dark-mode & {
+      color: map.get($layout-dm-colors, color); 
+    }
+
+    &:hover {
+      color: map.get($layout-colors, ambiant);
+
+      .dark-mode & {
+        color: map.get($layout-dm-colors, ambiant); 
+      }
+    }
+
+    &--prev {
+      svg {
+        margin-left: 0;
+        margin-right: 12px;
+        transform: rotate(90deg);
+
+        @include breakpoint(medium) {
+          margin-left: 0;
+          margin-right: 1.111vw;
+        }
+      }
+    }
+
+    &--next {
+      justify-content: flex-end;
+
+      svg {
+        margin-left: 12px;
+        margin-right: 0;
+        transform: rotate(-90deg);
+
+        @include breakpoint(medium) {
+          margin-left: 1.111vw;
+          margin-right: 0;
+        }
+      }
+    }
+
+    &--inactive {
+      pointer-events: none;
+      opacity: 0.2;
+    }
+  }
+
+  &__label {
+    @include paragraph-style-2;
+
+    display: flex;
+    order: 3;
+    justify-content: center;
+    width: 100%;
+    margin-top: 32px;
+    font-weight: 700;
+    color: map.get($layout-colors, color);
+
+    @include breakpoint(medium) {
+      display: block;
+      order: 0;
+      width: auto;
+      margin-top: 0;
+    }
+
+    .dark-mode & {
+      color: map.get($layout-dm-colors, color); 
+    }
+  }
+}

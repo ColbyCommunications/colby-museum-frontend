@@ -1,0 +1,119 @@
+primary:
+  -
+    title: Plan Your Visit
+    url: https://museum.colby.edu/
+    children:
+      -
+        title: Main Campus
+        url: https://museum.colby.edu/
+      -
+        title: Downtown
+        url: https://museum.colby.edu/
+  -
+    title: Exhibitions and Events
+    url: https://museum.colby.edu/
+    children:
+      -
+        title: Exhibitions
+        url: https://museum.colby.edu/
+      -
+        title: Events
+        url: https://museum.colby.edu/
+  -
+    title: Collection
+    url: https://museum.colby.edu/
+    children:
+      -
+        title: Search the Collection
+        url: https://museum.colby.edu/
+      -
+        title: On View
+        url: https://museum.colby.edu/
+      -
+        title: Collections
+        url: https://museum.colby.edu/
+      -
+        title: Requests
+        url: https://museum.colby.edu/
+  -
+    title: Learn
+    url: https://museum.colby.edu/
+    children:
+      -
+        title: K-12 Academic Engagement
+        url: https://museum.colby.edu/
+      -
+        title: Collegiate Academic Engagement
+        url: https://museum.colby.edu/
+      -
+        title: Community / Informal Learning
+        url: https://museum.colby.edu/
+      -
+        title: Schedule a Tour
+        url: https://museum.colby.edu/
+      -
+        title: Publications
+        url: https://museum.colby.edu/
+      -
+        title: Media Archive
+        url: https://museum.colby.edu/
+  -
+    title: Lunder Institute
+    url: https://museum.colby.edu/
+  -
+    title: About
+    url: https://museum.colby.edu/
+    children:
+      -
+        title: Mission, Vision, Values
+        url: https://museum.colby.edu/
+      -
+        title: Commitments
+        url: https://museum.colby.edu/
+      -
+        title: Staff and Board
+        url: https://museum.colby.edu/
+      -
+        title: History
+        url: https://museum.colby.edu/
+      -
+        title: Strategic Framework
+        url: https://museum.colby.edu/
+      -
+        title: News
+        url: https://museum.colby.edu/
+      -
+        title: Internship & Career Opportunities
+        url: https://museum.colby.edu/
+      -
+        title: FAQ
+        url: https://museum.colby.edu/
+  -
+    title: Support
+    url: https://museum.colby.edu/
+    children:
+      -
+        title: Summer Luncheon
+        url: https://museum.colby.edu/
+      -
+        title: Make a Gift
+        url: https://museum.colby.edu/
+utility:
+  -
+    title: Instagram
+    url: https://museum.colby.edu/
+  -
+    title: Facebook
+    url: https://museum.colby.edu/
+  -
+    title: Twitter
+    url: https://museum.colby.edu/
+  -
+    title: LinkedIn
+    url: https://museum.colby.edu/
+  -
+    title: Youtube
+    url: https://museum.colby.edu/
+  -
+    title: Spotify
+    url: https://museum.colby.edu/

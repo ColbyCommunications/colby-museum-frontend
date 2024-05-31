@@ -1,0 +1,21 @@
+-
+  heading: Main Campus
+  image:
+    sizes:
+      desktop: https://via.placeholder.com/560x390
+      mobile: https://via.placeholder.com/560x390
+    alt: Test alt text lorem
+  paragraph: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas blandit faucibus eleifend. Pellentesque tempor nulla in tempor aliquet. Mauris consequat luctus ante. Nam dignissim ipsum id turpis bibendum auctor. Sed et lacus cursus, molestie dolor a, pulvinar felis.
+  button:
+    title: Learn More
+    url: /
+-
+  heading: Downtown
+  image:
+    sizes:
+      desktop: https://via.placeholder.com/560x390
+      mobile: https://via.placeholder.com/560x390
+  paragraph: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas blandit faucibus eleifend. Pellentesque tempor nulla in tempor aliquet. Mauris consequat luctus ante. Nam dignissim ipsum id turpis bibendum auctor. Sed et lacus cursus, molestie dolor a, pulvinar felis.
+  button:
+    title: Learn More
+    url: /
