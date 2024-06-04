@@ -142,14 +142,29 @@ export default {
     async getImage(i) {
       const component = this;
       let imageObj;
+      let newImageObj;
 
       await axios
         .get(`${component.interface.endpoint}media/${i}`)
         .then((output) => {
           imageObj = output.data;
+
+          newImageObj = {
+            alt_text: imageObj.alt_text,
+            media_details: {
+              sizes: {
+                desktop: {
+                  source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=1200,quality=75,format=webp`,
+                },
+                mobile: {
+                  source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=600,quality=75,format=webp`,
+                },
+              }
+            }
+          };
         });
 
-      return await imageObj;
+      return await newImageObj;
     },
     animate() {
       setTimeout(() => {
