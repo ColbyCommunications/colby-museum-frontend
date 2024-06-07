@@ -3,7 +3,7 @@
     class="context"
     :class="[size ? `context--${ size }` : '', bordered == true ? 'context--bordered' : '']"
   >
-    <h2
+    <component :is="headingElement"
       v-if="heading && button"
       class="context__heading"
       ref="heading"
@@ -11,22 +11,30 @@
       <NuxtLink
         :to="fixedUrl"
       >
+        <span class="sr-only"
+          v-text="heading"
+        />
         <span
           class="context__word-group"
+          aria-hidden="true"
           v-html="preppedHeading"
         />
       </NuxtLink>
-    </h2>
-    <h2
+    </component>
+    <component :is="headingElement"
       v-else-if="heading"
       class="context__heading"
       ref="heading"
     >
+      <span class="sr-only"
+        v-text="heading"
+      />
       <span
-        class="context__word-group" 
+        class="context__word-group"
+        aria-hidden="true"
         v-html="preppedHeading"
       />
-    </h2>
+    </component>
     <div
       v-if="subheading"
       class="context__subheading"
@@ -99,6 +107,11 @@ export default {
       type: String,
       required: false,
     },
+    headingElement: {
+      type: String,
+      required: false,
+      default: 'h2',
+    },
     subheading: {
       type: String,
       required: false,
@@ -129,13 +142,13 @@ export default {
   },
   computed: {
     preppedHeading() {
-      return this.heading.replace(/\S+/g, '<span class="context__word"><span>$&</span></span>');
+      return this.heading.replace(/\S+/g, '<span class="context__word" aria-hidden="true"><span aria-hidden="true">$&</span></span>');
     },
     preppedSubheading() {
-      return this.subheading.replace(/\S+/g, '<span class="context__word"><span>$&</span></span>');
+      return this.subheading.replace(/\S+/g, '<span class="context__word" aria-hidden="true"><span aria-hidden="true">$&</span></span>');
     },
     preppedSubheading2() {
-      return this.subheading2.replace(/\S+/g, '<span class="context__word"><span>$&</span></span>');
+      return this.subheading2.replace(/\S+/g, '<span class="context__word" aria-hidden="true"><span aria-hidden="true">$&</span></span>');
     },
     preppedParagraph() {
       return this.paragraph.replace(/\n/g, '<br />');

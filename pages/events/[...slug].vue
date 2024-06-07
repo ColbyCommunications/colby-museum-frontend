@@ -2,6 +2,7 @@
   <div class="page page--default">
     <IntroContext
       :heading="title"
+      :headingElement="'h1'"
       :subheading="excerpt"
     />
     <ArticleGrid

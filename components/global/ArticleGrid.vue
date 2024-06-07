@@ -328,7 +328,7 @@
       </div>
     </div>
     <NuxtLink
-      v-if="page == undefined"
+      v-if="page == undefined && items_type == 'objects'"
       id="browse-no-filter"
       class="btn--light btn--small"
       :to="'/objects/page-1'"

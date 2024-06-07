@@ -2,6 +2,7 @@
   <div class="page page--default">
     <IntroContext
       :heading="'Request Information'"
+      :headingElement="'h1'"
       :subheading="'Contact Colby College Museum of Art for any inquiry.'"
     />
     <FormsContact />

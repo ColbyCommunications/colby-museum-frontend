@@ -8,6 +8,7 @@
         <Context
           :size="'xlarge'"
           :heading="heading"
+          :headingElement="headingElement"
           :subheading="subheading"
           :subheading2="subheading2"
         />
@@ -26,6 +27,11 @@ export default {
     heading: {
       // type: String,
       required: true,
+    },
+    headingElement: {
+      type: String,
+      required: false,
+      default: 'h2',
     },
     subheading: {
       type: String,

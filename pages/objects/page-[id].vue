@@ -2,6 +2,7 @@
   <div class="page page--default">
     <IntroContext
       :heading="`Objects — Page ${$route.params.id }`"
+      :headingElement="'h1'"
       :subheading="'As part of its mission as a collecting and teaching museum, the Colby College Museum of Art houses a diverse collection with a focus on American and contemporary art.'"
     />
     <ArticleGrid

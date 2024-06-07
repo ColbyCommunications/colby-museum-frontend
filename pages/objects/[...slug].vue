@@ -9,6 +9,7 @@
     </Modal>
     <IntroContext
       :heading="title"
+      :headingElement="'h1'"
       :subheading="artist"
       :subheading2="period"
     />
@@ -26,7 +27,7 @@
     <BigArrowBtnSection
       :button="{
         reverse: true,
-        title: 'Object Index',
+        title: 'Search the Collection',
         url: '/objects'
       }"
     />
@@ -56,8 +57,8 @@ export default {
     // console.log(todo.value);
 
     useSeoMeta({
-      ogTitle: () => `${todo.value.Disp_Title ? todo.value.Disp_Title.replace(/&quot;/g, '\"') + ' | ' : ''}Colby College Museum of Art · Colby College`,
-      title: () => `${todo.value.Disp_Title ? todo.value.Disp_Title.replace(/&quot;/g, '\"') + ' | ' : ''}Colby College Museum of Art · Colby College`,
+      ogTitle: () => `${todo.value.Disp_Title ? todo.value.Disp_Title.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' : ''}Colby College Museum of Art · Colby College`,
+      title: () => `${todo.value.Disp_Title ? todo.value.Disp_Title.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' : ''}Colby College Museum of Art · Colby College`,
       ogDescription: () => todo.value?.Disp_Medium,
       description: () => todo.value?.Disp_Medium,
     });

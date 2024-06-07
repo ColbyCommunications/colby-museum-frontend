@@ -1,5 +1,5 @@
 <template>
-  <div class="breadcrumbs" ref="breadcrumbs">
+  <nav aria-label="Breadcrumb" class="breadcrumbs" ref="breadcrumbs">
     <div class="breadcrumbs__inner grid">
       <div class="breadcrumbs__main">
         <ul>
@@ -31,6 +31,7 @@
               <span>
                 <NuxtLink
                   :to="current.url"
+                  aria-current="page"
                 >
                   <IconArrow />
                   {{ current.title }}
@@ -41,7 +42,7 @@
         </ul>
       </div>
     </div>
-  </div>
+  </nav>
 </template>
 
 <script>

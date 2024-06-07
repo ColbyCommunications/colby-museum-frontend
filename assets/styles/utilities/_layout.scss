@@ -36,7 +36,8 @@ img {
   }
 }
 
-div:not(.article-grid) + .intro-context {
+div:not(.article-grid) + .intro-context,
+nav + .intro-context {
   margin-top: 80px;
 
   @include breakpoint(large) {

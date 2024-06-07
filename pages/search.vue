@@ -11,6 +11,7 @@
     </div>
     <IntroContext
       :heading="title"
+      :headingElement="'h1'"
       :subheading="excerpt"
     />
     <div class="search-results">

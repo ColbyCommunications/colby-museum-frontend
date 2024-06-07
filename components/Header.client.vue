@@ -1,6 +1,7 @@
 <template>
   <header
     class="header"
+    role="banner"
     :class="[searchActive ? 'header--search-active' : '', drawerActive ? 'header--drawer-active' : '']"
   >
     <div class="header__inner grid">
@@ -9,6 +10,7 @@
           class="header__ribbon--desktop"
           :heading="'Colby Arts'"
           :items="utility"
+          aria-label="Utility Menu"
         />
       </div>
       <div class="header__utility">
@@ -57,7 +59,7 @@
     </div>
     <div class="header__drawer">
       <div class="header__inner grid">
-        <div class="header__primary">
+        <nav class="header__primary" aria-label="Primary Menu">
           <ul>
             <li
               v-for="(item, index) in primary"
@@ -84,7 +86,7 @@
               </ul>
             </li>
           </ul>
-        </div>
+        </nav>
         <div class="header__secondary-mobile">
           <SuperDropdown
             class="header__ribbon--mobile"
@@ -572,7 +574,8 @@ export default {
       }
     }
 
-    > ul > li:hover {
+    > ul > li:hover,
+    > ul > li:focus-within {
       > a {
         @include breakpoint(large) {
           color: map.get($layout-colors, ambiant);
@@ -667,7 +670,8 @@ export default {
       }
     }
 
-    li:hover & {
+    li:hover &,
+    li:focus-within & {
       @include breakpoint(large) {
         opacity: 1;
         visibility: visible;

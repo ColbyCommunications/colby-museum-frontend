@@ -10,6 +10,7 @@
     />
     <IntroContext
       :heading="title"
+      :headingElement="'h1'"
       :subheading="excerpt"
     />
     <BaseModule
