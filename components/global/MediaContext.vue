@@ -30,6 +30,7 @@
                     :classes="'object-cover'"
                     :alt="item.image.alt_text"
                     :sizes="item.image.media_details.sizes"
+                    :loading="'eager'"
                   />
                 </button>
                 <div
@@ -44,6 +45,7 @@
                       :classes="'object-cover'"
                       :alt="item.image.alt_text"
                       :sizes="item.image.media_details.sizes"
+                      :loading="'eager'"
                     />
                   </NuxtLink>
                   <Picture
@@ -51,6 +53,7 @@
                     :classes="'object-cover'"
                     :alt="item.image.alt_text"
                     :sizes="item.image.media_details.sizes"
+                    :loading="'eager'"
                   />
                   <div
                     v-if="item.image.caption && variant == 'full-width'"
@@ -75,6 +78,7 @@
                     <PictureLoader
                       :classes="'object-cover'"
                       :post="item.post"
+                      :loading="'eager'"
                     />
                   </NuxtLink>
                   <div
@@ -95,6 +99,7 @@
                       :classes="'object-cover'"
                       :alt="item.image.alt_text"
                       :sizes="item.image.media_details.sizes"
+                      :loading="'eager'"
                     />
                   </NuxtLink>
                   <Picture
@@ -102,6 +107,7 @@
                     :classes="'object-cover'"
                     :alt="item.image.alt_text"
                     :sizes="item.image.media_details.sizes"
+                    :loading="'eager'"
                   />
                   <div
                     v-if="item.image.caption && variant == 'full-width'"

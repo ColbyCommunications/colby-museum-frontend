@@ -4,6 +4,7 @@
     :classes="classes"
     :alt="image.alt_text"
     :sizes="image.media_details.sizes"
+    :loading="loading"
   />
 </template>
 
@@ -26,6 +27,10 @@ export default {
       type: Object,
       required: false,
     },
+    loading: {
+      required: false,
+      default: 'lazy'
+    }
   },
   created() {
     this.interface = useInterfaceStore();

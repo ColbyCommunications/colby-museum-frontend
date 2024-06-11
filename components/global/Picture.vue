@@ -8,7 +8,7 @@
       :class="classes"
       :src="sizes.mobile.source_url"
       :alt="alt"
-      loading="lazy"
+      :loading="loading"
     />
   </picture>
 </template>
@@ -27,6 +27,10 @@ export default {
     sizes: {
       type: Object,
       required: false,
+    },
+    loading: {
+      required: false,
+      default: 'lazy'
     }
   }
 }
