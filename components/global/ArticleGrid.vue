@@ -20,6 +20,14 @@
       class="filter"
       ref="filter"
     >
+      <NuxtLink
+        v-if="page == undefined && items_type == 'objects'"
+        id="browse-no-filter"
+        class="btn--light btn--small"
+        :to="'/objects/page-1'"
+      >
+        Browse Without Filter
+      </NuxtLink>
       <div class="filter__inner grid">
         <div class="filter__input">
           <div class="horizontal-curtain" />
@@ -291,6 +299,7 @@
           ><IconArrow />Previous</NuxtLink>
           <button
             v-else
+            aria-label="Previous Page"
             class="pagination__btn pagination__btn--prev"
             :class="[currentPage == 1 ? 'pagination__btn--inactive' : '']"
             @click="items_type == 'objects' ? getObjects(currentPage - 1, input) : getPosts(currentPage - 1, input)"
@@ -320,6 +329,7 @@
           >Next<IconArrow /></NuxtLink>
           <button
             v-else
+            aria-label="Next Page"
             class="pagination__btn pagination__btn--next"
             :class="[currentPage == Number(totalPages) ? 'pagination__btn--inactive' : '']"
             @click="items_type == 'objects' ? getObjects(currentPage + 1, input) : getPosts(currentPage + 1, input)"
@@ -327,14 +337,6 @@
         </div>
       </div>
     </div>
-    <NuxtLink
-      v-if="page == undefined && items_type == 'objects'"
-      id="browse-no-filter"
-      class="btn--light btn--small"
-      :to="'/objects/page-1'"
-    >
-      Browse Without Filter
-    </NuxtLink>
   </div>
 </template>
 
@@ -519,6 +521,10 @@ export default {
 
       component.currentPage = page;
 
+      if (searchTerm) {
+        filterMust.push({ "simple_query_string": { "query": searchTerm, "fuzzy_max_expansions": 20, "default_operator": "and" }})
+      }
+
       if (component.activeFilters.includes('Has Image')) {
         filterMust.push({ "exists": { "field" : "Images" } });
       }
@@ -549,7 +555,7 @@ export default {
       console.log(filterTerms.length);
 
       await axios
-        .get(`https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/stage/_search?${ searchTerm ? `&q=${searchTerm}` : '' }`, {
+        .get(`https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/stage/_search`, {
           auth: {
             username: 'Fr2fpegcBZ',
             password: 'Vi7vGnL3h2rtW5SuECoKRwTf'

@@ -8,6 +8,7 @@
       :class="classes"
       :src="sizes.mobile.source_url"
       :alt="alt"
+      loading="lazy"
     />
   </picture>
 </template>
