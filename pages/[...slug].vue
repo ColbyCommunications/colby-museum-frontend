@@ -48,7 +48,7 @@ export default {
       required: false,
     },
   },
-  async mounted() {
+  async created() {
     const page = this;
     const slug = this.$route.params.slug;
     let pageName;
