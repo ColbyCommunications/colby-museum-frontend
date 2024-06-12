@@ -9,135 +9,137 @@
         ref="carousel"
         class="media-context__media"
       >
-        <div
-          class="horizontal-curtain"
-          ref="curtain"
-        />
-        <div class="glide" data-glide-window>
-          <div class="glide__track" data-glide-el="track">
-            <ul class="glide__slides">
-              <li
-                v-if="items_type == 'objects'"
-                v-for="(item, index) in items"
-                class="glide__slide"
-              > 
-                <button
-                  class="media-context__image"
-                  v-if="modal"
-                  @click="toggleModal()"
-                >
-                  <Picture
-                    :classes="'object-cover'"
-                    :alt="item.image.alt_text"
-                    :sizes="item.image.media_details.sizes"
-                  />
-                </button>
-                <div
-                  class="media-context__image"
-                  v-else
-                >
-                  <NuxtLink
-                    v-if="item.button"
-                    :to="item.button.url.replace(/^.*\/\/[^\/]+/, '').replace(/\/$/, '')"
+        <div class="media-context__media-inner">
+          <div
+            class="horizontal-curtain"
+            ref="curtain"
+          />
+          <div class="glide" data-glide-window>
+            <div class="glide__track" data-glide-el="track">
+              <ul class="glide__slides">
+                <li
+                  v-if="items_type == 'objects'"
+                  v-for="(item, index) in items"
+                  class="glide__slide"
+                > 
+                  <button
+                    class="media-context__image"
+                    v-if="modal"
+                    @click="toggleModal()"
                   >
                     <Picture
                       :classes="'object-cover'"
                       :alt="item.image.alt_text"
                       :sizes="item.image.media_details.sizes"
                     />
-                  </NuxtLink>
-                  <Picture
+                  </button>
+                  <div
+                    class="media-context__image"
                     v-else
-                    :classes="'object-cover'"
-                    :alt="item.image.alt_text"
-                    :sizes="item.image.media_details.sizes"
-                  />
-                  <div
-                    v-if="item.image.caption && variant == 'full-width'"
-                    class="media-context__caption"
-                    v-text="item.image.caption.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
-                  />
-                </div>
-              </li>
-              <li
-                v-else
-                v-for="(item, index) in newItems"
-                class="glide__slide"
-              > 
-                <!-- Conditional logic for either manual or post image -->
-                <div
-                  v-if="item.post"
-                  class="media-context__image"
-                >
-                  <NuxtLink
-                    :to="item.post.link.replace(/^.*\/\/[^\/]+/, '').replace(/\/$/, '')"
                   >
-                    <PictureLoader
-                      :classes="'object-cover'"
-                      :post="item.post"
-                    />
-                  </NuxtLink>
-                  <div
-                    v-if="!item.post && item.image.caption && variant == 'full-width'"
-                    class="media-context__caption"
-                    v-text="item.image.caption.rendered.replace(/<\/?[^>]+(>|$)/g)"
-                  />
-                </div>
-                <div
-                  v-else
-                  class="media-context__image"
-                >
-                  <NuxtLink
-                    v-if="item.button"
-                    :to="item.button.url.replace(/^.*\/\/[^\/]+/, '').replace(/\/$/, '')"
-                  >
+                    <NuxtLink
+                      v-if="item.button"
+                      :to="item.button.url.replace(/^.*\/\/[^\/]+/, '').replace(/\/$/, '')"
+                    >
+                      <Picture
+                        :classes="'object-cover'"
+                        :alt="item.image.alt_text"
+                        :sizes="item.image.media_details.sizes"
+                      />
+                    </NuxtLink>
                     <Picture
+                      v-else
                       :classes="'object-cover'"
                       :alt="item.image.alt_text"
                       :sizes="item.image.media_details.sizes"
                     />
-                  </NuxtLink>
-                  <Picture
-                    v-else
-                    :classes="'object-cover'"
-                    :alt="item.image.alt_text"
-                    :sizes="item.image.media_details.sizes"
-                  />
+                    <div
+                      v-if="item.image.caption && variant == 'full-width'"
+                      class="media-context__caption"
+                      v-text="item.image.caption.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
+                    />
+                  </div>
+                </li>
+                <li
+                  v-else
+                  v-for="(item, index) in newItems"
+                  class="glide__slide"
+                > 
+                  <!-- Conditional logic for either manual or post image -->
                   <div
-                    v-if="item.image.caption && variant == 'full-width'"
-                    class="media-context__caption"
-                    v-text="item.image.caption.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
-                  />
-                </div>
-                <!-- END Conditional logic for either manual or post image -->
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div
-          class="media-context__controls"
-          v-if="variant != 'offset' && newItems.length > 1"
-        >
-          <div
-            v-if="newItems.length > 1"
-            class="media-context__bullets"
-          >
-            <button
-              v-for="(item, index) in newItems"
-              class="media-context__bullet"
-              :class="{ 'media-context__bullet--active' : activeSlide == index }"
-              v-text="`Navigate to slide ${index}`"
-              @click="changeSlide(index)"
-            />
-          </div>
-          <div
-            class="media-context__autoplay checkbox"
-            :class="{'checkbox--active': !stopped}"
-          >
-            <div class="checkbox__main">
-              <input :id="`autoplay-btn--${id}`" type="checkbox" name="autoplay" value="true" @click="toggleAutoplay()">
+                    v-if="item.post"
+                    class="media-context__image"
+                  >
+                    <NuxtLink
+                      :to="item.post.link.replace(/^.*\/\/[^\/]+/, '').replace(/\/$/, '')"
+                    >
+                      <PictureLoader
+                        :classes="'object-cover'"
+                        :post="item.post"
+                      />
+                    </NuxtLink>
+                    <div
+                      v-if="!item.post && item.image.caption && variant == 'full-width'"
+                      class="media-context__caption"
+                      v-text="item.image.caption.rendered.replace(/<\/?[^>]+(>|$)/g)"
+                    />
+                  </div>
+                  <div
+                    v-else
+                    class="media-context__image"
+                  >
+                    <NuxtLink
+                      v-if="item.button"
+                      :to="item.button.url.replace(/^.*\/\/[^\/]+/, '').replace(/\/$/, '')"
+                    >
+                      <Picture
+                        :classes="'object-cover'"
+                        :alt="item.image.alt_text"
+                        :sizes="item.image.media_details.sizes"
+                      />
+                    </NuxtLink>
+                    <Picture
+                      v-else
+                      :classes="'object-cover'"
+                      :alt="item.image.alt_text"
+                      :sizes="item.image.media_details.sizes"
+                    />
+                    <div
+                      v-if="item.image.caption && variant == 'full-width'"
+                      class="media-context__caption"
+                      v-text="item.image.caption.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
+                    />
+                  </div>
+                  <!-- END Conditional logic for either manual or post image -->
+                </li>
+              </ul>
             </div>
-            <label :for="`autoplay-btn--${id}`">Autoplay</label>
+          </div>
+          <div
+            class="media-context__controls"
+            v-if="variant != 'offset' && newItems.length > 1"
+          >
+            <div
+              v-if="newItems.length > 1"
+              class="media-context__bullets"
+            >
+              <button
+                v-for="(item, index) in newItems"
+                class="media-context__bullet"
+                :class="{ 'media-context__bullet--active' : activeSlide == index }"
+                v-text="`Navigate to slide ${index}`"
+                @click="changeSlide(index)"
+              />
+            </div>
+            <div
+              class="media-context__autoplay checkbox"
+              :class="{'checkbox--active': !stopped}"
+            >
+              <div class="checkbox__main">
+                <input :id="`autoplay-btn--${id}`" type="checkbox" name="autoplay" value="true" @click="toggleAutoplay()">
+              </div>
+              <label :for="`autoplay-btn--${id}`">Autoplay</label>
+            </div>
           </div>
         </div>
       </div>
@@ -643,6 +645,24 @@ export default {
     @include breakpoint(medium) {
       .media-context--offset & {
         grid-column: span 8 / span 8;
+      }
+
+      .media-context--full-width & {
+        position: relative;
+        padding-bottom: 64.75%;
+
+        .media-context__media-inner {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+        }
+      }
+    }
+
+    @include breakpoint(large) {
+      .media-context--full-width & {
+        padding-bottom: 58.75%;
       }
     }
   }
