@@ -7,7 +7,7 @@
 <style lang="scss">
 .page {
   @include breakpoint(large) {
-    min-height: 120vh;
+    min-height: 160vh;
   }
 
   .grid {
