@@ -55,6 +55,10 @@ export default {
     },
     current: {
       type: Object,
+      default: {
+        url: '/',
+        title: ''
+      }
     }
   },
   mounted() {
