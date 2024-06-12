@@ -50,6 +50,10 @@ export default {
 
 <style lang="scss">
 .intro-context {
+  @include breakpoint(large) {
+    min-height: 4.235vw;
+  }
+
   &__main {
     grid-column: span 12 / span 12;
 
