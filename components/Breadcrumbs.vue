@@ -15,7 +15,7 @@
           <li
             v-for="(item, index) in items"
           >
-          <span class="context__word">
+            <span class="context__word">
               <span>
                 <NuxtLink
                   :to="item.url.replace(/^.*\/\/[^\/]+/, '').replace(/\/$/, '')"
@@ -74,6 +74,11 @@ export default {
 
           gsap.to(listWords,
             {
+              scrollTrigger: {
+                trigger: this.$refs.breadcrumbs,
+                toggleActions: 'restart none restart none',
+                start: 'top 85%',
+              },
               y: 0,
               duration: 0.4,
               stagger: 0.1,
