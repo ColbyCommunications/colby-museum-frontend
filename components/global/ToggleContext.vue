@@ -179,8 +179,7 @@ export default {
             {
               scrollTrigger: {
                 trigger: list,
-                toggleActions: 'restart none none reverse',
-                start: 'top 90%',
+                toggleActions: 'restart none restart none',
               },
               y: 0,
               duration: 0.4,
