@@ -86,6 +86,40 @@
                   />
                 </div>
               </li>
+              <li>
+                <div
+                  class="checkbox checkbox--small"
+                  :class="[objectsSort == 'name' ? 'checkbox--active' : '']"
+                >
+                  <div class="checkbox__main">
+                    <input
+                      type="radio" :name="`filter_alphabetical`" :value="`By Artist Name`"
+                      @click="toggleAlphabetical(`By Artist Name`)"
+                    >
+                  </div>
+                  <label
+                    v-text="`By Artist Name`"
+                    @click="toggleAlphabetical(`By Artist Name`)"
+                  />
+                </div>
+              </li>
+              <li>
+                <div
+                  class="checkbox checkbox--small"
+                  :class="[objectsSort == 'year' ? 'checkbox--active' : '']"
+                >
+                  <div class="checkbox__main">
+                    <input
+                      type="radio" :name="`filter_alphabetical`" :value="`By Year`"
+                      @click="toggleAlphabetical(`By Year`)"
+                    >
+                  </div>
+                  <label
+                    v-text="`By Year`"
+                    @click="toggleAlphabetical(`By Year`)"
+                  />
+                </div>
+              </li>
             </ul>
             <ul v-else class="filter__list">
               <li>
@@ -127,7 +161,7 @@
         </div>
       </div>
       <div
-        v-if="aggregationMaker != '' || aggregationMedium != '' || aggregationSupport != ''"
+        v-if="aggregationMaker != '' || aggregationMedium != '' || aggregationSupport != '' || aggregationYear != '' || aggregationType != ''"
         class="filter__inner grid"
       >
         <div class="filter__pill-list">
@@ -154,6 +188,22 @@
           >
             <IconX />
             {{ aggregationSupport }}
+          </button>
+          <button
+            v-if="aggregationYear != ''"
+            class="filter__pill"
+            @click="aggregationRemove('year')"
+          >
+            <IconX />
+            {{ aggregationYear }}
+          </button>
+          <button
+            v-if="aggregationType != ''"
+            class="filter__pill"
+            @click="aggregationRemove('type')"
+          >
+            <IconX />
+            {{ aggregationType }}
           </button>
         </div>
       </div>
@@ -373,6 +423,8 @@ export default {
       aggregationMaker: '',
       aggregationMedium: '',
       aggregationSupport: '',
+      aggregationYear: '',
+      aggregationType: '',
     };
   },
   computed: {
@@ -518,6 +570,7 @@ export default {
       let filterYPosition;
       let filterTerms = [];
       let filterMust = [];
+      let filterSort = [];
 
       component.currentPage = page;
 
@@ -552,6 +605,23 @@ export default {
         filterTerms.push({ "term": { "Support" : component.aggregationSupport}})
       }
 
+      if (component.aggregationYear != '') {
+        filterTerms.push({ "term": { "Disp_Create_DT" : component.aggregationYear}})
+      }
+
+      if (component.aggregationType != '') {
+        filterTerms.push({ "term": { "Disp_Obj_Type" : component.aggregationType}})
+      }
+
+      if (component.objectsSort == 'name') {
+        filterSort.push({'Disp_Maker_1' : 'asc'});
+      } else if (component.objectsSort == 'year') {
+        filterSort.push({'Disp_Create_DT' : 'desc'});
+        // filterMust.push({ "exists" : { "field" : 'Disp_Create_DT' } });
+      } else {
+        filterSort.push({'Disp_Title' : component.objectsSort});
+      }
+
       console.log(filterTerms.length);
 
       await axios
@@ -565,12 +635,10 @@ export default {
             source: JSON.stringify({
               size: component.per_page,
               from: 0 + ( component.per_page * (page - 1)),
-              "sort": [
-                {'Disp_Title' : component.objectsSort}
-              ],
+              "sort": filterSort,
               "query" : {
                 "bool": {
-                  "should": (component.aggregationMaker != '' || component.aggregationMedium != '' || component.aggregationSupport != '') ? filterTerms : undefined,
+                  "should": (component.aggregationMaker != '' || component.aggregationMedium != '' || component.aggregationSupport != '' || component.aggregationYear != '' || component.aggregationType != '') ? filterTerms : undefined,
                   "must": filterMust.length > 0 ? filterMust : undefined,
                   // "must": component.activeFilters.includes('Has Image') ? [
                   //   { "exists": { "field" : "Images" } }
@@ -597,6 +665,18 @@ export default {
                     "size": 200
                   }
                 },
+                "year": { 
+                  "terms": { 
+                    "field": "Disp_Create_DT",
+                    "size": 200
+                  }
+                },
+                "type": { 
+                  "terms": { 
+                    "field": "Disp_Obj_Type",
+                    "size": 200
+                  }
+                },
               }
             })
           }
@@ -618,7 +698,7 @@ export default {
 
             return {
               heading: i._source.Disp_Title && (i._source.Disp_Title.length > 70) ? i._source.Disp_Title.substring(0, 69) + '...' : i._source.Disp_Title,
-              subheading: i._source.Disp_Maker_1,
+              subheading: `${i._source.Disp_Maker_1} ${i._source.Disp_Create_DT}`,
               button: {
                 title: 'View Object',
                 url: `/objects/${i._source.embark_ID}`
@@ -816,6 +896,8 @@ export default {
         this.aggregationMaker = '';
         this.aggregationMedium = '';
         this.aggregationSupport = '';
+        this.aggregationYear = '';
+        this.aggregationType = '';
 
         for (const a of this.$refs.aggregationSelectOption) {
           a.selectedIndex = 0;
@@ -879,6 +961,10 @@ export default {
           this.objectsSort = 'asc';
         } else if (term == `Alphabetical from  'Z'`) {
           this.objectsSort = 'desc';
+        } else if (term == `By Artist Name`) {
+          this.objectsSort = 'name';
+        } else if (term == `By Year`) {
+          this.objectsSort = 'year';
         }
 
         this.getObjects(1, this.$refs.searchInput.input ? this.$refs.searchInput.input : undefined);
@@ -926,6 +1012,14 @@ export default {
         this.aggregationSupport = e.target.value;
       }
 
+      if (key == 'year') {
+        this.aggregationYear = e.target.value;
+      }
+
+      if (key == 'type') {
+        this.aggregationType = e.target.value;
+      }
+
       this.getObjects(1, this.input);
     },
     aggregationRemove(key) {
@@ -945,6 +1039,14 @@ export default {
 
       if (key == 'support') {
         this.aggregationSupport = '';
+      }
+
+      if (key == 'year') {
+        this.aggregationYear = '';
+      }
+
+      if (key == 'type') {
+        this.aggregationType = '';
       }
 
       this.getObjects(1, this.input);
