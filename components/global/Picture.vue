@@ -9,6 +9,7 @@
       :src="sizes.mobile.source_url"
       :alt="alt"
       :loading="loading"
+      width="100%"
     />
   </picture>
 </template>
