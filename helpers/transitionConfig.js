@@ -21,26 +21,6 @@ const pageTransition = {
       })
       .play();
   },
-  onAfterEnter: (el, done) => {
-    // let headings = el.querySelectorAll('.context__heading');
-    // let tl = gsap.timeline({ paused: true, onComplete: done });
-
-    // headings.forEach((heading) => {
-    //   let headingWords = heading.querySelectorAll('.context__word span');
-
-    //   tl
-    //     .to(headingWords,
-    //     {
-    //       y: 0,
-    //       duration: 0.4,
-    //       stagger: 0.1,
-    //     },
-    //     '<');
-    // });
-
-    // tl
-    //   .play();
-  },
   onLeave: (el, done) => {
     toggleTransitionComplete(false);
 
@@ -222,9 +202,6 @@ const pageTransition = {
     tl
       .play();
   },
-  onAfterLeave: () => {
-    // window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
 };
 
 export default pageTransition;

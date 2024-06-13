@@ -116,6 +116,14 @@ export default {
       required: false,
     }
   },
+  watch: {
+    items: {
+      deep: false,
+      async handler() {
+        this.animate();
+      }
+    },
+  },
   async created() {
     this.interface = useInterfaceStore();
     const component = this;
