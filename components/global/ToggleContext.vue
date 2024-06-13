@@ -216,7 +216,7 @@ export default {
             ease: "expo.out",
           });
         }
-      }, 1200);
+      }, 2000);
     }
   }
 }
