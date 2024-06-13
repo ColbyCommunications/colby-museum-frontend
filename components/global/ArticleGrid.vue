@@ -586,7 +586,7 @@ export default {
         filterMust.push({ "term": { "Portfolios.Portfolio_ID" : `${component.embark_ID}` } });
       }
 
-      if (this.page == undefined) {
+      if (this.page == undefined && this.$refs.filter) {
         setTimeout(() => {
           filterYPosition = window.scrollY + component.$refs.filter.getBoundingClientRect().top;
           window.scrollTo({ top: filterYPosition });

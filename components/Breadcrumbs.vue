@@ -14,6 +14,7 @@
           </li>
           <li
             v-for="(item, index) in items"
+            :key="`breadcrumb_${index}`"
           >
             <span class="context__word">
               <span>
@@ -61,31 +62,41 @@ export default {
       }
     }
   },
+  watch: {
+    items: {
+      deep: true,
+      async handler() {
+        setTimeout(() => {
+          this.animate();
+        }, 1000);
+      }
+    },
+  },
   mounted() {
-    this.animate();
+    setTimeout(() => {
+      this.animate();
+    }, 1000);
   },
   methods: {
     animate() {
-      setTimeout(() => {
-        let list = this.$refs.breadcrumbs;
+      let list = this.$refs.breadcrumbs;
 
-        if (list) {
-          let listWords = list.querySelectorAll('.context__word span');
+      if (list) {
+        let listWords = list.querySelectorAll('.context__word span');
 
-          gsap.to(listWords,
-            {
-              scrollTrigger: {
-                trigger: this.$refs.breadcrumbs,
-                toggleActions: 'restart none restart none',
-                start: 'top 85%',
-              },
-              y: 0,
-              duration: 0.4,
-              stagger: 0.1,
-              ease: "expo.out",
-            });
-        }
-      }, 600)
+        gsap.to(listWords,
+          {
+            scrollTrigger: {
+              trigger: this.$refs.breadcrumbs,
+              toggleActions: 'restart none restart none',
+              start: 'top 85%',
+            },
+            y: 0,
+            duration: 0.4,
+            stagger: 0.1,
+            ease: "expo.out",
+          });
+      }
     }
   }
 }
