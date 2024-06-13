@@ -5,12 +5,6 @@
 </template>
 
 <style lang="scss">
-.layout {
-  @include breakpoint(large) {
-    min-height: 300vh;
-  }
-}
-
 .page {
   @include breakpoint(large) {
     min-height: 160vh;
