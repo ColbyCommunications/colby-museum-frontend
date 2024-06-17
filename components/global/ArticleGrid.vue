@@ -16,18 +16,18 @@
     />
 
     <div
-      v-if="(items_type == 'events' || items_type == 'exhibitions' || items_type == 'objects' && page == undefined) && per_page >= 20"
+      v-if="(items_type == 'events' || items_type == 'exhibitions' || items_type == 'objects') && per_page >= 20"
       class="filter"
       ref="filter"
     >
-      <NuxtLink
+      <!-- <NuxtLink
         v-if="page == undefined && items_type == 'objects'"
         id="browse-no-filter"
         class="btn--light btn--small"
         :to="'/objects/page-1'"
       >
         Browse Without Filter
-      </NuxtLink>
+      </NuxtLink> -->
       <div class="filter__inner grid">
         <div class="filter__input">
           <div class="horizontal-curtain" />
@@ -208,71 +208,71 @@
         </div>
       </div>
       <div ref="drawer">
-      <div
-        class="filter__drawer"
-        :class="{'filter__drawer--active' : drawerActive}"
-      >
-        <div class="filter__drawer-top">
-          <h3 class="filter__heading heading-style-3" v-text="'Filters'" />
-          <button
-            class="filter__close-btn"
-            @click="drawerActive = !drawerActive"
+        <div
+          class="filter__drawer"
+          :class="{'filter__drawer--active' : drawerActive}"
+        >
+          <div class="filter__drawer-top">
+            <h3 class="filter__heading heading-style-3" v-text="'Filters'" />
+            <button
+              class="filter__close-btn"
+              @click="drawerActive = !drawerActive"
+            >
+              <IconX />
+              <span class="sr-only" v-text="'Close Filter Drawer'" />
+            </button>
+          </div>
+          <div class="filter__drawer-group">
+            <button
+              class="filter__clear-btn checkbox checkbox--small"
+              @click="resetFilter()"
+            >
+              <IconX />
+              <label v-text="'Clear filters'" />
+            </button>
+          </div>
+          <div v-if="aggregations" class="filter__drawer-group">
+            <div class="dropdown" v-for="(aggregation, key, index) in aggregations">
+              <select class="input" ref="aggregationSelectOption" :name="key" @change="aggregationChange($event, key)">
+                <option value="" v-text="key" />
+                <option
+                  v-for="(bucket, index) in aggregation.buckets"
+                  :value="bucket.key"
+                  v-text="bucket.key"
+                />
+              </select>
+              <IconArrow class="super-dropdown__arrow" />
+            </div>
+          </div>
+          <div
+            v-for="(filter, index) in filters"
+            class="filter__drawer-group"
           >
-            <IconX />
-            <span class="sr-only" v-text="'Close Filter Drawer'" />
-          </button>
-        </div>
-        <div class="filter__drawer-group">
-          <button
-            class="filter__clear-btn checkbox checkbox--small"
-            @click="resetFilter()"
-          >
-            <IconX />
-            <label v-text="'Clear filters'" />
-          </button>
-        </div>
-        <div v-if="aggregations" class="filter__drawer-group">
-          <div class="dropdown" v-for="(aggregation, key, index) in aggregations">
-            <select class="input" ref="aggregationSelectOption" :name="key" @change="aggregationChange($event, key)">
-              <option value="" v-text="key" />
-              <option
-                v-for="(bucket, index) in aggregation.buckets"
-                :value="bucket.key"
-                v-text="bucket.key"
-              />
-            </select>
-            <IconArrow class="super-dropdown__arrow" />
+            <h3
+              class="heading-style-3"
+              v-text="filter.name"
+            />
+            <ul class="filter__list">
+              <li v-for="(item, index) in filter.items">
+                <div
+                  class="checkbox checkbox--small"
+                  :class="[item.active ? 'checkbox--active' : '']"
+                >
+                  <div class="checkbox__main">
+                    <input
+                      type="radio" :name="`filter_${filter.name}`" :value="item.name"
+                      @click="item.name == 'past' || item.name == 'current' ? toggleChronology(item) : toggleFilter(item)"
+                    >
+                  </div>
+                  <label
+                    v-text="item.name"
+                    @click="item.name == 'past' || item.name == 'current' ? toggleChronology(item) : toggleFilter(item)"
+                  />
+                </div>
+              </li>
+            </ul>
           </div>
         </div>
-        <div
-          v-for="(filter, index) in filters"
-          class="filter__drawer-group"
-        >
-          <h3
-            class="heading-style-3"
-            v-text="filter.name"
-          />
-          <ul class="filter__list">
-            <li v-for="(item, index) in filter.items">
-              <div
-                class="checkbox checkbox--small"
-                :class="[item.active ? 'checkbox--active' : '']"
-              >
-                <div class="checkbox__main">
-                  <input
-                    type="radio" :name="`filter_${filter.name}`" :value="item.name"
-                    @click="item.name == 'past' || item.name == 'current' ? toggleChronology(item) : toggleFilter(item)"
-                  >
-                </div>
-                <label
-                  v-text="item.name"
-                  @click="item.name == 'past' || item.name == 'current' ? toggleChronology(item) : toggleFilter(item)"
-                />
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
       </div>
     </div>
   
@@ -315,7 +315,7 @@
       </div>
       <div
         v-else-if="typeof items === 'number' || items_type != 'manual'"
-        v-for="(item, index) in newItems"
+        v-for="(item, index) in newItems.slice(0, 20)"
         class="article-grid__item"
       >
         <Article
@@ -345,7 +345,7 @@
             v-if="page"
             class="pagination__btn pagination__btn--prev"
             :class="[currentPage == 1 ? 'pagination__btn--inactive' : '']"
-            :to="`/objects/page-${Number(page) - 1}`"
+            :to="`/objects/page-${Number(page) - 1}${this.$route.query.search || this.$route.query.maker || this.$route.query.year || this.$route.query.type || this.$route.query.sort || this.$route.query.has_image ? '?' + this.$route.fullPath.split('?').pop() : ''}`"
           ><IconArrow />Previous</NuxtLink>
           <button
             v-else
@@ -374,8 +374,8 @@
           <NuxtLink
             v-if="page"
             class="pagination__btn pagination__btn--next"
-            :class="[currentPage == Number(totalPages) ? 'pagination__btn--inactive' : '']"
-            :to="`/objects/page-${Number(page) + 1}`"
+            :class="[nextPageAvailable == false ? 'pagination__btn--inactive' : '']"
+            :to="`/objects/page-${Number(page) + 1}${this.$route.query.search || this.$route.query.maker || this.$route.query.year || this.$route.query.type || this.$route.query.sort || this.$route.query.has_image ? '?' + this.$route.fullPath.split('?').pop() : ''}`"
           >Next<IconArrow /></NuxtLink>
           <button
             v-else
@@ -409,6 +409,7 @@ export default {
       totalPages: undefined,
       currentPage: undefined,
       pages: undefined,
+      nextPageAvailable: undefined,
       filters: undefined,
       sorters: undefined,
       activeFilters: [],
@@ -502,16 +503,30 @@ export default {
     const component = this;
 
     if (component.items_type == 'objects') {
-      this.loadFilters();
-      
-      this.page ? this.getObjects(this.page) : this.getObjects(1);
+      component.$route.query.has_image != 'false' ? component.activeFilters = ['Has Image'] : component.activeFilters = [];
 
-      // Sets the Has Image option to true on load.
-      // Would like to improve this as it essentially requires
-      // A second API call on load
-      setTimeout(() => {
-        this.toggleFilter(this.filters[0].items[0]);
-      }, 1000);
+      this.loadFilters();
+
+      component.$route.query.maker ? component.aggregationMaker = component.$route.query.maker : component.aggregationMaker = '';
+      component.$route.query.year ? component.aggregationYear = component.$route.query.year : component.aggregationYear = '';
+      component.$route.query.type ? component.aggregationType = component.$route.query.type : component.aggregationType = '';
+      
+      if (component.$route.query.sort == 'asc' || component.$route.query.sort == null) {
+        component.objectsSort = 'asc';
+      } else {
+        component.objectsSort = component.$route.query.sort;
+      }
+
+      this.page ? this.getObjects(this.page, this.$route.query.search) : this.getObjects(1);
+
+      // I fixed this. Will remove later when the coast is clear.
+      ///////////////////////////////////////////////////////////
+      // // Sets the Has Image option to true on load.
+      // // Would like to improve this as it essentially requires
+      // // A second API call on load
+      // setTimeout(() => {
+      //   this.toggleFilter(this.filters[0].items[0]);
+      // }, 1000);
     } else if (component.items_type == 'collection') {
       this.getObjects(1);
     // Initial setup for events filter. Would like to make this automated based on WP API Schema
@@ -617,7 +632,6 @@ export default {
         filterSort.push({'Disp_Maker_1' : 'asc'});
       } else if (component.objectsSort == 'year') {
         filterSort.push({'Disp_Create_DT' : 'desc'});
-        // filterMust.push({ "exists" : { "field" : 'Disp_Create_DT' } });
       } else {
         filterSort.push({'Disp_Title' : component.objectsSort});
       }
@@ -633,51 +647,16 @@ export default {
           params: {
             source_content_type: 'application/json',
             source: JSON.stringify({
-              size: component.per_page,
+              size: component.per_page + 1,
               from: 0 + ( component.per_page * (page - 1)),
               "sort": filterSort,
               "query" : {
                 "bool": {
                   "should": (component.aggregationMaker != '' || component.aggregationMedium != '' || component.aggregationSupport != '' || component.aggregationYear != '' || component.aggregationType != '') ? filterTerms : undefined,
                   "must": filterMust.length > 0 ? filterMust : undefined,
-                  // "must": component.activeFilters.includes('Has Image') ? [
-                  //   { "exists": { "field" : "Images" } }
-                  // ] : undefined,
                   "minimum_should_match" : filterTerms.length,
                 },
               },
-              "aggs": { 
-                "maker": { 
-                  "terms": { 
-                    "field": "Sort_Artist",
-                    "size": 200
-                  }
-                },
-                "medium": { 
-                  "terms": { 
-                    "field": "Medium",
-                    "size": 200
-                  }
-                },
-                "support": { 
-                  "terms": { 
-                    "field": "Support",
-                    "size": 200
-                  }
-                },
-                "year": { 
-                  "terms": { 
-                    "field": "Disp_Create_DT",
-                    "size": 200
-                  }
-                },
-                "type": { 
-                  "terms": { 
-                    "field": "Disp_Obj_Type",
-                    "size": 200
-                  }
-                },
-              }
             })
           }
         })
@@ -686,10 +665,16 @@ export default {
 
           component.totalPages = Math.floor(output.headers['content-length'] / component.per_page);
 
+          if (output.data.hits.hits.length < component.per_page + 1) {
+            component.nextPageAvailable = false;
+          } else {
+            component.nextPageAvailable = true;
+          }
+
           // Establishes aggregations. Prevents them from changing everytime we make a
           // request to the endpoint.
           if (component.aggregations == undefined) {
-            component.aggregations = output.data.aggregations;
+            component.getAggregations();
           }
 
           component.newItems = output.data.hits.hits.map((i) => {
@@ -736,6 +721,69 @@ export default {
               },
             }
           })
+        });
+    },
+    async getAggregations() {
+      const component = this;
+
+      await axios
+        .get(`https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/stage/_search`, {
+          auth: {
+            username: 'Fr2fpegcBZ',
+            password: 'Vi7vGnL3h2rtW5SuECoKRwTf'
+          },
+          params: {
+            source_content_type: 'application/json',
+            source: JSON.stringify({
+              "size": 0,
+              "aggs": { 
+                "maker": { 
+                  "terms": { 
+                    "field": "Sort_Artist",
+                    "size": 300
+                  }
+                },
+                // "medium": { 
+                //   "terms": { 
+                //     "field": "Medium",
+                //     "size": 200
+                //   }
+                // },
+                // "support": { 
+                //   "terms": { 
+                //     "field": "Support",
+                //     "size": 200
+                //   }
+                // },
+                "year": { 
+                  "terms": { 
+                    "field": "Disp_Create_DT",
+                    "size": 300
+                  }
+                },
+                "type": { 
+                  "terms": { 
+                    "field": "Disp_Obj_Type",
+                    "size": 300
+                  }
+                },
+              }
+            })
+          }
+        })
+        .then((output) => {
+          if (component.aggregations == undefined) {
+            component.aggregations = output.data.aggregations;
+            console.log(component.aggregations);
+
+            setTimeout(() => {
+              console.log(component.$refs.aggregationSelectOption);
+
+              component.$route.query.year ? component.$refs.aggregationSelectOption[0].value = component.$route.query.year : null;
+              component.$route.query.maker ? component.$refs.aggregationSelectOption[1].value = component.$route.query.maker : null;
+              component.$route.query.type ? component.$refs.aggregationSelectOption[2].value = component.$route.query.type : null;
+            }, 1000);
+          }
         });
     },
     async getPosts(page, searchTerm) {
@@ -863,6 +911,7 @@ export default {
       return formattedDate;
     },
     loadFilters() {
+      const component = this;
       let filtersType;
 
       if (this.items_type == 'events') {
@@ -877,7 +926,7 @@ export default {
         name: f.name,
         items: f.items.map((i) => ({
           name: i,
-          active: false,
+          active: i == 'Has Image' && component.activeFilters.includes('Has Image') ? true : false,
         }))
       }));
 
@@ -908,7 +957,7 @@ export default {
 
       this.$refs.searchInput.$data.input = '';
       this.$refs.searchInput.debounceInput();
-      this.activeFilters = [];
+      this.items_type == 'objects' && this.$route.query.has_image != false ? this.activeFilters = ['Has Image'] : this.activeFilters = [];
     },
     toggleFilter(term) {
       term.active = !term.active;
@@ -923,7 +972,9 @@ export default {
         this.activeFilters.splice(index, 1);
       }
 
-      if (this.items_type == 'objects' && this.page == undefined) {
+      if (this.items_type == 'objects') {
+
+        this.triggerNavigateTo();
         this.getObjects(1, this.$refs.searchInput.input ? this.$refs.searchInput.input : undefined);
       }
 
@@ -967,6 +1018,7 @@ export default {
           this.objectsSort = 'year';
         }
 
+        this.triggerNavigateTo();
         this.getObjects(1, this.$refs.searchInput.input ? this.$refs.searchInput.input : undefined);
       } else {
         if (term == `Alphabetical from  'A'`) {
@@ -991,15 +1043,22 @@ export default {
       }
     },
     recieveInput(input) {
+      const component = this;
       this.input = input;
 
-      if (this.items_type == 'objects') {
+      if (this.items_type == 'objects' && this.page) {
+        component.triggerNavigateTo();
+
+        this.getObjects(1, input);
+      } else if (this.items_type == 'objects') {
         this.getObjects(1, input);
       } else {
         this.getPosts(1, input);
       }
     },
     aggregationChange(e, key) {
+      const component = this;
+
       if (key == 'maker') {
         this.aggregationMaker = e.target.value;
       }
@@ -1020,9 +1079,15 @@ export default {
         this.aggregationType = e.target.value;
       }
 
+      component.triggerNavigateTo();
+
+      console.log(this.$route.fullPath.split('?').pop());
+
       this.getObjects(1, this.input);
     },
     aggregationRemove(key) {
+      const component = this;
+
       const select = this.$refs.aggregationSelectOption.find(a => {
         return a[0].innerHTML == key;
       });
@@ -1049,7 +1114,24 @@ export default {
         this.aggregationType = '';
       }
 
+      this.triggerNavigateTo();
+
       this.getObjects(1, this.input);
+    },
+    triggerNavigateTo() {
+      const component = this;
+
+      navigateTo({
+        path: `/objects/page-1`,
+        query: {
+          search: component.input,
+          maker: component.aggregationMaker,
+          year: component.aggregationYear,
+          type: component.aggregationType,
+          sort: component.objectsSort,
+          has_image: component.activeFilters.includes('Has Image') ? true : false,
+        }
+      });
     },
     animate() {
       setTimeout(() => {
