@@ -7,7 +7,7 @@
           ref="pcurtain"
         />
         <p class="paragraph-style-2"
-          v-text="paragraph"
+          v-html="paragraph.replace(/(?:\r\n|\r|\n)/g, '<br>')"
         />
       </div>
       <div class="toggle-context__col">
@@ -68,9 +68,9 @@
           </li>
         </ul>
         <p
-          v-else
+          v-else-if="large_paragraph"
           class="paragraph-style-1"
-          v-html="large_paragraph"
+          v-html="large_paragraph.replace(/(?:\r\n|\r|\n)/g, '<br>')"
         />
       </div>
     </div>
@@ -254,25 +254,33 @@ export default {
   }
 
   &__image {
-      position: absolute;
-      top: 0;
-      left: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.8s $ease-default;
+
+    &--active {
+      opacity: 1;
+      visibility: visible;
+      transition: $transition-default;
+    }
+
+    img {
       width: 100%;
       height: 100%;
-      opacity: 0;
-      visibility: hidden;
-      transition: 0.8s $ease-default;
-
-      &--active {
-        opacity: 1;
-        visibility: visible;
-        transition: $transition-default;
-      }
-
-      img {
-        width: 100%;
-        height: 100%;
-      }
     }
+  }
+
+  + div {
+    margin-top: 40px;
+
+    @include breakpoint(large) {
+      margin-top: 5.9vh; // 813px / 48px
+    }
+  }
 }
 </style>

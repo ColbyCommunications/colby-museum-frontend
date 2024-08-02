@@ -14,3 +14,16 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.core-paragraph {
+
+  + div {
+    margin-top: 100px;
+
+    @include breakpoint(medium) {
+      margin-top: 14.76vh;
+    }
+  }
+}
+</style>

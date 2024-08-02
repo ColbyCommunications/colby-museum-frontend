@@ -477,7 +477,7 @@ export default {
     height: calc(100vh - 188px);
     padding-bottom: 20px;
     background-color: map.get($layout-colors, background);
-    transform: translateY(100%);
+    transform: translateY(120%);
     transition: $transition-default;
     overflow-y: scroll;
 

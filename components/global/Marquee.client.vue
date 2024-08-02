@@ -86,7 +86,7 @@ export default {
     setTimeout(() => {
       this.width = this.$refs.marqueeOriginal.offsetWidth;
       this.animate();
-    }, 500);
+    }, 1000);
   },
   methods: {
     calculateWidth() {

@@ -148,5 +148,13 @@ export default {
       margin-top: 2vh;
     }
   }
+
+  + div {
+    margin-top: 40px;
+
+    @include breakpoint(large) {
+      margin-top: 5.9vh; // 813px / 48px
+    }
+  }
 }
 </style>

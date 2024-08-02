@@ -89,6 +89,7 @@ export default {
 
   display: inline-flex;
   align-items: center;
+  align-self: flex-start;
   color: map.get($layout-colors, color);
   text-decoration: none;
   appearance: none;

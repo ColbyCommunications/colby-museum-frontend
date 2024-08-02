@@ -2,7 +2,7 @@
 <template>
   <div
     class="media-context"
-    :class="[Number(reverse) ? 'media-context--reverse' : '', variant ? `media-context--${variant}` : '']"
+    :class="[Number(reverse) ? 'media-context--reverse' : '', variant ? `media-context--${variant}` : '', newItems.length == 1 ? 'media-context--single-slide' : '']"
   >
     <div class="media-context__inner grid">
       <div
@@ -111,7 +111,7 @@
                       :loading="'eager'"
                     />
                     <div
-                      v-if="item.image.caption && variant == 'full-width'"
+                      v-if="item.image.caption.rendered && variant == 'full-width'"
                       class="media-context__caption"
                       v-text="item.image.caption.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
                     />
@@ -338,6 +338,7 @@ export default {
         button: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : component.blockData[`items_${i}_button`],
         image: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : await component.getImage(component.blockData[`items_${i}_image`]),
       }))).then((output) => {
+        console.log(output);
         component.newItems = output;
         component.renderGlide();
       })
@@ -347,10 +348,11 @@ export default {
   },
   mounted() {
     this.id = self.crypto.randomUUID();
-    this.animate();
   },
   methods: {
     renderGlide() {
+      this.animate();
+
       setTimeout(() => {
         this.window = this.$refs.carousel.querySelector("[data-glide-window]");
 
@@ -367,12 +369,13 @@ export default {
             autoplay: this.autoplay,
             perView: 1,
           }).mount();
+
           this.glide.on("run", () => {
             this.activeSlide = this.glide.index;
           });
-          this.glide.mount();
+          // this.glide.mount();
         }
-      }, 200);
+      }, 2000);
     },
     changeSlide(s) {
       if (s == 'next') {
@@ -664,11 +667,19 @@ export default {
           width: 100%;
         }
       }
+
+      .media-context--full-width.media-context--single-slide & {
+        padding-bottom: 53%;
+      }
     }
 
     @include breakpoint(large) {
       .media-context--full-width & {
         padding-bottom: 58.75%;
+      }
+
+      .media-context--full-width.media-context--single-slide & {
+        padding-bottom: 53%;
       }
     }
   }
