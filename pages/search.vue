@@ -71,7 +71,7 @@
 
 <script>
     import axios from 'axios';
-    // import algoliasearch from "algoliasearch/lite";
+    import algoliasearch from 'algoliasearch/lite';
 
     import transitionConfig from '../helpers/transitionConfig';
 
@@ -88,10 +88,7 @@
         },
         data() {
             return {
-                // algoliaClient: algoliasearch(
-                //   "2XJQHYFX2S",
-                //   "63c304c04c478fd0c4cb1fb36cd666cb"
-                // ),
+                algoliaClient: algoliasearch('2XJQHYFX2S', '63c304c04c478fd0c4cb1fb36cd666cb'),
                 algoliaIndex: undefined,
                 excerpt: undefined,
                 items: undefined,
@@ -126,7 +123,7 @@
             },
         },
         created() {
-            // this.algoliaIndex = this.algoliaClient.initIndex('wp_museum_redesign_searchable_posts');
+            this.algoliaIndex = this.algoliaClient.initIndex('wp_museum_redesign_searchable_posts');
         },
         mounted() {
             this.getPosts();
@@ -136,34 +133,32 @@
                 const component = this;
 
                 // This is the old ping to the original Wordpress REST API for search SANS Algolia. Keeping it here for posterity
-                await axios
-                    .get(
-                        `${this.interface.endpoint}search?search=${this.$route.query.search}&per_page=40&page=${this.$route.query.page}&exclude=128`
-                    )
+                // await axios
+                //   .get(`${this.interface.endpoint}search?search=${this.$route.query.search}&per_page=40&page=${this.$route.query.page}&exclude=128`)
+                //   .then((output) => {
+                //     component.totalPages = output.headers['x-wp-totalpages'];
+                //     component.items = output.data;
+
+                //     // console.log(output);
+                //   });
+
+                this.algoliaIndex
+                    .search(component.$route.query.search, {
+                        hitsPerPage: 40,
+                    })
                     .then((output) => {
-                        component.totalPages = output.headers['x-wp-totalpages'];
-                        component.items = output.data;
+                        console.log(output);
 
-                        // console.log(output);
+                        component.totalPages = output.nbPages;
+                        component.items = output.hits.map((i) => ({
+                            title: i.post_title,
+                            excerpt: i.post_excerpt,
+                            url: i.permalink,
+                        }));
+                    })
+                    .catch((err) => {
+                        console.log(err);
                     });
-
-                // this.algoliaIndex
-                //     .search(component.$route.query.search, {
-                //         hitsPerPage: 40,
-                //     })
-                //     .then((output) => {
-                //         console.log(output);
-
-                //         component.totalPages = output.nbPages;
-                //         component.items = output.hits.map((i) => ({
-                //             title: i.post_title,
-                //             excerpt: i.post_excerpt,
-                //             url: i.permalink,
-                //         }));
-                //     })
-                //     .catch((err) => {
-                //         console.log(err);
-                //     });
             },
         },
     };
