@@ -90,23 +90,23 @@
             //     });
         },
         mounted() {
-            // gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
-            // setTimeout(() => {
-            //     ScrollSmoother.create({
-            //         smooth: 1.1,
-            //         effects: true,
-            //     });
-            // }, 600);
+            gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+            setTimeout(() => {
+                ScrollSmoother.create({
+                    smooth: 1.1,
+                    effects: true,
+                });
+            }, 600);
         },
         methods: {
-            // formatTime(t) {
-            //     const time = t.split(':');
-            //     const hour = parseInt(time[0]);
-            //     const min = time[1];
-            //     const sec = parseInt(time[2]);
-            //     const ampm = hour >= 12 ? 'p' : 'a';
-            //     return `${hour == 12 || hour == 0 ? 12 : hour % 12}${ampm}`;
-            // },
+            formatTime(t) {
+                const time = t.split(':');
+                const hour = parseInt(time[0]);
+                const min = time[1];
+                const sec = parseInt(time[2]);
+                const ampm = hour >= 12 ? 'p' : 'a';
+                return `${hour == 12 || hour == 0 ? 12 : hour % 12}${ampm}`;
+            },
         },
     };
 </script>
