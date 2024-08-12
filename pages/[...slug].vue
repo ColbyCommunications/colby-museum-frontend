@@ -51,7 +51,7 @@
                 pageName = 'home';
             }
 
-            await axios.get(`${this.interface.endpoint}pages?slug=${pageName}`).then((output) => {
+            await axios.get(`https://www.colby.edu/endpoints/v1/courses/`).then((output) => {
                 // const post = output.data[0];
                 // // console.log(post);
                 // page.title = post.title.rendered
