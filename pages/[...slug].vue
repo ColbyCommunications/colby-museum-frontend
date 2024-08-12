@@ -1,5 +1,16 @@
 <template>
-    <div class="page page--default">hello world</div>
+    <div class="page page--default">
+        <Breadcrumbs
+            v-if="$route.params.slug != ''"
+            :items="breadcrumbs"
+            :current="{
+                title: title,
+                url: fullPath,
+            }"
+        />
+        <IntroContext :heading="title" :headingElement="'h1'" :subheading="excerpt" />
+        <BaseModule v-for="(item, index) in components" :moduleData="item" />
+    </div>
 </template>
 
 <script>
@@ -51,8 +62,30 @@
                 pageName = 'home';
             }
 
-            let response = await useFetch(`https://www.colby.edu/endpoints/v1/courses/`);
-            console.log(response);
+            await axios.get(`${this.interface.endpoint}pages?slug=${pageName}`).then((output) => {
+                const post = output.data[0];
+                // console.log(post);
+
+                page.title = post.title.rendered
+                    .replace(/–/g, '-')
+                    .replace(/“/g, '"')
+                    .replace(/”/g, '"')
+                    .replace(/’/g, "'");
+
+                page.excerpt = post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '');
+
+                page.getBreadcrumbs(post);
+
+                page.components = post.block_data.map((component) => {
+                    component.type = component.blockName.replace('acf/', '').replace(/\//g, '-');
+
+                    return {
+                        type: component.type,
+                        ...component.attrs.data,
+                        attrs: component.attrs.data ? undefined : component.attrs,
+                    };
+                });
+            });
         },
         methods: {
             async getBreadcrumbs(post) {
