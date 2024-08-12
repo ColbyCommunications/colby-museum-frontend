@@ -13,6 +13,8 @@
                 :campusEvent="campusCurrentEvent"
                 :downtownEvent="downtownCurrentEvent"
             />
+
+            <Footer :primary="mainMenu" :utility="socialMenu" />
         </div>
     </div>
 </template>
