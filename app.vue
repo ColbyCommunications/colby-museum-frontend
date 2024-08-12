@@ -14,7 +14,7 @@
                 :downtownEvent="downtownCurrentEvent"
             />
             <NuxtLayout>
-                <div>hello</div>
+                <NuxtPage :interface="interface" />
             </NuxtLayout>
             <Footer :primary="mainMenu" :utility="socialMenu" />
         </div>
