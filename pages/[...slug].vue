@@ -51,35 +51,30 @@
                 pageName = 'home';
             }
 
-            // await axios
-            //   .get(`${this.interface.endpoint}pages?slug=${pageName}`)
-            //   .then((output) => {
-            //     const post = output.data[0];
-            //     // console.log(post);
+            await axios.get(`${this.interface.endpoint}pages?slug=${pageName}`).then((output) => {
+                const post = output.data[0];
+                // console.log(post);
 
-            //     page.title = post.title.rendered
-            //       .replace(/–/g, '-')
-            //       .replace(/“/g, '"')
-            //       .replace(/”/g, '"')
-            //       .replace(/’/g, "'");
+                page.title = post.title.rendered
+                    .replace(/–/g, '-')
+                    .replace(/“/g, '"')
+                    .replace(/”/g, '"')
+                    .replace(/’/g, "'");
 
-            //     page.excerpt = post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '');
+                page.excerpt = post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '');
 
-            //     page.getBreadcrumbs(post);
+                page.getBreadcrumbs(post);
 
-            //     page.components = post.block_data.map((component) => {
+                page.components = post.block_data.map((component) => {
+                    component.type = component.blockName.replace('acf/', '').replace(/\//g, '-');
 
-            //       component.type = component.blockName
-            //         .replace('acf/','')
-            //         .replace(/\//g,'-');
-
-            //       return {
-            //         type: component.type,
-            //         ...component.attrs.data,
-            //         attrs: component.attrs.data ? undefined : component.attrs,
-            //       };
-            //     });
-            //   });
+                    return {
+                        type: component.type,
+                        ...component.attrs.data,
+                        attrs: component.attrs.data ? undefined : component.attrs,
+                    };
+                });
+            });
         },
         methods: {
             async getBreadcrumbs(post) {
