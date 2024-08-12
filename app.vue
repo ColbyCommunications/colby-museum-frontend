@@ -3,16 +3,16 @@
 </template>
 
 <script>
-    // import axios from 'axios';
-    // import { gsap } from 'gsap';
-    // import { ScrollTrigger } from "gsap/ScrollTrigger";
-    // import { ScrollSmoother } from 'gsap/ScrollSmoother';
+    import axios from 'axios';
+    import { gsap } from 'gsap';
+    import { ScrollTrigger } from 'gsap/ScrollTrigger';
+    import { ScrollSmoother } from 'gsap/ScrollSmoother';
 
-    // import { useInterfaceStore } from "~/store/interface";
+    import { useInterfaceStore } from '~/store/interface';
 
-    // import footerItems from '~/assets/data/footer.yml';
+    import footerItems from '~/assets/data/footer.yml';
 
-    // export default {
+    export default {};
     //   // setup() {
     //   //   useHead({
     //   //     titleTemplate: '%s | Colby College Museum of Art · Colby College',
