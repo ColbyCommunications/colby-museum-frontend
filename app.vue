@@ -13,7 +13,9 @@
                 :campusEvent="campusCurrentEvent"
                 :downtownEvent="downtownCurrentEvent"
             />
-
+            <NuxtLayout>
+                <NuxtPage :interface="interface" />
+            </NuxtLayout>
             <Footer :primary="mainMenu" :utility="socialMenu" />
         </div>
     </div>
