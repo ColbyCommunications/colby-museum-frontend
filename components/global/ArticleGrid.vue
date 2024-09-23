@@ -314,7 +314,7 @@
         />
       </div>
       <!-- Monitor -->
-      <div
+      <!-- <div
         v-else-if="items_type == 'manual'"
         v-for="(item, index) in newItems"
         class="article-grid__item"
@@ -325,7 +325,7 @@
           :bordered="bordered"
           :button_type="button_type"
         />
-      </div>
+      </div> -->
       <!-- End Monitor -->
       <div
         v-else-if="typeof items === 'number' || items_type != 'manual'"
@@ -352,7 +352,7 @@
         />
       </div>
     </div>
-    <div v-if="Number(totalPages) && per_page >= 20 && items_type != 'collection'" class="pagination">
+    <div v-if="Number(totalPages) && per_page >= 20 && items_type != 'collection' && items_type != 'manual'" class="pagination">
       <div class="pagination__inner grid">
         <div class="pagination__main">
           <NuxtLink
