@@ -13,8 +13,8 @@ const pageSEO = (props, type) => {
   // console.log(todo.value);
 
   useSeoMeta({
-    ogTitle: () => `${todo.value.title ? todo.value.title?.rendered.replace(/&quot;/g, '\"').replace('&#8217;',"'") + ' | ' : ''}Colby College Museum of Art · Colby College`,
-    title: () => `${todo.value.title ? todo.value.title?.rendered.replace(/&quot;/g, '\"').replace('&#8217;',"'") + ' | ' : ''}Colby College Museum of Art · Colby College`,
+    ogTitle: () => `${todo.value.title ? todo.value.title?.rendered.replace(/&quot;/g, '\"').replace('&#8217;',"'").replace('&#038;',"&") + ' | ' : ''}Colby College Museum of Art · Colby College`,
+    title: () => `${todo.value.title ? todo.value.title?.rendered.replace(/&quot;/g, '\"').replace('&#8217;',"'").replace('&#038;',"&") + ' | ' : ''}Colby College Museum of Art · Colby College`,
     ogDescription: () => todo.value.excerpt?.rendered,
     description: () => todo.value.excerpt?.rendered,
   });

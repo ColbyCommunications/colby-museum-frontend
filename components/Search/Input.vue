@@ -72,8 +72,8 @@ export default {
 
     @include breakpoint(medium) {
       position: static;
-      width: 4.861vw;
-      height: 4.861vw;
+      width: 6.861vw;
+      height: 6.861vw;
     }
   }
 

@@ -2,6 +2,7 @@
   <div
     class="super-dropdown"
     :class="[active ? 'super-dropdown--active' : '', `super-dropdown--${size}`, sort ? 'super-dropdown--sort' : '']"
+    @mouseleave="active = false"
   >
     <button
       class="super-dropdown__btn"
@@ -17,7 +18,7 @@
         v-if="event"
         class="super-dropdown__event"
       >
-        <div class="super-dropdown__event-heading" v-text="event.heading" />
+        <div class="super-dropdown__event-heading" v-html="event.heading" />
         <div class="super-dropdown__event-paragraph paragraph-style-3" v-text="event.location" />
         <div class="super-dropdown__event-bottom">
           <span>
@@ -29,6 +30,7 @@
             :size="'small'"
             :title="event.button.title"
             :url="event.button.url"
+            @click="toggleActive()"
           />
         </div>
       </div>
@@ -275,7 +277,7 @@ export default {
     width: 100%;
     padding: 0 30px 24px 30px;
     background-color: map.get($layout-colors, color);
-    transform: translateY(100%);
+    transform: translateY(calc(100% - 0.5px));
     opacity: 0;
     visibility: hidden;
 
@@ -293,7 +295,7 @@ export default {
     }
 
     .super-dropdown--large & {
-      padding: 24px 30px;
+      padding: 24px 16px;
       background-color: map.get($layout-colors, accent);
       border: 4px solid map.get($layout-colors, color);
       border-top: 0;
