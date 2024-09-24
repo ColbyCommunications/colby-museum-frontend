@@ -5,7 +5,7 @@
         <Context :size="'large'" :paragraph="'Looking for a specific artwork?'" />
         <Btn
           :title="'Search the Collection'"
-          :url="'/objects'"
+          :url="'/objects/page-1'"
         />
       </div>
     </div>
