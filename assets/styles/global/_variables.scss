@@ -36,38 +36,38 @@ $ease-default: ease-in-out;
 // Transitions
 $transition-default: 0.2s $ease-default;
 
-// // Layout
-// $layout-colors: (
-//   color: $black,
-//   background: $coral,
-//   accent: $white,
-//   ambiant: $scarlet,
-//   hover: $salmon
-// );
-
+// Layout
 $layout-colors: (
   color: $black,
-  background: $bluebird,
+  background: $coral,
   accent: $white,
-  ambiant: $cobalt,
-  hover: $sky
+  ambiant: $scarlet,
+  hover: $salmon
 );
 
-// $layout-dm-colors: (
-//   color: $white,
-//   background: $sangria,
-//   accent: $black,
-//   ambiant: $scarlet,
-//   hover: $salmon
+// $layout-colors: (
+//   color: $black,
+//   background: $bluebird,
+//   accent: $white,
+//   ambiant: $cobalt,
+//   hover: $sky
 // );
 
 $layout-dm-colors: (
   color: $white,
-  background: $midnight,
+  background: $sangria,
   accent: $black,
-  ambiant: $cobalt,
-  hover: $sky
+  ambiant: $scarlet,
+  hover: $salmon
 );
+
+// $layout-dm-colors: (
+//   color: $white,
+//   background: $midnight,
+//   accent: $black,
+//   ambiant: $cobalt,
+//   hover: $sky
+// );
 
 $signal-colors: (
   open: $green,

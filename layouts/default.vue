@@ -13,7 +13,8 @@
   .grid {
     > h2,
     > h3,
-    > p {
+    > p,
+    > .video {
       grid-column: span 12 / span 12;
 
       @include breakpoint(medium) {

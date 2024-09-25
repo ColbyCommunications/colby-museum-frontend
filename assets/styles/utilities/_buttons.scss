@@ -6,10 +6,10 @@
 .btn {
 
   &--light {
-    @include btn($black, $white, $white, $cobalt);
+    @include btn($black, $white, $white, $scarlet);
 
     .dark-mode & {
-      @include btn($white, $black, $white, $cobalt);
+      @include btn($white, $black, $white, $scarlet);
     }
   }
 
