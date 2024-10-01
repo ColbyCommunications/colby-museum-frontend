@@ -985,6 +985,8 @@ export default {
       this.$refs.searchInput.$data.input = '';
       this.$refs.searchInput.debounceInput();
       this.items_type == 'objects' && this.$route.query.has_image != false ? this.activeFilters = ['Has Image'] : this.activeFilters = [];
+
+      this.triggerNavigateTo();
     },
     toggleFilter(term) {
       term.active = !term.active;
