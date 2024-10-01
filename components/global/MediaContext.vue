@@ -213,12 +213,12 @@
           class="media-context__chevrons"
         >
           <ChevronBtn
-            v-if="newItems.length > 1"
+            v-if="newItems.length > 1 || items.length > 1"
             @click="changeSlide('prev')"
             :title="'Previous Slide'"
           />
           <ChevronBtn
-            v-if="newItems.length > 1"
+            v-if="newItems.length > 1 || items.length > 1"
             @click="changeSlide('next')"
             :title="'Next Slide'"
           />

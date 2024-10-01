@@ -95,6 +95,7 @@ export default {
 
   &--active {
     width: 100%;
+    z-index: 11;
 
     @include breakpoint(medium) {
       width: auto;
@@ -106,6 +107,10 @@ export default {
 
     @include breakpoint(large) {
       width: 27.222vw;
+
+      .filter__drawer & {
+        width: auto;
+      }
     }
   }
 
@@ -214,6 +219,10 @@ export default {
         @include breakpoint(medium) {
           font-size: 1.389vw; // 20px / 1440px
         }
+
+        .filter__drawer & {
+          display: none;
+        }
       }
     }
 
@@ -231,6 +240,10 @@ export default {
       &::before {
         background-color: map.get($signal-colors, closed);
       }
+    }
+
+    .filter__drawer & {
+      text-transform: capitalize;
     }
   }
 
@@ -272,6 +285,7 @@ export default {
 
   &__drawer {
     position: absolute;
+    z-index: 2;
     bottom: 0;
     left: 0;
     width: 100%;

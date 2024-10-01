@@ -161,49 +161,33 @@
         </div>
       </div>
       <div
-        v-if="aggregationMaker != '' || aggregationMedium != '' || aggregationSupport != '' || aggregationYear != '' || aggregationType != ''"
+        v-if="aggregationMakerList.length > 0 || aggregationMediumList.length > 0 || aggregationSupportList.length > 0 || aggregationYearList.length > 0 || aggregationTypeList.length > 0"
         class="filter__inner grid"
       >
         <div class="filter__pill-list">
           <button
-            v-if="aggregationMaker != ''"
+            v-for="(item, index) in aggregationMakerList"
             class="filter__pill"
-            @click="aggregationRemove('maker')"
+            @click="aggregationChange(item, 'maker')"
           >
             <IconX />
-            {{ aggregationMaker }}
+            {{ item }}
           </button>
           <button
-            v-if="aggregationMedium != ''"
+            v-for="(item, index) in aggregationYearList"
             class="filter__pill"
-            @click="aggregationRemove('medium')"
+            @click="aggregationChange(item, 'year')"
           >
             <IconX />
-            {{ aggregationMedium }}
+            {{ item }}
           </button>
           <button
-            v-if="aggregationSupport != ''"
+            v-for="(item, index) in aggregationTypeList"
             class="filter__pill"
-            @click="aggregationRemove('support')"
+            @click="aggregationChange(item, 'type')"
           >
             <IconX />
-            {{ aggregationSupport }}
-          </button>
-          <button
-            v-if="aggregationYear != ''"
-            class="filter__pill"
-            @click="aggregationRemove('year')"
-          >
-            <IconX />
-            {{ aggregationYear }}
-          </button>
-          <button
-            v-if="aggregationType != ''"
-            class="filter__pill"
-            @click="aggregationRemove('type')"
-          >
-            <IconX />
-            {{ aggregationType }}
+            {{ item }}
           </button>
         </div>
       </div>
@@ -232,17 +216,41 @@
             </button>
           </div>
           <div v-if="aggregations" class="filter__drawer-group">
-            <div class="dropdown" v-for="(aggregation, key, index) in aggregations">
-              <select class="input" ref="aggregationSelectOption" :name="key" @change="aggregationChange($event, key)">
-                <option value="" v-text="key" />
-                <option
-                  v-for="(bucket, index) in aggregation.buckets"
-                  :value="bucket.key"
-                  v-text="bucket.key"
-                />
-              </select>
-              <IconArrow class="super-dropdown__arrow" />
-            </div>
+            <SuperDropdown
+              v-for="(aggregation, key, index) in aggregations"
+              :size="'large'"
+              :heading="key"
+              :sort="true"
+            >
+              <ul class="filter__list">
+                <li v-for="(bucket, index) in aggregation.buckets">
+                  <div
+                    class="checkbox checkbox--small"
+                    :class="[aggregationMakerList.includes(bucket.key) || aggregationTypeList.includes(bucket.key) || aggregationYearList.includes(bucket.key)  ? 'checkbox--active' : '']"
+                  >
+                    <div class="checkbox__main">
+                      <input
+                        type="radio" :name="`filter_${key}`" :value="bucket.key"
+                        @click="aggregationChange($event, key)"
+                      >
+                    </div>
+                    <label
+                      v-text="bucket.key"
+                      @click="aggregationChange($event, key)"
+                    />
+                  </div>
+                </li>
+              </ul>
+            </SuperDropdown>
+            <!-- <select class="input" ref="aggregationSelectOption" :name="key" @change="aggregationChange($event, key)">
+              <option value="" v-text="key" />
+              <option
+                v-for="(bucket, index) in aggregation.buckets"
+                :value="bucket.key"
+                v-text="bucket.key"
+              />
+            </select>
+            <IconArrow class="super-dropdown__arrow" /> -->
           </div>
           <div
             v-for="(filter, index) in filters"
@@ -435,6 +443,11 @@ export default {
       input: undefined,
       objectsSort: 'asc',
       aggregations: undefined,
+      aggregationMakerList: [],
+      aggregationMediumList: [],
+      aggregationSupportList: [],
+      aggregationYearList: [],
+      aggregationTypeList: [],
       aggregationMaker: '',
       aggregationMedium: '',
       aggregationSupport: '',
@@ -521,9 +534,9 @@ export default {
 
       this.loadFilters();
 
-      component.$route.query.maker ? component.aggregationMaker = component.$route.query.maker : component.aggregationMaker = '';
-      component.$route.query.year ? component.aggregationYear = component.$route.query.year : component.aggregationYear = '';
-      component.$route.query.type ? component.aggregationType = component.$route.query.type : component.aggregationType = '';
+      component.$route.query.maker ? component.aggregationMakerList = component.$route.query.maker : component.aggregationMakerList = [];
+      component.$route.query.year ? component.aggregationYearList = component.$route.query.year : component.aggregationYearList = [];
+      component.$route.query.type ? component.aggregationTypeList = component.$route.query.type : component.aggregationTypeList = [];
       
       if (component.$route.query.sort == 'asc' || component.$route.query.sort == null) {
         component.objectsSort = 'asc';
@@ -622,24 +635,24 @@ export default {
         }, 600);
       }
 
-      if (component.aggregationMaker != '') {
-        filterTerms.push({ "term": { "Sort_Artist" : component.aggregationMaker }})
+      if (component.aggregationMakerList.length > 0) {
+        filterTerms.push({ "terms": { "Sort_Artist" : component.aggregationMakerList }})
       }
 
-      if (component.aggregationMedium != '') {
-        filterTerms.push({ "term": { "Medium" : component.aggregationMedium }})
+      if (component.aggregationMediumList.length > 0) {
+        filterTerms.push({ "terms": { "Medium" : component.aggregationMediumList }})
       }
 
-      if (component.aggregationSupport != '') {
-        filterTerms.push({ "term": { "Support" : component.aggregationSupport}})
+      if (component.aggregationSupportList.length > 0) {
+        filterTerms.push({ "terms": { "Support" : component.aggregationSupportList }})
       }
 
-      if (component.aggregationYear != '') {
-        filterTerms.push({ "term": { "Disp_Create_DT" : component.aggregationYear}})
+      if (component.aggregationYearList.length > 0) {
+        filterTerms.push({ "terms": { "Disp_Create_DT" : component.aggregationYearList }})
       }
 
-      if (component.aggregationType != '') {
-        filterTerms.push({ "term": { "Disp_Obj_Type" : component.aggregationType}})
+      if (component.aggregationTypeList.length > 0) {
+        filterTerms.push({ "terms": { "Disp_Obj_Type" : component.aggregationTypeList }})
       }
 
       if (component.objectsSort == 'name') {
@@ -666,7 +679,7 @@ export default {
               "sort": filterSort,
               "query" : {
                 "bool": {
-                  "should": (component.aggregationMaker != '' || component.aggregationMedium != '' || component.aggregationSupport != '' || component.aggregationYear != '' || component.aggregationType != '') ? filterTerms : undefined,
+                  "should": (component.aggregationMakerList.length > 0 || component.aggregationMediumList.length > 0 || component.aggregationSupportList.length > 0 || component.aggregationYearList.length > 0 || component.aggregationTypeList.length > 0) ? filterTerms : undefined,
                   "must": filterMust.length > 0 ? filterMust : undefined,
                   "minimum_should_match" : filterTerms.length,
                 },
@@ -956,11 +969,11 @@ export default {
     },
     resetFilter() {
       if (this.items_type == 'objects') {
-        this.aggregationMaker = '';
-        this.aggregationMedium = '';
-        this.aggregationSupport = '';
-        this.aggregationYear = '';
-        this.aggregationType = '';
+        this.aggregationMakerList = [];
+        this.aggregationMediumList = [];
+        this.aggregationSupportList = [];
+        this.aggregationYearList = [];
+        this.aggregationTypeList = [];
 
         for (const a of this.$refs.aggregationSelectOption) {
           a.selectedIndex = 0;
@@ -1072,25 +1085,42 @@ export default {
     },
     aggregationChange(e, key) {
       const component = this;
+      let term;
+
+      if (e.target == undefined) {
+        term = e; 
+      } else {
+        term = e.target.value;
+      }
 
       if (key == 'maker') {
-        this.aggregationMaker = e.target.value;
+        this.aggregationMakerList.includes(term) ? 
+          this.aggregationMakerList.splice(this.aggregationMakerList.indexOf(term), 1) : 
+          this.aggregationMakerList.push(term);
       }
 
       if (key == 'medium') {
-        this.aggregationMedium = e.target.value;
+        this.aggregationMediumList.includes(term) ? 
+          this.aggregationMediumList.splice(this.aggregationMediumList.indexOf(term), 1) : 
+          this.aggregationMMediumList.push(term);
       }
 
       if (key == 'support') {
-        this.aggregationSupport = e.target.value;
+        this.aggregationSupportList.includes(term) ? 
+          this.aggregationSupportList.splice(this.aggregationSupportList.indexOf(term), 1) : 
+          this.aggregationSupportList.push(term);
       }
 
       if (key == 'year') {
-        this.aggregationYear = e.target.value;
+        this.aggregationYearList.includes(term) ? 
+          this.aggregationYearList.splice(this.aggregationYearList.indexOf(term), 1) : 
+          this.aggregationYearList.push(term);
       }
 
       if (key == 'type') {
-        this.aggregationType = e.target.value;
+        this.aggregationTypeList.includes(term) ? 
+          this.aggregationTypeList.splice(this.aggregationTypeList.indexOf(term), 1) : 
+          this.aggregationTypeList.push(term);
       }
 
       component.triggerNavigateTo();
@@ -1099,7 +1129,7 @@ export default {
 
       this.getObjects(1, this.input);
     },
-    aggregationRemove(key) {
+    aggregationRemove(key) { // PROBABLY CAN DELETE
       const component = this;
 
       const select = this.$refs.aggregationSelectOption.find(a => {
@@ -1109,7 +1139,7 @@ export default {
       select.selectedIndex = 0;
 
       if (key == 'maker') {
-        this.aggregationMaker = '';
+        this.aggregationMakerList = [];
       }
 
       if (key == 'medium') {
@@ -1139,9 +1169,9 @@ export default {
         path: `/objects/page-1`,
         query: {
           search: component.input,
-          maker: component.aggregationMaker,
-          year: component.aggregationYear,
-          type: component.aggregationType,
+          maker: component.aggregationMakerList,
+          year: component.aggregationYearList,
+          type: component.aggregationTypeList,
           sort: component.objectsSort,
           has_image: component.activeFilters.includes('Has Image') ? true : false,
         }

@@ -144,6 +144,16 @@
         border-left: 0.278vw solid map.get($layout-dm-colors, color);
       }
     }
+
+    .super-dropdown {
+      + .super-dropdown {
+        margin-top: 32px;
+       
+        @include breakpoint(medium) {
+          margin-top: 3.936vh;
+        }
+      }
+    }
   }
 
   &__close-btn {
