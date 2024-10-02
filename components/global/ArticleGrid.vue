@@ -1167,7 +1167,7 @@ export default {
     checkQueryArray(a) {
       let p;
       
-      Array.isArray(a) ? p = a : p = [this.$route.query.maker];
+      Array.isArray(a) ? p = a : p = [a];
       return p;
     },
     triggerNavigateTo() {
