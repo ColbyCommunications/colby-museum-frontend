@@ -235,7 +235,7 @@
                       >
                     </div>
                     <label
-                      v-text="bucket.key"
+                      v-html="bucket.key"
                       @click="aggregationChange($event, key)"
                     />
                   </div>
@@ -534,9 +534,9 @@ export default {
 
       this.loadFilters();
 
-      component.$route.query.maker ? component.aggregationMakerList = component.$route.query.maker : component.aggregationMakerList = [];
-      component.$route.query.year ? component.aggregationYearList = component.$route.query.year : component.aggregationYearList = [];
-      component.$route.query.type ? component.aggregationTypeList = component.$route.query.type : component.aggregationTypeList = [];
+      component.$route.query.maker ? component.aggregationMakerList = component.checkQueryArray(component.$route.query.maker) : component.aggregationMakerList = [];
+      component.$route.query.year ? component.aggregationYearList = component.checkQueryArray(component.$route.query.year) : component.aggregationYearList = [];
+      component.$route.query.type ? component.aggregationTypeList = component.checkQueryArray(component.$route.query.type) : component.aggregationTypeList = [];
       
       if (component.$route.query.sort == 'asc' || component.$route.query.sort == null) {
         component.objectsSort = 'asc';
@@ -1163,6 +1163,12 @@ export default {
       this.triggerNavigateTo();
 
       this.getObjects(1, this.input);
+    },
+    checkQueryArray(a) {
+      let p;
+      
+      Array.isArray(a) ? p = a : p = [this.$route.query.maker];
+      return p;
     },
     triggerNavigateTo() {
       const component = this;
