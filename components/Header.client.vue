@@ -487,6 +487,7 @@ export default {
     transform: translateY(120%);
     transition: $transition-default;
     overflow-y: scroll;
+    visibility: hidden;
 
     .dark-mode & {
       background-color: map.get($layout-dm-colors, background);
@@ -500,6 +501,7 @@ export default {
       background-color: transparent;
       transform: none;
       overflow-y: visible;
+      visibility: visible;
     }
 
     @include breakpoint(large) {
@@ -508,6 +510,7 @@ export default {
 
     .header--drawer-active & {
       transform: translateY(0);
+      visibility: visible;
     }
   }
 
