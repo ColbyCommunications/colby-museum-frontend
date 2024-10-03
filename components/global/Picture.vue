@@ -10,12 +10,18 @@
       :alt="alt"
       :loading="loading"
       width="100%"
+      @error="handle404"
     />
   </picture>
 </template>
 
 <script>
 export default {
+  data() {
+    return {
+      error: false,
+    }
+  },
   props: {
     classes: {
       type: String,
@@ -32,6 +38,23 @@ export default {
     loading: {
       required: false,
       default: 'lazy'
+    }
+  },
+  methods: {
+    handle404(e) {
+      if (this.error == false) {
+
+        console.log('Handling 404');
+        Array.from(e.target.parentNode.children).forEach(element => {
+          element.srcset = `/blanks/blank_${ Math.floor(Math.random() * (3 - 1 + 1) + 1) }.png`;
+        });
+        e.target.src = `/blanks/blank_${ Math.floor(Math.random() * (3 - 1 + 1) + 1) }.png`;
+        e.target.alt = 'Image Not Found';
+
+        e.target.closest('.context__image').classList.add('context__image--broken');
+
+        this.error = true;
+      }
     }
   }
 }

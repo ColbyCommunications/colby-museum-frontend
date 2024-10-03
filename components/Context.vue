@@ -364,7 +364,8 @@ export default {
     position: relative;
     font-size: 0;
 
-    &--not-found {
+    &--not-found,
+    &--broken {
       background-color: #e7f0f4;
 
       &::before {
@@ -390,6 +391,12 @@ export default {
       
       .dark-mode & {
         background-color: #0c2f59;
+      }
+    }
+
+    &--broken {
+      &::before {
+        content: 'Image Error';
       }
     }
   }
