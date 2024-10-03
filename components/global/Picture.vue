@@ -42,6 +42,8 @@ export default {
   },
   methods: {
     handle404(e) {
+      e.target.onerror = null;
+  
       if (this.error == false) {
 
         console.log('Handling 404');
