@@ -1209,6 +1209,10 @@ export default {
     grid-column: span 12 / span 12;
     margin-bottom: 40px;
 
+    .article-grid--curated & {
+      grid-column: span 6 / span 6;
+    }
+
     @include breakpoint(medium) {
       grid-column: span 6 / span 6;
       margin-bottom: 60px;
