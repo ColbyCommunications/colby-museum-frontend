@@ -803,13 +803,13 @@ export default {
             component.aggregations = output.data.aggregations;
             console.log(component.aggregations);
 
-            setTimeout(() => {
-              console.log(component.$refs.aggregationSelectOption);
+            // setTimeout(() => {
+            //   console.log(component.$refs.aggregationSelectOption);
 
-              component.$route.query.year ? component.$refs.aggregationSelectOption[0].value = component.$route.query.year : null;
-              component.$route.query.maker ? component.$refs.aggregationSelectOption[1].value = component.$route.query.maker : null;
-              component.$route.query.type ? component.$refs.aggregationSelectOption[2].value = component.$route.query.type : null;
-            }, 1000);
+            //   component.$route.query.year ? component.$refs.aggregationSelectOption[0].value = component.$route.query.year : null;
+            //   component.$route.query.maker ? component.$refs.aggregationSelectOption[1].value = component.$route.query.maker : null;
+            //   component.$route.query.type ? component.$refs.aggregationSelectOption[2].value = component.$route.query.type : null;
+            // }, 1000);
           }
         });
     },
@@ -975,9 +975,9 @@ export default {
         this.aggregationYearList = [];
         this.aggregationTypeList = [];
 
-        for (const a of this.$refs.aggregationSelectOption) {
-          a.selectedIndex = 0;
-        }
+        // for (const a of this.$refs.aggregationSelectOption) {
+        //   a.selectedIndex = 0;
+        // }
       }
 
       this.loadFilters();

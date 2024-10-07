@@ -51,6 +51,7 @@
       v-if="image"
       class="context__image"
       :class="[image.alt_text == 'No Image Available' ? 'context__image--not-found' : '']"
+      ref="image"
     >
       <div
         class="context__curtain"
@@ -139,6 +140,12 @@ export default {
         this.animate();
       }
     },
+    image: {
+      deep: true,
+      handler() {
+        this.$refs.image.classList.remove('context__image--broken');
+      }
+    }
   },
   computed: {
     preppedHeading() {
