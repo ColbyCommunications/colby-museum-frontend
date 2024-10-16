@@ -10,14 +10,12 @@
         :class="{'video__overlay--active': active == true}"
       >
         <IconPlay />
-        <picture>
-          <source media="(min-width:768px)" :srcset="image.srcset">
-          <img
-            class="video__image object-cover"
-            :src="image.src"
-            :alt="image.alt"
-          />
-        </picture>
+        <Picture
+          v-if="newImage"
+          :classes="'video__image object-cover'"
+          :alt="newImage.alt_text"
+          :sizes="newImage.media_details.sizes"
+        />
       </div>
       <div ref="iframe" class="video__iframe"></div>
     </div>
@@ -25,14 +23,25 @@
 </template>
 
 <script>
+import axios from 'axios';
 import YTPlayer from 'yt-player';
+
+import { useInterfaceStore } from "~/store/interface";
 
 export default {
   data() {
     return {
+      interface: undefined,
       active: false,
       player: null,
+      newImage: undefined,
     };
+  },
+  async created() {
+    this.interface = useInterfaceStore();
+    const component = this;
+
+    this.newImage = await component.getImage(component.image);
   },
   mounted() {
     this.player = new YTPlayer(this.$refs.iframe);
@@ -45,8 +54,11 @@ export default {
       required: true,
     },
     image: {
-      type: Object,
       required: true,
+    },
+    blockData: {
+      type: Object,
+      required: false,
     }
   },
   methods: {
@@ -54,6 +66,36 @@ export default {
       this.active = true;
 
       this.player.play();
+    },
+    async getImage(i) {
+      const component = this;
+      let imageObj;
+      let newImageObj;
+
+      await axios
+        .get(`${component.interface.endpoint}media/${i}`)
+        .then((output) => {
+          imageObj = output.data;
+
+          newImageObj = {
+            alt_text: imageObj.alt_text,
+            caption: {
+              rendered: imageObj.caption.rendered,
+            },
+            media_details: {
+              sizes: {
+                desktop: {
+                  source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=1200,quality=75,format=webp`,
+                },
+                mobile: {
+                  source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=600,quality=75,format=webp`,
+                },
+              }
+            }
+          };
+        });
+
+      return await newImageObj;
     },
   },
 }
