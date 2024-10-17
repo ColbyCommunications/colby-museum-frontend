@@ -517,6 +517,9 @@ export default {
     showChronology: {
       required: false,
     },
+    showVariant: {
+      required: false,
+    },
     items: {
       required: false,
     },
@@ -823,6 +826,7 @@ export default {
         .then(async (output) => {
           let categories;
           let chr;
+          let type = '';
 
           categories = output.data.map((c) => c.id);
 
@@ -836,8 +840,12 @@ export default {
             chr = '&chronologies_exclude=8';
           }
 
+          if (component.showVariant == 'traveling') {
+            type = '&variant=14';
+          }
+
           await axios
-            .get(`${component.interface.endpoint}${component.items_type}?categories_exclude=1${chr}&categories=${component.items_category}${categories.length > 0 ? `,${categories.toString()}` : '' }&per_page=${component.per_page}&page=${page}${searchTerm ? `&search=${searchTerm}` : ''}${component.alphabeticalOrder ? '&orderby=title' : ''}${component.reverseOrder ? '&order=asc' : ''}`)
+            .get(`${component.interface.endpoint}${component.items_type}?categories_exclude=1${chr}${type}&categories=${component.items_category}${categories.length > 0 ? `,${categories.toString()}` : '' }&per_page=${component.per_page}&page=${page}${searchTerm ? `&search=${searchTerm}` : ''}${component.alphabeticalOrder ? '&orderby=title' : ''}${component.reverseOrder ? '&order=asc' : ''}`)
             .then((output) => {
 
               component.totalPages = output.headers['x-wp-totalpages'];

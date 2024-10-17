@@ -143,7 +143,9 @@ export default {
     image: {
       deep: true,
       handler() {
-        this.$refs.image.classList.remove('context__image--broken');
+        if (this.$refs.image) {
+          this.$refs.image.classList.remove('context__image--broken');
+        }
       }
     }
   },

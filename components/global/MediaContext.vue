@@ -303,6 +303,9 @@ export default {
     showChronology: {
       required: false,
     },
+    showVariant: {
+      required: false,
+    },
     collection: {
       required: false,
     },
@@ -439,6 +442,7 @@ export default {
     async getPosts() {
       const component = this;
       let chr;
+      let type = '';
 
       if ((component.showChronology == 'current') && (component.items_type == 'events' || component.items_type == 'exhibitions')) {
         chr = '&chronologies=9';
@@ -450,8 +454,14 @@ export default {
         chr = '&chronologies_exclude=8';
       }
 
+      if (component.showVariant == 'traveling') {
+        type = '&variant=14';
+      }
+
+      console.log(`${component.interface.endpoint}${component.items_type}?categories_exclude=1${chr}${type}&per_page=5&page=1`);
+
       await axios
-        .get(`${component.interface.endpoint}${component.items_type}?categories_exclude=1${chr}&per_page=5&page=1`)
+        .get(`${component.interface.endpoint}${component.items_type}?categories_exclude=1${chr}${type}&per_page=5&page=1`)
         .then((output) => {
           component.newItems = output.data.map((i) => ({
             post: i,
