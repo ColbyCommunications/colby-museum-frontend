@@ -44,9 +44,11 @@ export default {
     this.newImage = await component.getImage(component.image);
   },
   mounted() {
-    this.player = new YTPlayer(this.$refs.iframe);
+    setTimeout(() => {
+      this.player = new YTPlayer(this.$refs.iframe);
 
-    this.player.load(this.id);
+      this.player.load(this.id);
+    }, 2000);
   },
   props: {
     id: {
