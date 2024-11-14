@@ -18,7 +18,7 @@
       v-for="(item, index) in components"
       :moduleData="item"
     />
-    <DonateForm />
+    <!-- <DonateForm /> -->
   </div>
 </template>
 
@@ -30,7 +30,12 @@ import seoConfig from '../helpers/seoConfig';
 
 export default {
   setup(props) {
-    seoConfig(props);
+    useSeoMeta({
+      ogTitle: () => 'Support | Colby College Museum of Art · Colby College',
+      title: () => 'Support | Colby College Museum of Art · Colby College',
+      ogDescription: () => 'Support the Colby College Museum of Art.',
+      description: () => 'Support the Colby College Museum of Art.',
+    });
 
     definePageMeta({
       pageTransition: transitionConfig,
@@ -68,7 +73,7 @@ export default {
     } else if (slug) {
       pageName = slug;
     } else {
-      pageName = 'home';
+      pageName = 'Support';
     }
 
     await axios
