@@ -37,21 +37,21 @@ $ease-default: ease-in-out;
 $transition-default: 0.2s $ease-default;
 
 // Layout
-// $layout-colors: (
-//   color: $black,
-//   background: $coral,
-//   accent: $white,
-//   ambiant: $scarlet,
-//   hover: $salmon
-// );
-
 $layout-colors: (
   color: $black,
-  background: $bluebird,
+  background: $coral,
   accent: $white,
-  ambiant: $cobalt,
-  hover: $sky
+  ambiant: $scarlet,
+  hover: $salmon
 );
+
+// $layout-colors: (
+//   color: $black,
+//   background: $bluebird,
+//   accent: $white,
+//   ambiant: $cobalt,
+//   hover: $sky
+// );
 
 $layout-dm-colors: (
   color: $white,

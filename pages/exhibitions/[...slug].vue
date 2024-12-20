@@ -82,8 +82,8 @@ export default {
           day: '2-digit',
           hour12: false
         });
-        page.start_time = this.formatTime(post.acf.start_time);
-        page.end_time = this.formatTime(post.acf.end_time);
+        // page.start_time = this.formatTime(post.acf.start_time);
+        // page.end_time = this.formatTime(post.acf.end_time);
 
         page.components = post.block_data.map((component) => {
           
