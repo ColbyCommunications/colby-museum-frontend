@@ -21,7 +21,7 @@
       :button="{
         reverse: true,
         title: 'Collections Index',
-        url: '/collection/collections'
+        url: '/collection/about-the-collection'
       }"
     />
   </div>

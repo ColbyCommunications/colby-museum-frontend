@@ -24,6 +24,7 @@
       :subheading="formatDate(post.acf.date, 'events') + (post.acf.end_date && post.acf.date != post.acf.end_date ? ` - ${formatDate(post.acf.end_date, 'events')}` : '' )"
       :image="stagedImage"
       :button="{
+        srOnly: true,
         type: button_type,
         title: 'Event Details',
         url: post.link
@@ -214,6 +215,7 @@ export default {
     async setupButton() {
       if (this.button) {
         this.stagedButton = {
+          srOnly: this.button.srOnly,
           type: this.hover == 'all' ? 'text' : this.button_type,
           title: this.button.title,
           url: this.button.url

@@ -715,6 +715,7 @@ export default {
               heading: i._source.Disp_Title && (i._source.Disp_Title.length > 70) ? i._source.Disp_Title.substring(0, 69) + '...' : i._source.Disp_Title,
               subheading: `${i._source.Disp_Maker_1} ${i._source.Disp_Create_DT}`,
               button: {
+                srOnly: true,
                 title: 'View Object',
                 url: `/objects/${i._source.embark_ID}`
               },

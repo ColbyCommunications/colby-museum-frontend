@@ -1,6 +1,6 @@
 <template>
   <NuxtLink
-    :class="[type == 'text' ? 'text-btn' : 'btn btn--light', size ? `btn--${size}` : '']"
+    :class="[type == 'text' ? 'text-btn' : 'btn btn--light', size ? `btn--${size}` : '', srOnly ? 'sr-only' : '']"
     :to="fixedUrl"
     ref="btn"
   >
@@ -38,6 +38,10 @@ export default {
     size: {
       type: String,
       required: false,
+    },
+    srOnly: {
+      type: Boolean,
+      required: false
     }
   },
   computed: {
