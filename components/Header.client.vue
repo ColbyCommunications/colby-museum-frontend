@@ -142,8 +142,8 @@ export default {
         location: 'No event scheduled for today.',
         time: '10a - 6p',
         button: {
-          title: 'View Events',
-          url: '/events',
+          title: 'Whats On',
+          url: '/exhibitions-and-events',
         }
       }
     },
@@ -154,8 +154,8 @@ export default {
         location: 'No event scheduled for today.',
         time: '10a - 4p',
         button: {
-          title: 'View Events',
-          url: '/events',
+          title: 'Whats On',
+          url: '/exhibitions-and-events',
         }
       }
     }
