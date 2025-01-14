@@ -142,7 +142,7 @@ export default {
         location: 'No event scheduled for today.',
         time: '10a - 6p',
         button: {
-          title: 'Whats On',
+          title: "What's On",
           url: '/exhibitions-and-events',
         }
       }
@@ -154,7 +154,7 @@ export default {
         location: 'No event scheduled for today.',
         time: '10a - 4p',
         button: {
-          title: 'Whats On',
+          title: "What's On",
           url: '/exhibitions-and-events',
         }
       }
