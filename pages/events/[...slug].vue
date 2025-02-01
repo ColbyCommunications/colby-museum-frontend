@@ -86,6 +86,18 @@ export default {
           day: '2-digit',
           hour12: false
         });
+
+        if (post.acf.end_date) {
+          page.end_date = new Date(`${post.acf.end_date.substr(0,4)}-${post.acf.end_date.substr(4,2)}-${post.acf.end_date.substr(6,2)}T00:00:00`).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: '2-digit',
+            hour12: false
+          });
+
+          console.log(page.end_date);
+        }
+
         page.start_time = this.formatTime(post.acf.start_time);
         page.end_time = this.formatTime(post.acf.end_time);
 

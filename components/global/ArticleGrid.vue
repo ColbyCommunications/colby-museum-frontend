@@ -269,12 +269,12 @@
                   <div class="checkbox__main">
                     <input
                       type="radio" :name="`filter_${filter.name}`" :value="item.name"
-                      @click="item.name == 'past' || item.name == 'current' ? toggleChronology(item) : toggleFilter(item)"
+                      @click="item.name == 'past' || item.name == 'current' || item.name == 'future' ? toggleChronology(item) : toggleFilter(item, filter.name)"
                     >
                   </div>
                   <label
                     v-text="item.name"
-                    @click="item.name == 'past' || item.name == 'current' ? toggleChronology(item) : toggleFilter(item)"
+                    @click="item.name == 'past' || item.name == 'current' || item.name == 'future' ? toggleChronology(item) : toggleFilter(item, filter.name)"
                   />
                 </div>
               </li>
@@ -367,7 +367,7 @@
             v-if="page"
             class="pagination__btn pagination__btn--prev"
             :class="[currentPage == 1 ? 'pagination__btn--inactive' : '']"
-            :to="`/objects/page-${Number(page) - 1}${this.$route.query.search || this.$route.query.maker || this.$route.query.year || this.$route.query.type || this.$route.query.sort || this.$route.query.has_image ? '?' + this.$route.fullPath.split('?').pop() : ''}`"
+            :to="`/${items_type}/page-${Number(page) - 1}${this.$route.query.search || this.$route.query.maker || this.$route.query.year || this.$route.query.type || this.$route.query.sort || this.$route.query.has_image || this.$route.query.chronology || this.$route.query.location ? '?' + this.$route.fullPath.split('?').pop() : ''}`"
           ><IconArrow />Previous</NuxtLink>
           <button
             v-else
@@ -387,17 +387,19 @@
               :class="[currentPage == index ? 'active' : '']"
               :key="index"
             >
-              <button @click="getPosts(index)">
+              <NuxtLink
+                :to="`/${items_type}/page-${index}${this.$route.query.search || this.$route.query.maker || this.$route.query.year || this.$route.query.type || this.$route.query.sort || this.$route.query.has_image || this.$route.query.chronology || this.$route.query.location ? '?' + this.$route.fullPath.split('?').pop() : ''}`"
+              >
                 <span class="sr-only">Go to Page </span>{{ index }}
                 <IconArrow />
-              </button>
+              </NuxtLink>
             </li>
           </ul>
           <NuxtLink
             v-if="page"
             class="pagination__btn pagination__btn--next"
             :class="[nextPageAvailable == false ? 'pagination__btn--inactive' : '']"
-            :to="`/objects/page-${Number(page) + 1}${this.$route.query.search || this.$route.query.maker || this.$route.query.year || this.$route.query.type || this.$route.query.sort || this.$route.query.has_image ? '?' + this.$route.fullPath.split('?').pop() : ''}`"
+            :to="`/${items_type}/page-${Number(page) + 1}${this.$route.query.search || this.$route.query.maker || this.$route.query.year || this.$route.query.type || this.$route.query.sort || this.$route.query.has_image || this.$route.query.chronology || this.$route.query.location ? '?' + this.$route.fullPath.split('?').pop() : ''}`"
           >Next<IconArrow /></NuxtLink>
           <button
             v-else
@@ -437,9 +439,11 @@ export default {
       activeFilters: [],
       showPast: false,
       showCurrent: false,
+      showFuture: false,
       drawerActive: false,
       reverseOrder: false,
       alphabeticalOrder: false,
+      location: [],
       input: undefined,
       objectsSort: 'asc',
       aggregations: undefined,
@@ -549,14 +553,6 @@ export default {
 
       this.page ? this.getObjects(this.page, this.$route.query.search) : this.getObjects(1);
 
-      // I fixed this. Will remove later when the coast is clear.
-      ///////////////////////////////////////////////////////////
-      // // Sets the Has Image option to true on load.
-      // // Would like to improve this as it essentially requires
-      // // A second API call on load
-      // setTimeout(() => {
-      //   this.toggleFilter(this.filters[0].items[0]);
-      // }, 1000);
     } else if (component.items_type == 'collection') {
       this.getObjects(1);
     // Initial setup for events filter. Would like to make this automated based on WP API Schema
@@ -566,7 +562,33 @@ export default {
       // created hook and not mounted and data within sub component not being ready yet.
       // Will consolidate later and export whole filter.
       this.loadFilters();
-      this.getPosts(1);
+
+      if (component.$route.query.chronology) {
+
+        // Deal with chronology flags. Different sorting order based on chronology
+        if (component.$route.query.chronology == 'past') {
+          component.showPast = true;
+        } else if (component.$route.query.chronology == 'current') {
+          component.showCurrent = true;
+        } else if (component.$route.query.chronology == 'future') {
+          component.showFuture = true;
+        }
+
+        component.filters[1].items.find(item => item.name == component.$route.query.chronology).active = true;
+      }
+
+      if (component.$route.query.location) {
+
+        component.$route.query.location ? component.location = component.checkQueryArray(component.$route.query.location) : component.location = [];
+
+        component.location.forEach((l) => {
+          component.filters[0].items.find(item => item.name == l ).active = true;
+        });
+
+        component.activeFilters.push(...component.location);
+      }
+
+      this.page ? this.getPosts(this.page, component.$route.query.search) : this.getPosts(1);
     
     // If selecting group of posts
     } else if (this.items_type != 'manual') {
@@ -828,28 +850,40 @@ export default {
           let categories;
           let chr;
           let type = '';
+          let meta_date;
 
           categories = output.data.map((c) => c.id);
 
           if ((component.showChronology == 'current' || component.showCurrent) && (component.items_type == 'events' || component.items_type == 'exhibitions')) {
-            chr = '&chronologies=9';
+            chr = '&chronologies=9'; // SHOW ONLY CURRENT
           } else if ((component.showChronology == 'past' || component.showPast) && (component.items_type == 'events' || component.items_type == 'exhibitions')) {
-            chr = '&chronologies=8';
+            chr = '&chronologies=8'; // SHOW ONLY PAST
           } else if ((component.showChronology == 'future' || component.showFuture) && (component.items_type == 'events' || component.items_type == 'exhibitions')) {
-            chr = '&chronologies_exclude=8,9';
+            chr = '&chronologies_exclude=8,9'; // EXCLUDE PAST AND CURRENT
           } else {
-            chr = '&chronologies_exclude=8';
+            chr = '&chronologies_exclude=8'; // EXCLUDE PAST
           }
 
           if (component.showVariant == 'traveling') {
             type = '&variant=14';
           }
 
+          if (component.items_type == 'events' || component.items_type == 'exhibitions') {
+            meta_date = `&?filter[orderby]=meta_value&?filter[meta_key]=date&filter[order]=DESC`;
+          }
+
+          console.log(`${component.interface.endpoint}${component.items_type}?categories_exclude=1${chr}${type}${meta_date}&categories=${component.items_category}${categories.length > 0 ? `,${categories.toString()}` : '' }&per_page=${component.per_page}&page=${page}${searchTerm ? `&search=${searchTerm}` : ''}${component.alphabeticalOrder ? '&orderby=title' : ''}${component.reverseOrder ? '&order=asc' : ''}`);
+
+          // EXAMPLE OF SORTING BY START DATE
+          // console.log(`https://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/wp-json/wp/v2/exhibitions?categories_exclude=1&chronologies=8&categories=5,6&per_page=20&?filter[orderby]=meta_value&?filter[meta_key]=start_date`);
+
           await axios
-            .get(`${component.interface.endpoint}${component.items_type}?categories_exclude=1${chr}${type}&categories=${component.items_category}${categories.length > 0 ? `,${categories.toString()}` : '' }&per_page=${component.per_page}&page=${page}${searchTerm ? `&search=${searchTerm}` : ''}${component.alphabeticalOrder ? '&orderby=title' : ''}${component.reverseOrder ? '&order=asc' : ''}`)
+            .get(`${component.interface.endpoint}${component.items_type}?categories_exclude=1${chr}${type}${meta_date}&categories=${component.items_category}${categories.length > 0 ? `,${categories.toString()}` : '' }&per_page=${component.per_page}&page=${page}${searchTerm ? `&search=${searchTerm}` : ''}${component.alphabeticalOrder ? '&orderby=title' : ''}${component.reverseOrder ? '&order=asc' : ''}`)
             .then((output) => {
 
               component.totalPages = output.headers['x-wp-totalpages'];
+
+              component.currentPage == component.totalPages ? component.nextPageAvailable = false : component.nextPageAvailable = true;
 
               component.newItems = output.data.map((i) => {
                 if (i.acf.location != 'campus' && i.acf.location != 'downtown' && i.acf.location != 'virtual') {
@@ -864,7 +898,11 @@ export default {
 
               if (component.items_type == 'events' || component.items_type == 'exhibitions') {
                 if (component.alphabeticalOrder == false) {
-                  component.newItems.sort((a,b) => a.event_date.getTime() - b.event_date.getTime());
+                  if (component.showChronology == 'past') {
+                    component.newItems.sort((a,b) => b.event_date.getTime() - a.event_date.getTime());
+                  } else {
+                    component.newItems.sort((a,b) => a.event_date.getTime() - b.event_date.getTime());
+                  }
                 }
               }
             });
@@ -989,6 +1027,13 @@ export default {
         // }
       }
 
+      if (this.items_type == 'exhibitions' || this.items_type == 'events') {
+        this.location = [];
+        this.showPast = false;
+        this.showCurrent = false;
+        this.showFuture = false;
+      }
+
       this.loadFilters();
 
       this.$refs.searchInput.$data.input = '';
@@ -997,43 +1042,64 @@ export default {
 
       this.triggerNavigateTo();
     },
-    toggleFilter(term) {
+    toggleFilter(term, filter) {
       term.active = !term.active;
-
-      console.log(term.name);
 
       if (term.active == true) {
         this.activeFilters.push(term.name);
+
+        if (filter == 'location') {
+          this.location.push(term.name);
+        }
       } else {
         const index = this.activeFilters.indexOf(term.name);
+        const location_index = this.location.indexOf(term.name);
 
         this.activeFilters.splice(index, 1);
+
+        if (filter == 'location') {
+          this.location.splice(location_index, 1);
+        }
       }
 
       if (this.items_type == 'objects') {
 
         this.triggerNavigateTo();
         this.getObjects(1, this.$refs.searchInput.input ? this.$refs.searchInput.input : undefined);
+      } else {
+        this.triggerNavigateTo();
+        this.getPosts(1, this.$refs.searchInput.input ? this.$refs.searchInput.input : undefined);
       }
 
       console.log(this.activeFilters);
-    },
-    togglePast(term) {
-      term.active = !term.active;
-      this.showPast = !this.showPast;
-
-      this.getPosts(1);
     },
     toggleChronology(term) {
       term.active = !term.active;
 
       if (term.name == 'past') {
         this.showPast = !this.showPast;
+        this.showCurrent = false;
+        this.showFuture = false;
+        this.filters[1].items.find(item => item.name == 'current').active = false;
+        this.filters[1].items.find(item => item.name == 'future').active = false;
       } else if (term.name == 'current') {
         this.showCurrent = !this.showCurrent;
+        this.showPast = false;
+        this.showFuture = false;
+        this.filters[1].items.find(item => item.name == 'past').active = false;
+        this.filters[1].items.find(item => item.name == 'future').active = false;
+      } else if (term.name == 'future') {
+        this.showFuture = !this.showFuture;
+        this.showCurrent = false;
+        this.showPast = false;
+        this.filters[1].items.find(item => item.name == 'past').active = false;
+        this.filters[1].items.find(item => item.name == 'current').active = false;
       }
 
-      this.getPosts(1);
+      console.log(this.filters);
+
+      this.triggerNavigateTo();
+      this.getPosts(1, this.input);
     },
     toggleOrder(term) {
       term.active = !term.active;
@@ -1091,6 +1157,8 @@ export default {
       } else if (this.items_type == 'objects') {
         this.getObjects(1, input);
       } else {
+        this.triggerNavigateTo();
+
         this.getPosts(1, input);
       }
     },
@@ -1136,40 +1204,7 @@ export default {
 
       component.triggerNavigateTo();
 
-      console.log(this.$route.fullPath.split('?').pop());
-
-      this.getObjects(1, this.input);
-    },
-    aggregationRemove(key) { // PROBABLY CAN DELETE
-      const component = this;
-
-      const select = this.$refs.aggregationSelectOption.find(a => {
-        return a[0].innerHTML == key;
-      });
-
-      select.selectedIndex = 0;
-
-      if (key == 'maker') {
-        this.aggregationMakerList = [];
-      }
-
-      if (key == 'medium') {
-        this.aggregationMedium = '';
-      }
-
-      if (key == 'support') {
-        this.aggregationSupport = '';
-      }
-
-      if (key == 'year') {
-        this.aggregationYear = '';
-      }
-
-      if (key == 'type') {
-        this.aggregationType = '';
-      }
-
-      this.triggerNavigateTo();
+      // console.log(this.$route.fullPath.split('?').pop());
 
       this.getObjects(1, this.input);
     },
@@ -1181,18 +1216,41 @@ export default {
     },
     triggerNavigateTo() {
       const component = this;
+      let chrono;
 
-      navigateTo({
-        path: `/objects/page-1`,
-        query: {
-          search: component.input,
-          maker: component.aggregationMakerList,
-          year: component.aggregationYearList,
-          type: component.aggregationTypeList,
-          sort: component.objectsSort,
-          has_image: component.activeFilters.includes('Has Image') ? true : false,
-        }
-      });
+      if (this.showPast == true) {
+        chrono = 'past';
+      } else if (this.showCurrent == true) {
+        chrono = 'current';
+      } else if (this.showFuture == true) {
+        chrono = 'future';
+      } else {
+        chrono = '';
+      }
+
+      // These are seperate due to differences in Elasticsearch REST API and Wordpress REST API options
+      if (component.items_type == 'objects') {
+        navigateTo({
+          path: `/objects/page-1`,
+          query: {
+            search: component.input,
+            maker: component.aggregationMakerList,
+            year: component.aggregationYearList,
+            type: component.aggregationTypeList,
+            sort: component.objectsSort,
+            has_image: component.activeFilters.includes('Has Image') ? true : false,
+          }
+        });
+      } else {
+        navigateTo({
+          path: `/${component.items_type}/page-1`,
+          query: {
+            search: component.input,
+            chronology: chrono,
+            location: component.location,
+          }
+        });
+      }
     },
     animate() {
       setTimeout(() => {

@@ -208,7 +208,7 @@ export default {
     },
     async updateImage() {
       if (this.post) {
-        console.log(this.post);
+        // console.log(this.post);
         this.stagedImage = this.post.featured_media ? await this.getImage(this.post.featured_media) : undefined;
       }
     },
