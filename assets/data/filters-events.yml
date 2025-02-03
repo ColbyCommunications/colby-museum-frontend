@@ -8,9 +8,9 @@
 -
   name: time
   items:
-    # - 'future'
     - 'current'
     - 'past'
+    - 'future'
 # -
 #   name: source
 #   items:
