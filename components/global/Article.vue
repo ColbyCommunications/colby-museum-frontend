@@ -37,6 +37,7 @@
       :heading="post.title.rendered"
       :image="stagedImage"
       :button="{
+        srOnly: true,
         type: button_type,
         title: 'Collection Details',
         url: post.link
