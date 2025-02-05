@@ -176,7 +176,7 @@
             :subheading="formatDate(item.post.acf.date, 'events') + (item.post.acf.end_date && item.post.acf.date != item.post.acf.end_date ? ` - ${formatDate(item.post.acf.end_date, 'events')}` : '' )"
             :paragraph="item.post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
             :button="{
-              title: 'Event Details',
+              title: item.post.type == 'events' ? 'Event Details' : 'Exhibition Details',
               url: item.post.link
             }"
           />
