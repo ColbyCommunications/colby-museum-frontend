@@ -4,7 +4,7 @@
     :class="[`article-grid--${variant} article-grid--${columns}-columns`, items_type == 'posts' ? 'article-grid--posts' : '']"
   >
     <MediaContext
-      v-if="items_type == 'posts' && newItems.length > 0"
+      v-if="items_type == 'posts' && page == 1 && newItems.length > 0"
       :class="[currentPage != 1 ? 'media-context--inactive' : '']"
       :variant="'default'"
       :items="1"
@@ -388,13 +388,25 @@
               :key="index"
             >
               <NuxtLink
-                :to="`/${items_type}/page-${index}${this.$route.query.search || this.$route.query.maker || this.$route.query.year || this.$route.query.type || this.$route.query.sort || this.$route.query.has_image || this.$route.query.chronology || this.$route.query.location ? '?' + this.$route.fullPath.split('?').pop() : ''}`"
+                :to="`/${items_type == 'posts' ? 'news' : items_type}/page-${index}${this.$route.query.search || this.$route.query.maker || this.$route.query.year || this.$route.query.type || this.$route.query.sort || this.$route.query.has_image || this.$route.query.chronology || this.$route.query.location ? '?' + this.$route.fullPath.split('?').pop() : ''}`"
               >
                 <span class="sr-only">Go to Page </span>{{ index }}
                 <IconArrow />
               </NuxtLink>
             </li>
           </ul>
+          <!-- <ul v-else>
+            <li
+              v-for="index in Number(totalPages)"
+              :class="[currentPage == index ? 'active' : '']"
+              :key="index"
+            >
+              <button @click="getPosts(index)">
+                <span class="sr-only">Go to Page </span>{{ index }}
+                <IconArrow />
+              </button>
+            </li>
+          </ul> -->
           <NuxtLink
             v-if="page"
             class="pagination__btn pagination__btn--next"
@@ -536,6 +548,8 @@ export default {
     this.interface = useInterfaceStore();
     const component = this;
 
+    console.log(component.page);
+
     if (component.items_type == 'objects') {
       component.$route.query.has_image != 'false' ? component.activeFilters = ['Has Image'] : component.activeFilters = [];
 
@@ -593,7 +607,7 @@ export default {
     // If selecting group of posts
     } else if (this.items_type != 'manual') {
 
-      this.getPosts(1);
+      this.page ? this.getPosts(this.page) : this.getPosts(1);
 
     // If selecting items individually
     } else if (typeof this.items === 'number') {
@@ -875,10 +889,10 @@ export default {
           console.log(`${component.interface.endpoint}${component.items_type}?categories_exclude=1${chr}${type}${meta_date}&categories=${component.items_category}${categories.length > 0 ? `,${categories.toString()}` : '' }&per_page=${component.per_page}&page=${page}${searchTerm ? `&search=${searchTerm}` : ''}${component.alphabeticalOrder ? '&orderby=title' : ''}${component.reverseOrder ? '&order=asc' : ''}`);
 
           // EXAMPLE OF SORTING BY START DATE
-          // console.log(`https://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/wp-json/wp/v2/exhibitions?categories_exclude=1&chronologies=8&categories=5,6&per_page=20&?filter[orderby]=meta_value&?filter[meta_key]=start_date`);
+          console.log(`${component.interface.endpoint}${component.items_type == 'posts' ? 'posts' : component.items_type}?categories_exclude=1${chr}${type}${meta_date}&categories=${component.items_category}${categories.length > 0 ? `,${categories.toString()}` : '' }&per_page=${component.per_page}&page=${page}${searchTerm ? `&search=${searchTerm}` : ''}${component.alphabeticalOrder ? '&orderby=title' : ''}${component.reverseOrder ? '&order=asc' : ''}`);
 
           await axios
-            .get(`${component.interface.endpoint}${component.items_type}?categories_exclude=1${chr}${type}${meta_date}&categories=${component.items_category}${categories.length > 0 ? `,${categories.toString()}` : '' }&per_page=${component.per_page}&page=${page}${searchTerm ? `&search=${searchTerm}` : ''}${component.alphabeticalOrder ? '&orderby=title' : ''}${component.reverseOrder ? '&order=asc' : ''}`)
+            .get(`${component.interface.endpoint}${component.items_type == 'posts' ? 'posts' : component.items_type}?categories_exclude=1${chr}${type}${meta_date}&categories=${component.items_category}${categories.length > 0 ? `,${categories.toString()}` : '' }&per_page=${component.per_page}&page=${page}${searchTerm ? `&search=${searchTerm}` : ''}${component.alphabeticalOrder ? '&orderby=title' : ''}${component.reverseOrder ? '&order=asc' : ''}`)
             .then((output) => {
 
               component.totalPages = output.headers['x-wp-totalpages'];
