@@ -85,10 +85,10 @@ export default {
     const page = this;
 
     // console.log(encodeURIComponent(this.$route.params.slug[0]));
-    console.log(`https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/stage/_source/https:%2F%2Fmuseum-data.colby.edu%2Fcollection%2Fembark%2FObjects-1%2Finfo%2F${encodeURIComponent(this.$route.params.slug[0])}`);
+    console.log(`https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/stage/_source/object%2F${encodeURIComponent(this.$route.params.slug[0])}`);
 
     await axios
-      .get(`https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/stage/_source/https:%2F%2Fmuseum-data.colby.edu%2Fcollection%2Fembark%2FObjects-1%2Finfo%2F${encodeURIComponent(this.$route.params.slug[0])}`, {
+      .get(`https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/stage/_source/object%2F${encodeURIComponent(this.$route.params.slug[0])}`, {
         auth: {
           username: 'Fr2fpegcBZ',
           password: 'Vi7vGnL3h2rtW5SuECoKRwTf'
