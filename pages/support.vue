@@ -19,7 +19,6 @@
       :moduleData="item"
     />
     <div id="bbox-root"></div>
-    <!-- <DonateForm /> -->
   </div>
 </template>
 
@@ -112,10 +111,13 @@ export default {
         bbox.showForm('5274e7f7-f60f-4a50-ad90-e33d15a9744d');
     };
     (function () {
-        var e = document.createElement('script'); e.async = true;
+        var e = document.createElement('script'); e.async = true; e.id = 'donateformscript';
         e.src = 'https://bbox.blackbaudhosting.com/webforms/bbox-min.js';
         document.getElementsByTagName('head')[0].appendChild(e);
     } ());
+  },
+  unmounted() {
+    document.getElementsByTagName('head').removeChild(document.getElementById('donateformscript'));
   },
   methods: {
     async getBreadcrumbs(post) {
