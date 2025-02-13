@@ -133,7 +133,7 @@ export default {
 
         page.items = [
           {
-            heading: 'Classification',
+            heading: 'Object Type',
             paragraph: post.Disp_Obj_Type,
           },
           {
@@ -145,7 +145,7 @@ export default {
             paragraph: post.Disp_Dimen,
           },
           {
-            heading: 'Provenance',
+            heading: 'Credit Line',
             paragraph: post.Dedication,
           },
           {
