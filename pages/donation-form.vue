@@ -1,4 +1,3 @@
-
 <template>
   <div class="page page--default">
     <Breadcrumbs
@@ -10,13 +9,8 @@
       }"
     />
     <IntroContext
-      :heading="title"
+      :heading="'Donation Form'"
       :headingElement="'h1'"
-      :subheading="excerpt"
-    />
-    <BaseModule
-      v-for="(item, index) in components"
-      :moduleData="item"
     />
     <DonateForm />
   </div>
@@ -31,10 +25,10 @@ import seoConfig from '../helpers/seoConfig';
 export default {
   setup(props) {
     useSeoMeta({
-      ogTitle: () => 'Support | Colby College Museum of Art · Colby College',
-      title: () => 'Support | Colby College Museum of Art · Colby College',
-      ogDescription: () => 'Support the Colby College Museum of Art.',
-      description: () => 'Support the Colby College Museum of Art.',
+      ogTitle: () => 'Donation Form | Colby College Museum of Art · Colby College',
+      title: () => 'Donation Form | Colby College Museum of Art · Colby College',
+      ogDescription: () => 'Contact Colby College Museum of Art for any inquiry.',
+      description: () => 'Contact Colby College Museum of Art for any inquiry.',
     });
 
     definePageMeta({
@@ -55,7 +49,7 @@ export default {
       required: false,
     },
   },
-  async created() {
+  async mounted() {
     const page = this;
     const slug = this.$route.params.slug;
     let pageName;
@@ -63,7 +57,6 @@ export default {
     this.fullPath = this.$route.fullPath;
 
     console.log(this.$route);
-    // console.log(this.$route.params);
     // console.log(this.$route.params.slug);
     // console.log(`${this.interface.endpoint}pages?slug=${this.$route.params.slug ? this.$route.params.slug : 'home'}`);
     // console.log(slug[slug.length - 1]);
@@ -73,14 +66,14 @@ export default {
     } else if (slug) {
       pageName = slug;
     } else {
-      pageName = 'Support';
+      pageName = 'home';
     }
 
     await axios
-      .get(`${this.interface.endpoint}pages?slug=support`)
+      .get(`${this.interface.endpoint}pages?slug=${pageName}`)
       .then((output) => {
         const post = output.data[0];
-        // console.log(post);
+        console.log(post);
 
         page.title = post.title.rendered
           .replace(/–/g, '-')
