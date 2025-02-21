@@ -143,7 +143,7 @@ export default {
     }
 
     @include breakpoint(medium) {
-      width: 10.139vw;
+      width: 9vw;
     }
   }
 

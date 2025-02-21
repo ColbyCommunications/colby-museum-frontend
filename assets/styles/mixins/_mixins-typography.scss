@@ -7,7 +7,8 @@
   letter-spacing: rem-calc(-0.64px);
 
   @include breakpoint(large) {
-    font-size: 3.472vw; // 50px / 1440px
+    // font-size: 3.472vw; // 50px / 1440px
+    font-size: 3.125vw;
     letter-spacing: -0.069vw;
   }
 }
@@ -21,7 +22,8 @@
   letter-spacing: -0.056vw; // .8 / 1440
 
   @include breakpoint(large) {
-    font-size: 2.778vw; // 40px / 1440px
+    // font-size: 2.778vw; // 40px / 1440px
+    font-size: 2.5vw;
   }
 }
 
@@ -34,7 +36,8 @@
   letter-spacing: rem-calc(-0.5px);
 
   @include breakpoint(large) {
-    font-size: 1.944vw; // 28px / 1440px
+    // font-size: 1.944vw; // 28px / 1440px
+    font-size: 1.75vw;
     letter-spacing: -0.039vw;
   }
 }
@@ -47,7 +50,8 @@
   line-height: 105%;
 
   @include breakpoint(large) {
-    font-size: 3.611vw; // 52px / 1440px
+    // font-size: 3.611vw; // 52px / 1440px
+    font-size: 3.25vw;
     font-weight: 300;
     letter-spacing: -0.069vw;
   }
@@ -62,7 +66,8 @@
   letter-spacing: -0.056vw;
 
   @include breakpoint(large) {
-    font-size: 2.778vw; // 40px / 1440px
+    // font-size: 2.778vw; // 40px / 1440px
+    font-size: 2.5vw;
   }
 }
 
@@ -97,7 +102,8 @@
   letter-spacing: -0.48px;
 
   @include breakpoint(large) {
-    font-size: 2.222vw; // 32px / 1440px
+    // font-size: 2.222vw; // 32px / 1440px
+    font-size: 2vw;
     letter-spacing: -0.044vw;
   }
 }
@@ -111,7 +117,8 @@
   letter-spacing: rem-calc(-0.4px);
 
   @include breakpoint(large) {
-    font-size: 1.667vw; // 24px / 1440px
+    // font-size: 1.667vw; // 24px / 1440px
+    font-size: 1.5vw;
     letter-spacing: -0.033vw;
   }
 }
@@ -125,7 +132,8 @@
   letter-spacing: rem-calc(0.14px);
 
   @include breakpoint(large) {
-    font-size: 1.389vw; // 20px / 1440px
+    // font-size: 1.389vw; // 20px / 1440px
+    font-size: 1.25vw;
     letter-spacing: -0.028vw;
   }
 }

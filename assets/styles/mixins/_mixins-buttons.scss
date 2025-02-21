@@ -14,8 +14,8 @@
   border-radius: 100px;
 
   @include breakpoint(large) {
-    padding: 1.3vh 1.389vw;
-    font-size: 1.389vw; // 20px / 1440px
+    padding: 1.17vh 1.25vw;
+    font-size: 1.25vw; // 20px / 1440px
     border: 0.278vw solid;
   }
 

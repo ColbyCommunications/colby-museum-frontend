@@ -543,6 +543,7 @@ export default {
       position: relative;
 
       @include breakpoint(large) {
+        font-size: 1.944vw; // 28px / 1440px
         padding: 1.476vh 0 1.876vh;
         margin-bottom: -0.4vh;
       }

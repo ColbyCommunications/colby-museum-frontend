@@ -129,7 +129,7 @@ export default {
 
   @include breakpoint(large) {
     margin-top: 12.300vh;
-    padding-bottom: 9.84vh;
+    padding-bottom: 9vh;
   }
 
   &__inner + &__inner {
@@ -140,17 +140,17 @@ export default {
     }
 
     @include breakpoint(large) {
-      margin-top: 9.840vh;
+      margin-top: 9vh;
     }
   }
 
   &__faux-col {
     grid-column: span 12 / span 12;
-    padding-top: 80px;
+    padding-top: 60px;
     @extend .border-global--top;
 
     @include breakpoint(large) {
-      padding-top: 9.840vh;
+      padding-top: 9vh;
     }
 
     &::before {

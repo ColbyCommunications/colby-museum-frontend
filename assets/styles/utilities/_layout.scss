@@ -38,10 +38,10 @@ img {
 
 div:not(.article-grid) + .intro-context,
 nav + .intro-context {
-  margin-top: 80px;
+  margin-top: 60px;
 
   @include breakpoint(large) {
-    margin-top: 14.76vh;
+    margin-top: 13.284vh;
   }
 }
 
