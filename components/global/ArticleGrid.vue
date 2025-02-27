@@ -616,11 +616,14 @@ export default {
         post: component.blockData[`items_${i}_entry_type`] == 'selection' ? await component.getPost(component.blockData[`items_${i}_post_selection`]) : undefined,
         heading: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : component.blockData[`items_${i}_heading`],
         subheading: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : component.blockData[`items_${i}_subheading`],
+        paragraph_entry_type: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : component.blockData[`items_${i}_paragraph_entry_type`],
         paragraph: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : component.blockData[`items_${i}_paragraph`],
         button: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : component.blockData[`items_${i}_button`],
         image: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : await component.getImage(component.blockData[`items_${i}_image`]),
       }))).then((output) => {
         component.newItems = output; 
+
+        console.log(output);
       })
     }
   },
@@ -945,10 +948,14 @@ export default {
           .then((output) => {
             imageObj = output.data;
 
+            // console.log(imageObj);
+
+            // Below, the image object is pulling DESCRIPTION field from
+            // the Media Library instead of CAPTION for formatting purposes
             newImageObj = {
               alt_text: imageObj.alt_text,
               caption: {
-                rendered: imageObj.caption.rendered,
+                rendered: imageObj.description.rendered.replace(/<\/?[^>]+(>|$)/g, "").replace(/\r?\n|\r/g, ""),
               },
               media_details: {
                 sizes: {
@@ -961,6 +968,8 @@ export default {
                 }
               }
             };
+
+            console.log(newImageObj);
           });
 
         return await newImageObj;

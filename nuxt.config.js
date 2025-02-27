@@ -9,9 +9,11 @@ export default defineNuxtConfig({
       },
     },
   },
+
   build: {
     transpile: ['gsap', '@glidejs/glide', '@gsap/shockingly']
   },
+
   modules: [
     '@pinia/nuxt',
     ['@nuxtjs/google-fonts', {
@@ -20,6 +22,7 @@ export default defineNuxtConfig({
       }
     }]
   ],
+
   vite: {
     optimizeDeps: {
       exclude: [
@@ -37,8 +40,11 @@ export default defineNuxtConfig({
       ViteYaml()
     ],
   },
+
   experimental: {
     asyncContext: true
   },
-  devtools: { enabled: true }
+
+  devtools: { enabled: true },
+  compatibilityDate: '2025-02-27'
 })

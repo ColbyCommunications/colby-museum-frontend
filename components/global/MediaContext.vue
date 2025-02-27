@@ -630,7 +630,7 @@ export default {
 
 <style lang="scss">
 @use "sass:map";
-@import "node_modules/@glidejs/glide/src/assets/sass/glide.core";
+// @import "node_modules/@glidejs/glide/src/assets/sass/glide.core";
 
 .media-context {
   &--inactive {

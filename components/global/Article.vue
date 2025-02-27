@@ -63,7 +63,7 @@
       :heading="heading"
       :subheading="subheading"
       :image="image"
-      :paragraph="paragraph"
+      :paragraph="paragraph_entry_type != 'manual' && image ? image.caption.rendered : paragraph"
       :button="stagedButton"
     />
   </article>
@@ -102,6 +102,8 @@ export default {
   },
   async mounted() {
     this.updateImage();
+
+    console.log(this.image);
   },
   props: {
     post: {
@@ -132,6 +134,10 @@ export default {
     },
     image: {
       type: Object,
+      required: false,
+    },
+    paragraph_entry_type: {
+      type: String,
       required: false,
     },
     paragraph: {
