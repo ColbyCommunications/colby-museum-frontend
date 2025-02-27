@@ -63,7 +63,7 @@
       :heading="heading"
       :subheading="subheading"
       :image="image"
-      :paragraph="paragraph_entry_type != 'manual' && image ? image.caption.rendered : paragraph"
+      :paragraph="paragraph_entry_type == 'description' && image ? image.caption.rendered : paragraph"
       :button="stagedButton"
     />
   </article>
