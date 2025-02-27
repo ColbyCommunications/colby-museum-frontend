@@ -955,7 +955,7 @@ export default {
             newImageObj = {
               alt_text: imageObj.alt_text,
               caption: {
-                rendered: imageObj.description.rendered.replace(/<\/?[^>]+(>|$)/g, "").replace(/\r?\n|\r/g, ""),
+                rendered: imageObj.description.rendered.replace(/<img[^>]*>/g,"").replace(/<p[^>]*>|<\/p>/g, '').replace(/\r?\n|\r/g, "").replace(/<a[^>]*>|<\/a>/g, ''),
               },
               media_details: {
                 sizes: {
