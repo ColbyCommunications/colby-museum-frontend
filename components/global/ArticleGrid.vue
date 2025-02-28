@@ -367,7 +367,7 @@
             v-if="page"
             class="pagination__btn pagination__btn--prev"
             :class="[currentPage == 1 ? 'pagination__btn--inactive' : '']"
-            :to="`/${items_type}/page-${Number(page) - 1}${this.$route.query.search || this.$route.query.maker || this.$route.query.year || this.$route.query.type || this.$route.query.sort || this.$route.query.has_image || this.$route.query.chronology || this.$route.query.location ? '?' + this.$route.fullPath.split('?').pop() : ''}`"
+            :to="`/${items_type}/page-${Number(page) - 1}${this.$route.query.search || this.$route.query.maker || this.$route.query.year || this.$route.query.type || this.$route.query.sort || this.$route.query.has_image || this.$route.query.chronology || this.$route.query.location || this.$route.query.variant ? '?' + this.$route.fullPath.split('?').pop() : ''}`"
           ><IconArrow />Previous</NuxtLink>
           <button
             v-else
@@ -388,7 +388,7 @@
               :key="index"
             >
               <NuxtLink
-                :to="`/${items_type == 'posts' ? 'news' : items_type}/page-${index}${this.$route.query.search || this.$route.query.maker || this.$route.query.year || this.$route.query.type || this.$route.query.sort || this.$route.query.has_image || this.$route.query.chronology || this.$route.query.location ? '?' + this.$route.fullPath.split('?').pop() : ''}`"
+                :to="`/${items_type == 'posts' ? 'news' : items_type}/page-${index}${this.$route.query.search || this.$route.query.maker || this.$route.query.year || this.$route.query.type || this.$route.query.sort || this.$route.query.has_image || this.$route.query.chronology || this.$route.query.location || this.$route.query.variant ? '?' + this.$route.fullPath.split('?').pop() : ''}`"
               >
                 <span class="sr-only">Go to Page </span>{{ index }}
                 <IconArrow />
@@ -881,7 +881,7 @@ export default {
             chr = '&chronologies_exclude=8'; // EXCLUDE PAST
           }
 
-          if (component.showVariant == 'traveling') {
+          if (component.$route.query.variant == 'traveling') {
             type = '&variant=14';
           }
 
@@ -1271,6 +1271,7 @@ export default {
             search: component.input,
             chronology: chrono,
             location: component.location,
+            variant: component.$route.query.variant
           }
         });
       }
