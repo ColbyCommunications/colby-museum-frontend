@@ -55,7 +55,41 @@
               <li>
                 <div
                   class="checkbox checkbox--small"
-                  :class="[objectsSort == 'asc' ? 'checkbox--active' : '']"
+                  :class="[objectsSort == 'desc' && objectsSortBy == 'accession' ? 'checkbox--active' : '']"
+                >
+                  <div class="checkbox__main">
+                    <input
+                      type="radio" :name="`filter_alphabetical`" :value="`Accession Number Descending`"
+                      @click="toggleAlphabetical(`Accession Number Descending`)"
+                    >
+                  </div>
+                  <label
+                    v-text="`Accession Number Descending`"
+                    @click="toggleAlphabetical(`Accession Number Descending`)"
+                  />
+                </div>
+              </li>
+              <li>
+                <div
+                  class="checkbox checkbox--small"
+                  :class="[objectsSort == 'asc' && objectsSortBy == 'accession' ? 'checkbox--active' : '']"
+                >
+                  <div class="checkbox__main">
+                    <input
+                      type="radio" :name="`filter_alphabetical`" :value="`Accession Number Ascending`"
+                      @click="toggleAlphabetical(`Accession Number Ascending`)"
+                    >
+                  </div>
+                  <label
+                    v-text="`Accession Number Ascending`"
+                    @click="toggleAlphabetical(`Accession Number Ascending`)"
+                  />
+                </div>
+              </li>
+              <li>
+                <div
+                  class="checkbox checkbox--small"
+                  :class="[objectsSort == 'asc' && objectsSortBy == 'title' ? 'checkbox--active' : '']"
                 >
                   <div class="checkbox__main">
                     <input
@@ -72,7 +106,7 @@
               <li>
                 <div
                   class="checkbox checkbox--small"
-                  :class="[objectsSort == 'desc' ? 'checkbox--active' : '']"
+                  :class="[objectsSort == 'desc' && objectsSortBy == 'title' ? 'checkbox--active' : '']"
                 >
                   <div class="checkbox__main">
                     <input
@@ -367,7 +401,7 @@
             v-if="page"
             class="pagination__btn pagination__btn--prev"
             :class="[currentPage == 1 ? 'pagination__btn--inactive' : '']"
-            :to="`/${items_type}/page-${Number(page) - 1}${this.$route.query.search || this.$route.query.maker || this.$route.query.year || this.$route.query.type || this.$route.query.sort || this.$route.query.has_image || this.$route.query.chronology || this.$route.query.location || this.$route.query.variant ? '?' + this.$route.fullPath.split('?').pop() : ''}`"
+            :to="`/${items_type}/page-${Number(page) - 1}${this.$route.query.search || this.$route.query.maker || this.$route.query.year || this.$route.query.type || this.$route.query.sort || this.$route.query.sortby || this.$route.query.has_image || this.$route.query.chronology || this.$route.query.location || this.$route.query.variant ? '?' + this.$route.fullPath.split('?').pop() : ''}`"
           ><IconArrow />Previous</NuxtLink>
           <button
             v-else
@@ -379,7 +413,7 @@
           <div
             v-if="items_type == 'objects'"
             class="pagination__label"
-            v-text="`Page ${currentPage} | Objects ${(per_page * (currentPage - 1)) + 1} — ${per_page * (currentPage)}`"
+            v-text="`Page ${currentPage} | Objects ${(per_page * (currentPage - 1)) + 1} — ${per_page * (currentPage)} | ${totalObjects} Total Objects`"
           />
           <ul v-else>
             <li
@@ -388,7 +422,7 @@
               :key="index"
             >
               <NuxtLink
-                :to="`/${items_type == 'posts' ? 'news' : items_type}/page-${index}${this.$route.query.search || this.$route.query.maker || this.$route.query.year || this.$route.query.type || this.$route.query.sort || this.$route.query.has_image || this.$route.query.chronology || this.$route.query.location || this.$route.query.variant ? '?' + this.$route.fullPath.split('?').pop() : ''}`"
+                :to="`/${items_type == 'posts' ? 'news' : items_type}/page-${index}${this.$route.query.search || this.$route.query.maker || this.$route.query.year || this.$route.query.type || this.$route.query.sort || this.$route.query.sortby || this.$route.query.has_image || this.$route.query.chronology || this.$route.query.location || this.$route.query.variant ? '?' + this.$route.fullPath.split('?').pop() : ''}`"
               >
                 <span class="sr-only">Go to Page </span>{{ index }}
                 <IconArrow />
@@ -411,7 +445,7 @@
             v-if="page"
             class="pagination__btn pagination__btn--next"
             :class="[nextPageAvailable == false ? 'pagination__btn--inactive' : '']"
-            :to="`/${items_type}/page-${Number(page) + 1}${this.$route.query.search || this.$route.query.maker || this.$route.query.year || this.$route.query.type || this.$route.query.sort || this.$route.query.has_image || this.$route.query.chronology || this.$route.query.location ? '?' + this.$route.fullPath.split('?').pop() : ''}`"
+            :to="`/${items_type}/page-${Number(page) + 1}${this.$route.query.search || this.$route.query.maker || this.$route.query.year || this.$route.query.type || this.$route.query.sort || this.$route.query.sortby || this.$route.query.has_image || this.$route.query.chronology || this.$route.query.location ? '?' + this.$route.fullPath.split('?').pop() : ''}`"
           >Next<IconArrow /></NuxtLink>
           <button
             v-else
@@ -443,6 +477,7 @@ export default {
       interface: undefined,
       newItems: [],
       totalPages: undefined,
+      totalObjects: undefined,
       currentPage: undefined,
       pages: undefined,
       nextPageAvailable: undefined,
@@ -457,7 +492,8 @@ export default {
       alphabeticalOrder: false,
       location: [],
       input: undefined,
-      objectsSort: 'asc',
+      objectsSort: 'desc',
+      objectsSortBy: 'accession',
       aggregations: undefined,
       aggregationMakerList: [],
       aggregationMediumList: [],
@@ -559,10 +595,16 @@ export default {
       component.$route.query.year ? component.aggregationYearList = component.checkQueryArray(component.$route.query.year) : component.aggregationYearList = [];
       component.$route.query.type ? component.aggregationTypeList = component.checkQueryArray(component.$route.query.type) : component.aggregationTypeList = [];
       
-      if (component.$route.query.sort == 'asc' || component.$route.query.sort == null) {
-        component.objectsSort = 'asc';
+      if (component.$route.query.sort == 'desc' || component.$route.query.sort == null) {
+        component.objectsSort = 'desc';
       } else {
         component.objectsSort = component.$route.query.sort;
+      }
+
+      if (component.$route.query.sortby == 'accession' || component.$route.query.sort == null) {
+        component.objectsSortBy = 'accession';
+      } else {
+        component.objectsSortBy = component.$route.query.sortby;
       }
 
       this.page ? this.getObjects(this.page, this.$route.query.search) : this.getObjects(1);
@@ -701,8 +743,10 @@ export default {
         filterSort.push({'Disp_Maker_1' : 'asc'});
       } else if (component.objectsSort == 'year') {
         filterSort.push({'Disp_Create_DT' : 'desc'});
+      } else if (component.objectsSortBy == 'title') {
+        filterSort.push({"Disp_Title": component.objectsSort});
       } else {
-        filterSort.push({"Disp_Access_No": "asc"});
+        filterSort.push({"Disp_Access_No": component.objectsSort});
       }
 
       // filterTerms.push({"accession_num_year": "asc"});
@@ -734,7 +778,9 @@ export default {
         })
         .then((output) => {
           console.log(output);
+          console.log(output.data.hits.total.value);
 
+          component.totalObjects = output.data.hits.total.value;
           component.totalPages = Math.floor(output.headers['content-length'] / component.per_page);
 
           if (output.data.hits.hits.length < component.per_page + 1) {
@@ -881,7 +927,7 @@ export default {
           } else if ((component.showChronology == 'future' || component.showFuture) && (component.items_type == 'events' || component.items_type == 'exhibitions')) {
             chr = '&chronologies_exclude=8,9'; // EXCLUDE PAST AND CURRENT
           } else {
-            chr = '&chronologies_exclude=8'; // EXCLUDE PAST
+            chr = '&chronologies_exclude=8'; // EXCLUDE PAST AS LONG AS WE ARENT IN TRAVELING EXHIBITIONS
           }
 
           if (component.$route.query.variant == 'traveling') {
@@ -1138,9 +1184,17 @@ export default {
       
 
       if (this.items_type == 'objects') {
-        if (term == `Alphabetical from  'A'`) {
+        if (term == `Accession Number Descending`) {
+          this.objectsSortBy = 'accession';
+          this.objectsSort = 'desc';
+        } else if (term == `Accession Number Ascending`) {
+          this.objectsSortBy = 'accession';
+          this.objectsSort = 'asc';
+        } else if (term == `Alphabetical from  'A'`) {
+          this.objectsSortBy = 'title';
           this.objectsSort = 'asc';
         } else if (term == `Alphabetical from  'Z'`) {
+          this.objectsSortBy = 'title';
           this.objectsSort = 'desc';
         } else if (term == `By Artist Name`) {
           this.objectsSort = 'name';
@@ -1264,6 +1318,7 @@ export default {
             year: component.aggregationYearList,
             type: component.aggregationTypeList,
             sort: component.objectsSort,
+            sortby: component.objectsSortBy,
             has_image: component.activeFilters.includes('Has Image') ? true : false,
           }
         });
