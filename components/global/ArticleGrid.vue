@@ -702,7 +702,7 @@ export default {
       } else if (component.objectsSort == 'year') {
         filterSort.push({'Disp_Create_DT' : 'desc'});
       } else {
-        filterSort.push({"Disp_Access_No": "asc"});
+        filterSort.push({"accession_num_year": "asc"});
       }
 
       // filterTerms.push({"accession_num_year": "asc"});
