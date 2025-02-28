@@ -7,12 +7,16 @@
     />
     <ArticleGrid
       :bordered="true"
-      :columns="'2'"
+      :columns="'3'"
       :items="[
         {
           heading: 'Location',
           paragraph: location ? location.charAt(0).toUpperCase()
   + location.slice(1) : '',
+        },
+        {
+          heading: 'Address',
+          paragraph: address ? address : ''
         },
         {
           heading: 'Date',
@@ -46,6 +50,7 @@ export default {
       title: undefined,
       excerpt: undefined,
       location: undefined,
+      address: undefined,
       date: undefined,
       end_date: undefined,
       start_time: undefined,
@@ -77,6 +82,7 @@ export default {
         
         page.excerpt = post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '');
         page.location = post.acf.location;
+        page.address = post.acf.address;
         page.date = new Date(`${post.acf.date.substr(0,4)}-${post.acf.date.substr(4,2)}-${post.acf.date.substr(6,2)}T00:00:00`).toLocaleDateString('en-US', {
           year: 'numeric',
           month: 'long',
