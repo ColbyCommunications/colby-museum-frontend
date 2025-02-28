@@ -186,7 +186,7 @@ export default {
               scrollTrigger: {
                 trigger: heading,
                 toggleActions: 'restart none none reverse',
-                start: 'top 90%',
+                start: 'top 85%',
               },
               y: 0,
               duration: 0.4,
@@ -210,7 +210,7 @@ export default {
               scrollTrigger: {
                 trigger: subheading,
                 toggleActions: 'restart none none reverse',
-                start: 'top 90%',
+                start: 'top 85%',
               },
               y: 0,
               duration: 0.4,
@@ -226,7 +226,7 @@ export default {
               scrollTrigger: {
                 trigger: subheading2,
                 toggleActions: 'restart none none reverse',
-                start: 'top 90%',
+                start: 'top 85%',
               },
               y: 0,
               duration: 0.4,
@@ -250,7 +250,7 @@ export default {
             scrollTrigger: {
               trigger: subheading,
               toggleActions: 'restart none none reverse',
-              start: 'top 90%',
+              start: 'top 85%',
             },
             height: 0,
             duration: 0.6,
