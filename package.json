@@ -10,6 +10,8 @@
         "postinstall": "nuxt prepare"
     },
     "devDependencies": {
+        "@nuxtjs/robots": "5.2.4",
+        "@nuxtjs/sitemap": "7.2.6",
         "nuxt": "^3.9.3",
         "vue": "^3.4.14",
         "vue-router": "^4.2.5"

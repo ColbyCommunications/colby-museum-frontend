@@ -10,18 +10,21 @@ export default defineNuxtConfig({
     },
   },
 
+  sitemap: {
+    sources: [
+      'https://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/wp-sitemap-posts-page-1.xml'
+    ]
+  },
+
   build: {
     transpile: ['gsap', '@glidejs/glide', '@gsap/shockingly']
   },
 
-  modules: [
-    '@pinia/nuxt',
-    ['@nuxtjs/google-fonts', {
-      families: {
-        'Libre Franklin': [200, 300, 400, 700],
-      }
-    }]
-  ],
+  modules: ['@pinia/nuxt', ['@nuxtjs/google-fonts', {
+    families: {
+      'Libre Franklin': [200, 300, 400, 700],
+    }
+  }], '@nuxtjs/sitemap', '@nuxtjs/robots'],
 
   vite: {
     optimizeDeps: {
