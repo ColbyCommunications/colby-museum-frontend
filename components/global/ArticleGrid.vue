@@ -742,7 +742,7 @@ export default {
       } else if (component.objectsSortBy == 'title') {
         filterSort.push({"Disp_Title": component.objectsSort});
       } else {
-        filterSort.push({"Disp_Access_No": component.objectsSort});
+        filterSort.push({"accession_num_year": component.objectsSort});
       }
 
       // filterTerms.push({"accession_num_year": "asc"});
