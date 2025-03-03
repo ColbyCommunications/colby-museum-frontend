@@ -238,6 +238,11 @@ export default {
 
         if (curtain) {
           gsap.to(curtain, {
+            scrollTrigger: {
+              trigger: curtain,
+              toggleActions: 'restart none none reverse',
+              start: 'top 85%',
+            },
             height: 0,
             duration: 0.6,
             ease: "expo.out",
