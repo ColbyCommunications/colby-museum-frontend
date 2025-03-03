@@ -214,6 +214,7 @@ export default {
               },
               y: 0,
               duration: 0.4,
+              stagger: 0.01,
               ease: "expo.out",
             });
         }
@@ -230,6 +231,7 @@ export default {
               },
               y: 0,
               duration: 0.4,
+              stagger: 0.01,
               ease: "expo.out",
             });
         }
