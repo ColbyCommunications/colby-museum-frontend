@@ -2,6 +2,7 @@
   <header
     class="header"
     role="banner"
+    ref="header"
     :class="[searchActive ? 'header--search-active' : '', drawerActive ? 'header--drawer-active' : '']"
   >
     <div class="header__inner grid">
@@ -64,6 +65,8 @@
             <li
               v-for="(item, index) in primary"
               :class="{'active' : active == index}"
+              @keyup.left="keyboardLeft($event)"
+              @keyup.right="keyboardRight($event)"
             >
               <NuxtLink
                 :to="item.url.replace(/^.*\/\/[^\/]+/, '').replace(/\/$/, '')"
@@ -205,6 +208,18 @@ export default {
         }
       });
     },
+    keyboardRight(e) {
+      if (e.srcElement.parentNode.nextSibling) {
+        e.srcElement.parentNode.nextSibling.getElementsByTagName('a')[0].focus();
+      } else {
+        // this.$refs.header.getElementsByClassName('header__search-btn')[0].focus();
+      }
+    },
+    keyboardLeft(e) {
+      if (e.srcElement.parentNode.previousSibling) {
+        e.srcElement.parentNode.previousSibling.getElementsByTagName('a')[0].focus();
+      }
+    }
   }
 }
 </script>
