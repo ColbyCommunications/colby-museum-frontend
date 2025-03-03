@@ -910,7 +910,9 @@ export default {
           } else if ((component.showChronology == 'future' || component.showFuture) && (component.items_type == 'events' || component.items_type == 'exhibitions')) {
             chr = '&chronologies_exclude=8,9'; // EXCLUDE PAST AND CURRENT
           } else {
-            chr = '&chronologies_exclude=8'; // EXCLUDE PAST AS LONG AS WE ARENT IN TRAVELING EXHIBITIONS
+            if (component.$route.query.variant != 'traveling') {
+              chr = '&chronologies_exclude=8'; // EXCLUDE PAST AS LONG AS WE ARENT IN TRAVELING EXHIBITIONS
+            }
           }
 
           if (component.$route.query.variant == 'traveling') {
@@ -948,7 +950,11 @@ export default {
                   if (component.showChronology == 'past') {
                     component.newItems.sort((a,b) => b.event_date.getTime() - a.event_date.getTime());
                   } else {
-                    component.newItems.sort((a,b) => a.event_date.getTime() - b.event_date.getTime());
+                    if (component.$route.query.variant == 'traveling') {
+                      component.newItems.sort((a,b) => b.event_date.getTime() - a.event_date.getTime());
+                    } else {
+                      component.newItems.sort((a,b) => a.event_date.getTime() - b.event_date.getTime());
+                    }
                   }
                 }
               }
