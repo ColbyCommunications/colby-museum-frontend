@@ -10,6 +10,7 @@
       }"
     />
     <IntroContext
+      :class="[intro_visible ? '' : 'sr-only']"
       :heading="title"
       :headingElement="'h1'"
       :subheading="excerpt"
@@ -40,6 +41,7 @@ export default {
       title: undefined,
       fullPath: undefined,
       excerpt: undefined,
+      intro_visible: undefined,
       breadcrumbs: undefined,
       components: undefined,
     };
@@ -83,6 +85,7 @@ export default {
           .replace(/’/g, "'");
         
         page.excerpt = post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '');
+        page.intro_visible = post.acf.intro_visible;
 
         page.getBreadcrumbs(post);
 

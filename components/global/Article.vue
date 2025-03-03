@@ -102,8 +102,6 @@ export default {
   },
   async mounted() {
     this.updateImage();
-
-    console.log(this.image);
   },
   props: {
     post: {

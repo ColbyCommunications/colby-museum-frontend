@@ -584,8 +584,6 @@ export default {
     this.interface = useInterfaceStore();
     const component = this;
 
-    console.log(component.page);
-
     if (component.items_type == 'objects') {
       component.$route.query.has_image != 'false' ? component.activeFilters = ['Has Image'] : component.activeFilters = [];
 
@@ -664,8 +662,6 @@ export default {
         image: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : await component.getImage(component.blockData[`items_${i}_image`]),
       }))).then((output) => {
         component.newItems = output; 
-
-        console.log(output);
       })
     }
   },
@@ -752,8 +748,6 @@ export default {
       // filterTerms.push({"accession_num_year": "asc"});
       // filterTerms.push({"Disp_Access_No": "asc"});
 
-      console.log(filterTerms.length);
-
       await axios
         .get(`https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/stage/_search`, {
           auth: {
@@ -777,8 +771,6 @@ export default {
           }
         })
         .then((output) => {
-          console.log(output);
-          console.log(output.data.hits.total.value);
 
           component.totalObjects = output.data.hits.total.value;
           component.totalPages = Math.floor(output.headers['content-length'] / component.per_page);
@@ -893,15 +885,6 @@ export default {
         .then((output) => {
           if (component.aggregations == undefined) {
             component.aggregations = output.data.aggregations;
-            console.log(component.aggregations);
-
-            // setTimeout(() => {
-            //   console.log(component.$refs.aggregationSelectOption);
-
-            //   component.$route.query.year ? component.$refs.aggregationSelectOption[0].value = component.$route.query.year : null;
-            //   component.$route.query.maker ? component.$refs.aggregationSelectOption[1].value = component.$route.query.maker : null;
-            //   component.$route.query.type ? component.$refs.aggregationSelectOption[2].value = component.$route.query.type : null;
-            // }, 1000);
           }
         });
     },
@@ -938,10 +921,8 @@ export default {
             meta_date = `&?filter[orderby]=meta_value&?filter[meta_key]=date&filter[order]=DESC`;
           }
 
-          console.log(`${component.interface.endpoint}${component.items_type}?categories_exclude=1${chr}${type}${meta_date}&categories=${component.items_category}${categories.length > 0 ? `,${categories.toString()}` : '' }&per_page=${component.per_page}&page=${page}${searchTerm ? `&search=${searchTerm}` : ''}${component.alphabeticalOrder ? '&orderby=title' : ''}${component.reverseOrder ? '&order=asc' : ''}`);
-
           // EXAMPLE OF SORTING BY START DATE
-          console.log(`${component.interface.endpoint}${component.items_type == 'posts' ? 'posts' : component.items_type}?categories_exclude=1${chr}${type}${meta_date}&categories=${component.items_category}${categories.length > 0 ? `,${categories.toString()}` : '' }&per_page=${component.per_page}&page=${page}${searchTerm ? `&search=${searchTerm}` : ''}${component.alphabeticalOrder ? '&orderby=title' : ''}${component.reverseOrder ? '&order=asc' : ''}`);
+          // console.log(`${component.interface.endpoint}${component.items_type == 'posts' ? 'posts' : component.items_type}?categories_exclude=1${chr}${type}${meta_date}&categories=${component.items_category}${categories.length > 0 ? `,${categories.toString()}` : '' }&per_page=${component.per_page}&page=${page}${searchTerm ? `&search=${searchTerm}` : ''}${component.alphabeticalOrder ? '&orderby=title' : ''}${component.reverseOrder ? '&order=asc' : ''}`);
 
           await axios
             .get(`${component.interface.endpoint}${component.items_type == 'posts' ? 'posts' : component.items_type}?categories_exclude=1${chr}${type}${meta_date}&categories=${component.items_category}${categories.length > 0 ? `,${categories.toString()}` : '' }&per_page=${component.per_page}&page=${page}${searchTerm ? `&search=${searchTerm}` : ''}${component.alphabeticalOrder ? '&orderby=title' : ''}${component.reverseOrder ? '&order=asc' : ''}`)
@@ -1017,8 +998,6 @@ export default {
                 }
               }
             };
-
-            console.log(newImageObj);
           });
 
         return await newImageObj;
@@ -1142,8 +1121,6 @@ export default {
         this.triggerNavigateTo();
         this.getPosts(1, this.$refs.searchInput.input ? this.$refs.searchInput.input : undefined);
       }
-
-      console.log(this.activeFilters);
     },
     toggleChronology(term) {
       term.active = !term.active;

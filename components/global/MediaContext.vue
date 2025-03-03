@@ -342,7 +342,6 @@ export default {
         button: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : component.blockData[`items_${i}_button`],
         image: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : await component.getImage(component.blockData[`items_${i}_image`]),
       }))).then((output) => {
-        console.log(output);
         component.newItems = output;
         component.renderGlide();
       })
@@ -459,7 +458,7 @@ export default {
         type = '&variant=14';
       }
 
-      console.log(`${component.interface.endpoint}${component.items_type}?categories_exclude=1${chr}${type}&per_page=5&page=1`);
+      // console.log(`${component.interface.endpoint}${component.items_type}?categories_exclude=1${chr}${type}&per_page=5&page=1`);
 
       await axios
         .get(`${component.interface.endpoint}${component.items_type}?categories_exclude=1${chr}${type}&per_page=5&page=1`)
@@ -523,10 +522,8 @@ export default {
         })
         .then(async (output) => {
           const concatedObjs = output.data.objects.slice(0, 7);
-          // console.log(output.data.objects);
 
           component.newItems = await Promise.all(concatedObjs.map(async (i) => {
-            // console.log(i);
 
             return await component.getObject(i.ident.replace('object/', ''));
           }));
@@ -547,8 +544,6 @@ export default {
         })
         .then((output) => {
           let i = output.data;
-
-          console.log(i);
 
           img = i.Images.length > 0 ? i.Images[0] : undefined;
           imgUrl = img ? `https://ccma-iiif-cache-service.fly.dev/iiif/2/${img.IIIF_URL.substring(img.IIIF_URL.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, "")}/full/${encodeURIComponent('400,')}/0/default.jpg` : '';
@@ -623,7 +618,6 @@ export default {
     },
     toggleModal() {
       this.interface.toggleModal();
-      console.log(this.interface.modal);
     }
   }
 }
