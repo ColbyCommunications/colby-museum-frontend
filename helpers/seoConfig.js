@@ -15,22 +15,33 @@ const pageSEO = (props, type) => {
       .then(async () => { 
         let imageObj;
   
-        await axios
-          .get(`${useInterfaceStore().endpoint}media/${todo.value.featured_media}`)
-          .then((output) => {
-            imageObj = output.data;
-            imagePath = imageObj ? imageObj.media_details.sizes.desktop.source_url : '';
-            console.log(imagePath);
-          })
-          .then(() => {
-            useSeoMeta({
-              ogTitle: () => `${todo.value.title ? todo.value.title?.rendered.replace(/&quot;/g, '\"').replace('&#8217;',"'").replace('&#038;',"&") + ' | ' : ''}Colby College Museum of Art · Colby College`,
-              title: () => `${todo.value.title ? todo.value.title?.rendered.replace(/&quot;/g, '\"').replace('&#8217;',"'").replace('&#038;',"&") + ' | ' : ''}Colby College Museum of Art · Colby College`,
-              ogDescription: () => todo.value.excerpt?.rendered.replace(/<p[^>]*>|<\/p>/g, ''),
-              description: () => todo.value.excerpt?.rendered.replace(/<p[^>]*>|<\/p>/g, ''),
-              ogImage: () => `${imagePath}`,
+        if (todo.value.featured_media) {
+          await axios
+            .get(`${useInterfaceStore().endpoint}media/${todo.value.featured_media}`)
+            .then((output) => {
+              console.log(output);
+              imageObj = output.data;
+              imagePath = imageObj ? imageObj.media_details.sizes.desktop.source_url : '';
+              console.log(imagePath);
+            })
+            .then(() => {
+              useSeoMeta({
+                ogTitle: () => `${todo.value.title ? todo.value.title?.rendered.replace(/&quot;/g, '\"').replace('&#8217;',"'").replace('&#038;',"&") + ' | ' : ''}Colby College Museum of Art · Colby College`,
+                title: () => `${todo.value.title ? todo.value.title?.rendered.replace(/&quot;/g, '\"').replace('&#8217;',"'").replace('&#038;',"&") + ' | ' : ''}Colby College Museum of Art · Colby College`,
+                ogDescription: () => todo.value.excerpt?.rendered.replace(/<p[^>]*>|<\/p>/g, ''),
+                description: () => todo.value.excerpt?.rendered.replace(/<p[^>]*>|<\/p>/g, ''),
+                ogImage: () => `${imagePath}`,
+              });
             });
+        } else {
+          useSeoMeta({
+            ogTitle: () => `${todo.value.title ? todo.value.title?.rendered.replace(/&quot;/g, '\"').replace('&#8217;',"'").replace('&#038;',"&") + ' | ' : ''}Colby College Museum of Art · Colby College`,
+            title: () => `${todo.value.title ? todo.value.title?.rendered.replace(/&quot;/g, '\"').replace('&#8217;',"'").replace('&#038;',"&") + ' | ' : ''}Colby College Museum of Art · Colby College`,
+            ogDescription: () => todo.value.excerpt?.rendered.replace(/<p[^>]*>|<\/p>/g, ''),
+            description: () => todo.value.excerpt?.rendered.replace(/<p[^>]*>|<\/p>/g, ''),
+            ogImage: () => `https://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/wp-content/uploads/2025/03/default.jpg`,
           });
+        }
        })
       .then(() => {
         // console.log('HERE');
