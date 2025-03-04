@@ -242,6 +242,7 @@ export default {
               trigger: curtain,
               toggleActions: 'restart none none reverse',
               start: 'top 85%',
+              // markers: true,
             },
             height: 0,
             duration: 0.6,
@@ -264,7 +265,7 @@ export default {
             ease: "expo.out",
           });
         }
-      }, 800);
+      }, 1000);
     }
   }
 }

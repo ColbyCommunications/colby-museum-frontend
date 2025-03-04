@@ -46,7 +46,7 @@ export default {
   
       if (this.error == false) {
 
-        console.log('Handling 404');
+        // console.log('Handling 404');
         Array.from(e.target.parentNode.children).forEach(element => {
           element.srcset = `/blanks/blank_${ Math.floor(Math.random() * (3 - 1 + 1) + 1) }.png`;
         });

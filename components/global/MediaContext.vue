@@ -3,6 +3,7 @@
   <div
     class="media-context"
     :class="[Number(reverse) ? 'media-context--reverse' : '', variant ? `media-context--${variant}` : '', newItems.length == 1 ? 'media-context--single-slide' : '']"
+    ref="mediacontext"
   >
     <div class="media-context__inner grid">
       <div
@@ -49,13 +50,18 @@
                         :loading="'eager'"
                       />
                     </NuxtLink>
-                    <Picture
+                    <VueImageZoomer
+                      v-else
+                      :regular="item.image.media_details.sizes.full.source_url"
+                      :click-zoom="true"
+                    />
+                    <!-- <Picture
                       v-else
                       :classes="'object-cover'"
                       :alt="item.image.alt_text"
                       :sizes="item.image.media_details.sizes"
                       :loading="'eager'"
-                    />
+                    /> -->
                     <div
                       v-if="item.image.caption && variant == 'full-width'"
                       class="media-context__caption"
@@ -267,8 +273,12 @@ import Glide from '@glidejs/glide';
 import gsap from 'gsap';
 import axios from 'axios';
 import { useInterfaceStore } from "~/store/interface";
+import { VueImageZoomer } from 'vue-image-zoomer';
 
 export default {
+  components: {
+    VueImageZoomer
+  },
   data() {
     return {
       id: undefined,
@@ -351,6 +361,10 @@ export default {
   },
   mounted() {
     this.id = self.crypto.randomUUID();
+
+    if (this.items_type == 'objects') {
+      this.resizeZooms();
+    }
   },
   methods: {
     renderGlide() {
@@ -369,7 +383,7 @@ export default {
             type: 'slider',
             gap: 0,
             animationDuration: 600,
-            autoplay: this.autoplay,
+            autoplay: false,
             perView: 1,
           }).mount();
 
@@ -618,6 +632,17 @@ export default {
     },
     toggleModal() {
       this.interface.toggleModal();
+    },
+    resizeZooms() {
+      setTimeout(() => {
+        const vhs = this.$refs.mediacontext.getElementsByClassName('vh--outer');
+        
+        Array.from(vhs).forEach((vh) => {
+          console.log(vh.querySelector('img').width);
+
+          vh.style.width = `${vh.querySelector('img').width}px`
+        });
+      }, 400);
     }
   }
 }
@@ -824,15 +849,39 @@ export default {
       }
     }
 
+    picture {
+      &:nth-child(1) {
+        img {
+          .page--object & {
+            object-fit: contain;
+            object-position: center;
+            width: auto;
+            height: 100%;
+          }
+        }
+      }
+
+      &:nth-child(2) {
+        img {
+          .page--object & {
+            object-fit: cover;
+          }
+        }
+      }
+    }
+
     img {
       position: absolute;
       top: 0;
       left: 0;
+    }
 
-      .page--object & {
-        object-fit: contain;
-        object-position: left;
-      }
+    .vh--rel {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
     }
   }
 
@@ -986,6 +1035,11 @@ export default {
     @include breakpoint(medium) {
       margin-top: 13.284vh;
     }
+  }
+
+  .vh--message {
+    @include subheading-style-4;
+    background-color: $black;
   }
 }
 </style>

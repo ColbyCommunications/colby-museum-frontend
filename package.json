@@ -27,6 +27,7 @@
         "lodash.debounce": "^4.0.8",
         "pinia": "^2.1.7",
         "sass": "^1.70.0",
+        "vue-image-zoomer": "^2.4.4",
         "vue-resize-directive": "^1.2.0",
         "wpapi": "^1.2.2",
         "yt-player": "^3.6.1",

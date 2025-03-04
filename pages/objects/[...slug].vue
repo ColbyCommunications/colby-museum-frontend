@@ -5,6 +5,7 @@
         :variant="'full-width'"
         :items="images"
         :items_type="'objects'"
+        :autoplay="false"
       />
     </Modal>
     <IntroContext
@@ -15,10 +16,10 @@
     />
     <MediaContext
       v-if="images"
-      :modal="true"
       :variant="'offset'"
       :items="images"
       :items_type="'objects'"
+      :autoplay="false"
     />
     <MetaDataList
       :heading="'Object Details'"

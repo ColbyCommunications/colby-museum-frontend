@@ -32,11 +32,6 @@
     import footerItems from '~/assets/data/footer.yml';
 
     export default {
-        // setup() {
-        //   useHead({
-        //     titleTemplate: '%s | Colby College Museum of Art · Colby College',
-        //   }),
-        // },
         data() {
             return {
                 interface: undefined,
