@@ -383,7 +383,7 @@ export default {
             type: 'slider',
             gap: 0,
             animationDuration: 600,
-            dragThreshold: false,
+            swipeThreshold: false,
             autoplay: false,
             perView: 1,
           }).mount();
