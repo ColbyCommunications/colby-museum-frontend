@@ -46,16 +46,17 @@ export default {
     const todo = ref({})
 
     useFetch(() => 
-      axios.get(`https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/stage/_source/https:%2F%2Fmuseum-data.colby.edu%2Fcollection%2Fembark%2FObjects-1%2Finfo%2F${encodeURIComponent(route.params.slug[0])}`, {
+      axios.get(`https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/stage/_source/object%2F${encodeURIComponent(route.params.slug[0])}`, {
         auth: {
           username: 'Fr2fpegcBZ',
           password: 'Vi7vGnL3h2rtW5SuECoKRwTf'
         }
       })
       .then((output) => (todo.value = output.data))
+      .then(() => {
+        console.log('WTF');
+      })
     )
-
-    // console.log(todo.value);
 
     useSeoMeta({
       ogTitle: () => `${todo.value.Disp_Title ? todo.value.Disp_Title.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' : ''}Colby College Museum of Art · Colby College`,
