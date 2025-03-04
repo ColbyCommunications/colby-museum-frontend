@@ -204,6 +204,7 @@ export default {
 
         if (subheading) {
           let subheadingWords = subheading.querySelectorAll('.context__word span');
+          let subheadingWordWraps = subheading.querySelectorAll('.context__word');
 
           gsap.to(subheadingWords,
             {
@@ -215,6 +216,19 @@ export default {
               y: 0,
               duration: 0.4,
               stagger: 0.01,
+              ease: "expo.out",
+            });
+
+          gsap.to(subheadingWordWraps,
+            {
+              scrollTrigger: {
+                trigger: subheading,
+                toggleActions: 'restart none none reverse',
+                start: 'top 85%',
+              },
+              duration: 0.4,
+              stagger: 0.01,
+              overflow: 'visible',
               ease: "expo.out",
             });
         }

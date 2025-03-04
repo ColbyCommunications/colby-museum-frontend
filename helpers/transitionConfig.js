@@ -57,6 +57,15 @@ const pageTransition = {
     if (subheadings) {
       subheadings.forEach((subheading) => {
         let subheadingWords = subheading.querySelectorAll('.context__word span');
+        let subheadingWordWraps = subheading.querySelectorAll('.context__word');
+
+        tl
+          .to(subheadingWordWraps,
+          {
+            overflow: 'hidden',
+            duration: 0,
+          },
+          '<');
   
         tl
           .to(subheadingWords,

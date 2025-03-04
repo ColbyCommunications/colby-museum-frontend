@@ -793,7 +793,7 @@ export default {
 
             return {
               heading: `${i._source.Disp_Maker_1}`,
-              subheading: `${i._source.Disp_Title}, ${i._source.Disp_Create_DT}`,
+              subheading: `<em>${i._source.Disp_Title},</em> ${i._source.Disp_Create_DT}`,
               // subheading: `${i._source.Disp_Maker_1} ${i._source.Disp_Create_DT}`,
               button: {
                 srOnly: true,
