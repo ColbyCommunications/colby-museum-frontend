@@ -383,6 +383,7 @@ export default {
             type: 'slider',
             gap: 0,
             animationDuration: 600,
+            dragThreshold: false,
             autoplay: false,
             perView: 1,
           }).mount();
@@ -855,8 +856,13 @@ export default {
           .page--object & {
             object-fit: contain;
             object-position: center;
-            width: auto;
+            width: 100%;
             height: 100%;
+
+            @include breakpoint(medium) {
+              width: auto;
+              height: 100%;
+            }
           }
         }
       }
