@@ -639,7 +639,7 @@ export default {
         const vhs = this.$refs.mediacontext.getElementsByClassName('vh--outer');
         
         Array.from(vhs).forEach((vh) => {
-          console.log(vh.querySelector('img').width);
+          // console.log(vh.querySelector('img').width);
 
           vh.style.width = `${vh.querySelector('img').width}px`
         });

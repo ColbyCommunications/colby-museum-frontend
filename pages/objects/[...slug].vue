@@ -121,7 +121,7 @@ export default {
               media_details: {
                 sizes: {
                   full: {
-                    source_url: `https://ccma-iiif-cache-service.fly.dev/iiif/2/${i.IIIF_URL.substring(i.IIIF_URL.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, "")}/full/400%2C/0/default.jpg`,
+                    source_url: `https://ccma-iiif-cache-service.fly.dev/iiif/2/${i.IIIF_URL.substring(i.IIIF_URL.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, "")}/full/1800%2C/0/default.jpg`,
                   },
                   mobile: {
                     source_url: `https://ccma-iiif-cache-service.fly.dev/iiif/2/${i.IIIF_URL.substring(i.IIIF_URL.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, "")}/full/400%2C/0/default.jpg`,
