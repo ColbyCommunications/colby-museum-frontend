@@ -82,6 +82,7 @@ export default {
           .replace(/’/g, "'");
         
         page.excerpt = post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '');
+        page.intro_visible = post.acf.intro_visible;
         page.location = post.acf.location;
         page.address = post.acf.address;
         page.date = new Date(`${post.acf.date.substr(0,4)}-${post.acf.date.substr(4,2)}-${post.acf.date.substr(6,2)}T00:00:00`).toLocaleDateString('en-US', {
