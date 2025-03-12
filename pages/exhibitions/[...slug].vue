@@ -1,6 +1,7 @@
 <template>
   <div class="page page--default">
     <IntroContext
+      :class="[intro_visible ? '' : 'sr-only']"
       :heading="title"
       :headingElement="'h1'"
       :subheading="excerpt"
@@ -20,7 +21,7 @@
         },
         {
           heading: 'Date',
-          paragraph: end_date ? `${String(date)} - ${String(end_date)}` : String(date),
+          paragraph: end_date ? `${String(date)}—${String(end_date)}` : String(date),
         },
       ]"
     />

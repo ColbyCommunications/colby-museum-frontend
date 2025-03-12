@@ -15,7 +15,7 @@
           class="footer__location"
         >
           <h2>Downtown Location</h2>
-          <address><a href="https://www.google.com/maps/place/Main+St,+Waterville,+ME+04901/@44.5664044,-69.6401511,17z/data=!3m1!4b1!4m6!3m5!1s0x4cb1e4692cbf5aff:0x5a7ee48ceb197cf5!8m2!3d44.5664006!4d-69.6375762!16s%2Fg%2F1tcwl4vr?entry=ttu" target="_blank">2684 Main St.<br>Waterville, ME 04903</a></address>
+          <address><a href="https://www.google.com/maps/@44.5498695,-69.6300326,3a,75y,70.06h,90t/data=!3m7!1e1!3m5!1s2ivqj8ZwfyHpM4m1vxP7fA!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D0%26panoid%3D2ivqj8ZwfyHpM4m1vxP7fA%26yaw%3D70.06!7i16384!8i8192?entry=ttu&g_ep=EgoyMDI1MDMxMC4wIKXMDSoJLDEwMjExNDU1SAFQAw%3D%3D" target="_blank">93 Main St.,<br>Waterville, ME 04903</a></address>
           <a href="tel:+1 207-859-5600">+1 207-163-7734</a>
           <span :class="[downtownIsOpen ? 'open' : 'closed']">{{ downtownIsOpen ? 'Open' : 'Closed' }} <span>11a-7p</span></span>
         </div>

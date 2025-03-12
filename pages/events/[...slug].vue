@@ -1,6 +1,7 @@
 <template>
   <div class="page page--default">
     <IntroContext
+      :class="[intro_visible ? '' : 'sr-only']"
       :heading="title"
       :headingElement="'h1'"
       :subheading="excerpt"
@@ -24,7 +25,7 @@
         },
         {
           heading: 'Hours',
-          paragraph: start_time + ' - ' + end_time,
+          paragraph: start_time + '—' + end_time,
         }
       ]"
     />
