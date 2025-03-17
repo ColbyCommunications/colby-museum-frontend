@@ -8,7 +8,8 @@
 
   @include breakpoint(large) {
     // font-size: 3.472vw; // 50px / 1440px
-    font-size: 3.125vw;
+    // font-size: 3.125vw;
+    font-size: 2.778vw; // 40px / 1440px
     letter-spacing: -0.069vw;
   }
 }
@@ -23,7 +24,8 @@
 
   @include breakpoint(large) {
     // font-size: 2.778vw; // 40px / 1440px
-    font-size: 2.5vw;
+    // font-size: 2.5vw;
+    font-size: 1.944vw; // 28px / 1440px
   }
 }
 
@@ -37,8 +39,21 @@
 
   @include breakpoint(large) {
     // font-size: 1.944vw; // 28px / 1440px
-    font-size: 1.75vw;
+    // font-size: 1.75vw;
+    font-size: 1.667vw; // 24px / 1440px
     letter-spacing: -0.039vw;
+  }
+}
+
+@mixin heading-style-embark() {
+  font-family: $font-primary;
+  font-size: rem-calc(18px);
+  font-weight: 700;
+  font-style: normal;
+  line-height: 110%;
+
+  @include breakpoint(large) {
+    font-size: 1.25vw; // 18px / 1440px
   }
 }
 
@@ -51,7 +66,8 @@
 
   @include breakpoint(large) {
     // font-size: 3.611vw; // 52px / 1440px
-    font-size: 3.25vw;
+    // font-size: 3.25vw;
+    font-size: 2.222vw; // 32px / 1440px
     font-weight: 300;
     letter-spacing: -0.069vw;
   }
@@ -67,7 +83,8 @@
 
   @include breakpoint(large) {
     // font-size: 2.778vw; // 40px / 1440px
-    font-size: 2.5vw;
+    // font-size: 2.5vw;
+    font-size: 2.222vw; // 32px / 1440px
   }
 }
 
@@ -93,6 +110,18 @@
   }
 }
 
+@mixin subheading-style-embark() {
+  font-family: $font-primary;
+  font-size: rem-calc(18px);
+  font-weight: 400;
+  font-style: normal;
+  line-height: 110%;
+
+  @include breakpoint(large) {
+    font-size: 1.25vw; // 18px / 1440px
+  }
+}
+
 @mixin paragraph-style-1() {
   font-family: $font-primary;
   font-size: 24px; // 32px / 1440px
@@ -104,6 +133,7 @@
   @include breakpoint(large) {
     // font-size: 2.222vw; // 32px / 1440px
     font-size: 2vw;
+    // font-size: 1.667vw; // 24px / 1440px
     letter-spacing: -0.044vw;
   }
 }
@@ -118,7 +148,8 @@
 
   @include breakpoint(large) {
     // font-size: 1.667vw; // 24px / 1440px
-    font-size: 1.5vw;
+    // font-size: 1.5vw;
+    font-size: 1.389vw; // 20px / 1440px
     letter-spacing: -0.033vw;
   }
 }
@@ -133,7 +164,8 @@
 
   @include breakpoint(large) {
     // font-size: 1.389vw; // 20px / 1440px
-    font-size: 1.25vw;
+    // font-size: 1.25vw;
+    font-size: 1.25vw; // 18px / 1440px
     letter-spacing: -0.028vw;
   }
 }

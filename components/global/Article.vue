@@ -62,6 +62,7 @@
       :bordered="bordered"
       :heading="heading"
       :subheading="subheading"
+      :subheading2="subheading2"
       :image="image"
       :paragraph="paragraph_entry_type == 'description' && image ? image.caption.rendered : paragraph"
       :button="stagedButton"
@@ -127,6 +128,10 @@ export default {
       required: false,
     },
     subheading: {
+      type: String,
+      required: false,
+    },
+    subheading2: {
       type: String,
       required: false,
     },

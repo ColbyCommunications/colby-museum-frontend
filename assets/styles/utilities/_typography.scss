@@ -28,6 +28,8 @@
   }
 }
 
+.heading-style-embark { @include heading-style-embark; }
+
 // Subheadings
 .subheading-style-1 { @include subheading-style-1(); }
 
@@ -43,12 +45,16 @@
   }
 }
 
+.subheading-style-embark { @include subheading-style-embark(); }
+
 // Paragraphs
 .paragraph-style-1 { @include paragraph-style-1(); }
 
 .paragraph-style-2 { @include paragraph-style-2(); }
 
 .paragraph-style-3 { @include paragraph-style-3(); }
+
+.paragraph-style-embark { @include paragraph-style-3(); }
 
 .paragraph-style-1,
 .paragraph-style-2,

@@ -656,6 +656,7 @@ export default {
         post: component.blockData[`items_${i}_entry_type`] == 'selection' ? await component.getPost(component.blockData[`items_${i}_post_selection`]) : undefined,
         heading: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : component.blockData[`items_${i}_heading`],
         subheading: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : component.blockData[`items_${i}_subheading`],
+        subheading2: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : component.blockData[`items_${i}_subheading2`],
         paragraph_entry_type: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : component.blockData[`items_${i}_paragraph_entry_type`],
         paragraph: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : component.blockData[`items_${i}_paragraph`],
         button: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : component.blockData[`items_${i}_button`],
@@ -792,8 +793,10 @@ export default {
             const imgUrl = img ? `https://ccma-iiif-cache-service.fly.dev/iiif/2/${img.IIIF_URL.substring(img.IIIF_URL.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, "")}/full/${encodeURIComponent('400,')}/0/default.jpg` : '';
 
             return {
+              size: 'embark',
               heading: `${i._source.Disp_Maker_1}`,
-              subheading: `<em>${i._source.Disp_Title},</em> ${i._source.Disp_Create_DT}`,
+              subheading: `<em>${i._source.Disp_Title}</em>`,
+              subheading2: `${i._source.Disp_Create_DT}`,
               // subheading: `${i._source.Disp_Maker_1} ${i._source.Disp_Create_DT}`,
               button: {
                 srOnly: true,

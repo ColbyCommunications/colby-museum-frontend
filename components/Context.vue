@@ -333,6 +333,10 @@ export default {
       @extend .heading-style-3;
     }
 
+    .context--embark & {
+      @extend .heading-style-embark;
+    }
+
     .context--bordered & {
       padding-bottom: 8px;
       margin-bottom: 8px;
@@ -361,6 +365,12 @@ export default {
     overflow: hidden;
     display: inline-block;
 
+    @include breakpoint(large) {
+      .context--embark & {
+        padding-right: 0.1vw;
+      }
+    }
+
     span {
       display: inline-block;
       transform: translateY(100%);
@@ -386,6 +396,10 @@ export default {
 
     .context--small & {
       @extend .subheading-style-4;
+    }
+
+    .context--embark & {
+      @extend .subheading-style-embark;
     }
   }
 
@@ -478,6 +492,10 @@ export default {
     }
 
     .context--small & {
+      @extend .paragraph-style-3;
+    }
+
+    .context--embark {
       @extend .paragraph-style-3;
     }
   }

@@ -16,7 +16,7 @@
   + location.slice(1) : '',
         },
         {
-          heading: 'Address',
+          heading: 'Space',
           paragraph: address ? address : ''
         },
         {
