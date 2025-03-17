@@ -179,7 +179,7 @@
             v-else-if="item.post && (item.post.type == 'events' || item.post.type == 'exhibitions')"
             :size="'small'"
             :heading="item.post.title.rendered"
-            :subheading="formatDate(item.post.acf.date, 'events') + (item.post.acf.end_date && item.post.acf.date != item.post.acf.end_date ? ` - ${formatDate(item.post.acf.end_date, 'events')}` : '' )"
+            :subheading="formatDate(item.post.acf.date, 'events') + (item.post.acf.end_date && item.post.acf.date != item.post.acf.end_date ? `—${formatDate(item.post.acf.end_date, 'events')}` : '' )"
             :paragraph="item.post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
             :button="{
               title: item.post.type == 'events' ? 'Event Details' : 'Exhibition Details',
