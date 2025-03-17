@@ -23,5 +23,5 @@ logs
 .env.*
 !.env.example
 
-# yarn.lock
-# .lock
+yarn.lock
+.lock
