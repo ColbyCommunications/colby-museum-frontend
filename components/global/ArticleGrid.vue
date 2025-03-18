@@ -98,7 +98,7 @@
                     >
                   </div>
                   <label
-                    v-text="`Alphabetical from  'A'`"
+                    v-text="`Alphabetical Title from  'A'`"
                     @click="toggleAlphabetical(`Alphabetical from  'A'`)"
                   />
                 </div>
@@ -115,7 +115,7 @@
                     >
                   </div>
                   <label
-                    v-text="`Alphabetical from  'Z'`"
+                    v-text="`Alphabetical Title from  'Z'`"
                     @click="toggleAlphabetical(`Alphabetical from  'Z'`)"
                   />
                 </div>
@@ -123,21 +123,38 @@
               <li>
                 <div
                   class="checkbox checkbox--small"
-                  :class="[objectsSort == 'name' ? 'checkbox--active' : '']"
+                  :class="[objectsSort == 'desc' && objectsSortBy == 'name' ? 'checkbox--active' : '']"
                 >
                   <div class="checkbox__main">
                     <input
-                      type="radio" :name="`filter_alphabetical`" :value="`By Artist Name`"
-                      @click="toggleAlphabetical(`By Artist Name`)"
+                      type="radio" :name="`filter_alphabetical`" :value="`By Artist Name Descending`"
+                      @click="toggleAlphabetical(`By Artist Name Descending`)"
                     >
                   </div>
                   <label
-                    v-text="`By Artist Name`"
-                    @click="toggleAlphabetical(`By Artist Name`)"
+                    v-text="`By Artist Name Descending`"
+                    @click="toggleAlphabetical(`By Artist Name Descending`)"
                   />
                 </div>
               </li>
               <li>
+                <div
+                  class="checkbox checkbox--small"
+                  :class="[objectsSort == 'asc' && objectsSortBy == 'name' ? 'checkbox--active' : '']"
+                >
+                  <div class="checkbox__main">
+                    <input
+                      type="radio" :name="`filter_alphabetical`" :value="`By Artist Name Ascending`"
+                      @click="toggleAlphabetical(`By Artist Name Ascending`)"
+                    >
+                  </div>
+                  <label
+                    v-text="`By Artist Name Ascending`"
+                    @click="toggleAlphabetical(`By Artist Name Ascending`)"
+                  />
+                </div>
+              </li>
+              <!-- <li>
                 <div
                   class="checkbox checkbox--small"
                   :class="[objectsSort == 'year' ? 'checkbox--active' : '']"
@@ -153,7 +170,7 @@
                     @click="toggleAlphabetical(`By Year`)"
                   />
                 </div>
-              </li>
+              </li> -->
             </ul>
             <ul v-else class="filter__list">
               <li>
@@ -736,8 +753,8 @@ export default {
         filterTerms.push({ "terms": { "Disp_Obj_Type" : component.aggregationTypeList }})
       }
 
-      if (component.objectsSort == 'name') {
-        filterSort.push({'Disp_Maker_1' : 'asc'});
+      if (component.objectsSortBy == 'name') {
+        filterSort.push({'Disp_Maker_1' : component.objectsSort});
       } else if (component.objectsSort == 'year') {
         filterSort.push({'Disp_Create_DT' : 'desc'});
       } else if (component.objectsSortBy == 'title') {
@@ -1183,8 +1200,12 @@ export default {
         } else if (term == `Alphabetical from  'Z'`) {
           this.objectsSortBy = 'title';
           this.objectsSort = 'desc';
-        } else if (term == `By Artist Name`) {
-          this.objectsSort = 'name';
+        } else if (term == `By Artist Name Descending`) {
+          this.objectsSortBy = 'name';
+          this.objectsSort = 'desc';
+        } else if (term == `By Artist Name Ascending`) {
+          this.objectsSortBy = 'name';
+          this.objectsSort = 'asc';
         } else if (term == `By Year`) {
           this.objectsSort = 'year';
         }

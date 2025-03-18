@@ -1,5 +1,5 @@
 <template>
-  <div class="core-paragraph grid paragraph-style-1">
+  <div class="core-paragraph grid paragraph-style-2">
     <p v-html="attrs.content" />
   </div>
 </template>
@@ -22,7 +22,7 @@ export default {
     margin-top: 100px;
 
     @include breakpoint(medium) {
-      margin-top: 13.284vh;
+      margin-top: 11vh;
     }
   }
 }

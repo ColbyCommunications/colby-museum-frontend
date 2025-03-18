@@ -14,12 +14,13 @@
     > h2,
     > h3,
     > p,
+    > ul,
     > .video {
       grid-column: span 12 / span 12;
 
       @include breakpoint(medium) {
-        grid-column: span 8 / span 8;
-        grid-column-start: 3;
+        grid-column: span 10 / span 10;
+        grid-column-start: 2;
       }
     }
   }

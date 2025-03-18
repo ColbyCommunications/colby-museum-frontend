@@ -1,5 +1,5 @@
 <template>
-  <div class="grid">
+  <div class="grid grid--video">
     <div
       ref="video"
       @click="setActive()"
@@ -167,7 +167,9 @@ export default {
     width: 100%;
     height: 100%;
   }
+}
 
+.grid--video {
   + div {
     margin-top: 100px;
 

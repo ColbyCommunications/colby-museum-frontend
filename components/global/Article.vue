@@ -7,8 +7,8 @@
       v-if="post && post.type == 'post'"
       :size="size"
       :bordered="bordered"
-      :heading="formatDate(post.date, 'numeric')"
-      :subheading="post.title.rendered"
+      :heading="post.title.rendered"
+      :subheading="formatDate(post.date)"
       :image="stagedImage"
       :button="{
         type: button_type,

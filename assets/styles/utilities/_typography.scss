@@ -50,7 +50,19 @@
 // Paragraphs
 .paragraph-style-1 { @include paragraph-style-1(); }
 
-.paragraph-style-2 { @include paragraph-style-2(); }
+.paragraph-style-2 {
+  @include paragraph-style-2();
+
+  sub {
+    display: block;
+    font-size: rem-calc(14px);
+    line-height: 140%;
+
+    @include breakpoint(large) {
+      font-size: 0.972vw; // 14px / 1440px
+    }
+  }
+}
 
 .paragraph-style-3 { @include paragraph-style-3(); }
 
@@ -118,9 +130,13 @@
 
 .heading-style-2 + .paragraph-style-1 { margin-top: 2.25vh; } // 813px / 24px
 
+.heading-style-2 + .paragraph-style-2 { margin-top: 2.25vh; } // 813px / 24px
+
 .heading-style-3 + .subheading-style-4 { margin-top: 0.72vh; } // 813px / 4px
 
 .heading-style-3 + .paragraph-style-1 { margin-top: 2.25vh; } // 813px / 24px
+
+.heading-style-3 + .paragraph-style-2 { margin-top: 2.25vh; } // 813px / 24px
 
 .subheading-style-4 + .paragraph-style-2 { margin-top: 2.25vh; } // 813px / 24px
 
@@ -133,6 +149,8 @@
 .paragraph-style-1 + .heading-style-3 { margin-top: 13.284vh; } // 813px / 120px
 
 .paragraph-style-1 + .paragraph-style-1 { margin-top: 3.542vh; } // 813px / 32px
+
+.paragraph-style-2 + .paragraph-style-2 { margin-top: 2.25vh; } // 813px / 24px
 
 .paragraph-style-2 + .btn { margin-top: 2.25vh; } // 813px / 24px
 

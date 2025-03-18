@@ -6,7 +6,7 @@
           class="vertical-curtain"
           ref="pcurtain"
         />
-        <p class="paragraph-style-2"
+        <p class="paragraph-style-1"
           v-html="paragraph.replace(/(?:\r\n|\r|\n)/g, '<br>')"
         />
       </div>

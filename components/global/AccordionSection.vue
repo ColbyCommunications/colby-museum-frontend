@@ -125,6 +125,14 @@ export default {
   p {
     @extend .paragraph-style-3;
   }
+
+  + div {
+    margin-top: 40px;
+
+    @include breakpoint(large) {
+      margin-top: 5.9vh; // 813px / 48px
+    }
+  }
 }
 </style>
 
