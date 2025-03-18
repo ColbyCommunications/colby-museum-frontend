@@ -668,6 +668,10 @@ export default {
       .media-context--full-width & {
         grid-column: span 12 / span 12;
       }
+
+      .media-context--overflow & {
+        grid-column: span 4 / span 4;
+      }
     }
   }
 

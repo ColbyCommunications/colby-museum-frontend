@@ -391,7 +391,8 @@ export default {
     }
 
     .context--medium & {
-      @extend .subheading-style-4;
+      // @extend .subheading-style-4;
+      @extend .paragraph-style-3;
     }
 
     .context--small & {
