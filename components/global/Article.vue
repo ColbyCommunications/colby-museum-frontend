@@ -24,7 +24,7 @@
       :subheading="formatDate(post.acf.date, 'events') + (post.acf.end_date && post.acf.date != post.acf.end_date ? `—${formatDate(post.acf.end_date, 'events')}` : '' )"
       :image="stagedImage"
       :button="{
-        type: 'pill',
+        type: button_type,
         title: post.type == 'events' ? 'Event Details' : 'Exhibition Details',
         url: post.link
       }"
