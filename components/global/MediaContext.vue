@@ -16,16 +16,14 @@
             ref="curtain"
           />
           <div
-            v-if="variant == 'overflow'"
+            v-if="variant == 'overflow' && (newItems.length > 0 || items)"
             class="media-context__chevrons"
           >
             <ChevronBtn
-              v-if="newItems.length > 1 || items.length > 1"
               @click="changeSlide('prev')"
               :title="'Previous Slide'"
             />
             <ChevronBtn
-              v-if="newItems.length > 1 || items.length > 1"
               @click="changeSlide('next')"
               :title="'Next Slide'"
             />
@@ -85,7 +83,7 @@
                   </div>
                 </li>
                 <li
-                  v-else
+                  v-else-if="newItems.length"
                   v-for="(item, index) in newItems"
                   class="glide__slide"
                 > 
@@ -473,7 +471,7 @@ export default {
           });
           // this.glide.mount();
         }
-      }, 2000);
+      }, 1000);
     },
     changeSlide(s) {
       if (s == 'next') {
