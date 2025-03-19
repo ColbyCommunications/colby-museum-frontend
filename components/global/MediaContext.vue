@@ -97,7 +97,6 @@
                       :size="'small'"
                       :heading="item.post.title.rendered"
                       :subheading="formatDate(item.post.date)"
-                      :paragraph="item.post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
                       :button="{
                         title: 'Read Article',
                         url: item.post.link
@@ -108,7 +107,6 @@
                       :size="'small'"
                       :heading="item.post.title.rendered"
                       :subheading="formatDate(item.post.acf.date, 'events') + (item.post.acf.end_date && item.post.acf.date != item.post.acf.end_date ? `—${formatDate(item.post.acf.end_date, 'events')}` : '' )"
-                      :paragraph="item.post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
                       :button="{
                         title: item.post.type == 'events' ? 'Event Details' : 'Exhibition Details',
                         url: item.post.link
@@ -119,7 +117,6 @@
                       :size="'small'"
                       :subheading="formatDate(item.post.date)"
                       :heading="item.post.title.rendered"
-                      :paragraph="item.post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
                       :button="{
                         title: 'Read Article',
                         url: item.post.link
@@ -130,7 +127,6 @@
                       :size="'small'"
                       :heading="item.heading"
                       :subheading="item.subheading"
-                      :paragraph="item.paragraph"
                       :button="item.button"
                     />
                   </div>
@@ -179,6 +175,31 @@
                       v-if="item.image.caption.rendered && variant == 'full-width'"
                       class="media-context__caption"
                       v-text="item.image.caption.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
+                    />
+                  </div>
+                  <div
+                    v-if="variant == 'overflow'"
+                    class="glide__small-context"
+                  >
+                    <Context
+                      v-if="item.post && item.post.type == 'post'"
+                      :size="'small'"
+                      :paragraph="item.post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
+                    />
+                    <Context
+                      v-else-if="item.post && (item.post.type == 'events' || item.post.type == 'exhibitions')"
+                      :size="'small'"
+                      :paragraph="item.post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
+                    />
+                    <Context
+                      v-else-if="item.post"
+                      :size="'small'"
+                      :paragraph="item.post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
+                    />
+                    <Context
+                      v-else
+                      :size="'small'"
+                      :paragraph="item.paragraph"
                     />
                   </div>
                   <!-- END Conditional logic for either manual or post image -->
@@ -1179,6 +1200,16 @@ export default {
 
   &__context {
     margin-bottom: 1.476vh;
+  }
+
+  &__small-context {
+    margin-top: 1.476vh;
+
+    .context__p {
+      @include breakpoint(large) {
+        font-size: 0.972vw;
+      }
+    }
   }
 }
 </style>
