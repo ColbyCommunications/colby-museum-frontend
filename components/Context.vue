@@ -186,7 +186,7 @@ export default {
               scrollTrigger: {
                 trigger: heading,
                 toggleActions: 'restart none none reverse',
-                start: 'top 90%',
+                start: 'top 95%',
               },
               y: 0,
               duration: 0.4,
@@ -211,7 +211,7 @@ export default {
               scrollTrigger: {
                 trigger: subheading,
                 toggleActions: 'restart none none reverse',
-                start: 'top 90%',
+                start: 'top 95%',
               },
               y: 0,
               duration: 0.4,
@@ -225,7 +225,7 @@ export default {
                 scrollTrigger: {
                   trigger: subheading,
                   toggleActions: 'restart none none reverse',
-                  start: 'top 90%',
+                  start: 'top 95%',
                 },
                 duration: 0.4,
                 stagger: 0.01,
@@ -243,7 +243,7 @@ export default {
               scrollTrigger: {
                 trigger: subheading2,
                 toggleActions: 'restart none none reverse',
-                start: 'top 90%',
+                start: 'top 95%',
               },
               y: 0,
               duration: 0.4,
@@ -257,7 +257,7 @@ export default {
             scrollTrigger: {
               trigger: curtain,
               toggleActions: 'restart none none reverse',
-              start: 'top 90%',
+              start: 'top 95%',
               // markers: true,
             },
             height: 0,
@@ -274,14 +274,14 @@ export default {
             scrollTrigger: {
               trigger: subheading,
               toggleActions: 'restart none none reverse',
-              start: 'top 90%',
+              start: 'top 95%',
             },
             height: 0,
             duration: 0.6,
             ease: "expo.out",
           });
         }
-      }, 1600);
+      }, 1400);
     }
   }
 }

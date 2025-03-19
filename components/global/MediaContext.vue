@@ -471,7 +471,7 @@ export default {
           });
           // this.glide.mount();
         }
-      }, 1000);
+      }, 600);
     },
     changeSlide(s) {
       if (s == 'next') {
