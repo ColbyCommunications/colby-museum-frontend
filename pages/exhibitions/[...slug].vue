@@ -73,7 +73,7 @@ export default {
       .get(`${this.interface.endpoint}exhibitions?slug=${this.$route.params.slug ? this.$route.params.slug : 'home'}`)
       .then((output) => {
         const post = output.data[0];
-        // console.log(post);
+        console.log(post.date);
 
         page.title = post.title.rendered
           .replace(/–/g, '-')

@@ -20,3 +20,11 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.core-heading {
+  + div {
+    margin-top: 13.284vh;
+  }
+}
+</style>

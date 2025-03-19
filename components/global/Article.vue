@@ -59,9 +59,9 @@
       v-else
       :size="size"
       :bordered="bordered"
-      :heading="heading"
-      :subheading="subheading"
-      :subheading2="subheading2"
+      :heading="paragraph_entry_type == 'description' && image ? image.artist_name : heading"
+      :subheading="paragraph_entry_type == 'description' && image ? image.object_title : subheading"
+      :subheading2="paragraph_entry_type == 'description' && image ? image.object_creation_date : subheading2"
       :image="image"
       :paragraph="paragraph_entry_type == 'description' && image ? image.caption.rendered : paragraph"
       :button="stagedButton"
@@ -196,6 +196,9 @@ export default {
           // console.log(imageObj);
 
           newImageObj = {
+            artist_name: imageObj.acf.artist_name,
+            object_title: imageObj.acf.object_title,
+            object_creation_date: imageObj.acf.object_creation_date,
             alt_text: imageObj.alt_text,
             caption: {
               rendered: imageObj.caption.rendered,
@@ -211,6 +214,8 @@ export default {
               }
             }
           };
+
+          // console.log(newImageObj);
         });
 
       return await newImageObj;

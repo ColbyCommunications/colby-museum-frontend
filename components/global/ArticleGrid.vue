@@ -1011,6 +1011,9 @@ export default {
             // Below, the image object is pulling DESCRIPTION field from
             // the Media Library instead of CAPTION for formatting purposes
             newImageObj = {
+              artist_name: imageObj.acf.artist_name,
+              object_title: imageObj.acf.object_title,
+              object_creation_date: imageObj.acf.object_creation_date,
               alt_text: imageObj.alt_text,
               caption: {
                 rendered: imageObj.description.rendered.replace(/<img[^>]*>/g,"").replace(/<p[^>]*>|<\/p>/g, '').replace(/\r?\n|\r/g, "").replace(/<a[^>]*>|<\/a>/g, ''),
