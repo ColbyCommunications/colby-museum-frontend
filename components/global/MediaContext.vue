@@ -78,7 +78,7 @@
                     <div
                       v-if="item.image.caption && variant == 'full-width'"
                       class="media-context__caption"
-                      v-text="item.image.caption.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
+                      v-html="item.image.caption.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
                     />
                   </div>
                 </li>
@@ -146,7 +146,7 @@
                     <div
                       v-if="!item.post && item.image.caption && variant == 'full-width'"
                       class="media-context__caption"
-                      v-text="item.image.caption.rendered.replace(/<\/?[^>]+(>|$)/g)"
+                      v-html="item.image.caption.rendered.replace(/<\/?[^>]+(>|$)/g)"
                     />
                   </div>
                   <div
@@ -174,7 +174,8 @@
                     <div
                       v-if="item.image.caption.rendered && variant == 'full-width'"
                       class="media-context__caption"
-                      v-text="item.image.caption.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
+                      :class="{ 'media-context__caption--active' : activeSlide == index }"
+                      v-html="item.image.caption.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
                     />
                   </div>
                   <div
@@ -791,6 +792,10 @@ export default {
   &__media {
     position: relative;
 
+    .media-context--full-width & {
+      overflow: hidden;
+    }
+
     @include breakpoint(medium) {
       .media-context--offset & {
         grid-column: span 8 / span 8;
@@ -815,7 +820,7 @@ export default {
 
     @include breakpoint(large) {
       .media-context--full-width & {
-        padding-bottom: 58.75%;
+        padding-bottom: 68%;
       }
 
       .media-context--full-width.media-context--single-slide & {
@@ -837,6 +842,8 @@ export default {
   }
 
   &__controls {
+    position: relative;
+    z-index: 10;
     display: flex;
     justify-content: center;
 
@@ -844,9 +851,9 @@ export default {
       display: block;
 
       @include breakpoint(medium) {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
+        // display: flex;
+        // flex-direction: row;
+        // justify-content: space-between;
       }
     }
   }
@@ -864,7 +871,7 @@ export default {
     margin-top: 20px;
 
     @include breakpoint(medium) {
-      margin-top: 0;
+      margin-top: 2.25vh;
     }
   }
 
@@ -901,6 +908,7 @@ export default {
 
     .media-context--full-width & {
       display: flex;
+      justify-content: flex-start;
     }
   }
 
@@ -1080,7 +1088,7 @@ export default {
   }
 
   &__caption {
-    @include paragraph-style-2;
+    @include paragraph-style-3;
 
     position: absolute;
     right: 0;
@@ -1089,12 +1097,22 @@ export default {
     padding: 18px;
     color: map.get($layout-colors, accent);
     font-weight: 300;
-    font-style: italic;
     background-color: map.get($layout-colors, ambiant);
+    transition: $transition-default;
 
     @include breakpoint(medium) {
+      max-height: 0;
       max-width: 50%;
-      padding: 2vh 2.222vw; // 20px 32px
+      padding: 0 2.222vw; // 0 32px
+      overflow: hidden;
+      transform: translateY(100%);
+    }
+
+    &--active {
+      @include breakpoint(medium) {
+        max-height: 20vh;
+        padding: 2vh 2.222vw; // 20px 32px
+      }
     }
   }
 
@@ -1193,8 +1211,24 @@ export default {
   }
 
   &__track {
+    .media-context--full-width & {
+      overflow: visible;
+    }
+
     .media-context--overflow & {
       overflow: visible;
+    }
+  }
+
+  &__slides {
+    .media-context--full-width & {
+      overflow: visible;
+    }
+  }
+
+  &__slide {
+    .media-context--full-width & {
+      overflow-y: visible;
     }
   }
 
