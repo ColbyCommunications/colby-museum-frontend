@@ -1005,7 +1005,8 @@ export default {
           .then((output) => {
             imageObj = output.data;
 
-            // console.log(imageObj);
+            console.log(`${component.interface.endpoint}media/${i}`);
+            console.log(imageObj);
 
             // Below, the image object is pulling DESCRIPTION field from
             // the Media Library instead of CAPTION for formatting purposes

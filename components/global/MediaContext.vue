@@ -15,6 +15,21 @@
             class="horizontal-curtain"
             ref="curtain"
           />
+          <div
+            v-if="variant == 'overflow'"
+            class="media-context__chevrons"
+          >
+            <ChevronBtn
+              v-if="newItems.length > 1 || items.length > 1"
+              @click="changeSlide('prev')"
+              :title="'Previous Slide'"
+            />
+            <ChevronBtn
+              v-if="newItems.length > 1 || items.length > 1"
+              @click="changeSlide('next')"
+              :title="'Next Slide'"
+            />
+          </div>
           <div class="glide" data-glide-window>
             <div class="glide__track" data-glide-el="track">
               <ul class="glide__slides">
@@ -76,6 +91,52 @@
                 > 
                   <!-- Conditional logic for either manual or post image -->
                   <div
+                    v-if="variant == 'overflow'"
+                    class="glide__context"
+                  >
+                    <Context
+                      v-if="item.post && item.post.type == 'post'"
+                      :size="'small'"
+                      :heading="item.post.title.rendered"
+                      :subheading="formatDate(item.post.date)"
+                      :paragraph="item.post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
+                      :button="{
+                        title: 'Read Article',
+                        url: item.post.link
+                      }"
+                    />
+                    <Context
+                      v-else-if="item.post && (item.post.type == 'events' || item.post.type == 'exhibitions')"
+                      :size="'small'"
+                      :heading="item.post.title.rendered"
+                      :subheading="formatDate(item.post.acf.date, 'events') + (item.post.acf.end_date && item.post.acf.date != item.post.acf.end_date ? `—${formatDate(item.post.acf.end_date, 'events')}` : '' )"
+                      :paragraph="item.post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
+                      :button="{
+                        title: item.post.type == 'events' ? 'Event Details' : 'Exhibition Details',
+                        url: item.post.link
+                      }"
+                    />
+                    <Context
+                      v-else-if="item.post"
+                      :size="'small'"
+                      :subheading="formatDate(item.post.date)"
+                      :heading="item.post.title.rendered"
+                      :paragraph="item.post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
+                      :button="{
+                        title: 'Read Article',
+                        url: item.post.link
+                      }"
+                    />
+                    <Context
+                      v-else
+                      :size="'small'"
+                      :heading="item.heading"
+                      :subheading="item.subheading"
+                      :paragraph="item.paragraph"
+                      :button="item.button"
+                    />
+                  </div>
+                  <div
                     v-if="item.post"
                     class="media-context__image"
                   >
@@ -129,7 +190,7 @@
           </div>
           <div
             class="media-context__controls"
-            v-if="variant != 'offset' && newItems.length > 1"
+            v-if="variant != 'offset' && variant != 'overflow' && newItems.length > 1"
           >
             <div
               v-if="newItems.length > 1"
@@ -156,7 +217,7 @@
         </div>
       </div>
       <div
-        v-if="variant != 'full-width' && variant != 'offset'"
+        v-if="variant != 'full-width' && variant != 'offset' && variant != 'overflow'"
         class="media-context__context"
       >
         <div
@@ -288,7 +349,9 @@ export default {
       window: undefined,
       glide: undefined,
       autoplay: false,
+      perView: 1,
       stopped: true,
+      gap: 0.
     };
   },
   props: {
@@ -373,19 +436,36 @@ export default {
       setTimeout(() => {
         this.window = this.$refs.carousel.querySelector("[data-glide-window]");
 
+        let breakpoints = null;
+
         if (this.variant == 'full-width') {
           this.autoplay = 4000;
           this.stopped = false;
         }
 
+        if (this.variant == 'overflow') {
+          this.perView = 3;
+          this.gap = 40;
+
+          breakpoints = {
+              1000: {
+                perView: 2
+              },
+              600: {
+                perView: 1
+              }
+            }
+        }
+
         if (this.window) {
           this.glide = new Glide(this.window, {
             type: 'slider',
-            gap: 0,
+            gap: this.gap,
             animationDuration: 600,
             swipeThreshold: false,
-            autoplay: false,
-            perView: 1,
+            autoplay: this.autoplay,
+            perView: this.perView,
+            breakpoints: breakpoints,
           }).mount();
 
           this.glide.on("run", () => {
@@ -658,19 +738,25 @@ export default {
     display: none;
   }
 
+  &__inner {
+    .media-context--overflow & {
+      padding: 0;
+    }
+  }
+
   &__media,
   &__context {
     grid-column: span 12 / span 12;
+
+    .media-context--overflow & {
+      grid-column: span 11 / span 11;
+    }
 
     @include breakpoint(medium) {
       grid-column: span 6 / span 6;
 
       .media-context--full-width & {
         grid-column: span 12 / span 12;
-      }
-
-      .media-context--overflow & {
-        grid-column: span 4 / span 4;
       }
     }
   }
@@ -854,6 +940,14 @@ export default {
       }
     }
 
+    .media-context--overflow & {
+      padding-bottom: 0;
+
+      img {
+        position: static;
+      }
+    }
+
     picture {
       &:nth-child(1) {
         img {
@@ -994,6 +1088,16 @@ export default {
       margin-top: 0;
     }
 
+    .media-context--overflow & {
+      display: flex;
+      padding-left: calc(map.get($grid-column-gutter, large) / 2);
+      margin-bottom: 20px;
+      @include breakpoint(medium) {
+        padding-left: 4.167vw;
+        margin-bottom: 3.69vh;
+      }
+    }
+
     .chevron-btn:first-child {
       svg {
         transform: rotate(180deg) translateX(13%);
@@ -1006,6 +1110,13 @@ export default {
       @include breakpoint(medium) {
         margin-top: 1.845vh;
         margin-left: 0;
+      }
+
+      .media-context--overflow & {
+        @include breakpoint(medium) {
+          margin-top: 0;
+          margin-left: 1.667vw;
+        }
       }
     }
   }
@@ -1050,6 +1161,26 @@ export default {
   .vh--message {
     @include subheading-style-4;
     background-color: $black;
+  }
+}
+
+.glide {
+  .media-context--overflow & {
+    padding: 0 calc(map.get($grid-column-gutter, large) / 2);
+
+    @include breakpoint(medium) {
+      padding: 0 4.167vw;
+    }
+  }
+
+  &__track {
+    .media-context--overflow & {
+      overflow: visible;
+    }
+  }
+
+  &__context {
+    margin-bottom: 1.476vh;
   }
 }
 </style>
