@@ -316,6 +316,10 @@ export default {
       }
     }
 
+    .sr-only--heading & {
+      @extend .sr-only;
+    }
+
     .context--xlarge & {
       @extend .heading-style-1;
       @extend .heading-style-1--display;
@@ -382,6 +386,10 @@ export default {
   }
 
   &__subheading {
+    .sr-only--excerpt & {
+      @extend .sr-only;
+    }
+
     .context--xlarge & {
       @extend .subheading-style-1;
     }

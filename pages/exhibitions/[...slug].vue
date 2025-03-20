@@ -1,7 +1,7 @@
 <template>
   <div class="page page--default">
     <IntroContext
-      :class="[intro_visible ? '' : 'sr-only']"
+      :class="[heading_visible ? '' : 'sr-only--heading', excerpt_visible ? '' : 'sr-only--excerpt']"
       :heading="title"
       :headingElement="'h1'"
       :subheading="excerpt"
@@ -83,6 +83,8 @@ export default {
         
         page.excerpt = post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '');
         page.intro_visible = post.acf.intro_visible;
+        page.heading_visible = post.acf.heading_visible;
+        page.excerpt_visible = post.acf.excerpt_visible;
         page.location = post.acf.location;
         page.address = post.acf.address;
         page.date = new Date(post.acf.date).toLocaleDateString('en-US', {

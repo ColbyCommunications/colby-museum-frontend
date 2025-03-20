@@ -1209,6 +1209,10 @@ export default {
       width: 20px;
       margin-right: 6px;
 
+      .dark-mode & {
+        fill: $white;
+      }
+
       @include breakpoint(medium) {
         width: 1.389vw;
         margin-right: 0.417vw;

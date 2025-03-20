@@ -25,6 +25,8 @@
       }"
     />
     <BigArrowBtnSection
+      v-if="embark_id"
+      :align="'right'"
       :button="{
         title: 'View Full Collection',
         url: `/objects/page-1?embark_id=${embark_id}`

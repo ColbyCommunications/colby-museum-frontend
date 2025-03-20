@@ -50,6 +50,11 @@ export default {
 
 <style lang="scss">
 .intro-context {
+
+  &.sr-only--heading.sr-only--excerpt {
+    @extend .sr-only;
+  }
+
   @include breakpoint(large) {
     min-height: 4.235vw;
   }

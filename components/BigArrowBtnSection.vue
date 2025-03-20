@@ -1,5 +1,8 @@
 <template>
-  <div class="big-arrow-btn-section">
+  <div
+    class="big-arrow-btn-section"
+    :class="`big-arrow-btn-section--align-${align}`"
+  >
     <div class="big-arrow-btn-section__inner grid">
       <div class="big-arrow-btn-section__main">
         <BigArrowBtn
@@ -15,6 +18,10 @@ export default  {
   props: {
     button: {
       required: false,
+    },
+    align: {
+      required: false,
+      default: 'left',
     }
   }
 }
@@ -28,8 +35,29 @@ export default  {
     margin-top: 13.284vh;
   }
 
+  &--align-right {
+    @include breakpoint(medium) {
+      position: relative;
+      transform: translateY(-100%);
+      margin-top: 0;
+      overflow: visible;
+      pointer-events: none;
+    }
+  }
+
   &__main {
     grid-column: span 12 / span 12;
+
+    .big-arrow-btn-section--align-right & {
+      @include breakpoint(medium) {
+        display: flex;
+        justify-content: flex-end;
+      }
+    }
+  }
+
+  a {
+    pointer-events: all;
   }
 }
 </style>
