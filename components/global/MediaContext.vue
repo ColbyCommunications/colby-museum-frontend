@@ -1005,6 +1005,7 @@ export default {
 
             @include breakpoint(medium) {
               width: auto;
+              max-width: 100%;
               height: 100%;
             }
           }
