@@ -24,6 +24,12 @@
         url: '/collection/about-the-collection'
       }"
     />
+    <BigArrowBtnSection
+      :button="{
+        title: 'View Full Collection',
+        url: `/objects/page-1?embark_id=${embark_id}`
+      }"
+    />
   </div>
 </template>
 
@@ -45,6 +51,7 @@ export default {
     return {
       title: undefined,
       excerpt: undefined,
+      embark_id: undefined,
       components: undefined,
     };
   },
@@ -62,6 +69,8 @@ export default {
       .get(`${this.interface.endpoint}collections?slug=${this.$route.params.slug ? this.$route.params.slug : 'home'}`)
       .then((output) => {
         const post = output.data[0];
+
+        page.embark_id = post.acf.embark_id;
 
         page.title = post.title.rendered
           .replace(/–/g, '-')

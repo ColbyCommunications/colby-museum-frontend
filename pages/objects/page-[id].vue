@@ -12,6 +12,7 @@
       :per_page="20"
       :page="$route.params.id"
       :button_type="'text'"
+      :embark_ID="$route.query.embark_id"
     />
   </div>
 </template>
