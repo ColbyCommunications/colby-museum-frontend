@@ -236,6 +236,12 @@
               <label :for="`autoplay-btn--${id}`">Autoplay</label>
             </div>
           </div>
+          <div
+            v-if="items_type == 'objects' && variant == 'offset'"
+            class="media-context__label paragraph-style-2"
+          >
+            <IconZoomMagnifyingGlass /><strong>Click Image to Zoom</strong>
+          </div>
         </div>
       </div>
       <div
@@ -504,7 +510,7 @@ export default {
           });
           // this.glide.mount();
         }
-      }, 800);
+      }, 600); // VERY IMPORTANT DELAY FOR LOADING AND CONTEXT ANIMATIONS TO GEL NICELY
     },
     changeSlide(s) {
       if (s == 'next') {
@@ -1194,6 +1200,21 @@ export default {
     }
   }
 
+  &__label {
+    display: flex;
+    align-items: center;
+
+    .icon-zoom {
+      width: 20px;
+      margin-right: 6px;
+
+      @include breakpoint(medium) {
+        width: 1.389vw;
+        margin-right: 0.417vw;
+      }
+    }
+  }
+
   + div:not(.meta-data-list) {
     margin-top: 100px;
 
@@ -1211,6 +1232,8 @@ export default {
   .vh--message {
     @include subheading-style-4;
     background-color: $black;
+
+    display: none;
   }
 
   .horiztonal-curtain--loader {
@@ -1277,6 +1300,14 @@ export default {
       @include breakpoint(large) {
         font-size: 0.972vw;
       }
+    }
+  }
+
+  + .media-context__label {
+    margin-top: 5px;
+
+    @include breakpoint(large) {
+      margin-top: 3.542vh;
     }
   }
 }

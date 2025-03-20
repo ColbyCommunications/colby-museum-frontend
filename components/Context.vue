@@ -281,7 +281,7 @@ export default {
             ease: "expo.out",
           });
         }
-      }, 1100);
+      }, 1100); // VERY IMPORTANT DELAY FOR ANIMATIONS TO TRIGGER APPROPRIATELY AFTER API LOAD. CAUTION
     }
   }
 }

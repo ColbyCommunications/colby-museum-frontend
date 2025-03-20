@@ -53,9 +53,6 @@ export default {
         }
       })
       .then((output) => (todo.value = output.data))
-      .then(() => {
-        console.log('WTF');
-      })
     )
 
     useSeoMeta({
