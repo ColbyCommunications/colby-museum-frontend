@@ -177,7 +177,7 @@
                       v-if="item.image.caption.rendered && variant == 'full-width'"
                       class="media-context__caption"
                       :class="{ 'media-context__caption--active' : activeSlide == index }"
-                      v-html="item.image.caption.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
+                      v-html="item.image.caption.rendered"
                     />
                   </div>
                   <div
@@ -625,7 +625,7 @@ export default {
           newImageObj = {
             alt_text: imageObj.alt_text,
             caption: {
-              rendered: imageObj.caption.rendered,
+              rendered: imageObj.description.rendered.replace(/<img[^>]*>/g,"").replace(/<p[^>]*>|<\/p>/g, '').replace(/\r?\n|\r/g, "").replace(/<a[^>]*>|<\/a>/g, ''),
             },
             media_details: {
               sizes: {
