@@ -85,7 +85,7 @@ export default {
         page.intro_visible = post.acf.intro_visible;
         page.location = post.acf.location;
         page.address = post.acf.address;
-        page.date = new Date(`${post.acf.date.substr(0,4)}-${post.acf.date.substr(4,2)}-${post.acf.date.substr(6,2)}T00:00:00`).toLocaleDateString('en-US', {
+        page.date = new Date(post.acf.date).toLocaleDateString('en-US', {
           year: 'numeric',
           month: 'long',
           day: '2-digit',
@@ -93,7 +93,7 @@ export default {
         });
 
         if (post.acf.end_date) {
-          page.end_date = new Date(`${post.acf.end_date.substr(0,4)}-${post.acf.end_date.substr(4,2)}-${post.acf.end_date.substr(6,2)}T00:00:00`).toLocaleDateString('en-US', {
+          page.end_date = new Date(post.acf.end_date).toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'long',
             day: '2-digit',
