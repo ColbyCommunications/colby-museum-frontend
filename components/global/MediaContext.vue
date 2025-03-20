@@ -12,6 +12,15 @@
       >
         <div class="media-context__media-inner">
           <div
+            v-if="items_type == 'objects' && variant == 'offset'"
+            class="horizontal-curtain horiztonal-curtain--loader"
+            :class="loaded ? 'horizontal-curtain--inactive' : ''"
+          >
+            <ClientOnly>
+              <l-ring color="black" size="80"></l-ring>
+            </ClientOnly>
+          </div>
+          <div
             class="horizontal-curtain"
             ref="curtain"
           />
@@ -64,17 +73,10 @@
                       />
                     </NuxtLink>
                     <VueImageZoomer
-                      v-else
+                      v-else-if="artificialDelayFinished"
                       :regular="item.image.media_details.sizes.full.source_url"
                       :click-zoom="true"
                     />
-                    <!-- <Picture
-                      v-else
-                      :classes="'object-cover'"
-                      :alt="item.image.alt_text"
-                      :sizes="item.image.media_details.sizes"
-                      :loading="'eager'"
-                    /> -->
                     <div
                       v-if="item.image.caption && variant == 'full-width'"
                       class="media-context__caption"
@@ -371,7 +373,9 @@ export default {
       autoplay: false,
       perView: 1,
       stopped: true,
-      gap: 0.
+      gap: 0,
+      artificialDelayFinished: true,
+      loaded: false,
     };
   },
   props: {
@@ -442,11 +446,18 @@ export default {
       component.renderGlide();
     }
   },
-  mounted() {
+  async mounted() {
     this.id = self.crypto.randomUUID();
+
+    const { ring } = await import('ldrs');
+    ring.register();
 
     if (this.items_type == 'objects') {
       this.resizeZooms();
+
+      // setTimeout(() => {
+      //   this.artificialDelayFinished = true;
+      // }, 1000);
     }
   },
   methods: {
@@ -743,7 +754,9 @@ export default {
 
           vh.style.width = `${vh.querySelector('img').width}px`
         });
-      }, 400);
+
+        this.loaded = true;
+      }, 5000);
     }
   }
 }
@@ -1198,6 +1211,27 @@ export default {
   .vh--message {
     @include subheading-style-4;
     background-color: $black;
+  }
+
+  .horiztonal-curtain--loader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.6s cubic-bezier(0.5, 0, 0.75, 0);
+    max-height: 100vh;
+
+    l-ring {
+      opacity: 1;
+      transition: $transition-default;
+    }
+
+    &.horizontal-curtain--inactive {
+      max-height: 0;
+
+      l-ring {
+        opacity: 0;
+      }
+    }
   }
 }
 
