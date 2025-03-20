@@ -1331,6 +1331,7 @@ export default {
             type: component.aggregationTypeList,
             sort: component.objectsSort,
             sortby: component.objectsSortBy,
+            embark_id: component.$route.query.embark_id,
             has_image: component.activeFilters.includes('Has Image') ? true : false,
           }
         });
