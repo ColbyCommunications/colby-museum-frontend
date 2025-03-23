@@ -418,7 +418,7 @@
             v-if="page"
             class="pagination__btn pagination__btn--prev"
             :class="[currentPage == 1 ? 'pagination__btn--inactive' : '']"
-            :to="`/${items_type}/page-${Number(page) - 1}${this.$route.query.search || this.$route.query.maker || this.$route.query.year || this.$route.query.type || this.$route.query.sort || this.$route.query.sortby || this.$route.query.has_image || this.$route.query.chronology || this.$route.query.location || this.$route.query.variant || this.$route.query.embark_id ? '?' + this.$route.fullPath.split('?').pop() : ''}`"
+            :to="`/${items_type == 'posts' ? 'news' : items_type}/page-${Number(page) - 1}${this.$route.query.search || this.$route.query.maker || this.$route.query.year || this.$route.query.type || this.$route.query.sort || this.$route.query.sortby || this.$route.query.has_image || this.$route.query.chronology || this.$route.query.location || this.$route.query.variant || this.$route.query.embark_id ? '?' + this.$route.fullPath.split('?').pop() : ''}`"
           ><IconArrow />Previous</NuxtLink>
           <button
             v-else
@@ -434,11 +434,17 @@
           />
           <ul v-else>
             <li
-              v-for="index in Number(totalPages)"
+              v-for="index in pagination"
               :class="[currentPage == index ? 'active' : '']"
               :key="index"
             >
+              <span
+                v-if="index == '...'"
+              >
+                ...
+              </span>
               <NuxtLink
+                v-else
                 :to="`/${items_type == 'posts' ? 'news' : items_type}/page-${index}${this.$route.query.search || this.$route.query.maker || this.$route.query.year || this.$route.query.type || this.$route.query.sort || this.$route.query.sortby || this.$route.query.has_image || this.$route.query.chronology || this.$route.query.location || this.$route.query.variant || this.$route.query.embark_id ? '?' + this.$route.fullPath.split('?').pop() : ''}`"
               >
                 <span class="sr-only">Go to Page </span>{{ index }}
@@ -498,6 +504,7 @@ export default {
       currentPage: undefined,
       pages: undefined,
       nextPageAvailable: undefined,
+      pagination: [],
       filters: undefined,
       sorters: undefined,
       activeFilters: [],
@@ -979,6 +986,9 @@ export default {
                   }
                 }
               }
+
+              component.pagination = component.preparedPagination(component.currentPage, component.totalPages, 6);
+              console.log(component.pagination);
             });
         });
     },
@@ -1346,6 +1356,25 @@ export default {
           }
         });
       }
+    },
+    preparedPagination(currentPage, totalPages, rangeSize) {
+      const range = [];
+      const startPage = Math.max(1, currentPage - Math.floor(rangeSize / 2));
+      const endPage = Math.min(totalPages, startPage + rangeSize - 1);
+
+      for (let i = startPage; i <= endPage; i++) {
+        range.push(i);
+      }
+
+      if (range[0] > 1) {
+        range.unshift('...');
+      }
+
+      if (range[range.length - 1] < totalPages) {
+        range.push('...');
+      }
+
+      return range;
     },
     animate() {
       setTimeout(() => {

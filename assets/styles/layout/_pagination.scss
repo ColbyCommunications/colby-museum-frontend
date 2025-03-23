@@ -23,6 +23,11 @@
       }
     }
 
+    li > span {
+      pointer-events: none;
+    }
+
+    li > span,
     button,
     a {
       @include paragraph-style-1;
