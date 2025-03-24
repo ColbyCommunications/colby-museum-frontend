@@ -1,7 +1,7 @@
 <template>
   <div class="page page--default">
     <IntroContext
-      :heading="`News — Page ${$route.params.id }`"
+      :heading="`${$route.query.category == 6 ? 'Lunder Institute ' : ''}News — Page ${$route.params.id }`"
       :headingElement="'h1'"
       :subheading="'Lorem Ipsum solar set.'"
     />
@@ -13,6 +13,7 @@
       :per_page="20"
       :page="$route.params.id"
       :button_type="'text'"
+      :items_category="$route.query.category"
     />
   </div>
 </template>
@@ -25,11 +26,9 @@ export default {
     const route = useRoute();
     const todo = ref({})
 
-    console.log(route);
-
     useSeoMeta({
-      ogTitle: () => `Exhibitions - Page ${route.params.id} | Colby College Museum of Art · Colby College`,
-      title: () => `Exhibitions - Page ${route.params.id} | Colby College Museum of Art · Colby College`,
+      ogTitle: () => `News - Page ${route.params.id} | Colby College Museum of Art · Colby College`,
+      title: () => `News - Page ${route.params.id} | Colby College Museum of Art · Colby College`,
       // ogDescription: () => todo.value.excerpt?.rendered,
       // description: () => todo.value.excerpt?.rendered,
     });

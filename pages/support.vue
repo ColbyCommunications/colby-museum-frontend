@@ -62,7 +62,7 @@ export default {
 
     this.fullPath = this.$route.fullPath;
 
-    console.log(this.$route);
+    // console.log(this.$route);
     // console.log(this.$route.params);
     // console.log(this.$route.params.slug);
     // console.log(`${this.interface.endpoint}pages?slug=${this.$route.params.slug ? this.$route.params.slug : 'home'}`);

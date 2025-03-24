@@ -147,7 +147,7 @@ export default {
           hitsPerPage: 40
         })
         .then((output) => {
-          console.log(output);
+          // console.log(output);
 
           component.totalPages = output.nbPages;
           component.items = output.hits.map((i) => ({

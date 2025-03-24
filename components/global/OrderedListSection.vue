@@ -53,8 +53,6 @@ export default {
       component.newItems = [...Array(this.items)].map((el, i) => ({
         text: component.blockData[`items_${i}_text`],
       }));
-
-      console.log(component.newItems);
     }
   },
   mounted() {

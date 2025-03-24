@@ -418,7 +418,7 @@
             v-if="page"
             class="pagination__btn pagination__btn--prev"
             :class="[currentPage == 1 ? 'pagination__btn--inactive' : '']"
-            :to="`/${items_type == 'posts' ? 'news' : items_type}/page-${Number(page) - 1}${this.$route.query.search || this.$route.query.maker || this.$route.query.year || this.$route.query.type || this.$route.query.sort || this.$route.query.sortby || this.$route.query.has_image || this.$route.query.chronology || this.$route.query.location || this.$route.query.variant || this.$route.query.embark_id ? '?' + this.$route.fullPath.split('?').pop() : ''}`"
+            :to="`/${items_type == 'posts' ? 'news' : items_type}/page-${Number(page) - 1}${this.$route.query.search || this.$route.query.maker || this.$route.query.year || this.$route.query.type || this.$route.query.sort || this.$route.query.sortby || this.$route.query.has_image || this.$route.query.chronology || this.$route.query.location || this.$route.query.variant || this.$route.query.category || this.$route.query.embark_id ? '?' + this.$route.fullPath.split('?').pop() : ''}`"
           ><IconArrow />Previous</NuxtLink>
           <button
             v-else
@@ -445,7 +445,7 @@
               </span>
               <NuxtLink
                 v-else
-                :to="`/${items_type == 'posts' ? 'news' : items_type}/page-${index}${this.$route.query.search || this.$route.query.maker || this.$route.query.year || this.$route.query.type || this.$route.query.sort || this.$route.query.sortby || this.$route.query.has_image || this.$route.query.chronology || this.$route.query.location || this.$route.query.variant || this.$route.query.embark_id ? '?' + this.$route.fullPath.split('?').pop() : ''}`"
+                :to="`/${items_type == 'posts' ? 'news' : items_type}/page-${index}${this.$route.query.search || this.$route.query.maker || this.$route.query.year || this.$route.query.type || this.$route.query.sort || this.$route.query.sortby || this.$route.query.has_image || this.$route.query.chronology || this.$route.query.location || this.$route.query.variant || this.$route.query.category || this.$route.query.embark_id ? '?' + this.$route.fullPath.split('?').pop() : ''}`"
               >
                 <span class="sr-only">Go to Page </span>{{ index }}
                 <IconArrow />
@@ -456,7 +456,7 @@
             v-if="page"
             class="pagination__btn pagination__btn--next"
             :class="[nextPageAvailable == false ? 'pagination__btn--inactive' : '']"
-            :to="`/${items_type == 'posts' ? 'news' : items_type}/page-${Number(page) + 1}${this.$route.query.search || this.$route.query.maker || this.$route.query.year || this.$route.query.type || this.$route.query.sort || this.$route.query.sortby || this.$route.query.has_image || this.$route.query.chronology || this.$route.query.location || this.$route.query.embark_id ? '?' + this.$route.fullPath.split('?').pop() : ''}`"
+            :to="`/${items_type == 'posts' ? 'news' : items_type}/page-${Number(page) + 1}${this.$route.query.search || this.$route.query.maker || this.$route.query.year || this.$route.query.type || this.$route.query.sort || this.$route.query.sortby || this.$route.query.has_image || this.$route.query.chronology || this.$route.query.location || this.$route.query.category || this.$route.query.embark_id ? '?' + this.$route.fullPath.split('?').pop() : ''}`"
           >Next<IconArrow /></NuxtLink>
           <button
             v-else
@@ -751,7 +751,7 @@ export default {
       }
 
       if (component.objectsSortBy == 'name') {
-        filterSort.push({'Disp_Maker_1' : component.objectsSort});
+        filterSort.push({'Sort_Artist' : component.objectsSort});
       } else if (component.objectsSort == 'year') {
         filterSort.push({'Disp_Create_DT' : 'desc'});
       } else if (component.objectsSortBy == 'title') {
@@ -911,13 +911,15 @@ export default {
 
       component.currentPage = page;
 
+      console.log(`${component.interface.endpoint}categories?parent=${component.items_category}`);
+
       await axios
         .get(`${component.interface.endpoint}categories?parent=${component.items_category}`)
         .then(async (output) => {
           let categories;
           let chr;
           let type = '';
-          let meta_date;
+          let meta_date = '';
 
           categories = output.data.map((c) => c.id);
 
@@ -946,12 +948,12 @@ export default {
           }
 
           // EXAMPLE OF SORTING BY START DATE
-          console.log(`${component.interface.endpoint}${component.items_type == 'posts' ? 'posts' : component.items_type}?categories_exclude=1${chr}${type}${meta_date}&categories=${component.items_category}${categories.length > 0 ? `,${categories.toString()}` : '' }&per_page=${component.per_page}&page=${page}${searchTerm ? `&search=${searchTerm}` : ''}${component.alphabeticalOrder ? '&orderby=title' : ''}${component.reverseOrder ? '&order=asc' : ''}`);
+          // console.log(`${component.interface.endpoint}${component.items_type == 'posts' ? 'posts' : component.items_type}?categories_exclude=1${chr}${type}${meta_date}&categories=${component.items_category}${categories.length > 0 ? `,${categories.toString()}` : '' }&per_page=${component.per_page}&page=${page}${searchTerm ? `&search=${searchTerm}` : ''}${component.alphabeticalOrder ? '&orderby=title' : ''}${component.reverseOrder ? '&order=asc' : ''}`);
 
+          console.log(`${component.interface.endpoint}${component.items_type == 'posts' ? 'posts' : component.items_type}?categories_exclude=1${chr}${type}${meta_date}&categories=${component.items_category}${categories.length > 0 ? `,${categories.toString()}` : '' }&per_page=${component.per_page}&page=${page}${searchTerm ? `&search=${searchTerm}` : ''}${component.alphabeticalOrder ? '&orderby=title' : ''}${component.reverseOrder ? '&order=asc' : ''}`);
           await axios
             .get(`${component.interface.endpoint}${component.items_type == 'posts' ? 'posts' : component.items_type}?categories_exclude=1${chr}${type}${meta_date}&categories=${component.items_category}${categories.length > 0 ? `,${categories.toString()}` : '' }&per_page=${component.per_page}&page=${page}${searchTerm ? `&search=${searchTerm}` : ''}${component.alphabeticalOrder ? '&orderby=title' : ''}${component.reverseOrder ? '&order=asc' : ''}`)
             .then((output) => {
-              console.log(output.data);
 
               component.totalPages = output.headers['x-wp-totalpages'];
 
@@ -972,19 +974,18 @@ export default {
               if (component.items_type == 'events' || component.items_type == 'exhibitions') {
                 if (component.alphabeticalOrder == false) {
                   if (component.showChronology == 'past') {
-                    component.newItems.sort((a,b) => b.event_date.getTime() - a.event_date.getTime()); TEMP
+                    component.newItems.sort((a,b) => b.event_date.getTime() - a.event_date.getTime());
                   } else {
                     if (component.$route.query.variant == 'traveling') {
                       component.newItems.sort((a,b) => b.event_date.getTime() - a.event_date.getTime());
                     } else {
-                      component.newItems.sort((a,b) => b.event_date.getTime() - a.event_date.getTime()); TEMP
+                      component.newItems.sort((a,b) => b.event_date.getTime() - a.event_date.getTime());
                     }
                   }
                 }
               }
 
               component.pagination = component.preparedPagination(component.currentPage, component.totalPages, 6);
-              console.log(component.pagination);
             });
         });
     },
@@ -1011,8 +1012,8 @@ export default {
           .then((output) => {
             imageObj = output.data;
 
-            console.log(`${component.interface.endpoint}media/${i}`);
-            console.log(imageObj);
+            // console.log(`${component.interface.endpoint}media/${i}`);
+            // console.log(imageObj);
 
             // Below, the image object is pulling DESCRIPTION field from
             // the Media Library instead of CAPTION for formatting purposes
@@ -1181,8 +1182,6 @@ export default {
         this.filters[1].items.find(item => item.name == 'past').active = false;
         this.filters[1].items.find(item => item.name == 'current').active = false;
       }
-
-      console.log(this.filters);
 
       this.triggerNavigateTo();
       this.getPosts(1, this.input);

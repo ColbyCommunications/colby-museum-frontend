@@ -85,7 +85,6 @@ export default {
       .get(`${this.interface.endpoint}exhibitions?slug=${this.$route.params.slug ? this.$route.params.slug : 'home'}`)
       .then((output) => {
         const post = output.data[0];
-        console.log(post.date);
 
         page.title = post.title.rendered
           .replace(/–/g, '-')
@@ -113,8 +112,6 @@ export default {
             day: '2-digit',
             hour12: false
           });
-
-          console.log(page.end_date);
         }
 
         page.getBreadcrumbs(post);

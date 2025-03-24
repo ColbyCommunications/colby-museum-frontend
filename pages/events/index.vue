@@ -22,7 +22,7 @@ export default {
     const route = useRoute();
     const todo = ref({})
 
-    console.log(route);
+    // console.log(route);
 
     useFetch(() => 
       fetch(`${props.interface.endpoint}pages?slug=events`)
@@ -30,7 +30,7 @@ export default {
         .then((output) => (todo.value = output[0]))
     )
     
-    console.log(todo.value);
+    // console.log(todo.value);
 
     useSeoMeta({
       ogTitle: () => `${todo.value.title ? todo.value.title?.rendered + ' | ' : ''}Colby College Museum of Art · Colby College`,

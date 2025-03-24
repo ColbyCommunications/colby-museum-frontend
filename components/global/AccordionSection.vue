@@ -76,8 +76,6 @@ export default {
         heading: component.blockData[`items_${i}_heading`],
         context: component.blockData[`items_${i}_context`],
       }));
-
-      console.log(component.newItems);
     }
   },
   mounted() {

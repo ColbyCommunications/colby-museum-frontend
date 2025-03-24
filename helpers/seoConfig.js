@@ -19,10 +19,10 @@ const pageSEO = (props, type) => {
           await axios
             .get(`${useInterfaceStore().endpoint}media/${todo.value.featured_media}`)
             .then((output) => {
-              console.log(output);
+              // console.log(output);
               imageObj = output.data;
               imagePath = imageObj ? imageObj.media_details.sizes.desktop.source_url : '';
-              console.log(imagePath);
+              // console.log(imagePath);
             })
             .then(() => {
               useSeoMeta({

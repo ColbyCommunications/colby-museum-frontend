@@ -20,17 +20,13 @@ import transitionConfig from '../helpers/transitionConfig';
 export default {
   setup(props) {
     const route = useRoute();
-    const todo = ref({})
-
-    console.log(route);
+    const todo = ref({});
 
     useFetch(() => 
       fetch(`${props.interface.endpoint}pages?slug=news`)
         .then(res => res.json())
         .then((output) => (todo.value = output[0]))
     )
-    
-    console.log(todo.value);
 
     useSeoMeta({
       ogTitle: () => `${todo.value.title ? todo.value.title?.rendered + ' | ' : ''}Colby College Museum of Art · Colby College`,
