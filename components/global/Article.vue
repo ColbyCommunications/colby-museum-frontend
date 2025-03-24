@@ -21,7 +21,7 @@
       :size="size"
       :bordered="bordered"
       :heading="post.title.rendered"
-      :subheading="formatDate(post.acf.date) + (post.acf.end_date && post.acf.date != post.acf.end_date ? `—${formatDate(post.acf.end_date)}` : '' )"
+      :subheading="formatDate(post.acf.date, 'events') + (post.acf.end_date && post.acf.end_date != '' && post.acf.date != post.acf.end_date ? `—${formatDate(post.acf.end_date, 'events')}` : '' )"
       :image="stagedImage"
       :button="{
         type: button_type,

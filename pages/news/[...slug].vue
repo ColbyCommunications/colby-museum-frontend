@@ -1,5 +1,17 @@
 <template>
   <div class="page page--default">
+    <Breadcrumbs
+      v-if="$route.params.slug != ''"
+      :items="breadcrumbs"
+      :current="{
+        title: title,
+        url: fullPath,
+      }"
+      :manual="{
+        title: 'News',
+        url: '/news',
+      }"
+    />
     <IntroContext
       :heading="title"
       :headingElement="'h1'"

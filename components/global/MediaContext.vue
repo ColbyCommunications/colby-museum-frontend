@@ -108,7 +108,7 @@
                       v-else-if="item.post && (item.post.type == 'events' || item.post.type == 'exhibitions')"
                       :size="'small'"
                       :heading="item.post.title.rendered"
-                      :subheading="formatDate(item.post.acf.date) + (item.post.acf.end_date && item.post.acf.date != item.post.acf.end_date ? `—${formatDate(item.post.acf.end_date)}` : '' )"
+                      :subheading="formatDate(item.post.acf.date, 'events') + (item.post.acf.end_date && item.post.acf.date != item.post.acf.end_date ? `—${formatDate(item.post.acf.end_date, 'events')}` : '' )"
                       :button="{
                         title: item.post.type == 'events' ? 'Event Details' : 'Exhibition Details',
                         url: item.post.link
@@ -561,6 +561,8 @@ export default {
           day: '2-digit',
           hour12: false
         });
+      } else if (style == 'events-raw') {
+        formattedDate = new Date(`${d.substr(0,4)}-${d.substr(4,2)}-${d.substr(6,2)}T00:00:00`);
       } else {
         formattedDate = new Date(d).toLocaleDateString('en-US', {
           year: 'numeric',
@@ -575,6 +577,7 @@ export default {
       const component = this;
       let chr;
       let type = '';
+      let meta_date;
 
       if ((component.showChronology == 'current') && (component.items_type == 'events' || component.items_type == 'exhibitions')) {
         chr = '&chronologies=9';
@@ -590,14 +593,29 @@ export default {
         type = '&variant=14';
       }
 
-      // console.log(`${component.interface.endpoint}${component.items_type}?categories_exclude=1${chr}${type}&per_page=5&page=1`);
+      // Trying to varify if filer parameters work with Wordpress REST API
+      // if (component.items_type == 'events' || component.items_type == 'exhibitions') {
+      //   if (component.showChronology) {
+      //     meta_date = `&filter[orderby]=meta_value&filter[meta_key]=date&filter[order]=DESC`;
+      //   } else {
+      //     meta_date = `&filter[orderby]=meta_value&filter[meta_key]=date&filter[order]=ASC`;
+      //   }
+      // }
+
+      console.log(`${component.interface.endpoint}${component.items_type}?categories_exclude=1${chr}${type}&per_page=5&page=1`);
 
       await axios
         .get(`${component.interface.endpoint}${component.items_type}?categories_exclude=1${chr}${type}&per_page=5&page=1`)
         .then((output) => {
           component.newItems = output.data.map((i) => ({
             post: i,
+            event_date: i.acf.date ? component.formatDate(i.acf.date, 'events-raw') : undefined,
           }));
+
+          // Temporary solution for ordering by start date
+          if (component.items_type == 'events' || component.items_type == 'exhibitions') {
+            component.newItems.sort((a,b) => b.event_date.getTime() - a.event_date.getTime());
+          }
         });
     },
     async getPost(i, type) {

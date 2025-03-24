@@ -1,5 +1,17 @@
 <template>
   <div class="page page--default">
+    <Breadcrumbs
+      v-if="$route.params.slug != ''"
+      :items="breadcrumbs"
+      :current="{
+        title: title,
+        url: fullPath,
+      }"
+      :manual="{
+        title: 'News',
+        url: '/news',
+      }"
+    />
     <IntroContext
       :class="[heading_visible ? '' : 'sr-only--heading', excerpt_visible ? '' : 'sr-only--excerpt']"
       :heading="title"
@@ -87,7 +99,7 @@ export default {
         page.excerpt_visible = post.acf.excerpt_visible;
         page.location = post.acf.location;
         page.address = post.acf.address;
-        page.date = new Date(post.acf.date).toLocaleDateString('en-US', {
+        page.date = new Date(`${post.acf.date.substr(0,4)}-${post.acf.date.substr(4,2)}-${post.acf.date.substr(6,2)}T00:00:00`).toLocaleDateString('en-US', {
           year: 'numeric',
           month: 'long',
           day: '2-digit',
@@ -95,7 +107,7 @@ export default {
         });
 
         if (post.acf.end_date) {
-          page.end_date = new Date(post.acf.end_date).toLocaleDateString('en-US', {
+          page.end_date = new Date(`${post.acf.end_date.substr(0,4)}-${post.acf.end_date.substr(4,2)}-${post.acf.end_date.substr(6,2)}T00:00:00`).toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'long',
             day: '2-digit',
@@ -105,6 +117,9 @@ export default {
           console.log(page.end_date);
         }
 
+        page.getBreadcrumbs(post);
+
+        // Exhibitions do not have start and end times so thsi will be deleted.
         // page.start_time = this.formatTime(post.acf.start_time);
         // page.end_time = this.formatTime(post.acf.end_time);
 
@@ -131,6 +146,15 @@ export default {
       const ampm = (hour >= 12) ? "pm" : "am";
 
       return `${hour == 12 || hour == 0 ? 12 : hour % 12}:${min}${ampm}`
+    },
+    async getBreadcrumbs(post) {
+      const component = this;
+
+      await axios
+        .get(`${this.interface.endpoint}breadcrumbs/${post.id}`)
+        .then((output_b) => {
+          component.breadcrumbs = output_b.data;
+        });
     }
   }
 }

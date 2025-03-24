@@ -1,5 +1,17 @@
 <template>
   <div class="page page--default">
+    <Breadcrumbs
+      v-if="$route.params.slug != ''"
+      :items="breadcrumbs"
+      :current="{
+        title: title,
+        url: fullPath,
+      }"
+      :manual="{
+        title: 'Events',
+        url: '/events',
+      }"
+    />
     <IntroContext
       :class="[heading_visible ? '' : 'sr-only--heading', excerpt_visible ? '' : 'sr-only--excerpt']"
       :heading="title"
@@ -108,8 +120,8 @@ export default {
           console.log(page.end_date);
         }
 
-        page.start_time = this.formatTime(post.acf.start_time);
-        page.end_time = this.formatTime(post.acf.end_time);
+        page.start_time = post.acf.start_time;
+        page.end_time = post.acf.end_time;
 
         page.components = post.block_data.map((component) => {
           

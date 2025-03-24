@@ -27,6 +27,18 @@
               </span>
             </span>
           </li>
+          <li v-if="manual">
+            <span class="context__word">
+              <span>
+                <NuxtLink
+                  :to="manual.url"
+                >
+                  <IconArrow />
+                  {{ manual.title }}
+                </NuxtLink>
+              </span>
+            </span>
+          </li>
           <li class="current">
             <span class="context__word">
               <span>
@@ -60,7 +72,10 @@ export default {
         url: '/',
         title: ''
       }
-    }
+    },
+    manual: {
+      required: false,
+    },
   },
   watch: {
     items: {

@@ -452,18 +452,6 @@
               </NuxtLink>
             </li>
           </ul>
-          <!-- <ul v-else>
-            <li
-              v-for="index in Number(totalPages)"
-              :class="[currentPage == index ? 'active' : '']"
-              :key="index"
-            >
-              <button @click="getPosts(index)">
-                <span class="sr-only">Go to Page </span>{{ index }}
-                <IconArrow />
-              </button>
-            </li>
-          </ul> -->
           <NuxtLink
             v-if="page"
             class="pagination__btn pagination__btn--next"
@@ -653,6 +641,8 @@ export default {
         }
 
         component.filters[1].items.find(item => item.name == component.$route.query.chronology).active = true;
+      } else {
+        // component.showPast = true;
       }
 
       if (component.$route.query.location) {
@@ -938,7 +928,7 @@ export default {
           } else if ((component.showChronology == 'future' || component.showFuture) && (component.items_type == 'events' || component.items_type == 'exhibitions')) {
             chr = '&chronologies_exclude=8,9'; // EXCLUDE PAST AND CURRENT
           } else {
-            if (component.$route.query.variant != 'traveling') {
+            if (component.$route.query.variant != 'traveling' && component.items_type != 'events') {
               chr = '&chronologies_exclude=8'; // EXCLUDE PAST AS LONG AS WE ARENT IN TRAVELING EXHIBITIONS
             }
           }
@@ -948,15 +938,20 @@ export default {
           }
 
           if (component.items_type == 'events' || component.items_type == 'exhibitions') {
-            meta_date = `&?filter[orderby]=meta_value&?filter[meta_key]=date&filter[order]=DESC`;
+            if (component.showChronology) {
+              meta_date = `&?filter[orderby]=meta_value&?filter[meta_key]=date&filter[order]=DESC`;
+            } else {
+              meta_date = `&?filter[orderby]=meta_value&?filter[meta_key]=date&filter[order]=ASC`;
+            }
           }
 
           // EXAMPLE OF SORTING BY START DATE
-          // console.log(`${component.interface.endpoint}${component.items_type == 'posts' ? 'posts' : component.items_type}?categories_exclude=1${chr}${type}${meta_date}&categories=${component.items_category}${categories.length > 0 ? `,${categories.toString()}` : '' }&per_page=${component.per_page}&page=${page}${searchTerm ? `&search=${searchTerm}` : ''}${component.alphabeticalOrder ? '&orderby=title' : ''}${component.reverseOrder ? '&order=asc' : ''}`);
+          console.log(`${component.interface.endpoint}${component.items_type == 'posts' ? 'posts' : component.items_type}?categories_exclude=1${chr}${type}${meta_date}&categories=${component.items_category}${categories.length > 0 ? `,${categories.toString()}` : '' }&per_page=${component.per_page}&page=${page}${searchTerm ? `&search=${searchTerm}` : ''}${component.alphabeticalOrder ? '&orderby=title' : ''}${component.reverseOrder ? '&order=asc' : ''}`);
 
           await axios
             .get(`${component.interface.endpoint}${component.items_type == 'posts' ? 'posts' : component.items_type}?categories_exclude=1${chr}${type}${meta_date}&categories=${component.items_category}${categories.length > 0 ? `,${categories.toString()}` : '' }&per_page=${component.per_page}&page=${page}${searchTerm ? `&search=${searchTerm}` : ''}${component.alphabeticalOrder ? '&orderby=title' : ''}${component.reverseOrder ? '&order=asc' : ''}`)
             .then((output) => {
+              console.log(output.data);
 
               component.totalPages = output.headers['x-wp-totalpages'];
 
@@ -973,15 +968,16 @@ export default {
                 }
               });
 
+              // Temporary solution for ordering by start date
               if (component.items_type == 'events' || component.items_type == 'exhibitions') {
                 if (component.alphabeticalOrder == false) {
                   if (component.showChronology == 'past') {
-                    component.newItems.sort((a,b) => b.event_date.getTime() - a.event_date.getTime());
+                    component.newItems.sort((a,b) => b.event_date.getTime() - a.event_date.getTime()); TEMP
                   } else {
                     if (component.$route.query.variant == 'traveling') {
                       component.newItems.sort((a,b) => b.event_date.getTime() - a.event_date.getTime());
                     } else {
-                      component.newItems.sort((a,b) => a.event_date.getTime() - b.event_date.getTime());
+                      component.newItems.sort((a,b) => b.event_date.getTime() - a.event_date.getTime()); TEMP
                     }
                   }
                 }
