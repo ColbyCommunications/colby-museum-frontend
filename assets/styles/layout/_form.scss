@@ -275,17 +275,27 @@ textarea.input {
 }
 
 .BBFormFieldLabel {
-  @include paragraph-style-2;
+  font-family: $font-primary !important;
+  font-size: rem-calc(20px) !important;
+  font-weight: 400 !important;
+  font-style: normal !important;
+  line-height: 140% !important;
+  letter-spacing: rem-calc(-0.4px) !important;
+
+  @include breakpoint(medium) {
+    margin-bottom: 2.214vh !important;
+  }
+
+  @include breakpoint(large) {
+    font-size: 1.389vw !important; // 20px / 1440px
+    letter-spacing: -0.033vw !important;
+  }
 
   display: inline-block !important;
   padding: 0 !important;
   font-weight: 700 !important;
   margin-bottom: 18px !important;
   text-align: left !important;
-
-  @include breakpoint(medium) {
-    margin-bottom: 2.214vh !important;
-  }
 }
 
 .BBFormTextbox {
