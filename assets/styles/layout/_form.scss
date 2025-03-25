@@ -261,12 +261,12 @@ textarea.input {
 .BBFormFieldLabel {
   @include paragraph-style-2;
 
-  display: inline-block;
-  font-weight: 700;
-  margin-bottom: 18px;
+  display: inline-block !important;
+  font-weight: 700 !important;
+  margin-bottom: 18px !important;
 
   @include breakpoint(medium) {
-    margin-bottom: 2.214vh;
+    margin-bottom: 2.214vh !important;
   }
 }
 

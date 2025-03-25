@@ -372,26 +372,13 @@
           :button_type="button_type"
         />
       </div>
-      <!-- Monitor -->
-      <!-- <div
-        v-else-if="items_type == 'manual'"
-        v-for="(item, index) in newItems"
-        class="article-grid__item"
-      >
-        <Article
-          v-bind="item"
-          :hover="hover"
-          :bordered="bordered"
-          :button_type="button_type"
-        />
-      </div> -->
-      <!-- End Monitor -->
       <div
         v-else-if="typeof items === 'number' || items_type != 'manual'"
         v-for="(item, index) in newItems.slice(0, per_page)"
         class="article-grid__item"
       >
         <Article
+          :size="variant == 'embark' ? 'embark' : undefined"
           v-bind="item"
           :hover="hover"
           :bordered="bordered"

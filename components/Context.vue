@@ -510,8 +510,12 @@ export default {
       @extend .paragraph-style-3;
     }
 
-    .context--embark {
+    .context--embark & {
       @extend .paragraph-style-3;
+
+      @include breakpoint(large) {
+        font-size: 0.972vw;
+      }
     }
   }
 }
