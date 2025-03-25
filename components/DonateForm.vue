@@ -35,8 +35,8 @@ export default {
 
 .donate-form {
   &__main {
-    grid-column: span 8 / span 8;
-    grid-column-start: 3;
+    grid-column: span 10 / span 10;
+    grid-column-start: 2;
   }
 }
 </style>
