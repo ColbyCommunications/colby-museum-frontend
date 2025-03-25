@@ -113,7 +113,7 @@ export default {
           page.images = post.Images.map((i) => ({
             image: {
               caption: {
-                rendered: `${post.Disp_Maker_1}, <i>${post.Disp_Title}</i>, ${post.Disp_Create_DT}. ${post.Disp_Medium}${post.Disp_Dimen ? ', ' + post.Disp_Dimen : ''}. Colby College Museum of Art${post.Dedication ? ', ' + post.Dedication : ''}; ${post.Disp_Access_No}`,
+                rendered: `<strong>${post.Disp_Maker_1}</strong>, <i>${post.Disp_Title}</i>, ${post.Disp_Create_DT}. ${post.Disp_Medium}${post.Disp_Dimen ? ', ' + post.Disp_Dimen : ''}. Colby College Museum of Art${post.Dedication ? ', ' + post.Dedication : ''}; ${post.Disp_Access_No}`,
               },
               alt_text: post.Disp_Medium,
               media_details: {
