@@ -249,7 +249,17 @@ textarea.input {
 }
 
 .BBFormSectionHeading {
-  @extend .heading-style-3;
+  font-family: $font-primary !important;
+  font-size: rem-calc(24px) !important;
+  font-weight: 700 !important;
+  font-style: normal !important;
+  line-height: 115% !important;
+  letter-spacing: rem-calc(-0.5px) !important;
+
+  @include breakpoint(large) {
+    letter-spacing: -0.039vw !important;
+  }
+
   padding: 0 !important;
   border-bottom: 0 !important;
 }
@@ -262,8 +272,10 @@ textarea.input {
   @include paragraph-style-2;
 
   display: inline-block !important;
+  padding: 0 !important;
   font-weight: 700 !important;
   margin-bottom: 18px !important;
+  text-align: left !important;
 
   @include breakpoint(medium) {
     margin-bottom: 2.214vh !important;
