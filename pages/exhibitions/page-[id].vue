@@ -1,7 +1,7 @@
 <template>
   <div class="page page--default">
     <IntroContext
-      :heading="`${$route.query.variant ? $route.query.variant + ' ' : ''}Exhibitions — Page ${$route.params.id }`"
+      :heading="`${$route.query.chronology ? $route.query.chronology + ' ' : ''}${$route.query.variant ? $route.query.variant + ' ' : ''}Exhibitions — Page ${$route.params.id }`"
       :headingElement="'h1'"
       :subheading="'As part of its mission as a collecting and teaching museum, the Colby College Museum of Art houses a diverse collection with a focus on American and contemporary art.'"
     />

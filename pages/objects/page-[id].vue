@@ -5,11 +5,20 @@
       :headingElement="'h1'"
       :subheading="'As part of its mission as a collecting and teaching museum, the Colby College Museum of Art houses a diverse collection with a focus on American and contemporary art.'"
     />
-    <ArticleGrid
+    <!-- <ArticleGrid
       :variant="'curated'"
       :hover="'text'"
       :items_type="'objects'"
       :per_page="20"
+      :page="$route.params.id"
+      :button_type="'text'"
+      :embark_ID="$route.query.embark_id"
+    /> -->
+    <ArticleGrid
+      :hover="'text'"
+      :items_type="'objects'"
+      :columns="6"
+      :per_page="30"
       :page="$route.params.id"
       :button_type="'text'"
       :embark_ID="$route.query.embark_id"

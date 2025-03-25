@@ -1428,6 +1428,10 @@ export default {
       .article-grid--3-columns & {
         grid-column: span 4 / span 4;
       }
+
+      .article-grid--6-columns & {
+        grid-column: span 2 / span 2;
+      }
     }
 
     &:nth-child(12n - 7) {  // 12n if neccessary

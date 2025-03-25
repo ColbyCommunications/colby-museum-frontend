@@ -140,6 +140,12 @@ export default {
         this.animate();
       }
     },
+    heading: {
+      deep: true,
+      handler() {
+        this.animate();
+      }
+    },
     image: {
       deep: true,
       handler() {
