@@ -264,13 +264,17 @@ textarea.input {
   border-bottom: 0 !important;
 }
 
+.BBFormSection {
+  margin-bottom: 7.872vh !important;
+}
+
 .BBFormFieldContainer {
   display: flex !important;
   flex-direction: column !important;
   margin: 0 !important;
 
   + .BBFormFieldContainer {
-    margin-top: 20px !important;
+    margin-top: 7.872vh !important;
   }
 }
 
