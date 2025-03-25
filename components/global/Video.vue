@@ -174,7 +174,7 @@ export default {
     margin-top: 100px;
 
     @include breakpoint(medium) {
-      margin-top: 13.284vh;
+      margin-top: 10vh;
     }
   }
 }
