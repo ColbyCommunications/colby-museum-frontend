@@ -131,7 +131,7 @@ export default {
   background-color: map.get($layout-colors, ambiant);
 
   @include breakpoint(large) {
-    margin: 10vh 0;
+    margin: 12vh 0;
     font-size: 5.625vw;
     letter-spacing: -0.056vw;
   }

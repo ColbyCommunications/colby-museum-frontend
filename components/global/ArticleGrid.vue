@@ -1387,7 +1387,7 @@ export default {
 
       @include breakpoint(large) {
         grid-column: span 3 / span 3;
-        margin-bottom: 10vh;
+        margin-bottom: 12vh;
 
         .article-grid--2-columns & {
           grid-column: span 6 / span 6;
@@ -1406,7 +1406,7 @@ export default {
 
     @include breakpoint(large) {
       grid-column: span 3 / span 3;
-      margin-bottom: 10vh;
+      margin-bottom: 12vh;
 
       .article-grid--2-columns & {
         grid-column: span 6 / span 6;

@@ -93,7 +93,7 @@ export default {
     margin-top: 100px;
 
     @include breakpoint(large) {
-      margin-top: 10vh;
+      margin-top: 12vh;
     }
   }
 
@@ -101,7 +101,7 @@ export default {
     margin-top: 100px;
 
     @include breakpoint(large) {
-      margin-top: 10vh;
+      margin-top: 12vh;
     }
   }
 

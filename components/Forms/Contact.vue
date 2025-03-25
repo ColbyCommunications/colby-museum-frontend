@@ -97,7 +97,7 @@ const submitForm = async () => {
   margin-top: 60px;
 
   @include breakpoint(large) {
-    margin-top: 10vh;
+    margin-top: 12vh;
   }
 
   &__full-col,

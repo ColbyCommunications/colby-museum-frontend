@@ -32,7 +32,7 @@ export default  {
   margin-top: 100px;
 
   @include breakpoint(medium) {
-    margin-top: 10vh;
+    margin-top: 12vh;
   }
 
   &--align-right {

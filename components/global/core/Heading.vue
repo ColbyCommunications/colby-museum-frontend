@@ -24,7 +24,7 @@ export default {
 <style lang="scss">
 .core-heading {
   + div {
-    margin-top: 10vh;
+    margin-top: 12vh;
   }
 }
 </style>
