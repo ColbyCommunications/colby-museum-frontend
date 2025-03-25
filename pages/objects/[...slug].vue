@@ -1,13 +1,5 @@
 <template>
   <div class="page page--object">
-    <Modal v-if="images">
-      <MediaContext
-        :variant="'full-width'"
-        :items="images"
-        :items_type="'objects'"
-        :autoplay="false"
-      />
-    </Modal>
     <IntroContext
       :heading="title"
       :headingElement="'h1'"
