@@ -44,8 +44,14 @@ export default {
       border-bottom-color: #000 !important;
     }
 
-    input {
+    input, select, textarea {
       border: 1px solid black !important;
+    }
+
+    input[type=checkbox]{
+      background-color: #000 !important;
+      width: 15px;
+      height: 15px; 
     }
 
     input[type=submit]{
