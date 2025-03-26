@@ -1259,6 +1259,12 @@ export default {
     display: none;
   }
 
+  .vh--none {
+    &:hover {
+      cursor: zoom-out;
+    }
+  }
+
   .horiztonal-curtain--loader {
     display: flex;
     align-items: center;
