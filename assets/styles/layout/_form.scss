@@ -364,3 +364,37 @@ textarea.input {
     color: map.get($layout-colors, accent) !important;
   }
 }
+
+.BBFormCheckbox {
+  width: 43px !important;
+  height: 43px !important;
+  margin: 0 !important;
+  background-color: map.get($layout-colors, accent) !important;
+  border: 5px solid map.get($layout-colors, color) !important;
+  border-radius: 0 !important;
+  cursor: pointer !important;
+
+
+  .dark-mode & {
+    background-color: map.get($layout-dm-colors, accent) !important;
+    border: 5px solid map.get($layout-dm-colors, color) !important;
+  }
+
+  @include breakpoint(medium) {
+    width: 3.889vw !important;
+    height: 3.889vw !important;
+    border: 0.347vw solid map.get($layout-colors, color) !important;
+
+    .dark-mode & {
+      border: 0.347vw solid map.get($layout-dm-colors, color) !important;
+    }
+  }
+
+  &:hover {
+    background-color: map.get($layout-colors, ambiant) !important;
+
+    .dark-mode & {
+      background-color: map.get($layout-dm-colors, ambiant) !important;
+    }
+  }
+}
