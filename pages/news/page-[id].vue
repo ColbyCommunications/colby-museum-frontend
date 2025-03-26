@@ -13,7 +13,7 @@
       :items_type="'posts'"
       :per_page="20"
       :page="$route.params.id"
-      :button_type="'text'"
+      :button_type="'pill'"
       :items_category="$route.query.category"
     />
   </div>

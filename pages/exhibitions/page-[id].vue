@@ -13,7 +13,7 @@
       :per_page="20"
       :page="$route.params.id"
       :show-chronology="$route.query.chronology"
-      :button_type="'text'"
+      :button_type="'pill'"
     />
   </div>
 </template>
