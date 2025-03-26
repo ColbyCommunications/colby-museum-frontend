@@ -30,7 +30,7 @@
     li > span,
     button,
     a {
-      @include paragraph-style-2;
+      @include paragraph-style-1;
 
       display: flex;
       align-items: center;

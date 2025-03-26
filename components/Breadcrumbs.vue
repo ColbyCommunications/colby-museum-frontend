@@ -135,13 +135,24 @@ export default {
     margin-right: 16px;
 
     @include breakpoint(medium) {
-      margin-right: 1.111vw;
+      margin-right: 0.833vw;
     }
   }
 
   ul {
     overflow-y: auto;
     overflow-x: scroll;
+  }
+
+  li > span,
+  button,
+  a {
+    @include paragraph-style-2;
+
+    @include breakpoint(large) {
+      font-size: 1.389vw !important; // 20px / 1440px
+      letter-spacing: -0.033vw !important;
+    }
   }
 
   li {
@@ -152,7 +163,14 @@ export default {
     margin-left: 16px;
 
     @include breakpoint(medium) {
-      margin-left: 1.111vw;
+      margin-left: 0.833vw;
+    }
+  }
+
+  svg {
+    @include breakpoint(medium) {
+      width: 1.319vw;
+      margin-left: 0;
     }
   }
 
