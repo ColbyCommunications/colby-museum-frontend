@@ -9,6 +9,7 @@
       }"
     /> -->
     <IntroContext
+      :class="[heading_visible ? '' : 'sr-only--heading', excerpt_visible ? '' : 'sr-only--excerpt']"
       :heading="'Donation Form'"
       :headingElement="'h1'"
     />
