@@ -31,10 +31,10 @@ import seoConfig from '../helpers/seoConfig';
 export default {
   setup(props) {
     useSeoMeta({
-      ogTitle: () => 'Support | Colby College Museum of Art · Colby College',
-      title: () => 'Support | Colby College Museum of Art · Colby College',
-      ogDescription: () => 'Support the Colby College Museum of Art.',
-      description: () => 'Support the Colby College Museum of Art.',
+      ogTitle: () => 'Friends of Art | Colby College Museum of Art · Colby College',
+      title: () => 'Friends of Art | Colby College Museum of Art · Colby College',
+      ogDescription: () => 'Friends of Art at the Colby College Museum of Art.',
+      description: () => 'Friends of Art at the Colby College Museum of Art.',
     });
 
     definePageMeta({
@@ -62,9 +62,9 @@ export default {
 
     this.fullPath = this.$route.fullPath;
 
-    // console.log(this.$route);
+    console.log(this.$route);
     // console.log(this.$route.params);
-    // console.log(this.$route.params.slug);
+    console.log(this.$route.params.slug);
     // console.log(`${this.interface.endpoint}pages?slug=${this.$route.params.slug ? this.$route.params.slug : 'home'}`);
     // console.log(slug[slug.length - 1]);
 
@@ -73,11 +73,11 @@ export default {
     } else if (slug) {
       pageName = slug;
     } else {
-      pageName = 'Support';
+      pageName = 'Friends of Art';
     }
 
     await axios
-      .get(`${this.interface.endpoint}pages?slug=support`)
+      .get(`${this.interface.endpoint}pages?slug=friends-of-art`)
       .then((output) => {
         const post = output.data[0];
         // console.log(post);
