@@ -49,8 +49,7 @@ export default {
     }
 
     input[type=checkbox]{
-      width: 15px;
-      height: 15px; 
+      appearance: auto;
     }
 
     input[type=submit]{
