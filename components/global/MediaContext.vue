@@ -510,7 +510,7 @@ export default {
           });
           // this.glide.mount();
         }
-      }, 600); // VERY IMPORTANT DELAY FOR LOADING AND CONTEXT ANIMATIONS TO GEL NICELY
+      }, 800); // VERY IMPORTANT DELAY FOR LOADING AND CONTEXT ANIMATIONS TO GEL NICELY
     },
     changeSlide(s) {
       if (s == 'next') {
