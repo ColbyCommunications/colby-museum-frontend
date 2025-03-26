@@ -37,6 +37,27 @@ export default {
   &__main {
     grid-column: span 10 / span 10;
     grid-column-start: 2;
+    font-family: 'Libre Franklin';
+
+    .BBFormSectionHeading {
+      font-weight: 600;
+      border-bottom-color: #000;
+    }
+
+    input {
+      border: 1px solid black;
+    }
+
+    input[type=submit]{
+      background-color: #000;
+    }
+    label.BBFormRadioPaymentSelected {
+      background-color: #000;
+    }
+    label.BBFormRadioPaymentNotSelected {
+      color: #000;
+      border-color: #000
+    }
   }
 }
 </style>
