@@ -40,23 +40,23 @@ export default {
     font-family: 'Libre Franklin';
 
     .BBFormSectionHeading {
-      font-weight: 600;
-      border-bottom-color: #000;
+      font-weight: 600 !important;
+      border-bottom-color: #000 !important;
     }
 
     input {
-      border: 1px solid black;
+      border: 1px solid black !important;
     }
 
     input[type=submit]{
-      background-color: #000;
+      background-color: #000 !important;
     }
     label.BBFormRadioPaymentSelected {
-      background-color: #000;
+      background-color: #000 !important;
     }
     label.BBFormRadioPaymentNotSelected {
-      color: #000;
-      border-color: #000
+      color: #000 !important;
+      border-color: #000 !important;
     }
   }
 }
