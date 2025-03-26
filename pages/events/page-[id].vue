@@ -1,10 +1,9 @@
 <template>
   <div class="page page--default">
     <IntroContext
-      class="sr-only--excerpt"
       :heading="`Events — Page ${$route.params.id }`"
       :headingElement="'h1'"
-      :subheading="'Find out what’s happening at all of Colby Museum’s locations'"
+      :subheading="'Find out what’s happening at all of Colby Museum’s locations.'"
     />
     <ArticleGrid
       :columns="'4'"
