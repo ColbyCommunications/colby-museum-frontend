@@ -42,6 +42,7 @@
       background-color: transparent;
       border: none;
       cursor: pointer;
+      pointer-events: all;
 
       .dark-mode & {
         color: map.get($layout-dm-colors, color); 
