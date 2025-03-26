@@ -8,8 +8,8 @@
         url: fullPath,
       }"
       :manual="{
-        title: 'News',
-        url: '/news',
+        title: 'Exhibitions',
+        url: '/exhibitions/page-1',
       }"
     />
     <IntroContext

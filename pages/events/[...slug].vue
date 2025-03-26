@@ -9,7 +9,7 @@
       }"
       :manual="{
         title: 'Events',
-        url: '/events',
+        url: '/events/page-1',
       }"
     />
     <IntroContext
