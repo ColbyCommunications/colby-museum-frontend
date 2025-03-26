@@ -49,7 +49,6 @@ export default {
     }
 
     input[type=checkbox]{
-      background-color: #000 !important;
       width: 15px;
       height: 15px; 
     }
