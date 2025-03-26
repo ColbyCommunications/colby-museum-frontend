@@ -243,160 +243,160 @@ textarea.input {
 }
 
 // DONATE FORM OVERRIDES
-.BBFormSection {
-  margin: 0 !important;
-  max-width: none;
-}
+// .BBFormSection {
+//   margin: 0 !important;
+//   max-width: none;
+// }
 
-.BBFormSectionHeading {
-  font-family: $font-primary !important;
-  font-size: rem-calc(24px) !important;
-  font-weight: 700 !important;
-  font-style: normal !important;
-  line-height: 115% !important;
-  letter-spacing: rem-calc(-0.5px) !important;
+// .BBFormSectionHeading {
+//   font-family: $font-primary !important;
+//   font-size: rem-calc(24px) !important;
+//   font-weight: 700 !important;
+//   font-style: normal !important;
+//   line-height: 115% !important;
+//   letter-spacing: rem-calc(-0.5px) !important;
 
-  @include breakpoint(large) {
-    letter-spacing: -0.039vw !important;
-  }
+//   @include breakpoint(large) {
+//     letter-spacing: -0.039vw !important;
+//   }
 
-  padding: 0 !important;
-  border-bottom: 0 !important;
-}
+//   padding: 0 !important;
+//   border-bottom: 0 !important;
+// }
 
-.BBFormSection {
-  max-width: none !important;
-  margin-bottom: 7.872vh !important;
-}
+// .BBFormSection {
+//   max-width: none !important;
+//   margin-bottom: 7.872vh !important;
+// }
 
-.BBFormFieldContainer {
-  display: flex;
-  flex-direction: column !important;
-  margin: 0 !important;
+// .BBFormFieldContainer {
+//   display: flex;
+//   flex-direction: column !important;
+//   margin: 0 !important;
 
-  input[type="checkbox"],
-  input[type="radio"] {
-    width: 43px !important;
-    height: 43px !important;
-    margin: 0 !important;
-    background-color: map.get($layout-colors, accent) !important;
-    border: 5px solid map.get($layout-colors, color) !important;
-    border-radius: 0 !important;
-    cursor: pointer !important;
+//   input[type="checkbox"],
+//   input[type="radio"] {
+//     width: 43px !important;
+//     height: 43px !important;
+//     margin: 0 !important;
+//     background-color: map.get($layout-colors, accent) !important;
+//     border: 5px solid map.get($layout-colors, color) !important;
+//     border-radius: 0 !important;
+//     cursor: pointer !important;
   
   
-    .dark-mode & {
-      background-color: map.get($layout-dm-colors, accent) !important;
-      border: 5px solid map.get($layout-dm-colors, color) !important;
-    }
+//     .dark-mode & {
+//       background-color: map.get($layout-dm-colors, accent) !important;
+//       border: 5px solid map.get($layout-dm-colors, color) !important;
+//     }
   
-    @include breakpoint(medium) {
-      width: 3.889vw !important;
-      height: 3.889vw !important;
-      border: 0.347vw solid map.get($layout-colors, color) !important;
+//     @include breakpoint(medium) {
+//       width: 3.889vw !important;
+//       height: 3.889vw !important;
+//       border: 0.347vw solid map.get($layout-colors, color) !important;
   
-      .dark-mode & {
-        border: 0.347vw solid map.get($layout-dm-colors, color) !important;
-      }
-    }
+//       .dark-mode & {
+//         border: 0.347vw solid map.get($layout-dm-colors, color) !important;
+//       }
+//     }
   
-    &:hover {
-      background-color: map.get($layout-colors, ambiant) !important;
+//     &:hover {
+//       background-color: map.get($layout-colors, ambiant) !important;
   
-      .dark-mode & {
-        background-color: map.get($layout-dm-colors, ambiant) !important;
-      }
-    }
-  }
+//       .dark-mode & {
+//         background-color: map.get($layout-dm-colors, ambiant) !important;
+//       }
+//     }
+//   }
 
-  + .BBFormFieldContainer {
-    margin-top: 7.872vh !important;
-  }
-}
+//   + .BBFormFieldContainer {
+//     margin-top: 7.872vh !important;
+//   }
+// }
 
-.BBFormFieldLabel {
-  font-family: $font-primary !important;
-  font-size: rem-calc(20px) !important;
-  font-weight: 400 !important;
-  font-style: normal !important;
-  line-height: 140% !important;
-  letter-spacing: rem-calc(-0.4px) !important;
+// .BBFormFieldLabel {
+//   font-family: $font-primary !important;
+//   font-size: rem-calc(20px) !important;
+//   font-weight: 400 !important;
+//   font-style: normal !important;
+//   line-height: 140% !important;
+//   letter-spacing: rem-calc(-0.4px) !important;
 
-  @include breakpoint(medium) {
-    margin-bottom: 2.214vh !important;
-  }
+//   @include breakpoint(medium) {
+//     margin-bottom: 2.214vh !important;
+//   }
 
-  @include breakpoint(large) {
-    font-size: 1.389vw !important; // 20px / 1440px
-    letter-spacing: -0.033vw !important;
-  }
+//   @include breakpoint(large) {
+//     font-size: 1.389vw !important; // 20px / 1440px
+//     letter-spacing: -0.033vw !important;
+//   }
 
-  display: inline-block !important;
-  padding: 0 !important;
-  font-weight: 700 !important;
-  margin-bottom: 18px !important;
-  text-align: left !important;
-}
+//   display: inline-block !important;
+//   padding: 0 !important;
+//   font-weight: 700 !important;
+//   margin-bottom: 18px !important;
+//   text-align: left !important;
+// }
 
-.BBFormTextbox {
-  font-family: $font-primary !important;
-  font-size: rem-calc(14px) !important;
-  font-weight: 400 !important;
-  font-style: normal !important;
-  line-height: 120% !important;
-  letter-spacing: rem-calc(0.14px) !important;
-  opacity: 1 !important;
-  max-width: none !important;
+// .BBFormTextbox {
+//   font-family: $font-primary !important;
+//   font-size: rem-calc(14px) !important;
+//   font-weight: 400 !important;
+//   font-style: normal !important;
+//   line-height: 120% !important;
+//   letter-spacing: rem-calc(0.14px) !important;
+//   opacity: 1 !important;
+//   max-width: none !important;
 
-  @include breakpoint(large) {
-    font-size: 1.25vw !important; // 18px / 1440px
-    letter-spacing: -0.028vw !important;
-  }
+//   @include breakpoint(large) {
+//     font-size: 1.25vw !important; // 18px / 1440px
+//     letter-spacing: -0.028vw !important;
+//   }
 
-  width: 100% !important;
-  padding: 15px 16px !important;
-  font-size: rem-calc(18px) !important;
-  font-weight: 700 !important;
-  color: map.get($layout-colors, color) !important;
-  background-color: map.get($layout-colors, accent) !important;
-  border: 4px solid map.get($layout-colors, color) !important;
-  border-radius: 0 !important;
-  appearance: none !important;
+//   width: 100% !important;
+//   padding: 15px 16px !important;
+//   font-size: rem-calc(18px) !important;
+//   font-weight: 700 !important;
+//   color: map.get($layout-colors, color) !important;
+//   background-color: map.get($layout-colors, accent) !important;
+//   border: 4px solid map.get($layout-colors, color) !important;
+//   border-radius: 0 !important;
+//   appearance: none !important;
 
-  .dark-mode & {
-    color: map.get($layout-dm-colors, color) !important;
-    background-color: map.get($layout-dm-colors, accent) !important;
-    border: 4px solid map.get($layout-dm-colors, color) !important;
-  }
+//   .dark-mode & {
+//     color: map.get($layout-dm-colors, color) !important;
+//     background-color: map.get($layout-dm-colors, accent) !important;
+//     border: 4px solid map.get($layout-dm-colors, color) !important;
+//   }
 
-  @include breakpoint(large) {
-    padding: 2.214vh 1.667vw !important;
-    border: 0.278vw solid map.get($layout-colors, color) !important;
+//   @include breakpoint(large) {
+//     padding: 2.214vh 1.667vw !important;
+//     border: 0.278vw solid map.get($layout-colors, color) !important;
 
-    .dark-mode & {
-      border: 0.278vw solid map.get($layout-dm-colors, color) !important;
-    }
-  }
+//     .dark-mode & {
+//       border: 0.278vw solid map.get($layout-dm-colors, color) !important;
+//     }
+//   }
 
-  &:hover {
-    color: map.get($layout-colors, accent) !important;
-    background-color: map.get($layout-colors, ambiant) !important;
+//   &:hover {
+//     color: map.get($layout-colors, accent) !important;
+//     background-color: map.get($layout-colors, ambiant) !important;
 
-    .dark-mode & {
-      background-color: map.get($layout-dm-colors, ambiant) !important;
-    }
-  }
+//     .dark-mode & {
+//       background-color: map.get($layout-dm-colors, ambiant) !important;
+//     }
+//   }
 
-  &::placeholder {
-    color: map.get($layout-colors, color) !important;
+//   &::placeholder {
+//     color: map.get($layout-colors, color) !important;
 
-    .dark-mode & {
-      color: map.get($layout-dm-colors, color) !important;
-    }
-  }
+//     .dark-mode & {
+//       color: map.get($layout-dm-colors, color) !important;
+//     }
+//   }
 
-  &:hover::placeholder {
-    color: map.get($layout-colors, accent) !important;
-  }
-}
+//   &:hover::placeholder {
+//     color: map.get($layout-colors, accent) !important;
+//   }
+// }
 
