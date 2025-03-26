@@ -1,9 +1,10 @@
 <template>
   <div class="page page--default">
     <IntroContext
+      class="sr-only--excerpt"
       :heading="`Objects — Page ${$route.params.id}`"
       :headingElement="'h1'"
-      :subheading="'As part of its mission as a collecting and teaching museum, the Colby College Museum of Art houses a diverse collection with a focus on American and contemporary art.'"
+      :subheading="'Explore the eleven thousand artworks that reside in the collection of the Colby College Museum of Art and shape its teaching mission. The collection represents the breadth and complexity of American art and also includes works by international artists from antiquity to the present.'"
     />
     <ArticleGrid
       :variant="'curated'"
@@ -50,8 +51,8 @@ export default {
     useSeoMeta({
       ogTitle: () => `Objects - Page ${route.params.id} | Colby College Museum of Art · Colby College`,
       title: () => `Objects - Page ${route.params.id} | Colby College Museum of Art · Colby College`,
-      // ogDescription: () => todo.value.excerpt?.rendered,
-      // description: () => todo.value.excerpt?.rendered,
+      ogDescription: () => 'Explore the eleven thousand artworks that reside in the collection of the Colby College Museum of Art and shape its teaching mission. The collection represents the breadth and complexity of American art and also includes works by international artists from antiquity to the present.',
+      description: () => 'Explore the eleven thousand artworks that reside in the collection of the Colby College Museum of Art and shape its teaching mission. The collection represents the breadth and complexity of American art and also includes works by international artists from antiquity to the present.',
     });
 
     definePageMeta({

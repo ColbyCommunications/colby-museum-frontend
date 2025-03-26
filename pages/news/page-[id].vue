@@ -1,9 +1,10 @@
 <template>
   <div class="page page--default">
     <IntroContext
+      class="sr-only--excerpt"
       :heading="`${$route.query.category == 6 ? 'Lunder Institute ' : ''}News — Page ${$route.params.id }`"
       :headingElement="'h1'"
-      :subheading="'Lorem Ipsum solar set.'"
+      :subheading="'Find out what’s happening at Colby Museum.'"
     />
     <ArticleGrid
       :columns="'4'"
@@ -29,8 +30,8 @@ export default {
     useSeoMeta({
       ogTitle: () => `News - Page ${route.params.id} | Colby College Museum of Art · Colby College`,
       title: () => `News - Page ${route.params.id} | Colby College Museum of Art · Colby College`,
-      // ogDescription: () => todo.value.excerpt?.rendered,
-      // description: () => todo.value.excerpt?.rendered,
+      ogDescription: () => 'Find out what’s happening at Colby Museum.',
+      description: () => 'Find out what’s happening at Colby Museum.',
     });
 
     definePageMeta({

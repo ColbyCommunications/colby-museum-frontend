@@ -1,9 +1,10 @@
 <template>
   <div class="page page--default">
     <IntroContext
+      class="sr-only--excerpt"
       :heading="`${$route.query.chronology ? $route.query.chronology + ' ' : ''}${$route.query.variant ? $route.query.variant + ' ' : ''}Exhibitions — Page ${$route.params.id }`"
       :headingElement="'h1'"
-      :subheading="'As part of its mission as a collecting and teaching museum, the Colby College Museum of Art houses a diverse collection with a focus on American and contemporary art.'"
+      :subheading="'Explore Colby Museum’s current exhibitions.'"
     />
     <ArticleGrid
       :columns="'4'"
@@ -31,8 +32,8 @@ export default {
     useSeoMeta({
       ogTitle: () => `Exhibitions - Page ${route.params.id} | Colby College Museum of Art · Colby College`,
       title: () => `Exhibitions - Page ${route.params.id} | Colby College Museum of Art · Colby College`,
-      // ogDescription: () => todo.value.excerpt?.rendered,
-      // description: () => todo.value.excerpt?.rendered,
+      ogDescription: () => 'Explore Colby Museum’s current exhibitions.',
+      description: () => 'Explore Colby Museum’s current exhibitions.',
     });
 
     definePageMeta({

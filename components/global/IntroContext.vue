@@ -101,7 +101,7 @@ export default {
     margin-top: 100px;
 
     @include breakpoint(large) {
-      margin-top: 12vh;
+      margin-top: 6vh; // 12vh prior
     }
   }
 

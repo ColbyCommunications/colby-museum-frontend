@@ -8,7 +8,7 @@
   }
 
   @include breakpoint(large) {
-    margin: 12vh 0;
+    margin: 0 0 12vh 0;
   }
 
   &__inner {
