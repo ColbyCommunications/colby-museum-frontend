@@ -424,7 +424,7 @@ export default {
         margin-top: 0 !important;
 
         .context__word {
-          padding-right: 0.2vw;
+          padding-right: 0.25vw;
           margin-left: -0.2vw;
         }
       }
