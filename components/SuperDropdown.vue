@@ -443,5 +443,11 @@ export default {
       }
     }
   }
+
+  .paragraph-style-3 {
+    @include breakpoint(large) {
+      font-size: 1.1vw; // OVERRIDE required because we're having challenging spacing with new time format
+    }
+  }
 }
 </style>

@@ -143,7 +143,7 @@ export default {
       required: false,
       default: {
         location: 'No event scheduled for today.',
-        time: '10a - 6p',
+        time: '10:00am—6:00pm',
         button: {
           title: "What's On",
           url: '/exhibitions-and-events',
@@ -155,7 +155,7 @@ export default {
       required: false,
       default: {
         location: 'No event scheduled for today.',
-        time: '10a - 4p',
+        time: '10:00am—4:00pm',
         button: {
           title: "What's On",
           url: '/exhibitions-and-events',
