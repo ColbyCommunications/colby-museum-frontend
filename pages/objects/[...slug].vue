@@ -52,6 +52,7 @@ export default {
       title: () => `${todo.value.Disp_Title ? todo.value.Disp_Title.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' + todo.value.Disp_Maker_1.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' : ''}Colby College Museum of Art · Colby College`,
       ogDescription: () => todo.value?.Disp_Medium,
       description: () => todo.value?.Disp_Medium,
+      ogImage: () => `https://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/wp-content/uploads/2025/03/default.jpg`,
     });
 
     definePageMeta({

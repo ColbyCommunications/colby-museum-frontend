@@ -780,7 +780,7 @@ export default {
         });
 
         this.loaded = true;
-      }, 4000);
+      }, 5000);
     }
   }
 }
