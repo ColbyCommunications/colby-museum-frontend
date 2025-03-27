@@ -22,7 +22,7 @@
         <div class="super-dropdown__event-paragraph paragraph-style-3" v-text="event.location" />
         <div class="super-dropdown__event-bottom">
           <span>
-            <div class="paragraph-style-3" v-text="event.time"/>
+            <div class="super-dropdown__event-time paragraph-style-3" v-text="event.time"/>
             <ActivityTag />
           </span>
           <Btn
@@ -444,9 +444,9 @@ export default {
     }
   }
 
-  .paragraph-style-3 {
+  &__event-time.paragraph-style-3 {
     @include breakpoint(large) {
-      font-size: 1.1vw; // OVERRIDE required because we're having challenging spacing with new time format
+      font-size: 1.025vw; // OVERRIDE required because we're having challenging spacing with new time format
     }
   }
 }

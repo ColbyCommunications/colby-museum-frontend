@@ -120,8 +120,8 @@ export default {
           console.log(page.end_date);
         }
 
-        page.start_time = post.acf.start_time;
-        page.end_time = post.acf.end_time;
+        page.start_time = page.formatTime(post.acf.start_time);
+        page.end_time = page.formatTime(post.acf.end_time);
 
         page.components = post.block_data.map((component) => {
           
@@ -143,9 +143,9 @@ export default {
       const hour = parseInt(time[0]);
       const min = time[1];
       const sec = parseInt(time[2]);
-      const ampm = (hour >= 12) ? "pm" : "am";
+      const ampm = (hour >= 12) ? " p.m." : " a.m.";
 
-      return `${hour == 12 || hour == 0 ? 12 : hour % 12}:${min}${ampm}`
+      return `${hour == 12 || hour == 0 ? 12 : hour % 12}:${min.replace(/\s/g, '').replace('am', '').replace('pm', '').replace('-', '—')}${ampm}`;
     }
   }
 }
