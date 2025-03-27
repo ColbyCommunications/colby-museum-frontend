@@ -852,13 +852,6 @@ export default {
             source_content_type: 'application/json',
             source: JSON.stringify({
               "size": 0,
-              "query": component.embark_ID ? {
-                "bool": {
-                  "must": [{
-                    "term": {"Portfolios.Portfolio_ID": component.embark_ID}
-                  }]
-                }
-              } : undefined,
               "aggs": { 
                 "maker": { 
                   "terms": { 
