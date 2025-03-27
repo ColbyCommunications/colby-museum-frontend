@@ -416,6 +416,19 @@ export default {
     .context--embark & {
       @extend .subheading-style-embark;
     }
+
+    // Special styling for object detail title subheading
+    &:nth-of-type(1) {
+      .page--object & {
+        font-style: italic;
+        margin-top: 0 !important;
+
+        .context__word {
+          padding-right: 0.2vw;
+          margin-left: -0.2vw;
+        }
+      }
+    }
   }
 
   &__subheading + &__image {

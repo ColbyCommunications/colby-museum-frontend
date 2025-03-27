@@ -43,12 +43,6 @@ const pageSEO = (props, type) => {
           });
         }
        })
-      .then(() => {
-        // console.log('HERE');
-        // console.log(todo.value);
-
-        
-      })
   )
 }
 
