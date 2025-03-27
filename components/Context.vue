@@ -140,7 +140,7 @@ export default {
         this.animate();
       }
     },
-    heading: {
+    subheading: {
       deep: true,
       handler() {
         this.animate();
