@@ -35,6 +35,11 @@ export default {
 
 .donate-form {
   &__main {
+
+    #bbox-msg-wrapper {
+      width: 50px;
+    }
+
     grid-column: span 10 / span 10;
     grid-column-start: 2;
     font-family: 'Libre Franklin';
