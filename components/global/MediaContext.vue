@@ -76,6 +76,7 @@
                       v-else-if="artificialDelayFinished"
                       :regular="item.image.media_details.sizes.full.source_url"
                       :click-zoom="true"
+                      :lazyload="index == 0 ? false : true"
                     />
                     <div
                       v-if="item.image.caption && variant == 'full-width'"
@@ -780,7 +781,7 @@ export default {
         });
 
         this.loaded = true;
-      }, 5000);
+      }, 0);
     }
   }
 }
