@@ -36,6 +36,10 @@ export default {
 .donate-form {
   &__main {
 
+    form {
+      zoom: 200%;
+    }
+
     #bbox-msg-wrapper {
       width: 50px;
     }
