@@ -48,7 +48,7 @@ export default {
     font-family: 'Libre Franklin';
 
     .BBFormSection {
-      max-width: 100%;
+      max-width: 100% !important;
       .BBFormSectionHeading {
         font-weight: 600 !important;
         border-bottom-color: #000 !important;
