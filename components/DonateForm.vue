@@ -37,7 +37,7 @@ export default {
   &__main {
 
     form {
-      zoom: 120%;
+      zoom: 130%;
     }
 
     #bbox-msg-wrapper {
@@ -48,9 +48,12 @@ export default {
     grid-column-start: 2;
     font-family: 'Libre Franklin';
 
-    .BBFormSectionHeading {
-      font-weight: 600 !important;
-      border-bottom-color: #000 !important;
+    .BBFormSection {
+      max-width: 100%;
+      .BBFormSectionHeading {
+        font-weight: 600 !important;
+        border-bottom-color: #000 !important;
+      }
     }
 
     input, select, textarea {
