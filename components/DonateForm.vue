@@ -37,14 +37,15 @@ export default {
   &__main {
 
     form {
-      zoom: 130%;
+      zoom: 200%;
     }
 
     #bbox-msg-wrapper {
       width: 50px;
     }
 
-    grid-column: span 12 / span 12;
+    grid-column: span 10 / span 10;
+    grid-column-start: 2;
     font-family: 'Libre Franklin';
 
     .BBFormSection {
