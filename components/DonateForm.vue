@@ -44,8 +44,7 @@ export default {
       width: 50px;
     }
 
-    grid-column: span 10 / span 10;
-    grid-column-start: 2;
+    grid-column: span 12 / span 12;
     font-family: 'Libre Franklin';
 
     .BBFormSection {
