@@ -13,7 +13,7 @@ export default {
   mounted() {
     setTimeout(() => {
       window.bboxInit = function () {
-      bbox.showForm('5274e7f7-f60f-4a50-ad90-e33d15a9744d');
+      bbox.showForm('58d84867-c131-4a69-a6d4-81c6acf09f52');
     };
     (function () {
       var e = document.createElement('script'); e.async = true; e.id = 'donateformscript';
