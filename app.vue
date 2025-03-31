@@ -80,7 +80,7 @@ export default {
                       location: campusEvents[0].acf.location,
                       time: `${component.formatTime(
                           campusEvents[0].acf.start_time
-                      )}—${component.formatTime(campusEvents[0].acf.end_time)}`,
+                      )}-${component.formatTime(campusEvents[0].acf.end_time)}`,
                       button: {
                           title: 'Event Details',
                           url: campusEvents[0].link,
@@ -94,7 +94,7 @@ export default {
                       location: downtownEvents[0].acf.location,
                       time: `${component.formatTime(
                           downtownEvents[0].acf.start_time
-                      )}—${component.formatTime(downtownEvents[0].acf.end_time)}`,
+                      )}-${component.formatTime(downtownEvents[0].acf.end_time)}`,
                       button: {
                           title: 'Event Details',
                           url: downtownEvents[0].link,
@@ -121,7 +121,7 @@ export default {
       const sec = parseInt(time[2]);
       const ampm = (hour >= 12) ? " p.m." : " a.m.";
 
-      return `${hour == 12 || hour == 0 ? 12 : hour % 12}:${min.replace(/\s/g, '').replace('am', '').replace('pm', '').replace(' - ', '—')}${ampm}`;
+      return `${hour == 12 || hour == 0 ? 12 : hour % 12}:${min.replace(/\s/g, '').replace('am', '').replace('pm', '').replace(' - ', '-')}${ampm}`;
     },
   },
 };

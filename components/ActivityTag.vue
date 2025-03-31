@@ -18,7 +18,7 @@
   background-color: map.get($signal-colors, open);
 
   &::before {
-    content: 'Open Now';
+    content: 'Open';
 
     .closed & {
       content: 'Closed';
