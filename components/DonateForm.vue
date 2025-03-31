@@ -13,7 +13,7 @@ export default {
   mounted() {
     setTimeout(() => {
       window.bboxInit = function () {
-      bbox.showForm('5274e7f7-f60f-4a50-ad90-e33d15a9744d');
+      bbox.showForm('58d84867-c131-4a69-a6d4-81c6acf09f52');
     };
     (function () {
       var e = document.createElement('script'); e.async = true; e.id = 'donateformscript';
@@ -36,6 +36,10 @@ export default {
 .donate-form {
   &__main {
 
+    form {
+      zoom: 200%;
+    }
+
     #bbox-msg-wrapper {
       width: 50px;
     }
@@ -44,9 +48,12 @@ export default {
     grid-column-start: 2;
     font-family: 'Libre Franklin';
 
-    .BBFormSectionHeading {
-      font-weight: 600 !important;
-      border-bottom-color: #000 !important;
+    .BBFormSection {
+      max-width: 100% !important;
+      .BBFormSectionHeading {
+        font-weight: 600 !important;
+        border-bottom-color: #000 !important;
+      }
     }
 
     input, select, textarea {
