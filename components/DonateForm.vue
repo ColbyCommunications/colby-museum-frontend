@@ -37,7 +37,7 @@ export default {
   &__main {
 
     form {
-      zoom: 200%;
+      zoom: 130%;
     }
 
     #bbox-msg-wrapper {
