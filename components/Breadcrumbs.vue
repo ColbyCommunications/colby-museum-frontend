@@ -132,7 +132,7 @@ export default {
 
   svg {
     margin-left: 0;
-    margin-right: 16px;
+    margin-right: 8px;
 
     @include breakpoint(medium) {
       margin-right: 0.833vw;
@@ -160,7 +160,7 @@ export default {
   }
 
   li + li {
-    margin-left: 16px;
+    margin-left: 8px;
 
     @include breakpoint(medium) {
       margin-left: 0.833vw;
