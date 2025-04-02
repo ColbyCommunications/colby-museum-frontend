@@ -40,7 +40,7 @@ export default {
     this.interface = useInterfaceStore();
   },
   async mounted() {
-    // console.log(`Image ID: ${this.post.featured_media}`);
+    console.log(`Image ID: ${this.post.featured_media}`);
     this.image = await this.getImage(this.post.featured_media);
   },
   methods: {

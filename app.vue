@@ -121,7 +121,7 @@ export default {
       const sec = parseInt(time[2]);
       const ampm = (hour >= 12) ? " p.m." : " a.m.";
 
-      return `${hour == 12 || hour == 0 ? 12 : hour % 12}:${min.replace(/\s/g, '').replace('am', '').replace('pm', '').replace(' - ', '-')}${ampm}`;
+      return `${hour == 12 || hour == 0 ? 12 : hour % 12}:${min.replace(/\s/g, '').replace('am', '').replace('pm', '').replace(' - ', '&ndash;')}${ampm}`;
     },
   },
 };

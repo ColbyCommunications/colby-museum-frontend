@@ -33,7 +33,7 @@
         },
         {
           heading: 'Date',
-          paragraph: end_date ? `${String(date)}-${String(end_date)}` : String(date),
+          paragraph: end_date ? `${String(date)}&ndash;${String(end_date)}` : String(date),
         },
       ]"
     />

@@ -109,7 +109,7 @@
                       v-else-if="item.post && (item.post.type == 'events' || item.post.type == 'exhibitions')"
                       :size="'small'"
                       :heading="item.post.title.rendered"
-                      :subheading="formatDate(item.post.acf.date, 'events') + (item.post.acf.end_date && item.post.acf.date != item.post.acf.end_date ? `-${formatDate(item.post.acf.end_date, 'events')}` : '' )"
+                      :subheading="formatDate(item.post.acf.date, 'events') + (item.post.acf.end_date && item.post.acf.date != item.post.acf.end_date ? `&ndash;${formatDate(item.post.acf.end_date, 'events')}` : '' )"
                       :button="{
                         title: item.post.type == 'events' ? 'Event Details' : 'Exhibition Details',
                         url: item.post.link
@@ -422,6 +422,14 @@ export default {
       required: false,
     }
   },
+  watch: {
+    items: {
+      deep: true,
+      handler() {
+        console.log('TESTING ON');
+      }
+    }
+  },
   async created() {
     this.interface = useInterfaceStore();
     const component = this;
@@ -469,9 +477,8 @@ export default {
   },
   methods: {
     renderGlide() {
-      this.animate();
-
       setTimeout(() => {
+        this.animate();
         this.window = this.$refs.carousel.querySelector("[data-glide-window]");
 
         let breakpoints = null;
@@ -511,7 +518,7 @@ export default {
           });
           // this.glide.mount();
         }
-      }, 800); // VERY IMPORTANT DELAY FOR LOADING AND CONTEXT ANIMATIONS TO GEL NICELY
+      }, 1200); // VERY IMPORTANT DELAY FOR LOADING AND CONTEXT ANIMATIONS TO GEL NICELY
     },
     changeSlide(s) {
       if (s == 'next') {
