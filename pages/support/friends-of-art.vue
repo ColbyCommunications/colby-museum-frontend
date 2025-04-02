@@ -90,6 +90,8 @@ export default {
           .replace(/’/g, "'");
         
         page.excerpt = post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '');
+        page.heading_visible = post.acf.heading_visible;
+        page.excerpt_visible = post.acf.excerpt_visible;
 
         page.getBreadcrumbs(post);
 
