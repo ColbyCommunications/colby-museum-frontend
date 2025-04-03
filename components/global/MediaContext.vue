@@ -464,16 +464,16 @@ export default {
   async mounted() {
     this.id = self.crypto.randomUUID();
 
-    const { ring } = await import('ldrs');
-    ring.register();
-
     if (this.items_type == 'objects') {
-      this.resizeZooms();
+      const { ring } = await import('ldrs');
+      ring.register();
 
-      // setTimeout(() => {
-      //   this.artificialDelayFinished = true;
-      // }, 1000);
+      this.resizeZooms();
     }
+  },
+  unmounted() {
+    clearInterval(this.zoomInterval);
+    this.zoomInterval = null;
   },
   methods: {
     renderGlide() {
@@ -778,17 +778,17 @@ export default {
       this.interface.toggleModal();
     },
     resizeZooms() {
-      setTimeout(() => {
+      this.zoomInterval = setInterval(() => {
         const vhs = this.$refs.mediacontext.getElementsByClassName('vh--outer');
         
         Array.from(vhs).forEach((vh) => {
-          // console.log(vh.querySelector('img').width);
+          console.log(vh.querySelector('img').width);
 
           vh.style.width = `${vh.querySelector('img').width}px`
         });
 
         this.loaded = true;
-      }, 2000);
+      }, 1000);
     }
   }
 }
@@ -1031,7 +1031,7 @@ export default {
 
             @include breakpoint(medium) {
               width: auto;
-              max-width: 100%;
+              // max-width: 100%;
               height: 100%;
             }
           }
