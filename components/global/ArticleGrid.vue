@@ -851,7 +851,7 @@ export default {
           params: {
             source_content_type: 'application/json',
             source: JSON.stringify({
-              "size": 0,
+              // "size": 0,
               // "query": component.embark_ID ? {
               //   "bool": {
               //     "must": [{

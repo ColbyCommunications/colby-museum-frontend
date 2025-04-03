@@ -788,7 +788,7 @@ export default {
         });
 
         this.loaded = true;
-      }, 0);
+      }, 2000);
     }
   }
 }
