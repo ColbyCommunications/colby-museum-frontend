@@ -10,10 +10,15 @@
     /> -->
     <IntroContext
       :class="[heading_visible ? '' : 'sr-only--heading', excerpt_visible ? '' : 'sr-only--excerpt']"
-      :heading="'Donation Form'"
+      :heading="title"
       :headingElement="'h1'"
+      :subheading="excerpt"
     />
     <DonateForm />
+    <BaseModule
+      v-for="(item, index) in components"
+      :moduleData="item"
+    />
   </div>
 </template>
 
@@ -71,7 +76,7 @@ export default {
     }
 
     await axios
-      .get(`${this.interface.endpoint}pages?slug=${pageName}`)
+      .get(`${this.interface.endpoint}pages?slug=donation-form`)
       .then((output) => {
         const post = output.data[0];
         console.log(post);
