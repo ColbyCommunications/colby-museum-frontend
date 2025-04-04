@@ -1466,5 +1466,9 @@ export default {
       }
     }
   }
+
+  + .paragraph-style-2 {
+    margin-top: 12vh;
+  }
 }
 </style>

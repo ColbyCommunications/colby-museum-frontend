@@ -1,9 +1,10 @@
 <template>
   <div class="page page--default">
     <IntroContext
-      :heading="`${$route.query.chronology ? $route.query.chronology + ' ' : ''}${$route.query.variant ? $route.query.variant + ' ' : ''}Exhibitions — Page ${$route.params.id }`"
+      :heading="`${$route.query.chronology ? ($route.query.chronology == 'future' ? 'Upcoming' : $route.query.chronology) + ' ' : ''}${$route.query.variant ? $route.query.variant + ' ' : ''}Exhibitions`"
       :headingElement="'h1'"
       :subheading="$route.query.variant == 'traveling' ? 'Explore exhibitions organized by Colby Museum that are currently on the road around the country and the world. ' : `Explore Colby Museum’s ${$route.query.chronology} exhibitions.${$route.query.chronology == 'past' ? ' Note that our exhibition archive is a work in progress.' : '' }`"
+      class="sr-only--excerpt"
     />
     <ArticleGrid
       :columns="'4'"

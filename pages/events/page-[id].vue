@@ -1,9 +1,10 @@
 <template>
   <div class="page page--default">
     <IntroContext
-      :heading="`Events — Page ${$route.params.id }`"
+      :heading="`Events`"
       :headingElement="'h1'"
       :subheading="'Find out what’s happening at all of Colby Museum’s locations.'"
+      class="sr-only--excerpt"
     />
     <ArticleGrid
       :columns="'4'"
@@ -15,6 +16,9 @@
       :show-chronology="$route.query.chronology"
       :button_type="'pill'"
     />
+    <div class="core-paragraph grid paragraph-style-2" type="core-paragraph">
+      <p>For a full list of Colby Arts events, visit <a href="https://arts.colby.edu/" target="_blank">arts.colby.edu</a></p>
+    </div>
   </div>
 </template>
 
