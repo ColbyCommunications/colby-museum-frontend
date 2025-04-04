@@ -12,6 +12,7 @@
         :utility="utilityMenu"
         :campusEvent="campusCurrentEvent"
         :downtownEvent="downtownCurrentEvent"
+        :globalOptions="globalOptions"
       />
       <NuxtLayout>
         <NuxtPage :interface="interface" />
@@ -34,6 +35,7 @@ import footerItems from '~/assets/data/footer.yml';
 export default {
   data() {
     return {
+      globalOptions: {},
       interface: undefined,
       mainMenu: [],
       utilityMenu: [],
@@ -55,15 +57,19 @@ export default {
       this.footerItems = footerItems;
 
       axios.get(`${this.interface.endpoint}menus/10`).then((output) => {
-          component.mainMenu = output.data;
+        component.mainMenu = output.data;
       });
 
       axios.get(`${this.interface.endpoint}menus/12`).then((output) => {
-          component.utilityMenu = output.data;
+        component.utilityMenu = output.data;
       });
 
       axios.get(`${this.interface.endpoint}menus/11`).then((output) => {
-          component.socialMenu = output.data;
+        component.socialMenu = output.data;
+      });
+
+      axios.get(`${this.interface.endpointv3}options/options`).then((output) => {
+        component.globalOptions = output.data.acf;
       });
 
       axios

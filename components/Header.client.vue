@@ -125,8 +125,19 @@ export default {
     this.downtownIsOpen = isOpen('11:00:00', '19:00:00', 'downtown');
 
     setInterval(() => {
-      this.campusIsOpen = isOpen('10:00:00', '17:00:00', 'campus');
-      this.downtownIsOpen = isOpen('11:00:00', '19:00:00', 'downtown');
+      if (this.globalOptions) {
+        if (this.globalOptions.campus_closed_override) {
+          this.campusIsOpen = false;
+        } else {
+          this.campusIsOpen = isOpen('10:00:00', '17:00:00', 'campus');
+        }
+
+        if (this.globalOptions.downtown_closed_override) {
+          this.downtownIsOpen = false;
+        } else {
+          this.downtownIsOpen = isOpen('11:00:00', '19:00:00', 'downtown');
+        }
+      }
     }, 60 * 1000);
   },
   props: {
@@ -159,6 +170,28 @@ export default {
         button: {
           title: "What's On",
           url: '/exhibitions-and-events',
+        }
+      }
+    },
+    globalOptions: {
+      type: Object,
+      required: false
+    }
+  },
+  watch: {
+    globalOptions: {
+      deep: true,
+      async handler() {
+        if (this.globalOptions.campus_closed_override) {
+          this.campusIsOpen = false;
+        } else {
+          this.campusIsOpen = isOpen('10:00:00', '17:00:00', 'campus');
+        }
+
+        if (this.globalOptions.downtown_closed_override) {
+          this.downtownIsOpen = false;
+        } else {
+          this.downtownIsOpen = isOpen('11:00:00', '19:00:00', 'downtown');
         }
       }
     }
