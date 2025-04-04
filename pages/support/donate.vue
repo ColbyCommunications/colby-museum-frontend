@@ -76,7 +76,7 @@ export default {
     }
 
     await axios
-      .get(`${this.interface.endpoint}pages?slug=donation-form`)
+      .get(`${this.interface.endpoint}pages?slug=donate`)
       .then((output) => {
         const post = output.data[0];
         console.log(post);

@@ -880,7 +880,7 @@ export default {
                 // },
                 "year": { 
                   "terms": { 
-                    "field": "Disp_Create_DT",
+                    "field": "dates.start_year",
                     "size": 300
                   }
                 },
