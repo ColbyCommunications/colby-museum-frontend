@@ -75,5 +75,9 @@ export default {
       border-color: #000 !important;
     }
   }
+
+  + .core-paragraph {
+    margin-top: 12vh;
+  }
 }
 </style>
