@@ -17,7 +17,11 @@
       <NuxtLayout>
         <NuxtPage :interface="interface" />
       </NuxtLayout>
-      <Footer :primary="mainMenu" :utility="socialMenu" />
+      <Footer
+        :primary="mainMenu"
+        :utility="socialMenu"
+        :globalOptions="globalOptions"
+      />
     </div>
   </div>
 </template>
