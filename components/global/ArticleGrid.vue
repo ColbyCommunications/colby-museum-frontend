@@ -718,7 +718,7 @@ export default {
       }
 
       if (component.aggregationMakerList.length > 0) {
-        filterTerms.push({ "terms": { "Sort_Artist" : component.aggregationMakerList }})
+        filterTerms.push({ "terms": { "Artist_Maker.sort_name" : component.aggregationMakerList }})
       }
 
       if (component.aggregationMediumList.length > 0) {
@@ -730,7 +730,7 @@ export default {
       }
 
       if (component.aggregationYearList.length > 0) {
-        filterTerms.push({ "terms": { "Disp_Create_DT" : component.aggregationYearList }})
+        filterTerms.push({ "terms": { "dates.era_labels" : component.aggregationYearList }})
       }
 
       if (component.aggregationTypeList.length > 0) {
@@ -738,9 +738,9 @@ export default {
       }
 
       if (component.objectsSortBy == 'name') {
-        filterSort.push({'Sort_Artist' : component.objectsSort});
+        filterSort.push({'Artist_Maker.sort_name' : component.objectsSort});
       } else if (component.objectsSort == 'year') {
-        filterSort.push({'Disp_Create_DT' : 'desc'});
+        filterSort.push({'dates.start_year' : 'desc'});
       } else if (component.objectsSortBy == 'title') {
         filterSort.push({"Disp_Title": component.objectsSort});
       } else {
@@ -862,8 +862,10 @@ export default {
               "aggs": { 
                 "maker": { 
                   "terms": { 
-                    "field": "Sort_Artist",
-                    "size": 300
+                    "field": "Artist_Maker.sort_name",
+                    "size": 3000,
+                    "order": { "_key": "asc" }
+                    // TODO: Add filter block here as .filtered, use to populate facets
                   }
                 },
                 // "medium": { 
@@ -880,14 +882,18 @@ export default {
                 // },
                 "year": { 
                   "terms": { 
-                    "field": "dates.start_year",
-                    "size": 300
+                    "field": "dates.era_labels",
+                    "size": 3000,
+                    "order": { "_key": "asc" }
+                    // TODO: Add filter block here as .filtered, use to populate facets
                   }
                 },
                 "type": { 
                   "terms": { 
                     "field": "Disp_Obj_Type",
-                    "size": 300
+                    "size": 300,
+                    "order": { "_key": "asc" }
+                    // TODO: Add filter block here as .filtered, use to populate facets
                   }
                 },
               }
