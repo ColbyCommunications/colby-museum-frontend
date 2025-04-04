@@ -22,7 +22,7 @@
         <div class="super-dropdown__event-paragraph paragraph-style-3" v-text="event.location" />
         <div class="super-dropdown__event-bottom">
           <span>
-            <div class="super-dropdown__event-time paragraph-style-3" v-text="event.time"/>
+            <div v-if="event.time" class="super-dropdown__event-time paragraph-style-3" v-text="event.time"/>
             <ActivityTag />
           </span>
           <Btn
@@ -401,7 +401,7 @@ export default {
     }
   }
 
-  .activity-tag {
+  &__event-time + .activity-tag {
     margin-left: 8px;
    
     @include breakpoint(large) {
