@@ -177,14 +177,19 @@ export default {
 
     let previousHeight = document.body.scrollHeight;
 
-    window.addEventListener('resize', function() {
+    this.animateInterval = setInterval(() => {
       const currentHeight = document.body.scrollHeight;
       if (currentHeight !== previousHeight) {
         console.log('Page length changed!');
-        // Perform actions needed when page length changes
         previousHeight = currentHeight; // Update the height
+
+        this.animate();
       }
-    });
+    }, 2000);
+  },
+  unmounted() {
+    clearInterval(this.animateInterval);
+    this.animateInterval = null;
   },
   methods: {
     animate() {
