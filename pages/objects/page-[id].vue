@@ -37,7 +37,7 @@ export default {
     const route = useRoute();
     const todo = ref({})
 
-    console.log(route);
+    // console.log(route);
 
     // useFetch(() => 
     //   fetch(`${props.interface.endpoint}pages?slug=objects`)

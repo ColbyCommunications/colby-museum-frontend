@@ -422,14 +422,6 @@ export default {
       required: false,
     }
   },
-  watch: {
-    items: {
-      deep: true,
-      handler() {
-        console.log('TESTING ON');
-      }
-    }
-  },
   async created() {
     this.interface = useInterfaceStore();
     const component = this;
@@ -601,16 +593,7 @@ export default {
         type = '&variant=14';
       }
 
-      // Trying to varify if filer parameters work with Wordpress REST API
-      // if (component.items_type == 'events' || component.items_type == 'exhibitions') {
-      //   if (component.showChronology) {
-      //     meta_date = `&filter[orderby]=meta_value&filter[meta_key]=date&filter[order]=DESC`;
-      //   } else {
-      //     meta_date = `&filter[orderby]=meta_value&filter[meta_key]=date&filter[order]=ASC`;
-      //   }
-      // }
-
-      console.log(`${component.interface.endpoint}${component.items_type}?categories_exclude=1${chr}${type}&per_page=5&page=1`);
+      // console.log(`${component.interface.endpoint}${component.items_type}?categories_exclude=1${chr}${type}&per_page=5&page=1`);
 
       await axios
         .get(`${component.interface.endpoint}${component.items_type}?categories_exclude=1${chr}${type}&per_page=5&page=1`)
@@ -782,7 +765,7 @@ export default {
         const vhs = this.$refs.mediacontext.getElementsByClassName('vh--outer');
         
         Array.from(vhs).forEach((vh) => {
-          console.log(vh.querySelector('img').width);
+          // console.log(vh.querySelector('img').width);
 
           vh.style.width = `${vh.querySelector('img').width}px`
         });

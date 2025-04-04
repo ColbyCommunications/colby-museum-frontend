@@ -798,7 +798,6 @@ export default {
               heading: `${i._source.Disp_Maker_1}`,
               subheading: `<em>${i._source.Disp_Title}</em>`,
               subheading2: `${i._source.Disp_Create_DT}`,
-              // subheading: `${i._source.Disp_Maker_1} ${i._source.Disp_Create_DT}`,
               button: {
                 srOnly: true,
                 title: 'View Object',

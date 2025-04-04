@@ -177,15 +177,17 @@ export default {
 
     let previousHeight = document.body.scrollHeight;
 
-    this.animateInterval = setInterval(() => {
-      const currentHeight = document.body.scrollHeight;
-      if (currentHeight !== previousHeight) {
-        console.log('Page length changed!');
-        previousHeight = currentHeight; // Update the height
+    if (this.size != 'embark') {
+      this.animateInterval = setInterval(() => {
+        const currentHeight = document.body.scrollHeight;
+        if (currentHeight !== previousHeight) {
+          // console.log('Page length changed!');
+          previousHeight = currentHeight; // Update the height
 
-        this.animate();
-      }
-    }, 2000);
+          this.animate();
+        }
+      }, 2000);
+    }
   },
   unmounted() {
     clearInterval(this.animateInterval);
