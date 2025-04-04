@@ -37,7 +37,7 @@
         },
         {
           heading: 'Hours',
-          paragraph: start_time + '-' + end_time,
+          paragraph: start_time + '&ndash;' + end_time,
         }
       ]"
     />
