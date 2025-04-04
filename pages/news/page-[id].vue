@@ -2,7 +2,7 @@
   <div class="page page--default">
     <IntroContext
       class="sr-only--excerpt"
-      :heading="`${$route.query.category == 6 ? 'Lunder Institute ' : ''}News — Page ${$route.params.id }`"
+      :heading="`${$route.query.category == 6 ? 'Lunder Institute ' : ''}News`"
       :headingElement="'h1'"
       :subheading="'Find out what’s happening at Colby Museum.'"
     />

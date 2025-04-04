@@ -126,5 +126,9 @@ export default {
   &__item {
     grid-column: span 1 / span 1;
   }
+
+  + .core-paragraph {
+    margin-top: 12vh;
+  }
 }
 </style>

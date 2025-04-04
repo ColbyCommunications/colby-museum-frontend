@@ -17,6 +17,9 @@
       :heading="'Object Details'"
       :items="items"
     />
+    <div class="core-paragraph grid paragraph-style-2" type="core-paragraph">
+      <p>Object information is a work in progress and is updated as new research becomes available. Information about images and permissions is available <NuxtLink href="/collection/requests">here</NuxtLink>.</p>
+    </div>
     <BigArrowBtnSection
       :button="{
         reverse: true,
