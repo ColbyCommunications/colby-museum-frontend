@@ -8,7 +8,7 @@ const isOpen = (start, end, location) => {
   if ((dt.getDay() == 1 && location == 'campus') || (dt.getDay() == 2 && location == 'downtown')) {
     return false;
 
-  // Special conditional for Sunday hours. Will clean up later.
+  // Special conditional for Sunday hours. Will clean up duplications later.
   } else if (dt.getDay() == 0 && location == 'campus') {
     var s = '12:00:00'.split(':');
     var dt1 = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(), parseInt(s[0]), parseInt(s[1]), parseInt(s[2]));
