@@ -9,7 +9,7 @@
           <h2>Campus Location</h2>
           <address><a href="https://www.google.com/maps/place/5600+Mayflower+Hill+Dr,+Waterville,+ME+04901/@44.5650198,-69.6606893,17z/data=!3m1!4b1!4m6!3m5!1s0x4cb1e45077d0e887:0x7f8cd7028d21465!8m2!3d44.5650198!4d-69.6606893!16s%2Fg%2F11bw3_cn68?entry=ttu" target="_blank">5600 Mayflower Hill Dr.<br>Waterville, ME 04901</a></address>
           <a href="tel:+1 207-859-5600">+1 207-859-5600</a>
-          <span :class="[campusIsOpen ? 'open' : 'closed']">{{ campusIsOpen ? 'Open' : 'Closed' }} <span>10a-5p</span></span>
+          <span :class="[campusIsOpen ? 'open' : 'closed']">{{ campusIsOpen ? 'Open' : 'Closed' }} <span v-html="new Date().getDay() == 0 ? '12p-5p' : '10a-5p'" /></span>
         </div>
         <div
           class="footer__location"
