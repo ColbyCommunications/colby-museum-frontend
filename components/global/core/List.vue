@@ -22,6 +22,10 @@ export default {
     list-style-type: disc;
   }
 
+  ol li {
+    list-style-type: decimal;
+  }
+
   li {
     margin-left: 1.2vw;
   }

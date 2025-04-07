@@ -10,11 +10,16 @@
     min-height: 160vh;
   }
 
+  .has-text-align-center {
+    text-align: center;
+  }
+
   .grid {
     > h2,
     > h3,
     > p,
     > ul,
+    > ol,
     > .video {
       grid-column: span 12 / span 12;
 
@@ -35,6 +40,7 @@
       > h3,
       > p,
       > ul,
+      > ol,
       > .video {
         grid-column: span 12 / span 12;
 
