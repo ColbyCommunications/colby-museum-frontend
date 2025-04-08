@@ -864,27 +864,22 @@ export default {
                     "field": "Artist_Maker.sort_name",
                     "size": 3000,
                     "order": { "_key": "asc" }
-                    // TODO: Add filter block here as .filtered, use to populate facets
                   }
+                  // TODO: Add filter block here as .filtered, use to populate facets
+                  // "aggs": {
+                  //  "filtered": {} 
+                  // }
                 },
-                // "medium": { 
-                //   "terms": { 
-                //     "field": "Medium",
-                //     "size": 200
-                //   }
-                // },
-                // "support": { 
-                //   "terms": { 
-                //     "field": "Support",
-                //     "size": 200
-                //   }
-                // },
                 "year": { 
                   "terms": { 
                     "field": "dates.era_labels",
                     "size": 3000,
-                    "order": { "_key": "asc" }
+                    "order": { "start": "asc" }
+                  },
+                  "aggs": {
+                    "start": { "min": { "field": "dates.end_year" } }
                     // TODO: Add filter block here as .filtered, use to populate facets
+                    // "filtered": {} 
                   }
                 },
                 "type": { 
