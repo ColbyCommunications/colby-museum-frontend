@@ -74,7 +74,7 @@
     </div>
     <p
       v-if="caption"
-      class="context__p"
+      class="context__caption"
       ref="caption"
     >
       <span
@@ -180,7 +180,7 @@ export default {
       return this.subheading2.replace(/\S+/g, '<span class="context__word" aria-hidden="true"><span aria-hidden="true">$&</span></span>');
     },
     preppedCaption() {
-      return this.paragraph.replace(/\n/g, '<br />');
+      return this.caption.replace(/\n/g, '<br />');
     },
     preppedParagraph() {
       return this.paragraph.replace(/\n/g, '<br />');
@@ -218,6 +218,7 @@ export default {
         let subheading2 = this.$refs.subheading2;
         let curtain = this.$refs.curtain;
         let paragraph = this.$refs.paragraph;
+        let caption = this.$refs.caption;
 
         if (heading) {
           let headingWords = heading.querySelectorAll('.context__word span');
@@ -311,6 +312,22 @@ export default {
           let pcurtain = paragraph.querySelector('.vertical-curtain');
 
           gsap.to(pcurtain,
+          {
+            scrollTrigger: {
+              trigger: subheading,
+              toggleActions: 'restart none none reverse',
+              start: 'top 95%',
+            },
+            height: 0,
+            duration: 0.6,
+            ease: "expo.out",
+          });
+        }
+
+        if (caption) {
+          let ccurtain = caption.querySelector('.vertical-curtain');
+
+          gsap.to(ccurtain,
           {
             scrollTrigger: {
               trigger: subheading,
@@ -514,6 +531,7 @@ export default {
   }
 
   &__image + &__p,
+  &__image + &__caption,
   &__image + .btn,
   &__image + .text-btn {
     margin-top: 1.230vh; // 813px / 10px
@@ -530,6 +548,19 @@ export default {
 
     .dark-mode & {
       background-color: map.get($layout-dm-colors, background);
+    }
+  }
+
+  &__caption {
+    position: relative;
+    @extend .paragraph-style-3;
+
+    @include breakpoint(large) {
+      font-size: 1vw;
+    }
+
+    span {
+      display: contents;
     }
   }
 

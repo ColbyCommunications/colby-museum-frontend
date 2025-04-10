@@ -63,7 +63,8 @@
       :subheading="paragraph_entry_type == 'description' && image ? image.object_title : subheading"
       :subheading2="paragraph_entry_type == 'description' && image ? image.object_creation_date : subheading2"
       :image="image"
-      :paragraph="paragraph_entry_type == 'description' && image ? image.caption.rendered : paragraph"
+      :caption="paragraph_entry_type == 'description' && image ? image.caption.rendered : undefined"
+      :paragraph="paragraph"
       :button="stagedButton"
     />
   </article>
