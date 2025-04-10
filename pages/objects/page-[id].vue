@@ -1,6 +1,7 @@
 <template>
   <div class="page page--default">
     <IntroContext
+      :class="[$route.query.embark_id ? 'sr-only--excerpt' : '']"
       :heading="`Objects`"
       :headingElement="'h1'"
       :subheading="'Explore the eleven thousand artworks that reside in the collection of the Colby College Museum of Art and shape its teaching mission. The collection represents the breadth and complexity of American art and also includes works by international artists from antiquity to the present.'"
