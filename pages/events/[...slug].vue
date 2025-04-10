@@ -19,6 +19,7 @@
       :subheading="excerpt"
     />
     <ArticleGrid
+      class="article-grid--event-meta"
       :bordered="true"
       :columns="'4'"
       :items="[
@@ -36,7 +37,7 @@
           paragraph: String(date),
         },
         {
-          heading: 'Hours',
+          heading: 'Time',
           paragraph: start_time + '&ndash;' + end_time,
         }
       ]"

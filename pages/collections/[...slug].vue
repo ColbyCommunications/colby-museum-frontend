@@ -24,7 +24,7 @@
     <BigArrowBtnSection
       :button="{
         reverse: true,
-        title: 'Collections Index',
+        title: 'About to the Collection',
         url: '/collection/about-the-collection'
       }"
     />
@@ -32,7 +32,7 @@
       v-if="embark_id"
       :align="'right'"
       :button="{
-        title: 'View Full Collection',
+        title: 'View all Works in this Collection',
         url: `/objects/page-1?embark_id=${embark_id}`
       }"
     />

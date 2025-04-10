@@ -17,7 +17,7 @@
             <div
               class="vertical-curtain"
             />
-            {{ item.text }}
+            <span v-html="item.text" />
           </li>
         </ol>
       </div>

@@ -19,6 +19,7 @@
       :subheading="excerpt"
     />
     <ArticleGrid
+      class="article-grid--event-meta"
       :bordered="true"
       :columns="'3'"
       :items="[
@@ -32,7 +33,7 @@
           paragraph: address ? address : ''
         },
         {
-          heading: 'Date',
+          heading: 'Dates',
           paragraph: end_date ? `${String(date)}&ndash;${String(end_date)}` : String(date),
         },
       ]"

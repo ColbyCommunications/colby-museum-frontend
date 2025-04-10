@@ -595,8 +595,10 @@ export default {
 
       // console.log(`${component.interface.endpoint}${component.items_type}?categories_exclude=1${chr}${type}&per_page=5&page=1`);
 
+      console.log(`${component.interface.endpoint}${component.items_type}?categories_exclude=1${chr}${type}&per_page=8&page=1`);
+
       await axios
-        .get(`${component.interface.endpoint}${component.items_type}?categories_exclude=1${chr}${type}&per_page=5&page=1`)
+        .get(`${component.interface.endpoint}${component.items_type}?categories_exclude=1${chr}${type}&per_page=8&page=1`)
         .then((output) => {
           component.newItems = output.data.map((i) => ({
             post: i,
@@ -1320,7 +1322,7 @@ export default {
 
     .context__p {
       @include breakpoint(large) {
-        font-size: 0.972vw;
+        font-size: 1vw;
       }
     }
   }

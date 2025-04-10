@@ -59,7 +59,7 @@
     line-height: 140%;
 
     @include breakpoint(large) {
-      font-size: 0.972vw; // 14px / 1440px
+      font-size: 1vw; // 14px / 1440px
     }
   }
 }
@@ -70,7 +70,8 @@
 
 .paragraph-style-1,
 .paragraph-style-2,
-.paragraph-style-3 {
+.paragraph-style-3,
+.ordered-list-section li {
   a {
     color: map.get($layout-colors, color);
     text-decoration: underline;

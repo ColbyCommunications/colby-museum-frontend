@@ -73,6 +73,16 @@
       />
     </div>
     <p
+      v-if="caption"
+      class="context__p"
+      ref="caption"
+    >
+      <span
+        class="vertical-curtain"
+      />
+      <span v-html="preppedCaption" />
+    </p>
+    <p
       v-if="paragraph"
       class="context__p"
       ref="paragraph"
@@ -125,6 +135,10 @@ export default {
       type: Object,
       required: false,
     },
+    caption: {
+      type: String,
+      required: false,
+    },
     paragraph: {
       type: String,
       required: false,
@@ -164,6 +178,9 @@ export default {
     },
     preppedSubheading2() {
       return this.subheading2.replace(/\S+/g, '<span class="context__word" aria-hidden="true"><span aria-hidden="true">$&</span></span>');
+    },
+    preppedCaption() {
+      return this.paragraph.replace(/\n/g, '<br />');
     },
     preppedParagraph() {
       return this.paragraph.replace(/\n/g, '<br />');
@@ -433,6 +450,8 @@ export default {
 
     .context--embark & {
       @extend .subheading-style-embark;
+
+      font-style: italic;
     }
 
     // Special styling for object detail title subheading
@@ -545,7 +564,7 @@ export default {
       @extend .paragraph-style-3;
 
       @include breakpoint(large) {
-        font-size: 0.972vw;
+        font-size: 1vw;
       }
     }
   }

@@ -24,11 +24,11 @@
 
     @include breakpoint(medium) {
       padding: 1vh 1.042vw;
-      font-size: 0.972vw;
+      font-size: 1vw;
       border: 0.208vw solid;
       
       .dark-mode & {
-        font-size: 0.972vw;
+        font-size: 1vw;
         border: 0.208vw solid;
       }
     }

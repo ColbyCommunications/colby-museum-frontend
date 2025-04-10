@@ -150,7 +150,7 @@ export default {
     @include paragraph-style-2;
 
     @include breakpoint(large) {
-      font-size: 1.389vw !important; // 20px / 1440px
+      font-size: 1.389vw !important;
       letter-spacing: -0.033vw !important;
     }
   }

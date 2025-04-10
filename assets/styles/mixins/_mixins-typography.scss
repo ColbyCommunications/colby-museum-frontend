@@ -105,7 +105,7 @@
   line-height: 120%;
 
   @include breakpoint(large) {
-    font-size: 0.972vw; // 14px / 1440px
+    font-size: 1vw; // 14px / 1440px
     letter-spacing: -0.010vw;
   }
 }

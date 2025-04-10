@@ -1431,6 +1431,10 @@ export default {
       .article-grid--6-columns & {
         grid-column: span 2 / span 2;
       }
+
+      .article-grid--event-meta & {
+        margin-bottom: 5.9vh;
+      }
     }
 
     &:nth-child(12n - 7) {  // 12n if neccessary
@@ -1468,6 +1472,10 @@ export default {
 
   + .paragraph-style-2 {
     margin-top: 12vh;
+  }
+
+  &--event-meta + .paragraph-style-2 {
+    margin-top: 5.9vh;
   }
 }
 </style>
