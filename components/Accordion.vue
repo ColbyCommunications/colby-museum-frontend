@@ -94,6 +94,11 @@ export default {
     border-radius: 50%;
     background-color: transparent;
     transition: $transition-default;
+    fill: map.get($layout-colors, color);
+
+    .dark-mode & {
+      fill: map.get($layout-dm-colors, color);
+    }
 
     [aria-expanded='true'] & {
       // background-color: $navy;
