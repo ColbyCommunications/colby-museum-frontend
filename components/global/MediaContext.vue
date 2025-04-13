@@ -633,6 +633,8 @@ export default {
         .then((output) => {
           imageObj = output.data;
 
+          // console.log(imageObj);
+
           newImageObj = {
             alt_text: imageObj.alt_text,
             caption: {

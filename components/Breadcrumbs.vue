@@ -22,7 +22,8 @@
                   :to="item.url.replace(/^.*\/\/[^\/]+/, '').replace(/\/$/, '')"
                 >
                   <IconArrow />
-                  {{ item.title }}
+                  <!-- {{ item.title }} -->
+                  <span v-html="item.title" />
                 </NuxtLink>
               </span>
             </span>
@@ -34,7 +35,8 @@
                   :to="manual.url"
                 >
                   <IconArrow />
-                  {{ manual.title }}
+                  <!-- {{ manual.title }} -->
+                  <span v-html="manual.title" />
                 </NuxtLink>
               </span>
             </span>
@@ -47,7 +49,8 @@
                   aria-current="page"
                 >
                   <IconArrow />
-                  {{ current.title }}
+                  <!-- {{ current.title }} -->
+                  <span v-html="current.title" />
                 </NuxtLink>
               </span>
             </span>
