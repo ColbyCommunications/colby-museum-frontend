@@ -128,6 +128,11 @@ export default {
     appearance: none;
     cursor: pointer;
     background-color: transparent;
+    color: map.get($layout-colors, color);
+
+    .dark-mode & {
+      color: map.get($layout-dm-colors, color);
+    }
 
     @include breakpoint(large) {
       padding: 2.952vh 0;
