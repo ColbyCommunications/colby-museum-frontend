@@ -1406,6 +1406,18 @@ export default {
       }
     }
 
+    .article-grid--6-columns & {
+      grid-column: span 6 / span 6;
+
+      @include breakpoint(medium) {
+        grid-column: span 3 / span 3;
+      }
+
+      @include breakpoint(large) {
+        grid-column: span 2 / span 2;
+      }
+    }
+
     @include breakpoint(medium) {
       grid-column: span 6 / span 6;
       margin-bottom: 60px;
@@ -1421,10 +1433,6 @@ export default {
 
       .article-grid--3-columns & {
         grid-column: span 4 / span 4;
-      }
-
-      .article-grid--6-columns & {
-        grid-column: span 2 / span 2;
       }
 
       .article-grid--event-meta & {
