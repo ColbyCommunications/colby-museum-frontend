@@ -60,7 +60,7 @@
         />
         <p
           class="subheading-style-4"
-          v-html="`Terms of Use, <a href='https://www.colby.edu/people/offices-directory/general-counsel/colby-policy-library/privacy-policy/'>Privacy Policy</a>, Non-Discrimination Policy© ${ new Date().getFullYear() } Colby Museum of Art. All rights reserved.`"
+          v-html="`<a href='https://www.colby.edu/people/offices-directory/general-counsel/colby-policy-library/privacy-policy/'>Privacy Policy</a>`"
         />
       </div>
     </div>
