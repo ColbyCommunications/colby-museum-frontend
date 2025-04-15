@@ -8,8 +8,8 @@
         url: fullPath,
       }"
       :manual="{
-        title: 'News',
-        url: '/news/page-1',
+        title: 'Lunder Institute News',
+        url: '/news/page-1?category=6',
       }"
     />
     <IntroContext
