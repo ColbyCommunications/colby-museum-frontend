@@ -14,6 +14,7 @@
       <IconArrow class="super-dropdown__arrow" />
     </button>
     <div class="super-dropdown__drawer">
+      <ActivityTag />
       <div
         v-if="events"
         v-for="(event, index) in events"
@@ -24,7 +25,7 @@
         <div class="super-dropdown__event-bottom">
           <span>
             <div class="super-dropdown__event-time paragraph-style-3" v-text="event.time"/>
-            <ActivityTag />
+            <!-- <ActivityTag /> -->
           </span>
           <Btn
             v-if="event.button"
@@ -330,6 +331,17 @@ export default {
           border-top: 0;
         }
       }
+
+      > .activity-tag {
+        // top: 24px;
+        // right: 16px;
+
+        // @include breakpoint(large) {
+        //   top: 1.667vw;
+        //   right: 3.69vh;
+        // }
+        margin-bottom: 2.25vh;
+      }
     }
 
     .super-dropdown:hover & {
@@ -369,6 +381,7 @@ export default {
   }
 
   &__event-bottom {
+    margin-top: 0.5vh;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -404,11 +417,12 @@ export default {
     }
   }
 
-  &__event-time {
-    .closed & {
-      display: none;
-    }
-  }
+  // TEMP
+  // &__event-time {
+  //   .closed & {
+  //     display: none;
+  //   }
+  // }
 
   &__event-time + .activity-tag {
     margin-left: 8px;
