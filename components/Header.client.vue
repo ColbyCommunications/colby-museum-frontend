@@ -33,13 +33,13 @@
             :class="[campusIsOpen ? 'open' : 'closed']"
             :size="'large'"
             :heading="'Campus Today'"
-            :event="campusEvent"
+            :events="campusEvent"
           />
           <SuperDropdown
             :class="[downtownIsOpen ? 'open' : 'closed']"
             :size="'large'"
             :heading="'Downtown Today'"
-            :event="downtownEvent"
+            :events="downtownEvent"
           />
         </div>
         <div class="header__btn-group">
@@ -150,28 +150,32 @@ export default {
       required: false,
     },
     campusEvent: {
-      type: Object,
+      type: Array,
       required: false,
-      default: {
-        location: 'No event scheduled for today.',
-        time: new Date().getDay() == 0 ? '12:00 p.m.–5:00 p.m.' : '10:00 a.m.–5:00 p.m.',
-        button: {
-          title: "What's On",
-          url: '/exhibitions-and-events',
+      default: [
+        {
+          location: 'No event scheduled for today.',
+          time: new Date().getDay() == 0 ? '12:00 p.m.–5:00 p.m.' : '10:00 a.m.–5:00 p.m.',
+          button: {
+            title: "What's On",
+            url: '/exhibitions-and-events',
+          }
         }
-      }
+      ]
     },
     downtownEvent: {
-      type: Object,
+      type: Array,
       required: false,
-      default: {
-        location: 'No event scheduled for today.',
-        time: '11:00 a.m.–7:00 p.m.',
-        button: {
-          title: "What's On",
-          url: '/exhibitions-and-events',
+      default: [
+        {
+          location: 'No event scheduled for today.',
+          time: '11:00 a.m.–7:00 p.m.',
+          button: {
+            title: "What's On",
+            url: '/exhibitions-and-events',
+          }
         }
-      }
+      ]
     },
     globalOptions: {
       type: Object,

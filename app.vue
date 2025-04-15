@@ -10,8 +10,8 @@
       <Header
         :primary="mainMenu"
         :utility="utilityMenu"
-        :campusEvent="campusCurrentEvent"
-        :downtownEvent="downtownCurrentEvent"
+        :campusEvent="campusCurrentEvents"
+        :downtownEvent="downtownCurrentEvents"
         :globalOptions="globalOptions"
       />
       <NuxtLayout>
@@ -46,8 +46,8 @@ export default {
       socialMenu: [],
       headerItems: [],
       footerItems: [],
-      campusCurrentEvent: undefined,
-      downtownCurrentEvent: undefined,
+      campusCurrentEvents: undefined,
+      downtownCurrentEvents: undefined,
     };
   },
   created() {
@@ -80,37 +80,63 @@ export default {
           .get(`${this.interface.endpoint}events?categories_exclude=1&chronologies=9`)
           .then((output) => {
               campusEvents = output.data.filter((event) => event.acf.location == 'campus');
-              downtownEvents = output.data.filter(
-                  (event) => event.acf.location == 'downtown'
-              );
+              downtownEvents = output.data.filter((event) => event.acf.location == 'downtown');
 
               if (campusEvents.length >= 1) {
-                  component.campusCurrentEvent = {
-                      heading: campusEvents[0].title.rendered,
-                      location: campusEvents[0].acf.location,
-                      time: `${component.formatTime(
-                          campusEvents[0].acf.start_time
-                      )}-${component.formatTime(campusEvents[0].acf.end_time)}`,
-                      button: {
-                          title: 'Event Details',
-                          url: campusEvents[0].link,
-                      },
-                  };
+                component.campusCurrentEvents = campusEvents.map((i) => ({
+                  heading: i.title.rendered,
+                  location: i.acf.location,
+                  time: `${component.formatTime(
+                      i.acf.start_time
+                  )}-${component.formatTime(i.acf.end_time)}`,
+                  button: {
+                      title: 'Event Details',
+                      url: i.link,
+                  },
+                }));
               }
 
               if (downtownEvents.length >= 1) {
-                  component.downtownCurrentEvent = {
-                      heading: downtownEvents[0].title.rendered,
-                      location: downtownEvents[0].acf.location,
-                      time: `${component.formatTime(
-                          downtownEvents[0].acf.start_time
-                      )}-${component.formatTime(downtownEvents[0].acf.end_time)}`,
-                      button: {
-                          title: 'Event Details',
-                          url: downtownEvents[0].link,
-                      },
-                  };
+                component.downtownCurrentEvents = downtownEvents.map((i) => ({
+                  heading: i.title.rendered,
+                  location: i.acf.location,
+                  time: `${component.formatTime(
+                      i.acf.start_time
+                  )}-${component.formatTime(i.acf.end_time)}`,
+                  button: {
+                      title: 'Event Details',
+                      url: i.link,
+                  },
+                }));
               }
+
+              // if (campusEvents.length >= 1) {
+              //     component.campusCurrentEvent = {
+              //         heading: campusEvents[0].title.rendered,
+              //         location: campusEvents[0].acf.location,
+              //         time: `${component.formatTime(
+              //             campusEvents[0].acf.start_time
+              //         )}-${component.formatTime(campusEvents[0].acf.end_time)}`,
+              //         button: {
+              //             title: 'Event Details',
+              //             url: campusEvents[0].link,
+              //         },
+              //     };
+              // }
+
+              // if (downtownEvents.length >= 1) {
+              //     component.downtownCurrentEvent = {
+              //         heading: downtownEvents[0].title.rendered,
+              //         location: downtownEvents[0].acf.location,
+              //         time: `${component.formatTime(
+              //             downtownEvents[0].acf.start_time
+              //         )}-${component.formatTime(downtownEvents[0].acf.end_time)}`,
+              //         button: {
+              //             title: 'Event Details',
+              //             url: downtownEvents[0].link,
+              //         },
+              //     };
+              // }
           });
   },
   mounted() {

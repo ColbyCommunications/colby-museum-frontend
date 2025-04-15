@@ -15,7 +15,8 @@
     </button>
     <div class="super-dropdown__drawer">
       <div
-        v-if="event"
+        v-if="events"
+        v-for="(event, index) in events"
         class="super-dropdown__event"
       >
         <div class="super-dropdown__event-heading" v-html="event.heading" />
@@ -68,7 +69,7 @@ export default {
       type: Array,
       required: false,
     },
-    event: {
+    events: {
       type: Object,
       required: false,
     },
@@ -352,6 +353,10 @@ export default {
     }
   }
 
+  &__event + &__event {
+    margin-top: 2vh;
+  }
+
   &__event-heading {
     @extend .paragraph-style-2;
 
@@ -368,13 +373,11 @@ export default {
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    margin-top: 14px;
 
     @include breakpoint(large) {
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
-      margin-top: 1.968vh;
     }
 
     span {
