@@ -1,7 +1,7 @@
 <template>
   <div class="page page--default">
     <IntroContext
-      :heading="`Events`"
+      :heading="`${$route.query.chronology ? ($route.query.chronology == 'future' ? 'Upcoming' : $route.query.chronology) + ' ' : ''}Events`"
       :headingElement="'h1'"
       :subheading="'Find out what’s happening at all of Colby Museum’s locations.'"
       class="sr-only--excerpt"
