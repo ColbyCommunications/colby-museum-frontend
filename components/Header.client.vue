@@ -155,7 +155,7 @@ export default {
       default: [
         {
           location: 'No event scheduled for today.',
-          time: new Date().getDay() == 0 ? '12:00 p.m.–5:00 p.m.' : '10:00 a.m.–5:00 p.m.',
+          // time: new Date().getDay() == 0 ? '12:00 p.m.–5:00 p.m.' : '10:00 a.m.–5:00 p.m.',
           button: {
             title: "What's On",
             url: '/exhibitions-and-events',
@@ -169,7 +169,7 @@ export default {
       default: [
         {
           location: 'No event scheduled for today.',
-          time: '11:00 a.m.–7:00 p.m.',
+          // time: '11:00 a.m.–7:00 p.m.',
           button: {
             title: "What's On",
             url: '/exhibitions-and-events',

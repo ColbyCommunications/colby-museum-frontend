@@ -23,7 +23,7 @@
         <div class="super-dropdown__event-heading" v-html="event.heading" />
         <div class="super-dropdown__event-paragraph paragraph-style-3" v-text="event.location" />
         <div class="super-dropdown__event-bottom">
-          <span>
+          <span v-if="event.time">
             <div class="super-dropdown__event-time paragraph-style-3" v-text="event.time"/>
             <!-- <ActivityTag /> -->
           </span>
@@ -381,7 +381,7 @@ export default {
   }
 
   &__event-bottom {
-    margin-top: 0.5vh;
+    margin-top: 0.8vh;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -417,11 +417,11 @@ export default {
     }
   }
 
-  &__event-time {
-    .closed & {
-      display: none;
-    }
-  }
+  // &__event-time {
+  //   .closed & {
+  //     display: none;
+  //   }
+  // }
 
   &__event-time + .activity-tag {
     margin-left: 8px;
