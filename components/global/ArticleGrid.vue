@@ -1474,7 +1474,7 @@ export default {
   }
 
   + .paragraph-style-2 {
-    margin-top: 12vh;
+    margin-top: 0;
   }
 
   &--event-meta + .paragraph-style-2 {
