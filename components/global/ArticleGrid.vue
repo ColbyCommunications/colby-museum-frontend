@@ -1480,5 +1480,9 @@ export default {
   &--event-meta + .paragraph-style-2 {
     margin-top: 5.9vh;
   }
+
+  + .marquee {
+    margin-top: 0;
+  }
 }
 </style>
