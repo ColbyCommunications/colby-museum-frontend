@@ -14,7 +14,7 @@
       <IconArrow class="super-dropdown__arrow" />
     </button>
     <div class="super-dropdown__drawer">
-      <ActivityTag />
+      <ActivityTag v-if="events" />
       <div
         v-if="events"
         v-for="(event, index) in events"
@@ -417,12 +417,11 @@ export default {
     }
   }
 
-  // TEMP
-  // &__event-time {
-  //   .closed & {
-  //     display: none;
-  //   }
-  // }
+  &__event-time {
+    .closed & {
+      display: none;
+    }
+  }
 
   &__event-time + .activity-tag {
     margin-left: 8px;
