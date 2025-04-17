@@ -188,7 +188,7 @@ export default {
       return this.paragraph.replace(/\n/g, '<br />').replace(`${this.interface.backend}`, '/').replace(/\/$/, '').replace('/"', '"');
     },
     fixedUrl() {
-      return this.button.url.replace(`${this.interface.backend}`, '').replace(/\/$/, '');
+      return this.button.url.replace(`${this.interface.backend}`, '/').replace(/\/$/, '');
     }
   },
   async created() {
