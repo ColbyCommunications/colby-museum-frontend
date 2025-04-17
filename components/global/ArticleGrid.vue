@@ -708,6 +708,10 @@ export default {
 
       if (component.embark_ID) {
         filterMust.push({ "term": { "Portfolios.Portfolio_ID" : `${component.embark_ID}` } });
+
+        if (this.variant === 'curated') {
+          filterMust.push({ "exists": {"field": "Images" }});
+        }
       }
 
       if (this.page == undefined && this.$refs.filter) {
