@@ -42,7 +42,7 @@ export default {
   },
   computed: {
     fixedUrl() {
-      return this.url.replace(`${this.interface.backend}`, '').replace(/\/$/, '');
+      return this.url.replace(`${this.interface.backend}`, '/').replace(/\/$/, '');
     }
   },
   async created() {
