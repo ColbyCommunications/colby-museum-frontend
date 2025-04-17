@@ -706,6 +706,7 @@ export default {
         filterMust.push({ "exists": { "field" : "Images" } });
       }
 
+      // Set the collection filter but show only objects with images if it's a curated peek 
       if (component.embark_ID) {
         filterMust.push({ "term": { "Portfolios.Portfolio_ID" : `${component.embark_ID}` } });
 
