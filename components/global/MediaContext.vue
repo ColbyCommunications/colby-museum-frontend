@@ -101,7 +101,7 @@
                       :heading="item.post.title.rendered"
                       :subheading="formatDate(item.post.date)"
                       :button="{
-                        title: 'Read Article',
+                        title: 'Read News',
                         url: item.post.link
                       }"
                     />
@@ -121,7 +121,7 @@
                       :subheading="formatDate(item.post.date)"
                       :heading="item.post.title.rendered"
                       :button="{
-                        title: 'Read Article',
+                        title: 'Read News',
                         url: item.post.link
                       }"
                     />
@@ -261,7 +261,7 @@
             :subheading="formatDate(item.post.date)"
             :paragraph="item.post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
             :button="{
-              title: 'Read Article',
+              title: 'Read News',
               url: item.post.link
             }"
           />
@@ -283,7 +283,7 @@
             :heading="item.post.title.rendered"
             :paragraph="item.post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
             :button="{
-              title: 'Read Article',
+              title: 'Read News',
               url: item.post.link
             }"
           />

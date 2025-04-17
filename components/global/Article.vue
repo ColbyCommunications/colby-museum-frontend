@@ -12,7 +12,7 @@
       :image="stagedImage"
       :button="{
         type: button_type,
-        title: 'Read Article',
+        title: 'Read News',
         url: post.link
       }"
     />
@@ -51,7 +51,7 @@
       :image="stagedImage"
       :button="{
         type: button_type,
-        title: 'Read Article',
+        title: 'Read News',
         url: post.link
       }"
     />
