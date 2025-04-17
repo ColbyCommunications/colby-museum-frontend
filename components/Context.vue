@@ -185,7 +185,7 @@ export default {
       return this.caption.replace(/\n/g, '<br />');
     },
     preppedParagraph() {
-      return this.paragraph.replace(/\n/g, '<br />');
+      return this.paragraph.replace(/\n/g, '<br />').replace(`${this.interface.backend}`, '/').replace(/\/$/, '').replace('/"', '"');
     },
     fixedUrl() {
       return this.button.url.replace(`${this.interface.backend}`, '').replace(/\/$/, '');
