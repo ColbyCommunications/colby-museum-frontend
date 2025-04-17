@@ -103,6 +103,8 @@
 <script>
 import gsap from 'gsap';
 
+import { useInterfaceStore } from "~/store/interface";
+
 export default {
   props: {
     size: {
@@ -186,8 +188,11 @@ export default {
       return this.paragraph.replace(/\n/g, '<br />');
     },
     fixedUrl() {
-      return this.button.url.replace(/^.*\/\/[^\/]+/, '').replace(/\/$/, '');
+      return this.button.url.replace(`${this.interface.backend}`, '').replace(/\/$/, '');
     }
+  },
+  async created() {
+    this.interface = useInterfaceStore();
   },
   mounted() {
     this.animate();
