@@ -1,17 +1,22 @@
 <template>
   <div class="core-paragraph grid paragraph-style-2">
-    <p v-html="attrs.content" />
+    <p v-html="attrs.content.replace(`${interface.backend}`, '/').replace(/\/$/, '')" />
   </div>
 </template>
 
 <script>
+import { useInterfaceStore } from "~/store/interface";
+
 export default {
   props: {
     attrs: {
       type: Object,
       required: true,
     }
-  }
+  },
+  async created() {
+    this.interface = useInterfaceStore();
+  },
 }
 </script>
 

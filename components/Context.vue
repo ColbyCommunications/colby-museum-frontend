@@ -185,7 +185,7 @@ export default {
       return this.caption.replace(/\n/g, '<br />');
     },
     preppedParagraph() {
-      return this.paragraph.replace(/\n/g, '<br />').replace(`${this.interface.backend}`, '/').replace(/\/$/, '').replace('/"', '"');
+      return this.paragraph.replace(/\n/g, '<br />').replaceAll(`${this.interface.backend}`, '/').replace(/\/$/, '').replaceAll('/"', '"');
     },
     fixedUrl() {
       return this.button.url.replace(`${this.interface.backend}`, '/').replace(/\/$/, '');
@@ -196,6 +196,10 @@ export default {
   },
   mounted() {
     this.animate();
+
+    // if(this.paragraph) {
+    //   console.log(this.paragraph.replaceAll(`${this.interface.backend}`, "/"));
+    // }
 
     let previousHeight = document.body.scrollHeight;
 

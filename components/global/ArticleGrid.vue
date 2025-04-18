@@ -324,7 +324,7 @@
                     >
                   </div>
                   <label
-                    v-text="item.name"
+                    v-text="item.name == 'future' ? 'upcoming' : item.name"
                     @click="item.name == 'past' || item.name == 'current' || item.name == 'future' ? toggleChronology(item) : toggleFilter(item, filter.name)"
                   />
                 </div>
@@ -907,81 +907,116 @@ export default {
 
       console.log(`${component.interface.endpoint}categories?parent=${component.items_category}`);
 
-      await axios
-        .get(`${component.interface.endpoint}categories?parent=${component.items_category}`)
-        .then(async (output) => {
-          let categories;
-          let chr;
-          let type = '';
-          let meta_date = '';
+      // if (component.items_type == 'events' || component.items_type == 'exhibitions') {
+      //   const key = component.showChronology == 'past' ? 'end_date' : 'date';
+      //   const order = component.showChronology == 'past' ? 'ASC' : 'DESC';
+        
+      //   await axios
+      //     .get(`${component.interface.endpoint}eoe?type=${component.items_type}&key=${key}&order=${order}&chronology=${component.showChronology}&page=${component.page}${searchTerm ? `&search=${searchTerm}` : ''}`)
+      //     .then(async (output) => {
+      //       console.log(output.data);
 
-          categories = output.data.map((c) => c.id);
+      //       let eoes = output.data;
 
-          if ((component.showChronology == 'current' || component.showCurrent) && (component.items_type == 'events' || component.items_type == 'exhibitions')) {
-            chr = '&chronologies=9'; // SHOW ONLY CURRENT
-          } else if ((component.showChronology == 'past' || component.showPast) && (component.items_type == 'events' || component.items_type == 'exhibitions')) {
-            chr = '&chronologies=8'; // SHOW ONLY PAST
-          } else if ((component.showChronology == 'future' || component.showFuture) && (component.items_type == 'events' || component.items_type == 'exhibitions')) {
-            chr = '&chronologies_exclude=8,9'; // EXCLUDE PAST AND CURRENT
-          } else {
-            if (component.$route.query.variant != 'traveling') {
-              chr = '&chronologies_exclude=8'; // EXCLUDE PAST AS LONG AS WE ARENT IN TRAVELING EXHIBITIONS
-            }
-          }
+      //       eoes.forEach(async (eoe) => {
+      //         await axios
+      //           .get(`${component.interface.endpointv3}exhibitions/${eoe.ID}`)
+      //           .then(async (output) => {
+      //             let mergedEoE = { ...eoe, ...output.data};
 
-          if (component.$route.query.variant == 'traveling') {
-            type = '&variant=14';
-          }
+      //             if (mergedEoE.acf.location != 'campus' && mergedEoE.acf.location != 'downtown' && mergedEoE.acf.location != 'virtual') {
+      //               mergedEoE.acf.location = 'elsewhere';
+      //             }
 
-          if (component.items_type == 'events' || component.items_type == 'exhibitions') {
-            if (component.showChronology) {
-              meta_date = `&?filter[orderby]=meta_value&?filter[meta_key]=date&filter[order]=DESC`;
+      //             mergedEoE = {
+      //               post: mergedEoE,
+      //               event_date: mergedEoE.acf.date ? component.formatDate(mergedEoE.acf.date, 'events-raw') : undefined,
+      //             }
+
+      //             component.newItems.push(mergedEoE);
+      //           })
+      //           .then(() => {
+      //             console.log(component.newItems);
+      //           })
+      //       });
+      //     })
+      // } else {
+        await axios
+          .get(`${component.interface.endpoint}categories?parent=${component.items_category}`)
+          .then(async (output) => {
+            let categories;
+            let chr;
+            let type = '';
+            let meta_date = '';
+
+            categories = output.data.map((c) => c.id);
+
+            if ((component.showChronology == 'current' || component.showCurrent) && (component.items_type == 'events' || component.items_type == 'exhibitions')) {
+              chr = '&chronologies=9'; // SHOW ONLY CURRENT
+            } else if ((component.showChronology == 'past' || component.showPast) && (component.items_type == 'events' || component.items_type == 'exhibitions')) {
+              chr = '&chronologies=8'; // SHOW ONLY PAST
+            } else if ((component.showChronology == 'future' || component.showFuture) && (component.items_type == 'events' || component.items_type == 'exhibitions')) {
+              chr = '&chronologies_exclude=8,9'; // EXCLUDE PAST AND CURRENT
             } else {
-              meta_date = `&?filter[orderby]=meta_value&?filter[meta_key]=date&filter[order]=ASC`;
+              if (component.$route.query.variant != 'traveling') {
+                chr = '&chronologies_exclude=8'; // EXCLUDE PAST AS LONG AS WE ARENT IN TRAVELING EXHIBITIONS
+              }
             }
-          }
 
-          // EXAMPLE OF SORTING BY START DATE
-          // console.log(`${component.interface.endpoint}${component.items_type == 'posts' ? 'posts' : component.items_type}?categories_exclude=1${chr}${type}${meta_date}&categories=${component.items_category}${categories.length > 0 ? `,${categories.toString()}` : '' }&per_page=${component.per_page}&page=${page}${searchTerm ? `&search=${searchTerm}` : ''}${component.alphabeticalOrder ? '&orderby=title' : ''}${component.reverseOrder ? '&order=asc' : ''}`);
+            if (component.$route.query.variant == 'traveling') {
+              type = '&variant=14';
+            }
 
-          console.log(`${component.interface.endpoint}${component.items_type == 'posts' ? 'posts' : component.items_type}?categories_exclude=1${chr}${type}${meta_date}&categories=${component.items_category}${categories.length > 0 ? `,${categories.toString()}` : '' }&per_page=${component.per_page}&page=${page}${searchTerm ? `&search=${searchTerm}` : ''}${component.alphabeticalOrder ? '&orderby=title' : ''}${component.reverseOrder ? '&order=asc' : ''}`);
-          await axios
-            .get(`${component.interface.endpoint}${component.items_type == 'posts' ? 'posts' : component.items_type}?categories_exclude=1${chr}${type}${meta_date}&categories=${component.items_category}${categories.length > 0 ? `,${categories.toString()}` : '' }&per_page=${component.per_page}&page=${page}${searchTerm ? `&search=${searchTerm}` : ''}${component.alphabeticalOrder ? '&orderby=title' : ''}${component.reverseOrder ? '&order=asc' : ''}`)
-            .then((output) => {
+            if (component.items_type == 'events' || component.items_type == 'exhibitions') {
+              if (component.showChronology) {
+                meta_date = `&?filter[orderby]=meta_value&?filter[meta_key]=date&filter[order]=DESC`;
+              } else {
+                meta_date = `&?filter[orderby]=meta_value&?filter[meta_key]=date&filter[order]=ASC`;
+              }
+            }
 
-              component.totalPages = output.headers['x-wp-totalpages'];
+            // EXAMPLE OF SORTING BY START DATE
+            // console.log(`${component.interface.endpoint}${component.items_type == 'posts' ? 'posts' : component.items_type}?categories_exclude=1${chr}${type}${meta_date}&categories=${component.items_category}${categories.length > 0 ? `,${categories.toString()}` : '' }&per_page=${component.per_page}&page=${page}${searchTerm ? `&search=${searchTerm}` : ''}${component.alphabeticalOrder ? '&orderby=title' : ''}${component.reverseOrder ? '&order=asc' : ''}`);
 
-              component.currentPage == component.totalPages ? component.nextPageAvailable = false : component.nextPageAvailable = true;
+            console.log(`${component.interface.endpoint}${component.items_type == 'posts' ? 'posts' : component.items_type}?categories_exclude=1${chr}${type}${meta_date}&categories=${component.items_category}${categories.length > 0 ? `,${categories.toString()}` : '' }&per_page=${component.per_page}&page=${page}${searchTerm ? `&search=${searchTerm}` : ''}${component.alphabeticalOrder ? '&orderby=title' : ''}${component.reverseOrder ? '&order=asc' : ''}`);
+            await axios
+              .get(`${component.interface.endpoint}${component.items_type == 'posts' ? 'posts' : component.items_type}?categories_exclude=1${chr}${type}${meta_date}&categories=${component.items_category}${categories.length > 0 ? `,${categories.toString()}` : '' }&per_page=${component.per_page}&page=${page}${searchTerm ? `&search=${searchTerm}` : ''}${component.alphabeticalOrder ? '&orderby=title' : ''}${component.reverseOrder ? '&order=asc' : ''}`)
+              .then((output) => {
 
-              component.newItems = output.data.map((i) => {
-                if (i.acf.location != 'campus' && i.acf.location != 'downtown' && i.acf.location != 'virtual') {
-                  i.acf.location = 'elsewhere';
-                }
+                component.totalPages = output.headers['x-wp-totalpages'];
 
-                return {
-                  post: i,
-                  event_date: i.acf.date ? component.formatDate(i.acf.date, 'events-raw') : undefined,
-                }
-              });
+                component.currentPage == component.totalPages ? component.nextPageAvailable = false : component.nextPageAvailable = true;
 
-              // Temporary solution for ordering by start date
-              if (component.items_type == 'events' || component.items_type == 'exhibitions') {
-                if (component.alphabeticalOrder == false) {
-                  if (component.showChronology == 'past') {
-                    component.newItems.sort((a,b) => b.event_date.getTime() - a.event_date.getTime());
-                  } else {
-                    if (component.$route.query.variant == 'traveling') {
+                component.newItems = output.data.map((i) => {
+                  if (i.acf.location != 'campus' && i.acf.location != 'downtown' && i.acf.location != 'virtual') {
+                    i.acf.location = 'elsewhere';
+                  }
+
+                  return {
+                    post: i,
+                    event_date: i.acf.date ? component.formatDate(i.acf.date, 'events-raw') : undefined,
+                  }
+                });
+
+                // Temporary solution for ordering by start date
+                if (component.items_type == 'events' || component.items_type == 'exhibitions') {
+                  if (component.alphabeticalOrder == false) {
+                    if (component.showChronology == 'past') {
                       component.newItems.sort((a,b) => b.event_date.getTime() - a.event_date.getTime());
                     } else {
-                      component.newItems.sort((a,b) => b.event_date.getTime() - a.event_date.getTime());
+                      if (component.$route.query.variant == 'traveling') {
+                        component.newItems.sort((a,b) => b.event_date.getTime() - a.event_date.getTime());
+                      } else {
+                        component.newItems.sort((a,b) => b.event_date.getTime() - a.event_date.getTime());
+                      }
                     }
                   }
                 }
-              }
 
-              component.pagination = component.preparedPagination(component.currentPage, component.totalPages, 6);
-            });
-        });
+                component.pagination = component.preparedPagination(component.currentPage, component.totalPages, 6);
+              });
+          });
+      // } END IF
     },
     async getPost(i) {
       const component = this;
