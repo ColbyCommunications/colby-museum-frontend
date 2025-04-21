@@ -1014,7 +1014,7 @@ export default {
                       if (component.$route.query.variant == 'traveling') {
                         component.newItems.sort((a,b) => b.event_date.getTime() - a.event_date.getTime());
                       } else {
-                        component.newItems.sort((a,b) => b.event_date.getTime() - a.event_date.getTime());
+                        component.newItems.sort((a,b) => component.items_type == 'events' ? a.event_date.getTime() - b.event_date.getTime() : b.event_date.getTime() - a.event_date.getTime());
                       }
                     }
                   }
