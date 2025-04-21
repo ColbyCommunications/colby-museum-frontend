@@ -477,7 +477,9 @@ export default {
     .context--embark & {
       @extend .subheading-style-embark;
 
-      font-style: italic;
+      &:nth-of-type(1) {
+        font-style: italic;
+      }
     }
 
     // Special styling for object detail title subheading
