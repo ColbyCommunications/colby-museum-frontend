@@ -82,7 +82,7 @@
               <ul v-if="item.children" class="header__dropdown">
                 <li v-for="(child, index) in item.children">
                   <NuxtLink
-                    :to="child.url.replace(/^.*\/\/[^\/]+/, '').replace(/\/$/, '')"
+                    :to="$route.path == child.url.replace(/^.*\/\/[^\/]+/, '').replace(/\/$/, '') ? undefined : child.url.replace(/^.*\/\/[^\/]+/, '').replace(/\/$/, '')"
                     @click="closeDrawer()"
                   >{{ child.title.replace('amp;', '') }}</NuxtLink>
                 </li>
