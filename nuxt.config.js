@@ -11,11 +11,14 @@ export default defineNuxtConfig({
   },
 
   sitemap: {
-    urls: async () => {
-      // fetch your URLs from a database or other source
-      const urls = await fetch('https://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/wp-sitemap-posts-page-1.xml')
-      return urls
-    }
+    sources: [
+      'https://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/wp-sitemap-posts-page-1.xml',
+    ],
+    // routes: async () => {
+    //   // fetch your URLs from a database or other source
+    //   const urls = await fetch('https://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/wp-sitemap-posts-page-1.xml')
+    //   return urls
+    // }
   },
 
   build: {

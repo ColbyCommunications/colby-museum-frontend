@@ -1022,10 +1022,19 @@ export default {
       const component = this;
       let postObj;
 
+      console.log(i);
+
       await axios
         .get(`${component.interface.endpoint}pages/${i}`)
         .then((output) => {
           postObj = output.data;
+        })
+        .catch(async (error) => {
+          await axios
+            .get(`${component.interface.endpoint}posts/${i}`)
+            .then((output) => {
+              postObj = output.data;
+            })
         });
 
       return await postObj;
