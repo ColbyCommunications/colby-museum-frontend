@@ -15,7 +15,7 @@
       :show-chronology="$route.query.chronology"
       :button_type="'pill'"
     />
-    <div class="core-paragraph grid full paragraph-style-2" type="core-paragraph">
+    <div class="core-paragraph grid full paragraph-style-2" type="core-paragraph" style="margin-top: 5.9vh;">
       <p>For a full list of Colby Arts events, visit <a href="https://arts.colby.edu/" target="_blank">arts.colby.edu</a></p>
     </div>
   </div>
