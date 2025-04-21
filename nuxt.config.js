@@ -40,7 +40,15 @@ export default defineNuxtConfig({
     css: {
       preprocessorOptions: {
         scss: {
-          additionalData: '@use "@/assets/styles/styles.scss" as *;'
+          additionalData: '@use "@/assets/styles/styles.scss" as *;',
+          api: 'modern-compiler',
+          silenceDeprecations: [
+            'color-functions',
+            'global-builtin',
+            'import',
+            'legacy-js-api',
+            'mixed-decls'
+          ]
         }
       }
     },

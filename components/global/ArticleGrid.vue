@@ -867,9 +867,11 @@ export default {
                 "maker": { 
                   "terms": { 
                     "field": "Artist_Maker.sort_name",
+                    "exclude": [""],
                     "size": 3000,
                     "order": { "_key": "asc" }
                   }
+                  // TODO: Add 'missing' handling with code path in filter assignments to check for 'No Maker' and use a not exists query
                   // TODO: Add filter block here as .filtered, use to populate facets
                   // "aggs": {
                   //  "filtered": {} 
@@ -878,11 +880,11 @@ export default {
                 "year": { 
                   "terms": { 
                     "field": "dates.era_labels",
-                    "size": 3000,
-                    "order": { "start": "asc" }
+                    "order": { "start": "desc" },
+                    "size": 3000
                   },
                   "aggs": {
-                    "start": { "min": { "field": "dates.end_year" } }
+                    "start": { "max": { "field": "dates.start_year" } }
                     // TODO: Add filter block here as .filtered, use to populate facets
                     // "filtered": {} 
                   }
