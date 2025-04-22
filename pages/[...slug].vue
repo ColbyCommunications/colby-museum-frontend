@@ -108,6 +108,21 @@ export default {
         // console.log(page.components);
       });
   },
+  mounted() {
+    const timeLeft = ref(2);
+
+    setInterval(async () => {
+      if (timeLeft.value === 1) {
+        if (this.hasFileExtension(this.$route.path)) {
+          navigateTo(`${this.interface.backend}${this.$route.path}`, {
+            external: true,
+          })
+        }
+      }
+
+      timeLeft.value = timeLeft.value - 1;
+    }, 1000);
+  },
   methods: {
     async getBreadcrumbs(post) {
       const component = this;
@@ -117,6 +132,9 @@ export default {
         .then((output_b) => {
           component.breadcrumbs = output_b.data;
         });
+    },
+    hasFileExtension(fileName) {
+      return fileName.includes('.');
     }
   }
 }
