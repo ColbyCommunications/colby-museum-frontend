@@ -586,7 +586,9 @@ export default {
       } else if ((component.showChronology == 'future') && (component.items_type == 'events' || component.items_type == 'exhibitions')) {
         chr = '&chronologies_exclude=8,9';
       } else {
-        chr = '&chronologies_exclude=8';
+        if (component.showVariant != 'traveling') {
+          chr = '&chronologies_exclude=8'; // EXCLUDE PAST AS LONG AS WE ARENT IN TRAVELING EXHIBITIONS
+        }
       }
 
       if (component.showVariant == 'traveling') {
