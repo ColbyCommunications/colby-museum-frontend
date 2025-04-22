@@ -109,7 +109,7 @@ export default {
       });
   },
   mounted() {
-    const timeLeft = ref(2);
+    const timeLeft = ref(1);
 
     setInterval(async () => {
       if (timeLeft.value === 1) {
