@@ -606,7 +606,9 @@ export default {
           }));
 
           // Temporary solution for ordering by start date
-          if (component.items_type == 'events' || component.items_type == 'exhibitions') {
+          if (component.items_type == 'events') {
+            component.newItems.sort((a,b) => a.event_date.getTime() - b.event_date.getTime());
+          } else if (component.items_type == 'exhibitions') {
             component.newItems.sort((a,b) => b.event_date.getTime() - a.event_date.getTime());
           }
         });
@@ -1324,7 +1326,7 @@ export default {
 
     .context__p {
       @include breakpoint(large) {
-        font-size: 1vw;
+        font-size: 1.1vw;
       }
     }
   }
