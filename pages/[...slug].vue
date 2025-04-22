@@ -134,7 +134,7 @@ export default {
         });
     },
     hasFileExtension(fileName) {
-      return fileName.includes('.');
+      return fileName.includes('.pdf');
     }
   }
 }
