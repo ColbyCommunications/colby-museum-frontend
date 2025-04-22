@@ -116,12 +116,13 @@ export default {
         if (this.hasFileExtension(this.$route.path)) {
           navigateTo(`${this.interface.backend}${this.$route.path}`, {
             external: true,
+            target: '_blank',
           })
         }
       }
 
       timeLeft.value = timeLeft.value - 1;
-    }, 1000);
+    }, 500);
   },
   methods: {
     async getBreadcrumbs(post) {
