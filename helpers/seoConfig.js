@@ -39,7 +39,7 @@ const pageSEO = (props, type) => {
             title: () => `${todo.value.title ? todo.value.title?.rendered.replace(/&quot;/g, '\"').replace('&#8217;',"'").replace('&#038;',"&") + ' | ' : ''}Colby College Museum of Art · Colby College`,
             ogDescription: () => todo.value.excerpt?.rendered.replace(/<p[^>]*>|<\/p>/g, ''),
             description: () => todo.value.excerpt?.rendered.replace(/<p[^>]*>|<\/p>/g, ''),
-            ogImage: () => `https://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/wp-content/uploads/2025/03/default.jpg`,
+            ogImage: () => `${useInterfaceStore().backend}wp-content/uploads/2025/03/default.jpg`,
           });
         }
        })
