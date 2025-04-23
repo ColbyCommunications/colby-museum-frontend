@@ -15,7 +15,7 @@
       :show-chronology="$route.query.chronology"
       :button_type="'pill'"
     />
-    <div v-if="$route.query.chronology == 'past'" class="core-paragraph grid full paragraph-style-2" type="core-paragraph">
+    <div v-if="$route.query.chronology == 'past'" class="core-paragraph grid full paragraph-style-2" type="core-paragraph" style="margin-top: 5.9vh;">
       <p>Please note that our exhibition archive is a work in progress.</p>
     </div>
   </div>
