@@ -2,6 +2,7 @@
   <NuxtLink
     :class="[type == 'text' ? 'text-btn' : 'btn btn--light', size ? `btn--${size}` : '', srOnly ? 'sr-only' : '']"
     :to="fixedUrl"
+    :target="target"
     ref="btn"
   >
     <div
@@ -32,6 +33,10 @@ export default {
     url: {
       type: String,
       required: true,
+    },
+    target: {
+      type: String,
+      required: false,
     },
     type: {
       type: String,

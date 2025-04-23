@@ -233,7 +233,8 @@ export default {
           srOnly: this.button.srOnly,
           type: this.hover == 'all' ? 'text' : this.button_type,
           title: this.button.title,
-          url: this.button.url
+          url: this.button.url,
+          target: this.button.target,
         };
       }
     }
