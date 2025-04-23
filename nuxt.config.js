@@ -7,6 +7,12 @@ export default defineNuxtConfig({
       htmlAttrs: {
         lang: 'en',
       },
+      script: [
+            {
+                src: 'https://siteimproveanalytics.com/js/siteanalyze_66357444.js',
+                async: true,
+            },
+        ],
     },
   },
 
