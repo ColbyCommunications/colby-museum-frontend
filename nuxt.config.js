@@ -19,6 +19,10 @@ export default defineNuxtConfig({
   sitemap: {
     sources: [
       'https://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/wp-sitemap-posts-page-1.xml',
+      'https://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/wp-sitemap-posts-exhibitions-1.xml',
+      'https://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/wp-sitemap-posts-events-1.xml',
+      'https://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/wp-sitemap-posts-collections-1.xml',
+      'https://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/wp-sitemap-posts-post-1.xml',
     ],
     // routes: async () => {
     //   // fetch your URLs from a database or other source
