@@ -22,6 +22,7 @@
       :bordered="bordered"
       :heading="post.title.rendered"
       :subheading="formatDate(post.acf.date, 'events') + (post.acf.end_date && post.acf.end_date != '' && post.acf.date != post.acf.end_date ? `&ndash;${formatDate(post.acf.end_date, 'events')}` : '' )"
+      :subheading2="post.type == 'events' ? `${formatTime(post.acf.start_time)}&ndash;${formatTime(post.acf.end_time)}` : undefined"
       :image="stagedImage"
       :button="{
         type: button_type,
@@ -184,6 +185,15 @@ export default {
         });
       }
       return formattedDate;
+    },
+    formatTime(t) {
+      const time = t.split(':');
+      const hour = parseInt(time[0]);
+      const min = time[1];
+      const sec = parseInt(time[2]);
+      const ampm = (hour >= 12) ? " p.m." : " a.m.";
+
+      return `${hour == 12 || hour == 0 ? 12 : hour % 12}:${min.replace(/\s/g, '').replace('am', ' a.m.').replace('pm', ' p.m.')}`;
     },
     async getImage(i) {
       const component = this;

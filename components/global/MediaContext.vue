@@ -110,6 +110,7 @@
                       :size="'small'"
                       :heading="item.post.title.rendered"
                       :subheading="formatDate(item.post.acf.date, 'events') + (item.post.acf.end_date && item.post.acf.date != item.post.acf.end_date ? `&ndash;${formatDate(item.post.acf.end_date, 'events')}` : '' )"
+                      :subheading2="item.post.type == 'events' ? `${formatTime(item.post.acf.start_time)}&ndash;${formatTime(item.post.acf.end_time)}` : undefined"
                       :button="{
                         title: item.post.type == 'events' ? 'Event Details' : 'Exhibition Details',
                         url: item.post.link
@@ -573,6 +574,15 @@ export default {
       }
       return formattedDate;
     },
+    formatTime(t) {
+      const time = t.split(':');
+      const hour = parseInt(time[0]);
+      const min = time[1];
+      const sec = parseInt(time[2]);
+      const ampm = (hour >= 12) ? " p.m." : " a.m.";
+
+      return `${hour == 12 || hour == 0 ? 12 : hour % 12}:${min.replace(/\s/g, '').replace('am', ' a.m.').replace('pm', ' p.m.')}`;
+    },
     async getPosts() {
       const component = this;
       let chr;
@@ -605,13 +615,20 @@ export default {
           component.newItems = output.data.map((i) => ({
             post: i,
             event_date: i.acf.date ? component.formatDate(i.acf.date, 'events-raw') : undefined,
+            end_date: i.acf.end_date ? component.formatDate(i.acf.end_date, 'events-raw') : undefined,
           }));
 
           // Temporary solution for ordering by start date
           if (component.items_type == 'events') {
             component.newItems.sort((a,b) => a.event_date.getTime() - b.event_date.getTime());
           } else if (component.items_type == 'exhibitions') {
-            component.newItems.sort((a,b) => b.event_date.getTime() - a.event_date.getTime());
+            if (component.showChronology == 'future') {
+              component.newItems.sort((a,b) => a.event_date.getTime() - b.event_date.getTime());
+            } else if (component.showChronology == 'past') {
+              component.newItems.sort((a,b) => b.end_date.getTime() - a.end_date.getTime());
+            } else {
+              component.newItems.sort((a,b) => b.event_date.getTime() - a.event_date.getTime());
+            }
           }
         });
     },
@@ -960,7 +977,6 @@ export default {
       width: 100%;
       height: 100%;
       display: flex;
-      align-items: center;
 
       .media-context--offset & {
         align-items: flex-end;

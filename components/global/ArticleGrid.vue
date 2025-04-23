@@ -16,7 +16,7 @@
     />
 
     <div
-      v-if="(items_type == 'events' || items_type == 'exhibitions' || items_type == 'objects') && per_page >= 20"
+      v-if="((items_type == 'events' || items_type == 'exhibitions' || items_type == 'objects') && $route.query.variant != 'traveling' ) && per_page >= 20"
       class="filter"
       ref="filter"
     >
@@ -1002,14 +1002,17 @@ export default {
                   return {
                     post: i,
                     event_date: i.acf.date ? component.formatDate(i.acf.date, 'events-raw') : undefined,
+                    end_date: i.acf.end_date ? component.formatDate(i.acf.end_date, 'events-raw') : undefined,
                   }
                 });
 
                 // Temporary solution for ordering by start date
-                if (component.items_type == 'events' || component.items_type == 'exhibitions') {
-                  if (component.alphabeticalOrder == false) {
-                    if (component.showChronology == 'past') {
-                      component.newItems.sort((a,b) => b.event_date.getTime() - a.event_date.getTime());
+                if (component.alphabeticalOrder == false) {
+                  if (component.items_type == 'events' || component.items_type == 'exhibitions') {
+                    if (component.showChronology == 'future') {
+                      component.newItems.sort((a,b) => a.event_date.getTime() - b.event_date.getTime());
+                    } else if (component.showChronology == 'past') {
+                      component.newItems.sort((a,b) => component.items_type == 'events' ? b.event_date.getTime() - a.event_date.getTime() : b.end_date.getTime() - a.end_date.getTime());
                     } else {
                       if (component.$route.query.variant == 'traveling') {
                         component.newItems.sort((a,b) => b.event_date.getTime() - a.event_date.getTime());
@@ -1019,6 +1022,20 @@ export default {
                     }
                   }
                 }
+
+                // if (component.alphabeticalOrder == false) {
+                //   if (component.items_type == 'events' || component.items_type == 'exhibitions') {
+                //     if (component.showChronology == 'past') {
+                //       component.newItems.sort((a,b) => b.event_date.getTime() - a.event_date.getTime());
+                //     } else {
+                //       if (component.$route.query.variant == 'traveling') {
+                //         component.newItems.sort((a,b) => b.event_date.getTime() - a.event_date.getTime());
+                //       } else {
+                //         component.newItems.sort((a,b) => component.items_type == 'events' ? a.event_date.getTime() - b.event_date.getTime() : b.event_date.getTime() - a.event_date.getTime());
+                //       }
+                //     }
+                //   }
+                // }
 
                 component.pagination = component.preparedPagination(component.currentPage, component.totalPages, 6);
               });
@@ -1495,6 +1512,22 @@ export default {
       .article-grid--curated & {
         @include breakpoint(large) {
           grid-column: span 2 / span 2;
+        }
+      }
+    }
+
+    &:nth-child(1) {
+      .article-grid--2-columns.article-grid--logos & {
+        @include breakpoint(large) {
+          grid-column: span 2 / span 2;
+        }
+      }
+    }
+
+    &:nth-child(2) {
+      .article-grid--2-columns.article-grid--logos & {
+        @include breakpoint(large) {
+          grid-column: span 10 / span 10;
         }
       }
     }
