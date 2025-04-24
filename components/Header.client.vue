@@ -71,6 +71,7 @@
               <NuxtLink
                 :to="item.url.replace(/^.*\/\/[^\/]+/, '').replace(/\/$/, '')"
                 @click="closeDrawer()"
+                @mousedown="(event) => { event.preventDefault(); }"
               >{{ item.title.replace('amp;', '') }}</NuxtLink>
               <button
                 v-if="item.children"
