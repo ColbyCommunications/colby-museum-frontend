@@ -856,7 +856,7 @@ export default {
 
       .media-context--full-width & {
         position: relative;
-        padding-bottom: 64.75%;
+        padding-bottom: 73%;
 
         .media-context__media-inner {
           position: absolute;
