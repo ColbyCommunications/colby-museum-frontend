@@ -26,8 +26,8 @@ const pageSEO = (props, type) => {
             })
             .then(() => {
               useSeoMeta({
-                ogTitle: () => `${todo.value.title ? todo.value.title?.rendered.replace(/&quot;/g, '\"').replace('&#8217;',"'").replace('&#038;',"&") + ' | ' : ''}Colby College Museum of Art · Colby College`,
-                title: () => `${todo.value.title ? todo.value.title?.rendered.replace(/&quot;/g, '\"').replace('&#8217;',"'").replace('&#038;',"&") + ' | ' : ''}Colby College Museum of Art · Colby College`,
+                ogTitle: () => `${todo.value.title ? todo.value.title?.rendered.replace(/&quot;/g, '\"').replace('&#8217;',"'").replace('&amp;', '&').replace('&#038;',"&") + ' | ' : ''}Colby College Museum of Art · Colby College`,
+                title: () => `${todo.value.title ? todo.value.title?.rendered.replace(/&quot;/g, '\"').replace('&#8217;',"'").replace('&amp;', '&').replace('&#038;',"&") + ' | ' : ''}Colby College Museum of Art · Colby College`,
                 ogDescription: () => todo.value.excerpt?.rendered.replace(/<p[^>]*>|<\/p>/g, ''),
                 description: () => todo.value.excerpt?.rendered.replace(/<p[^>]*>|<\/p>/g, ''),
                 ogImage: () => `${imagePath}`,
@@ -35,8 +35,8 @@ const pageSEO = (props, type) => {
             });
         } else {
           useSeoMeta({
-            ogTitle: () => `${todo.value.title ? todo.value.title?.rendered.replace(/&quot;/g, '\"').replace('&#8217;',"'").replace('&#038;',"&") + ' | ' : ''}Colby College Museum of Art · Colby College`,
-            title: () => `${todo.value.title ? todo.value.title?.rendered.replace(/&quot;/g, '\"').replace('&#8217;',"'").replace('&#038;',"&") + ' | ' : ''}Colby College Museum of Art · Colby College`,
+            ogTitle: () => `${todo.value.title ? todo.value.title?.rendered.replace(/&quot;/g, '\"').replace('&#8217;',"'").replace('&amp;', '&').replace('&#038;',"&") + ' | ' : ''}Colby College Museum of Art · Colby College`,
+            title: () => `${todo.value.title ? todo.value.title?.rendered.replace(/&quot;/g, '\"').replace('&#8217;',"'").replace('&amp;', '&').replace('&#038;',"&") + ' | ' : ''}Colby College Museum of Art · Colby College`,
             ogDescription: () => todo.value.excerpt?.rendered.replace(/<p[^>]*>|<\/p>/g, ''),
             description: () => todo.value.excerpt?.rendered.replace(/<p[^>]*>|<\/p>/g, ''),
             ogImage: () => `${useInterfaceStore().backend}wp-content/uploads/2025/03/default.jpg`,
