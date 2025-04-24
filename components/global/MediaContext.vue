@@ -787,12 +787,22 @@ export default {
     },
     resizeZooms() {
       this.zoomInterval = setInterval(() => {
+        const container = this.$refs.mediacontext.getElementsByClassName('media-context__media')[0];
         const vhs = this.$refs.mediacontext.getElementsByClassName('vh--outer');
-        
-        Array.from(vhs).forEach((vh) => {
-          // console.log(vh.querySelector('img').width);
 
-          vh.style.width = `${vh.querySelector('img').width}px`
+        Array.from(vhs).forEach((vh) => {
+
+          if (vh.querySelector('img').width > container.offsetWidth) {
+            vh.querySelector('img').style.width = '100%';
+            vh.querySelector('img').style.height = 'auto';
+
+            Object.assign(vh.style, {
+              width: `100%`,
+              height: `${vh.querySelector('img').offsetHeight}px`,
+            });
+          } else {
+            vh.style.width = `${vh.querySelector('img').width}px`;
+          }
         });
 
         this.loaded = true;
