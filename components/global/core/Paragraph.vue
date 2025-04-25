@@ -30,5 +30,11 @@ export default {
       margin-top: 12vh;
     }
   }
+
+  + .grid--video {
+    @include breakpoint(medium) {
+      margin-top: 5.9vh;
+    }
+  }
 }
 </style>

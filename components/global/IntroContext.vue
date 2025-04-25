@@ -105,6 +105,12 @@ export default {
     }
   }
 
+  + .core-paragraph {
+    @include breakpoint(large) {
+      margin-top: 2.9vh;
+    }
+  }
+
   // + .media-context {
   //   margin-top: 80px;
 
