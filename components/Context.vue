@@ -10,6 +10,7 @@
     >
       <NuxtLink
         :to="fixedUrl"
+        :target="button.target"
       >
         <span class="sr-only"
           v-text="heading"
@@ -60,6 +61,7 @@
       <NuxtLink
         v-if="button"
         :to="fixedUrl"
+        :target="button.target"
       >
         <Picture
           :alt="image.alt_text"
