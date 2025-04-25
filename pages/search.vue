@@ -17,7 +17,6 @@
     <div class="search-results">
       <div class="search-results__inner grid">
         <div class="search-results__main">
-          <!-- <h2 class="heading-style-3"><NuxtLink :to="item.url">{{ item.title }}</NuxtLink></h2> -->
           <Article
             v-for="(item, index) in items"
             :size="'medium'"
@@ -182,21 +181,23 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
 
-    @include breakpoint(medium) {
+    @include breakpoint(large) {
       flex-direction: row;
+      grid-column: span 8 / span 8;
+      grid-column-start: 3;
     }
 
     .btn {
       margin-top: 24px;
 
       @include breakpoint(medium) {
-        margin-top: 0;
         margin-left: 24px;
       }
 
       @include breakpoint(large) {
+        margin-top: 0;
         margin-left: 1.667vw;
       }
     }
