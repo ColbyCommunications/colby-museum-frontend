@@ -7,16 +7,16 @@
           class="footer__location"
         >
           <h2>Campus Location</h2>
-          <address><a href="https://www.google.com/maps/place/5600+Mayflower+Hill+Dr,+Waterville,+ME+04901/@44.5650198,-69.6606893,17z/data=!3m1!4b1!4m6!3m5!1s0x4cb1e45077d0e887:0x7f8cd7028d21465!8m2!3d44.5650198!4d-69.6606893!16s%2Fg%2F11bw3_cn68?entry=ttu" target="_blank">5600 Mayflower Hill Dr.<br>Waterville, ME 04901</a></address>
-          <a href="tel:+1 207-859-5600">+1 207-859-5600</a>
+          <address><a :href="globalOptions.campus_geolocation" v-html="globalOptions.campus_address" target="_blank" /></address>
+          <a :href="`tel:${globalOptions.campus_phone_number}`">{{ globalOptions.campus_phone_number }}</a>
           <span :class="[campusIsOpen ? 'open' : 'closed']">{{ campusIsOpen ? 'Open' : 'Closed' }} </span>
         </div>
         <div
           class="footer__location"
         >
           <h2>Downtown Location</h2>
-          <address><a href="https://www.google.com/maps/@44.5498695,-69.6300326,3a,75y,70.06h,90t/data=!3m7!1e1!3m5!1s2ivqj8ZwfyHpM4m1vxP7fA!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D0%26panoid%3D2ivqj8ZwfyHpM4m1vxP7fA%26yaw%3D70.06!7i16384!8i8192?entry=ttu&g_ep=EgoyMDI1MDMxMC4wIKXMDSoJLDEwMjExNDU1SAFQAw%3D%3D" target="_blank">93 Main St.,<br>Waterville, ME 04903</a></address>
-          <a href="tel:+1 207-859-5600">+1 207-163-7734</a>
+          <address><a :href="globalOptions.downtown_geolocation" v-html="globalOptions.downtown_address" target="_blank" /></address>
+          <a :href="`tel:${globalOptions.downtown_phone_number}`">{{ globalOptions.downtown_phone_number }}</a>
           <span :class="[downtownIsOpen ? 'open' : 'closed']">{{ downtownIsOpen ? 'Open' : 'Closed' }} </span>
         </div>
       </div>
@@ -60,7 +60,7 @@
         />
         <p
           class="subheading-style-4"
-          v-html="`<a href='https://www.colby.edu/people/offices-directory/general-counsel/colby-policy-library/privacy-policy/'>Privacy Policy</a>`"
+          v-html="globalOptions.copyright"
         />
       </div>
     </div>
