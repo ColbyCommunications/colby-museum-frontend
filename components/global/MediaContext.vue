@@ -350,8 +350,9 @@
               v-else
               class="media-context__context-panel"
               :class="{ 'media-context__context-panel--active': activeSlide == index }"
-              v-html="item.image.caption.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
-            />
+            >
+              <span v-html="item.image.caption.rendered" />
+            </p>
           </div>
         </div>
       </div>
