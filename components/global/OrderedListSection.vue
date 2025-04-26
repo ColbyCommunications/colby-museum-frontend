@@ -17,7 +17,7 @@
             <div
               class="vertical-curtain"
             />
-            <span v-html="item.text" />
+            <span v-html="item.text.replaceAll(`${this.interface.backend}`, '/').replace(/\/$/, '')" />
           </li>
         </ol>
       </div>
@@ -27,6 +27,8 @@
 
 <script>
 import gsap from 'gsap';
+
+import { useInterfaceStore } from "~/store/interface";
 
 export default {
   data() {
@@ -48,6 +50,7 @@ export default {
   },
   created() {
     const component = this;
+    this.interface = useInterfaceStore();
 
     if (typeof component.items === 'number') {
       component.newItems = [...Array(this.items)].map((el, i) => ({
