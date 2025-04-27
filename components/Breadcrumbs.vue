@@ -85,7 +85,9 @@ export default {
       deep: true,
       async handler() {
         setTimeout(() => {
-          this.animate();
+          if (this.manual == undefined) {
+            this.animate();
+          }
         }, 200);
       }
     },
