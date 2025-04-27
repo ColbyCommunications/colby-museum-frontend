@@ -143,7 +143,7 @@ export default {
 
   svg {
     margin-left: 0;
-    margin-right: 8px;
+    margin-right: 8px; //test
 
     @include breakpoint(medium) {
       margin-right: 0.833vw;
