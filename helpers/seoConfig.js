@@ -15,7 +15,7 @@ const pageSEO = (props, type) => {
       .then(async () => { 
         let imageObj;
   
-        if (todo.value.featured_media) {
+        if (todo.value?.featured_media) {
           await axios
             .get(`${useInterfaceStore().endpoint}media/${todo.value.featured_media}`)
             .then((output) => {
