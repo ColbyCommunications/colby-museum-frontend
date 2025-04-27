@@ -2,7 +2,6 @@
   <div class="page page--default">
     <Breadcrumbs
       v-if="$route.params.slug != ''"
-      :items="breadcrumbs"
       :current="{
         title: title,
         url: fullPath,

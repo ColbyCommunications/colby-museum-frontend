@@ -85,25 +85,17 @@ export default {
       deep: true,
       async handler() {
         setTimeout(() => {
-          if (this.manual == undefined) {
-            this.animate();
-          }
-        }, 200);
-      }
-    },
-    manual: {
-      deep: true,
-      async handler() {
-        setTimeout(() => {
           this.animate();
-        }, 200);
+        }, 100);
       }
     },
   },
   mounted() {
-    // setTimeout(() => {
-    //   this.animate();
-    // }, 1000);
+    if (this.manual) {
+      setTimeout(() => {
+        this.animate();
+      }, 100);
+    }
   },
   methods: {
     animate() {
