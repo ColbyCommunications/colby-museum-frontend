@@ -86,7 +86,7 @@ export default {
       async handler() {
         setTimeout(() => {
           this.animate();
-        }, 100);
+        }, 200);
       }
     },
     manual: {
@@ -94,7 +94,7 @@ export default {
       async handler() {
         setTimeout(() => {
           this.animate();
-        }, 100);
+        }, 200);
       }
     },
   },
