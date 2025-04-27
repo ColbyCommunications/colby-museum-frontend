@@ -89,6 +89,14 @@ export default {
         }, 100);
       }
     },
+    manual: {
+      deep: true,
+      async handler() {
+        setTimeout(() => {
+          this.animate();
+        }, 100);
+      }
+    },
   },
   mounted() {
     // setTimeout(() => {
