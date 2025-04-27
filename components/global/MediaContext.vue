@@ -524,7 +524,7 @@ export default {
           });
           // this.glide.mount();
         }
-      }, this.variant == 'overflow' ? 1100 : 400); // VERY IMPORTANT DELAY FOR LOADING AND CONTEXT ANIMATIONS TO GEL NICELY
+      }, this.variant == 'overflow' ? 1100 : 600); // VERY IMPORTANT DELAY FOR LOADING AND CONTEXT ANIMATIONS TO GEL NICELY
     },
     changeSlide(s) {
       if (s == 'next') {
