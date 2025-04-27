@@ -463,8 +463,8 @@ export default {
         component.newItems = output;
         // component.renderGlide();
       })
-    } else {
-      // component.renderGlide();
+    } else if (this.items_type == 'objects') {
+      component.renderGlide();
     }
   },
   async mounted() {
