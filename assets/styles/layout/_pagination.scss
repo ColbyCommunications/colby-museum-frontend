@@ -62,6 +62,12 @@
     }
   }
 
+  li:last-child {
+    svg {
+      display: none;
+    }
+  }
+
   li + li {
     margin-left: 12px;
 
