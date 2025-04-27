@@ -16,9 +16,9 @@
             class="horizontal-curtain horiztonal-curtain--loader"
             :class="loaded ? 'horizontal-curtain--inactive' : ''"
           >
-            <ClientOnly>
+            <!-- <ClientOnly>
               <l-ring color="black" size="80"></l-ring>
-            </ClientOnly>
+            </ClientOnly> -->
           </div>
           <div
             class="horizontal-curtain"
@@ -424,19 +424,31 @@ export default {
       required: false,
     }
   },
+  watch: {
+    items: {
+      deep: true,
+      async handler() {
+        this.renderGlide();
+      }
+    },
+    newItems: {
+      deep: true,
+      async handler() {
+        this.renderGlide();
+      }
+    },
+  },
   async created() {
     this.interface = useInterfaceStore();
     const component = this;
 
     if (this.items_type != 'manual' && this.items_type != 'objects' && this.items_type != 'collection') {
 
-      this.getPosts().then(() => {
-        component.renderGlide();
-      });
+      this.getPosts();
     } else if (this.items_type == 'collection') {
       this.getPost(component.collection,'collections').then((output) => {
         component.getCollection(output.acf.embark_id);
-        component.renderGlide();
+        // component.renderGlide();
       });
     } else if (typeof this.items === 'number') {
 
@@ -449,10 +461,10 @@ export default {
         image: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : await component.getImage(component.blockData[`items_${i}_image`]),
       }))).then((output) => {
         component.newItems = output;
-        component.renderGlide();
+        // component.renderGlide();
       })
     } else {
-      component.renderGlide();
+      // component.renderGlide();
     }
   },
   async mounted() {
@@ -487,13 +499,13 @@ export default {
           this.gap = 40;
 
           breakpoints = {
-              1000: {
-                perView: 2
-              },
-              600: {
-                perView: 1
-              }
+            1000: {
+              perView: 2
+            },
+            600: {
+              perView: 1
             }
+          }
         }
 
         if (this.window) {
@@ -512,7 +524,7 @@ export default {
           });
           // this.glide.mount();
         }
-      }, 1000); // VERY IMPORTANT DELAY FOR LOADING AND CONTEXT ANIMATIONS TO GEL NICELY
+      }, this.variant == 'overflow' ? 1100 : 400); // VERY IMPORTANT DELAY FOR LOADING AND CONTEXT ANIMATIONS TO GEL NICELY
     },
     changeSlide(s) {
       if (s == 'next') {
@@ -781,7 +793,7 @@ export default {
           });
         }
 
-      }, 400);
+      }, this.variant == 'overflow' ? 100 : 100);
     },
     toggleModal() {
       this.interface.toggleModal();

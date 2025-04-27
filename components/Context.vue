@@ -243,7 +243,7 @@ export default {
               },
               y: 0,
               duration: 0.4,
-              stagger: 0.1,
+              stagger: 0.05,
               ease: "expo.out",
             });
 
@@ -268,7 +268,7 @@ export default {
               },
               y: 0,
               duration: 0.4,
-              stagger: 0.01,
+              stagger: 0.005,
               ease: "expo.out",
             });
 
@@ -350,7 +350,7 @@ export default {
             ease: "expo.out",
           });
         }
-      }, 1100); // VERY IMPORTANT DELAY FOR ANIMATIONS TO TRIGGER APPROPRIATELY AFTER API LOAD. CAUTION
+      }, 600); // VERY IMPORTANT DELAY FOR ANIMATIONS TO TRIGGER APPROPRIATELY AFTER API LOAD. CAUTION 1100
     }
   }
 }

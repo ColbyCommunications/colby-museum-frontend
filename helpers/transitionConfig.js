@@ -72,7 +72,7 @@ const pageTransition = {
           {
             y: '100%',
             duration: 0.4,
-            stagger: 0.02,
+            stagger: 0.005,
             ease: "expo.out",
           },
           '<');
