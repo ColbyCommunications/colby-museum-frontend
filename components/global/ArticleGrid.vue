@@ -272,6 +272,7 @@
               :size="'large'"
               :heading="key"
               :sort="true"
+              @mouseleave="drawerScrollTop()"
             >
               <ul class="filter__list">
                 <li v-for="(bucket, index) in aggregation.buckets">
@@ -1323,7 +1324,10 @@ export default {
     },
     aggregationChange(e, key) {
       const component = this;
+      const drawer = this.$refs.drawer.querySelector('.filter__drawer');
       let term;
+
+      console.log(drawer);
 
       if (e.target == undefined) {
         term = e; 
@@ -1432,6 +1436,11 @@ export default {
       }
 
       return range;
+    },
+    drawerScrollTop() {
+      const drawer = this.$refs.drawer.querySelector('.filter__drawer');
+
+      drawer.scrollTop = 0;
     },
     animate() {
       setTimeout(() => {
