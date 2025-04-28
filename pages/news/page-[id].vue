@@ -8,7 +8,6 @@
     />
     <ArticleGrid
       :columns="'4'"
-      :variant="'curated'"
       :hover="'text'"
       :items_type="'posts'"
       :per_page="20"

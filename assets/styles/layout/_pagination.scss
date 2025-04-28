@@ -62,10 +62,10 @@
     }
   }
 
-  li:last-child {
-    // svg {
-    //   display: none;
-    // }
+  &:not(.breadcrumbs) li:last-child {
+    svg {
+      display: none;
+    }
   }
 
   li + li {
