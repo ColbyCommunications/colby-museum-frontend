@@ -1,7 +1,6 @@
 <template>
   <div class="core-list grid paragraph-style-2">
-    <!-- <p v-html="attrs.content" /> -->
-     {{ innerHTML }}
+    {{ innerHTML }}
   </div>
 </template>
 

@@ -60,7 +60,7 @@ export default {
       .get(`${this.interface.endpoint}pages?slug=news`)
       .then((output) => {
         const post = output.data[0];
-        // console.log(post);
+        console.log(post);
 
         page.title = post.title.rendered
           .replace(/–/g, '-')

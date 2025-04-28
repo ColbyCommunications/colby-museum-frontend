@@ -21,7 +21,7 @@ const pageSEO = (props, type) => {
             .then((output) => {
               // console.log(output);
               imageObj = output.data;
-              imagePath = imageObj ? imageObj.media_details.sizes.desktop.source_url : '';
+              imagePath = imageObj ? imageObj.media_details?.sizes?.desktop?.source_url : '';
               // console.log(imagePath);
             })
             .then(() => {

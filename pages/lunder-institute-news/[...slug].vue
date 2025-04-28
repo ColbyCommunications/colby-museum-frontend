@@ -60,6 +60,8 @@ export default {
       .then((output) => {
         const post = output.data[0];
 
+        console.log(post);
+
         page.title = post.title.rendered
           .replace(/–/g, '-')
           .replace(/“/g, '"')
@@ -78,6 +80,7 @@ export default {
             type: component.type,
             ...component.attrs.data,
             attrs: component.attrs.data ? undefined : component.attrs,
+            innerHTML: component.rendered ? component.rendered : undefined,
           };
         });
       });

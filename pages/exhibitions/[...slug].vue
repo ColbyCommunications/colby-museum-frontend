@@ -130,6 +130,7 @@ export default {
             type: component.type,
             ...component.attrs.data,
             attrs: component.attrs.data ? undefined : component.attrs,
+            innerHTML: component.rendered ? component.rendered : undefined,
           };
         });
       });
