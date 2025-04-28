@@ -24,6 +24,7 @@ const pageTransition = {
   onLeave: (el, done) => {
     toggleTransitionComplete(false);
 
+    let mm = gsap.matchMedia();
     let headings = el.querySelectorAll('.context__heading, .list-style-1, .breadcrumbs');
     let subheadings = el.querySelectorAll('.context__subheading');
     let curtains = el.querySelectorAll('.context__curtain');
@@ -36,21 +37,40 @@ const pageTransition = {
     let accordionSections = el.querySelectorAll('.accordion-section');
     let tl = gsap.timeline({ paused: true, onComplete: done });
 
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    });
+
+    mm.add("(prefers-reduced-motion: reduce)", () => {
+      window.scrollTo({ top: 0, behavior: 'instant' })
+    });
 
     if (headings) {
       headings.forEach((heading) => {
         let headingWords = heading.querySelectorAll('.context__word span');
   
-        tl
-          .to(headingWords,
-          {
-            y: '100%',
-            duration: 0.4,
-            stagger: 0.05,
-            ease: "expo.out",
-          },
-          '<');
+        mm.add("(prefers-reduced-motion: no-preference)", () => {
+          tl
+            .to(headingWords,
+            {
+              y: '100%',
+              duration: 0.4,
+              stagger: 0.05,
+              ease: "expo.out",
+            },
+            '<');
+        });
+
+        mm.add("(prefers-reduced-motion: reduce)", () => {
+          tl
+            .to(headingWords,
+            {
+              y: '100%',
+              duration: 0,
+              ease: "expo.out",
+            },
+            '<');
+        });
       });
     }
 
@@ -59,99 +79,193 @@ const pageTransition = {
         let subheadingWords = subheading.querySelectorAll('.context__word span');
         let subheadingWordWraps = subheading.querySelectorAll('.context__word');
 
-        tl
-          .to(subheadingWordWraps,
-          {
-            overflow: 'hidden',
-            duration: 0,
-          },
-          '<');
-  
-        tl
-          .to(subheadingWords,
-          {
-            y: '100%',
-            duration: 0.4,
-            stagger: 0.005,
-            ease: "expo.out",
-          },
-          '<');
+        mm.add("(prefers-reduced-motion: no-preference)", () => {
+          tl
+            .to(subheadingWordWraps,
+            {
+              overflow: 'hidden',
+              duration: 0,
+            },
+            '<');
+    
+          tl
+            .to(subheadingWords,
+            {
+              y: '100%',
+              duration: 0.4,
+              stagger: 0.005,
+              ease: "expo.out",
+            },
+            '<');
+        });
+
+        mm.add("(prefers-reduced-motion: reduce)", () => {
+          tl
+            .to(subheadingWordWraps,
+            {
+              overflow: 'hidden',
+              duration: 0,
+            },
+            '<');
+    
+          tl
+            .to(subheadingWords,
+            {
+              y: '100%',
+              duration: 0,
+              ease: "expo.out",
+            },
+            '<');
+        });
       });
     }
 
     if (curtains) {
       curtains.forEach((curtain) => {
 
-        tl
-          .to(curtain,
-          {
-            height: '100%',
-            duration: 0.6,
-            ease: "expo.out",
-          },
-          '<');
+        mm.add("(prefers-reduced-motion: no-preference)", () => {
+          tl
+            .to(curtain,
+            {
+              height: '100%',
+              duration: 0.6,
+              ease: "expo.out",
+            },
+            '<');
+        });
+
+        mm.add("(prefers-reduced-motion: reduce)", () => {
+          tl
+            .to(curtain,
+            {
+              height: '100%',
+              duration: 0,
+              ease: "expo.out",
+            },
+            '<');
+        });
       })
     }
 
     if (btnCurtains) {
       btnCurtains.forEach((btnCurtain) => {
 
-        tl
-          .to(btnCurtain,
-          {
-            width: '110%',
-            duration: 0.4,
-            ease: "expo.out",
-          },
-          '<');
+        mm.add("(prefers-reduced-motion: no-preference)", () => {
+          tl
+            .to(btnCurtain,
+            {
+              width: '110%',
+              duration: 0.4,
+              ease: "expo.out",
+            },
+            '<');
+        });
+
+        mm.add("(prefers-reduced-motion: reduce)", () => {
+          tl
+            .to(btnCurtain,
+            {
+              width: '110%',
+              duration: 0,
+              ease: "expo.out",
+            },
+            '<');
+        });
       })
     }
 
     if (horizontalCurtains) {
       horizontalCurtains.forEach((horizontalCurtain) => {
 
-        tl
-          .fromTo(horizontalCurtain,
-          {
-            right: 'auto',
-            left: 0,
-          },
-          {
-            width: '100%',
-            duration: 0.4,
-            ease: "expo.out",
-          },
-          '<');
+        mm.add("(prefers-reduced-motion: no-preference)", () => {
+          tl
+            .fromTo(horizontalCurtain,
+            {
+              right: 'auto',
+              left: 0,
+            },
+            {
+              width: '100%',
+              duration: 0.4,
+              ease: "expo.out",
+            },
+            '<');
+        });
+
+        mm.add("(prefers-reduced-motion: reduce)", () => {
+          tl
+            .fromTo(horizontalCurtain,
+            {
+              right: 'auto',
+              left: 0,
+            },
+            {
+              width: '100%',
+              duration: 0,
+              ease: "expo.out",
+            },
+            '<');
+        });
       })
     }
 
     if (verticalCurtains) {
       verticalCurtains.forEach((verticalCurtain) => {
 
-        tl
-          .fromTo(verticalCurtain,
-          {
-            top: 'auto',
-            bottom: 0,
-          },
-          {
-            height: '100%',
-            duration: 0.6,
-            ease: "expo.out",
-          },
-          '<');
+        mm.add("(prefers-reduced-motion: no-preference)", () => {
+          tl
+            .fromTo(verticalCurtain,
+            {
+              top: 'auto',
+              bottom: 0,
+            },
+            {
+              height: '100%',
+              duration: 0.6,
+              ease: "expo.out",
+            },
+            '<');
+        });
+
+        mm.add("(prefers-reduced-motion: reduce)", () => {
+          tl
+            .fromTo(verticalCurtain,
+            {
+              top: 'auto',
+              bottom: 0,
+            },
+            {
+              height: '100%',
+              duration: 0,
+              ease: "expo.out",
+            },
+            '<');
+        });
       })
     }
 
     if (bigArrows) {
       bigArrows.forEach((bigArrow) => {
-        tl
-          .to(bigArrow, {
-            x: '100%',
-            duration: 0.6,
-            ease: "expo.out",
-          },
-          '<');
+
+        mm.add("(prefers-reduced-motion: no-preference)", () => {
+          tl
+            .to(bigArrow, {
+              x: '100%',
+              duration: 0.6,
+              ease: "expo.out",
+            },
+            '<');
+        });
+
+        mm.add("(prefers-reduced-motion: reduce)", () => {
+          tl
+            .to(bigArrow, {
+              x: '100%',
+              duration: 0,
+              ease: "expo.out",
+            },
+            '<');
+        });
       })
     }
 

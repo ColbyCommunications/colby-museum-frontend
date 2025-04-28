@@ -771,13 +771,25 @@ export default {
       return await obj;
     },
     animate() {
+      let mm = gsap.matchMedia();
+
       setTimeout(() => {
         let pcurtain = this.$refs.pcurtain;
 
-        gsap.to(this.$refs.curtain, {
-          width: 0,
-          duration: 0.4,
-          ease: "expo.out",
+        mm.add("(prefers-reduced-motion: no-preference)", () => {
+          gsap.to(this.$refs.curtain, {
+            width: 0,
+            duration: 0.4,
+            ease: "expo.out",
+          });
+        });
+
+        mm.add("(prefers-reduced-motion: reduce)", () => {
+          gsap.to(this.$refs.curtain, {
+            width: 0,
+            duration: 0,
+            ease: "expo.out",
+          });
         });
 
         if (pcurtain) {

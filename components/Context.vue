@@ -199,10 +199,6 @@ export default {
   mounted() {
     this.animate();
 
-    // if(this.paragraph) {
-    //   console.log(this.paragraph.replaceAll(`${this.interface.backend}`, "/"));
-    // }
-
     let previousHeight = document.body.scrollHeight;
 
     if (this.size != 'embark') {
@@ -223,6 +219,8 @@ export default {
   },
   methods: {
     animate() {
+      let mm = gsap.matchMedia();
+
       setTimeout(() => {
         let heading = this.$refs.heading;
         let subheading = this.$refs.subheading;
@@ -234,104 +232,173 @@ export default {
         if (heading) {
           let headingWords = heading.querySelectorAll('.context__word span');
 
-          gsap.to(headingWords,
-            {
-              scrollTrigger: {
-                trigger: heading,
-                toggleActions: 'restart none none reverse',
-                start: 'top 95%',
-              },
-              y: 0,
-              duration: 0.4,
-              stagger: 0.05,
-              ease: "expo.out",
-            });
+          mm.add("(prefers-reduced-motion: no-preference)", () => {
+            gsap.to(headingWords,
+              {
+                scrollTrigger: {
+                  trigger: heading,
+                  toggleActions: 'restart none none reverse',
+                  start: 'top 95%',
+                },
+                y: 0,
+                duration: 0.4,
+                stagger: 0.05,
+                ease: "expo.out",
+              });
 
-          gsap.to(heading,
-            {
-              '--border-width': 0,
-              duration: 0.4,
-              stagger: 0.1,
-            });
+            gsap.to(heading,
+              {
+                '--border-width': 0,
+                duration: 0.4,
+                stagger: 0.1,
+              });
+          });
+
+          mm.add("(prefers-reduced-motion: reduce)", () => {
+            gsap.to(headingWords,
+              {
+                y: 0,
+                duration: 0,
+                ease: "expo.out",
+              });
+
+            gsap.to(heading,
+              {
+                '--border-width': 0,
+                duration: 0,
+              });
+          });
         }
 
         if (subheading) {
           let subheadingWords = subheading.querySelectorAll('.context__word span');
           let subheadingWordWraps = subheading.querySelectorAll('.context__word');
 
-          gsap.to(subheadingWords,
-            {
-              scrollTrigger: {
-                trigger: subheading,
-                toggleActions: 'restart none none reverse',
-                start: 'top 95%',
-              },
-              y: 0,
-              duration: 0.4,
-              stagger: 0.005,
-              ease: "expo.out",
-            });
-
-          if (this.size == 'medium') {
-            gsap.to(subheadingWordWraps,
+          mm.add("(prefers-reduced-motion: no-preference)", () => {
+            gsap.to(subheadingWords,
               {
                 scrollTrigger: {
                   trigger: subheading,
                   toggleActions: 'restart none none reverse',
                   start: 'top 95%',
                 },
+                y: 0,
                 duration: 0.4,
-                stagger: 0.01,
-                overflow: 'visible',
+                stagger: 0.005,
                 ease: "expo.out",
               });
-          }
+
+            if (this.size == 'medium') {
+              gsap.to(subheadingWordWraps,
+                {
+                  scrollTrigger: {
+                    trigger: subheading,
+                    toggleActions: 'restart none none reverse',
+                    start: 'top 95%',
+                  },
+                  duration: 0.4,
+                  stagger: 0.01,
+                  overflow: 'visible',
+                  ease: "expo.out",
+                });
+              }
+          });
+
+          mm.add("(prefers-reduced-motion: reduce)", () => {
+            gsap.to(subheadingWords,
+              {
+                y: 0,
+                duration: 0,
+                ease: "expo.out",
+              });
+
+            if (this.size == 'medium') {
+              gsap.to(subheadingWordWraps,
+                {
+                  duration: 0,
+                  overflow: 'visible',
+                  ease: "expo.out",
+                });
+              }
+          });
         }
 
         if (subheading2) {
           let subheadingWords = subheading2.querySelectorAll('.context__word span');
 
-          gsap.to(subheadingWords,
-            {
-              scrollTrigger: {
-                trigger: subheading2,
-                toggleActions: 'restart none none reverse',
-                start: 'top 95%',
-              },
-              y: 0,
-              duration: 0.4,
-              stagger: 0.01,
-              ease: "expo.out",
-            });
+          mm.add("(prefers-reduced-motion: no-preference)", () => {
+            gsap.to(subheadingWords,
+              {
+                scrollTrigger: {
+                  trigger: subheading2,
+                  toggleActions: 'restart none none reverse',
+                  start: 'top 95%',
+                },
+                y: 0,
+                duration: 0.4,
+                stagger: 0.01,
+                ease: "expo.out",
+              });
+          });
+
+          mm.add("(prefers-reduced-motion: reduce)", () => {
+            gsap.to(subheadingWords,
+              {
+                y: 0,
+                duration: 0,
+                ease: "expo.out",
+              });
+          });
         }
 
         if (curtain) {
-          gsap.to(curtain, {
-            scrollTrigger: {
-              trigger: curtain,
-              toggleActions: 'restart none none reverse',
-              start: 'top 95%',
-              // markers: true,
-            },
-            height: 0,
-            duration: 0.6,
-            ease: "expo.out",
+          mm.add("(prefers-reduced-motion: no-preference)", () => {
+            gsap.to(curtain, {
+              scrollTrigger: {
+                trigger: curtain,
+                toggleActions: 'restart none none reverse',
+                start: 'top 95%',
+                // markers: true,
+              },
+              height: 0,
+              duration: 0.6,
+              ease: "expo.out",
+            });
+          });
+
+          mm.add("(prefers-reduced-motion: reduce)", () => {
+            gsap.to(curtain, {
+              height: 0,
+              duration: 0,
+              ease: "expo.out",
+            });
           });
         }
 
         if (paragraph) {
           let pcurtain = paragraph.querySelector('.vertical-curtain');
+          
+          mm.add("(prefers-reduced-motion: no-preference)", () => {
+            gsap.to(pcurtain,
+            {
+              scrollTrigger: {
+                trigger: subheading,
+                toggleActions: 'restart none none reverse',
+                start: 'top 95%',
+              },
+              height: 0,
+              duration: 0.6,
+              ease: "expo.out",
+            });
+          });
 
-          gsap.to(pcurtain,
-          {
-            scrollTrigger: {
-              trigger: subheading,
-              toggleActions: 'restart none none reverse',
-              start: 'top 95%',
-            },
-            height: 0,
-            duration: 0.6,
-            ease: "expo.out",
+          mm.add("(prefers-reduced-motion: reduce)", () => {
+            gsap.to(pcurtain,
+            {
+              height: 0,
+              duration: 0,
+              ease: "expo.out",
+            });
           });
         }
 

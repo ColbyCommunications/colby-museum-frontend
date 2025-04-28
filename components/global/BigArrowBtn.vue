@@ -53,31 +53,48 @@ export default {
   },
   methods: {
     animate() {
+      let mm = gsap.matchMedia();
       let arrow = this.$refs.arrow;
       let curtain = this.$refs.curtain;
 
       setTimeout(() => {
         if (arrow) {
-          gsap.to(curtain, {
-            scrollTrigger: {
-              trigger: arrow,
-              toggleActions: 'restart none none reverse',
-              start: 'top 80%',
-            },
-            width: 0,
-            duration: 0.4,
-            ease: "expo.out",
+          mm.add("(prefers-reduced-motion: no-preference)", () => {
+            gsap.to(curtain, {
+              scrollTrigger: {
+                trigger: arrow,
+                toggleActions: 'restart none none reverse',
+                start: 'top 80%',
+              },
+              width: 0,
+              duration: 0.4,
+              ease: "expo.out",
+            });
+
+            gsap.to(arrow, {
+              scrollTrigger: {
+                trigger: arrow,
+                toggleActions: 'restart none none reverse',
+                start: 'top 80%',
+              },
+              x: 0,
+              duration: 0.6,
+              ease: "expo.out",
+            });
           });
 
-          gsap.to(arrow, {
-            scrollTrigger: {
-              trigger: arrow,
-              toggleActions: 'restart none none reverse',
-              start: 'top 80%',
-            },
-            x: 0,
-            duration: 0.6,
-            ease: "expo.out",
+          mm.add("(prefers-reduced-motion: reduce)", () => {
+            gsap.to(curtain, {
+              width: 0,
+              duration: 0,
+              ease: "expo.out",
+            });
+
+            gsap.to(arrow, {
+              x: 0,
+              duration: 0,
+              ease: "expo.out",
+            });
           });
         }
       }, 600);

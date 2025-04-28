@@ -99,23 +99,36 @@ export default {
   },
   methods: {
     animate() {
+      let mm = gsap.matchMedia();
+
       let list = this.$refs.breadcrumbs;
 
       if (list) {
         let listWords = list.querySelectorAll('.context__word span');
 
-        gsap.to(listWords,
-          {
-            scrollTrigger: {
-              trigger: this.$refs.breadcrumbs,
-              toggleActions: 'restart none restart none',
-              start: 'top 85%',
-            },
-            y: 0,
-            duration: 0.4,
-            stagger: 0.05,
-            ease: "expo.out",
-          });
+        mm.add("(prefers-reduced-motion: no-preference)", () => {
+          gsap.to(listWords,
+            {
+              scrollTrigger: {
+                trigger: this.$refs.breadcrumbs,
+                toggleActions: 'restart none restart none',
+                start: 'top 85%',
+              },
+              y: 0,
+              duration: 0.4,
+              stagger: 0.05,
+              ease: "expo.out",
+            });
+        });
+
+        mm.add("(prefers-reduced-motion: reduce)", () => {
+          gsap.to(listWords,
+            {
+              y: 0,
+              duration: 0,
+              ease: "expo.out",
+            });
+        });
       }
     }
   }
