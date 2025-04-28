@@ -33,7 +33,7 @@ export default {
 
   + .heading-style-3 {
     @include breakpoint(medium) {
-      margin-top: 5.9vh;
+      margin-top: 2.25vh;
     }
   }
 
