@@ -31,6 +31,12 @@ export default {
     }
   }
 
+  + .heading-style-3 {
+    @include breakpoint(medium) {
+      margin-top: 5.9vh;
+    }
+  }
+
   + .grid--video {
     @include breakpoint(medium) {
       margin-top: 5.9vh;
