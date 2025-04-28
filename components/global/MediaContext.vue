@@ -814,6 +814,9 @@ export default {
               height: `${vh.querySelector('img').offsetHeight}px`,
             });
           } else {
+            vh.querySelector('img').style.width = 'auto';
+            vh.querySelector('img').style.height = '100%';
+
             Object.assign(vh.style, {
               width: `${vh.querySelector('img').width}px`,
               height: '100%',
