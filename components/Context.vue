@@ -642,6 +642,13 @@ export default {
     span {
       display: contents;
     }
+
+    i,
+    em {
+      @include breakpoint(large) {
+        padding-right: 0.1vw;
+      }
+    }
   }
 
   &__p {
