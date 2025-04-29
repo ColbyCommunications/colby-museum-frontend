@@ -1,4 +1,11 @@
-import { defineStore } from 'pinia'
+import { defineStore } from 'pinia';
+import nuxtStorage from 'nuxt-storage';
+
+// const getSettings = () => {
+//   const settings = typeof window !== 'undefined' ? localStorage.getItem('darkMode');
+
+//   return settings ? JSON.parse(settings) : false;
+// }
 
 export const useInterfaceStore = defineStore({
   id: 'interface',
@@ -16,13 +23,20 @@ export const useInterfaceStore = defineStore({
     setDrawer(drawer) {
       this.drawer = drawer;
     },
+    setDark(dark) {
+      this.dark = dark;
+    },
     toggleDark() {
       this.dark = !this.dark;
 
       if (this.dark == true) {
         document.body.className = 'dark-mode';
+        localStorage.setItem('darkMode', true);
+        // nuxtStorage.localStorage.setData('darkMode', true);
       } else {
         document.body.className = ''; 
+        localStorage.setItem('darkMode', false);
+        // nuxtStorage.localStorage.setData('darkMode', false);
       }
     },
     toggleModal() {

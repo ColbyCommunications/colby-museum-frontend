@@ -21,6 +21,10 @@ export default {
   },
   created() {
     this.interface = useInterfaceStore();
+
+    if (localStorage.getItem('darkMode') == 'true') {
+      this.interface.toggleDark();
+    }
   },
   methods: {
     toggleMode() {

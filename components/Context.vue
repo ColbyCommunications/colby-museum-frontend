@@ -505,9 +505,11 @@ export default {
     overflow: hidden;
     display: inline-block;
 
-    @include breakpoint(large) {
-      .context--embark & {
-        padding-right: 0.1vw;
+    .context--embark .context__subheading & {
+      padding-right: 0.5vw;
+
+      @include breakpoint(large) {
+        padding-right: 0.15vw;
       }
     }
 
@@ -641,6 +643,13 @@ export default {
 
     span {
       display: contents;
+    }
+
+    i,
+    em {
+      @include breakpoint(large) {
+        padding-right: 0.1vw;
+      }
     }
   }
 

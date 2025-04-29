@@ -586,6 +586,7 @@ export default {
 
     if (component.items_type == 'objects') {
       component.$route.query.has_image != 'false' ? component.activeFilters = ['Has Image'] : component.activeFilters = [];
+      // component.$route.query.has_image == 'true' ? component.activeFilters = ['Has Image'] : component.activeFilters = [];
 
       this.loadFilters();
 
@@ -690,6 +691,28 @@ export default {
     }
   },
   methods: {
+    // Loads from _count API
+    async getObjectCount(query, endpoint, username, password, perPage) {
+      // Create a mutable clone and remove keys not legal in count reqs
+      let q = {...query}
+      delete q.size
+      delete q.from
+      delete q.sort
+
+      const response = await axios.get(`${endpoint}/_count`, {
+          auth: {
+            username,
+            password
+          },
+          params: {
+            source_content_type: 'application/json',
+            source: JSON.stringify(q)
+          }
+        })
+
+      this.totalObjects = response.data.count;
+      this.totalPages = response.data.count / perPage;
+    },
     async getObjects(page, searchTerm) {
       const component = this;
       let filterYPosition;
@@ -755,16 +778,12 @@ export default {
 
       // filterTerms.push({"accession_num_year": "asc"});
       // filterTerms.push({"Disp_Access_No": "asc"});
+      
+      const endpoint = 'https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/stage'
+      const username = 'Fr2fpegcBZ'
+      const password = 'Vi7vGnL3h2rtW5SuECoKRwTf'
 
-      await axios
-        .get(`https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/stage/_search`, {
-          auth: {
-            username: 'Fr2fpegcBZ',
-            password: 'Vi7vGnL3h2rtW5SuECoKRwTf'
-          },
-          params: {
-            source_content_type: 'application/json',
-            source: JSON.stringify({
+      const searchQuery = {
               size: component.per_page + 1,
               from: 0 + ( component.per_page * (page - 1)),
               "sort": filterSort,
@@ -775,14 +794,22 @@ export default {
                   "minimum_should_match" : filterTerms.length,
                 },
               },
-            })
+            }
+
+      this.getObjectCount(searchQuery, endpoint, username, password, this.per_page)
+      await axios
+        .get(`${endpoint}/_search`, {
+          auth: {
+            username,
+            password 
+          },
+          params: {
+            source_content_type: 'application/json',
+            source: JSON.stringify(searchQuery)
           }
         })
         .then((output) => {
-
-          component.totalObjects = output.data.hits.total.value;
-          component.totalPages = Math.floor(output.headers['content-length'] / component.per_page);
-
+          // Check paged hit lengths and disable buttons
           if (output.data.hits.hits.length < component.per_page + 1) {
             component.nextPageAvailable = false;
           } else {

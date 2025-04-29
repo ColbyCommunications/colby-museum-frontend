@@ -812,18 +812,21 @@ export default {
     },
     resizeZooms() {
       this.zoomInterval = setInterval(() => {
-        const container = this.$refs.carousel;
+        const container = this.$refs.carousel.querySelector('.media-context__image');
         const vhs = this.$refs.carousel.getElementsByClassName('vh--outer');
+
+        // console.log(container.getBoundingClientRect().height)
+        // console.log(container.getBoundingClientRect().width)
 
         Array.from(vhs).forEach((vh) => {
 
-          if (vh.querySelector('img').width > container.offsetWidth) {
+          if (vh.querySelector('img').width >= container.getBoundingClientRect().width) {
             vh.querySelector('img').style.width = '100%';
             vh.querySelector('img').style.height = 'auto';
 
             Object.assign(vh.style, {
               width: `100%`,
-              height: `${vh.querySelector('img').offsetHeight}px`,
+              height: `${vh.querySelector('img').getBoundingClientRect().height}px`,
             });
           } else {
             vh.querySelector('img').style.width = 'auto';
@@ -837,9 +840,6 @@ export default {
         });
 
         this.loaded = true;
-        this.viewportWidth = window.innerWidth;
-        this.viewportHeight = window.innerHeight;
-        // console.log(this.viewportWidth);
       }, 1000);
     }
   }
@@ -1258,7 +1258,7 @@ export default {
 
   &__mini-captions {
     position: relative;
-    height: 140px;
+    height: 70px;
     margin-top: 20px;
 
     @include breakpoint(medium) {
@@ -1299,7 +1299,7 @@ export default {
   }
 
   + div:not(.meta-data-list) {
-    margin-top: 100px;
+    margin-top: 40px; // 100
 
     @include breakpoint(medium) {
       margin-top: 10vh;
