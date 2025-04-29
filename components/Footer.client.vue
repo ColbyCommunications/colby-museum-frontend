@@ -397,8 +397,7 @@ export default {
     color: map.get($layout-colors, ambiant);
 
     .dark-mode & {
-      // color: map.get($layout-dm-colors, ambiant);
-      color: $white;
+      color: map.get($layout-dm-colors, ambiant);
     }
 
     @include breakpoint(medium) {
