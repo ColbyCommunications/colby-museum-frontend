@@ -121,7 +121,7 @@ export default {
   }
 
   p {
-    @extend .paragraph-style-3;
+    @extend .paragraph-style-2;
   }
 
   + div {
