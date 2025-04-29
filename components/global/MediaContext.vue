@@ -1258,7 +1258,7 @@ export default {
 
   &__mini-captions {
     position: relative;
-    height: 140px;
+    height: 70px;
     margin-top: 20px;
 
     @include breakpoint(medium) {
@@ -1299,7 +1299,7 @@ export default {
   }
 
   + div:not(.meta-data-list) {
-    margin-top: 100px;
+    margin-top: 40px; // 100
 
     @include breakpoint(medium) {
       margin-top: 10vh;
