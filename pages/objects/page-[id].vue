@@ -18,7 +18,7 @@
     <ArticleGrid
       :hover="'text'"
       :items_type="'objects'"
-      :columns="6"
+      :columns="'6'"
       :per_page="30"
       :page="$route.params.id"
       :button_type="'text'"
