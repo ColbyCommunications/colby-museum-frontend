@@ -159,7 +159,7 @@ export default {
 
   ul {
     overflow-y: auto;
-    overflow-x: scroll;
+    overflow-x: auto;
   }
 
   li > span,
