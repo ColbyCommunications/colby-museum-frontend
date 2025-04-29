@@ -24,7 +24,7 @@
       :button="{
         reverse: true,
         title: 'Search the Collection',
-        url: '/objects/page-1'
+        url: '/objects/page-1?has_image=false'
       }"
     />
   </div>

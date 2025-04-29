@@ -586,6 +586,7 @@ export default {
 
     if (component.items_type == 'objects') {
       component.$route.query.has_image != 'false' ? component.activeFilters = ['Has Image'] : component.activeFilters = [];
+      // component.$route.query.has_image == 'true' ? component.activeFilters = ['Has Image'] : component.activeFilters = [];
 
       this.loadFilters();
 
