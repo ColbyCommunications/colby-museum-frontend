@@ -1,13 +1,13 @@
 <template>
   <div class="page page--default">
-    <!-- <Breadcrumbs
+    <Breadcrumbs
       v-if="$route.params.slug != ''"
       :items="breadcrumbs"
       :current="{
         title: title,
         url: fullPath,
       }"
-    /> -->
+    />
     <IntroContext
       :class="[heading_visible ? '' : 'sr-only--heading', excerpt_visible ? '' : 'sr-only--excerpt']"
       :heading="title"
