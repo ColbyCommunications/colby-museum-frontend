@@ -136,7 +136,13 @@
     }
 
     &--next {
-      justify-content: flex-end;
+      justify-content: flex-start;
+      margin-top: 5px;
+
+      @include breakpoint(medium) {
+        justify-content: flex-end;
+        margin-top: 0;
+      }
 
       svg {
         margin-left: 12px;
