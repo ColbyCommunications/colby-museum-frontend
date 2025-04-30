@@ -779,7 +779,7 @@ export default {
         mm.add("(prefers-reduced-motion: no-preference)", () => {
           gsap.to(this.$refs.curtain, {
             width: 0,
-            duration: 0.4,
+            duration: 0.2,
             ease: "expo.out",
           });
         });
@@ -800,7 +800,7 @@ export default {
           },
           {
             height: 0,
-            duration: 0.6,
+            duration: 0.3,
             ease: "expo.out",
           });
         }

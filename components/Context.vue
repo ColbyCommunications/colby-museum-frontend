@@ -241,7 +241,7 @@ export default {
                   start: 'top 95%',
                 },
                 y: 0,
-                duration: 0.4,
+                duration: 0.2,
                 stagger: 0.05,
                 ease: "expo.out",
               });
@@ -249,7 +249,7 @@ export default {
             gsap.to(heading,
               {
                 '--border-width': 0,
-                duration: 0.4,
+                duration: 0.2,
                 stagger: 0.1,
               });
           });
@@ -283,7 +283,7 @@ export default {
                   start: 'top 95%',
                 },
                 y: 0,
-                duration: 0.4,
+                duration: 0.2,
                 stagger: 0.005,
                 ease: "expo.out",
               });
@@ -296,7 +296,7 @@ export default {
                     toggleActions: 'restart none none reverse',
                     start: 'top 95%',
                   },
-                  duration: 0.4,
+                  duration: 0.2,
                   stagger: 0.01,
                   overflow: 'visible',
                   ease: "expo.out",
@@ -335,7 +335,7 @@ export default {
                   start: 'top 95%',
                 },
                 y: 0,
-                duration: 0.4,
+                duration: 0.2,
                 stagger: 0.01,
                 ease: "expo.out",
               });
@@ -387,7 +387,7 @@ export default {
                 start: 'top 95%',
               },
               height: 0,
-              duration: 0.6,
+              duration: 0.3,
               ease: "expo.out",
             });
           });
@@ -413,7 +413,7 @@ export default {
               start: 'top 95%',
             },
             height: 0,
-            duration: 0.6,
+            duration: 0.3,
             ease: "expo.out",
           });
         }

@@ -54,7 +54,7 @@ const pageTransition = {
             .to(headingWords,
             {
               y: '100%',
-              duration: 0.4,
+              duration: 0.2,
               stagger: 0.05,
               ease: "expo.out",
             },
@@ -92,7 +92,7 @@ const pageTransition = {
             .to(subheadingWords,
             {
               y: '100%',
-              duration: 0.4,
+              duration: 0.2,
               stagger: 0.005,
               ease: "expo.out",
             },
@@ -128,7 +128,7 @@ const pageTransition = {
             .to(curtain,
             {
               height: '100%',
-              duration: 0.6,
+              duration: 0.4,
               ease: "expo.out",
             },
             '<');
@@ -155,7 +155,7 @@ const pageTransition = {
             .to(btnCurtain,
             {
               width: '110%',
-              duration: 0.4,
+              duration: 0.2,
               ease: "expo.out",
             },
             '<');
@@ -186,7 +186,7 @@ const pageTransition = {
             },
             {
               width: '100%',
-              duration: 0.4,
+              duration: 0.2,
               ease: "expo.out",
             },
             '<');
@@ -221,7 +221,7 @@ const pageTransition = {
             },
             {
               height: '100%',
-              duration: 0.6,
+              duration: 0.4,
               ease: "expo.out",
             },
             '<');
@@ -251,7 +251,7 @@ const pageTransition = {
           tl
             .to(bigArrow, {
               x: '100%',
-              duration: 0.6,
+              duration: 0.4,
               ease: "expo.out",
             },
             '<');
@@ -277,7 +277,7 @@ const pageTransition = {
           .to(headingWords,
           {
             y: '100%',
-            duration: 0.4,
+            duration: 0.2,
             stagger: 0.05,
             ease: "expo.out",
           },
@@ -290,7 +290,7 @@ const pageTransition = {
         tl.
           to(borderGlobalTop, {
             '--border-width': '100%',
-            duration: 0.4,
+            duration: 0.2,
             stagger: 0.1,
           },
           '<');
@@ -306,7 +306,7 @@ const pageTransition = {
         tl.
           to(accordionPanels, {
             '--border-width': '100%',
-            duration: 0.4,
+            duration: 0.2,
             stagger: 0.1,
           },
           '<');
@@ -314,7 +314,7 @@ const pageTransition = {
         tl
           .to(headingWords, {
             y: '100%',
-            duration: 0.4,
+            duration: 0.2,
             stagger: 0.1,
             ease: "expo.out",
           },
