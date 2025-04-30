@@ -335,8 +335,12 @@
         </div>
       </div>
     </div>
-  
     <div class="article-grid__inner grid">
+      <div
+        v-if="items_type == 'objects' && newItems.length == 0"
+        class="article-grid__no-results heading-style-1"
+        v-text="`No results for ${input ? input : $route.query.search} found...`"
+      />
       <div
         v-if="items_type == 'posts' && currentPage == 1 && per_page >= 20"
         v-for="(item, index) in newItems.slice(1)"
@@ -1488,6 +1492,10 @@ export default {
 
 <style lang="scss">
 .article-grid {
+
+  &__no-results {
+    grid-column: span 12 / span 12;
+  }
 
   &__item {
     grid-column: span 12 / span 12;
