@@ -817,9 +817,19 @@ export default {
 
         // console.log(container.getBoundingClientRect().height)
         // console.log(container.getBoundingClientRect().width)
-
+      
         Array.from(vhs).forEach((vh) => {
 
+          // if (window.innerWidth <= 430) {
+          //   vh.querySelector('img').style.width = '100%';
+          //   vh.querySelector('img').style.height = '100%';
+
+          //   Object.assign(vh.style, {
+          //     width: `100%`,
+          //     height: `100%`,
+          //   });
+
+          //   console.log('Over 430');
           if (vh.querySelector('img').width >= container.getBoundingClientRect().width) {
             vh.querySelector('img').style.width = '100%';
             vh.querySelector('img').style.height = 'auto';
@@ -1115,6 +1125,15 @@ export default {
       left: 0;
       width: 100%;
       height: 100%;
+
+      @media only screen and (max-width: 480px) {
+        height: 100% !important;
+        pointer-events: none;
+
+        img {
+          height: 100% !important;
+        }
+      }
     }
   }
 
@@ -1286,6 +1305,10 @@ export default {
   &__label {
     display: flex;
     align-items: center;
+
+    @media only screen and (max-width: 480px) {
+      display: none;
+    }
 
     .icon-zoom {
       width: 20px;
