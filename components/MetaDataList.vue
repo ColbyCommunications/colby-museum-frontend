@@ -97,8 +97,8 @@ export default {
   }
 
   &__top + &__main {
-    padding-top: 40px;
-    margin-top: 40px;
+    padding-top: 20px;
+    margin-top: 20px;
     
     @extend .border-global--top;
 
@@ -128,7 +128,7 @@ export default {
   }
 
   + .core-paragraph {
-    margin-top: 12vh;
+    margin-top: 10vh;
   }
 }
 </style>
