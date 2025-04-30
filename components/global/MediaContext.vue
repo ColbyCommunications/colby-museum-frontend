@@ -855,6 +855,10 @@ export default {
     display: none;
   }
 
+  &--overflow {
+    overflow: hidden;
+  }
+
   &__inner {
     .media-context--overflow & {
       padding: 0;
