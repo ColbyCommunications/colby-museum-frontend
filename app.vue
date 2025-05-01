@@ -112,7 +112,7 @@ export default {
       });
   },
   mounted() {
-    gsap.registerPlugin(ScrollTrigger);
+    // gsap.registerPlugin(ScrollTrigger);
 
     // setTimeout(() => {
     //   ScrollSmoother.create({
