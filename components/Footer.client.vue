@@ -144,7 +144,8 @@ export default {
 
     setTimeout(() => {
       document.getElementById('email_address_1').placeholder = 'Newsletter Sign Up';
-    }, 6000);
+      document.querySelector('.ctct-form-button').innerHTML = 'Submit';
+    }, 4000);
   },
 }
 </script>
@@ -380,14 +381,14 @@ export default {
 
   &__newsletter.input,
   div.ctct-form-embed form.ctct-form-custom input.ctct-form-element {
-    width: 75vw;
+    width: 70vw;
 
     @include breakpoint(medium) {
       width: 80vw;
     }
 
     @include breakpoint(large) {
-      width: 44vw;
+      width: 40vw;
     }
     
   }
@@ -433,6 +434,7 @@ export default {
   }
 
   &__newsletter-arrow {
+    display: none; // TEMP
     position: absolute;
     top: 50%;
     right: 0;
@@ -518,18 +520,27 @@ export default {
   }
 
   .ctct-form-button {
+    font-family: $font-primary !important;
+    font-size: 1.125rem !important;
+    font-weight: 600 !important;
+    font-style: normal !important;
+    line-height: 120% !important;
+    letter-spacing: rem-calc(0.14px) !important;
+
     padding: 0 !important;
-    width: 25vw !important;
+    width: 30vw !important;
+    color: map.get($layout-colors, color) !important;
     border: 0 !important;
     border-radius: 0 !important;
     background-color: map.get($layout-colors, accent) !important;
-    font-size: 0 !important;
+    // font-size: 0 !important;
     border-top: 4px solid map.get($layout-colors, color) !important;
     border-bottom: 4px solid map.get($layout-colors, color) !important;
     border-right: 4px solid map.get($layout-colors, color) !important;
     transition: none !important;
 
     .dark-mode & {
+      color: map.get($layout-dm-colors, color) !important;
       background-color: map.get($layout-dm-colors, accent) !important;
       border-top: 4px solid map.get($layout-dm-colors, color) !important;
       border-bottom: 4px solid map.get($layout-dm-colors, color) !important;
@@ -537,7 +548,9 @@ export default {
     }
 
     @include breakpoint(large) {
-      width: 5vw !important;
+      font-size: 1.25vw !important;
+      letter-spacing: -0.028vw !important;
+      width: 9vw !important;
       border-top: 0.278vw solid map.get($layout-colors, color) !important;
       border-bottom: 0.278vw solid map.get($layout-colors, color) !important;
       border-right: 0.278vw solid map.get($layout-colors, color) !important;
@@ -551,6 +564,12 @@ export default {
 
     &:hover {
       background-color: map.get($layout-colors, ambiant) !important;
+    }
+  }
+
+  #success_message_1 {
+    .ctct-form-text {
+      display: none !important;
     }
   }
 
