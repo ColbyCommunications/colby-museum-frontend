@@ -115,10 +115,10 @@ export default {
     gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
 
     setTimeout(() => {
-      ScrollSmoother.create({
-          smooth: 1.1,
-          effects: true,
-      });
+      // ScrollSmoother.create({
+      //     smooth: 1.1,
+      //     effects: true,
+      // });
     }, 600);
   },
   methods: {

@@ -514,6 +514,7 @@ export default {
     }
 
     span {
+      will-change: transform;
       display: inline-block;
       transform: translateY(100%);
     }
@@ -620,6 +621,7 @@ export default {
   }
 
   &__curtain {
+    will-change: transform;
     position: absolute;
     z-index: 1;
     top: 0;
