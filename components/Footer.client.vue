@@ -539,6 +539,10 @@ export default {
     border-right: 4px solid map.get($layout-colors, color) !important;
     transition: none !important;
 
+    &:hover {
+      color: $white !important;
+    }
+
     .dark-mode & {
       color: map.get($layout-dm-colors, color) !important;
       background-color: map.get($layout-dm-colors, accent) !important;
