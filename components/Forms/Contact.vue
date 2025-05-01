@@ -41,8 +41,8 @@
 import { ref } from 'vue';
 
 const form = ref({
-  access_key: '4ed80fe0-85fe-429b-b472-83bce6d66a14',
-  subject: 'New Submission from Web3Forms',
+  access_key: '7057a591-25b0-4d0d-9e6b-6b70473e28fd',
+  subject: 'New Submission from the Contact Form',
   name: '',
   email: '',
   message: '',
