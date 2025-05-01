@@ -237,7 +237,7 @@ export default {
               {
                 scrollTrigger: {
                   trigger: heading,
-                  toggleActions: 'restart none none reverse',
+                  toggleActions: 'restart none none none',
                   start: 'top 95%',
                 },
                 y: 0,
@@ -279,7 +279,7 @@ export default {
               {
                 scrollTrigger: {
                   trigger: subheading,
-                  toggleActions: 'restart none none reverse',
+                  toggleActions: 'restart none none none',
                   start: 'top 95%',
                 },
                 y: 0,
@@ -293,7 +293,7 @@ export default {
                 {
                   scrollTrigger: {
                     trigger: subheading,
-                    toggleActions: 'restart none none reverse',
+                    toggleActions: 'restart none none none',
                     start: 'top 95%',
                   },
                   duration: 0.2,
@@ -331,7 +331,7 @@ export default {
               {
                 scrollTrigger: {
                   trigger: subheading2,
-                  toggleActions: 'restart none none reverse',
+                  toggleActions: 'restart none none none',
                   start: 'top 95%',
                 },
                 y: 0,
@@ -356,7 +356,7 @@ export default {
             gsap.to(curtain, {
               scrollTrigger: {
                 trigger: curtain,
-                toggleActions: 'restart none none reverse',
+                toggleActions: 'restart none none none',
                 start: 'top 95%',
                 // markers: true,
               },

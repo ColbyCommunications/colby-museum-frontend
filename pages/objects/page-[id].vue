@@ -1,5 +1,5 @@
 <template>
-  <div class="page page--default">
+  <div class="page page--default page--objects">
     <IntroContext
       :class="[$route.query.embark_id ? 'sr-only--excerpt' : '']"
       :heading="`Objects`"

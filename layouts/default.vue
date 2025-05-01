@@ -10,6 +10,12 @@
     min-height: 160vh;
   }
 
+  &--objects {
+    @include breakpoint(large) {
+      min-height: 300vh;
+    }
+  }
+
   .has-text-align-center {
     text-align: center;
   }
