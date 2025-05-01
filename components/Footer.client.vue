@@ -380,6 +380,7 @@ export default {
 
   &__newsletter.input,
   div.ctct-form-embed form.ctct-form-custom input.ctct-form-element {
+    width: 75vw;
 
     @include breakpoint(medium) {
       width: 80vw;
@@ -426,7 +427,7 @@ export default {
     position: relative;
     width: 100%;
 
-    @include breakpoint(medium) {
+    @include breakpoint(large) {
       width: auto;
     }
   }
@@ -436,13 +437,13 @@ export default {
     top: 50%;
     right: 0;
     width: 28px;
-    margin-right: 6px;
+    margin-right: 4vw;
     fill: map.get($layout-colors, color);
     transform: translateY(-50%) rotate(-90deg);
     transition: transform 0.2s $ease-default;
     pointer-events: none;
 
-    @include breakpoint(medium) {
+    @include breakpoint(large) {
       width: 1.875vw;
       margin-right: 1.667vw;
     }
@@ -458,6 +459,10 @@ export default {
     @include breakpoint(large) {
       margin: 0;
     }
+  }
+
+  .ctct-form-custom {
+    display: flex;
   }
 
   .ctct-form-custom > .ctct-form-header,
@@ -513,7 +518,40 @@ export default {
   }
 
   .ctct-form-button {
-    display: none !important;
+    padding: 0 !important;
+    width: 25vw !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background-color: map.get($layout-colors, accent) !important;
+    font-size: 0 !important;
+    border-top: 4px solid map.get($layout-colors, color) !important;
+    border-bottom: 4px solid map.get($layout-colors, color) !important;
+    border-right: 4px solid map.get($layout-colors, color) !important;
+    transition: none !important;
+
+    .dark-mode & {
+      background-color: map.get($layout-dm-colors, accent) !important;
+      border-top: 4px solid map.get($layout-dm-colors, color) !important;
+      border-bottom: 4px solid map.get($layout-dm-colors, color) !important;
+      border-right: 4px solid map.get($layout-dm-colors, color) !important;
+    }
+
+    @include breakpoint(large) {
+      width: 5vw !important;
+      border-top: 0.278vw solid map.get($layout-colors, color) !important;
+      border-bottom: 0.278vw solid map.get($layout-colors, color) !important;
+      border-right: 0.278vw solid map.get($layout-colors, color) !important;
+
+      .dark-mode & {
+        border-top: 0.278vw solid map.get($layout-dm-colors, color) !important;
+        border-bottom: 0.278vw solid map.get($layout-dm-colors, color) !important;
+        border-right: 0.278vw solid map.get($layout-dm-colors, color) !important;
+      }
+    }
+
+    &:hover {
+      background-color: map.get($layout-colors, ambiant) !important;
+    }
   }
 
   #first_name_field_1,
