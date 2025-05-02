@@ -659,35 +659,35 @@ export default {
     },
     async getImage(i) {
       const component = this;
-      let imageObj;
-      let newImageObj;
 
-      await axios
-        .get(`${component.interface.endpoint}media/${i}`)
-        .then((output) => {
-          imageObj = output.data;
+      const image = await axios.get(`${component.interface.endpoint}media/${i}`)
+      const imageObj = image.data
 
-          // console.log(imageObj);
+      let imageAspect = 3.0 / 4.0
+      if (image.height > 0 && image.width > 0) {
+        imgAspect = image.height / image.width
+      }
 
-          newImageObj = {
+      const desktopWidth = 1200
+      const mobileWidth = 600
+
+      const desktop = { width: desktopWidth, height: desktopWidth * imageAspect, source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=1200,quality=75,format=webp` }
+      const mobile = { width: mobileWidth, height: mobileWidth * imageAspect, source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=600,quality=75,format=webp` }
+
+      const newImageObj = {
             alt_text: imageObj.alt_text,
             caption: {
               rendered: imageObj.description.rendered.replace(/<img[^>]*>/g,"").replace(/<p[^>]*>|<\/p>/g, '').replace(/\r?\n|\r/g, "").replace(/<a[^>]*>|<\/a>/g, ''),
             },
             media_details: {
               sizes: {
-                desktop: {
-                  source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=1800,quality=75,format=webp`,
-                },
-                mobile: {
-                  source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=1200,quality=75,format=webp`,
-                },
+                desktop,
+                mobile,
               }
             }
           };
-        });
 
-      return await newImageObj;
+      return newImageObj;
     },
     async getCollection(i) {
       const component = this;

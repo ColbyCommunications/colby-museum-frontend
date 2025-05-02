@@ -197,16 +197,22 @@ export default {
     },
     async getImage(i) {
       const component = this;
-      let imageObj;
-      let newImageObj;
 
-      await axios
-        .get(`${component.interface.endpoint}media/${i}`)
-        .then((output) => {
-          imageObj = output.data;
-          // console.log(imageObj);
+      const image = await axios.get(`${component.interface.endpoint}media/${i}`)
+      const imageObj = image.data
 
-          newImageObj = {
+      let imageAspect = 3.0 / 4.0
+      if (image.height > 0 && image.width > 0) {
+        imgAspect = image.height / image.width
+      }
+
+      const desktopWidth = 1200
+      const mobileWidth = 600
+
+      const desktop = { width: desktopWidth, height: desktopWidth * imageAspect, source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=1200,quality=75,format=webp` }
+      const mobile = { width: mobileWidth, height: mobileWidth * imageAspect, source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=600,quality=75,format=webp` }
+
+      const newImageObj = {
             artist_name: imageObj.acf.artist_name,
             object_title: imageObj.acf.object_title,
             object_creation_date: imageObj.acf.object_creation_date,
@@ -216,20 +222,13 @@ export default {
             },
             media_details: {
               sizes: {
-                desktop: {
-                  source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=1200,quality=75,format=webp`,
-                },
-                mobile: {
-                  source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=600,quality=75,format=webp`,
-                },
+                desktop,
+                mobile,
               }
             }
-          };
+          }
 
-          // console.log(newImageObj);
-        });
-
-      return await newImageObj;
+      return newImageObj;
     },
     async updateImage() {
       if (this.post) {
