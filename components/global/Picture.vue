@@ -10,7 +10,6 @@
       :alt="alt"
       :loading="loading"
       width="100%"
-      :height="sizes.mobile.height"
       @error="handle404"
     />
   </picture>
