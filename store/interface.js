@@ -8,39 +8,39 @@ import nuxtStorage from 'nuxt-storage';
 // }
 
 export const useInterfaceStore = defineStore({
-  id: 'interface',
-  state: () => {
-    return {
-      backend: 'https://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/',
-      endpoint: 'https://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/wp-json/wp/v2/',
-      endpointv3: 'https://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/wp-json/acf/v3/',
-      drawer: false,
-      dark: false,
-      modal: false,
-    }
-  },
-  actions: {
-    setDrawer(drawer) {
-      this.drawer = drawer;
+    id: 'interface',
+    state: () => {
+        return {
+            backend: 'https://museum-backend.colby.edu/',
+            endpoint: 'https://museum-backend.colby.edu/wp-json/wp/v2/',
+            endpointv3: 'https://museum-backend.colby.edu/wp-json/acf/v3/',
+            drawer: false,
+            dark: false,
+            modal: false,
+        };
     },
-    setDark(dark) {
-      this.dark = dark;
-    },
-    toggleDark() {
-      this.dark = !this.dark;
+    actions: {
+        setDrawer(drawer) {
+            this.drawer = drawer;
+        },
+        setDark(dark) {
+            this.dark = dark;
+        },
+        toggleDark() {
+            this.dark = !this.dark;
 
-      if (this.dark == true) {
-        document.body.className = 'dark-mode';
-        localStorage.setItem('darkMode', true);
-        // nuxtStorage.localStorage.setData('darkMode', true);
-      } else {
-        document.body.className = ''; 
-        localStorage.setItem('darkMode', false);
-        // nuxtStorage.localStorage.setData('darkMode', false);
-      }
+            if (this.dark == true) {
+                document.body.className = 'dark-mode';
+                localStorage.setItem('darkMode', true);
+                // nuxtStorage.localStorage.setData('darkMode', true);
+            } else {
+                document.body.className = '';
+                localStorage.setItem('darkMode', false);
+                // nuxtStorage.localStorage.setData('darkMode', false);
+            }
+        },
+        toggleModal() {
+            this.modal = !this.modal;
+        },
     },
-    toggleModal() {
-      this.modal = !this.modal;
-    }
-  },
-})
+});
