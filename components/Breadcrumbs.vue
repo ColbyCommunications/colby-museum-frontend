@@ -22,13 +22,27 @@
                   :to="item.url.replace(/^.*\/\/[^\/]+/, '').replace(/\/$/, '')"
                 >
                   <IconArrow />
-                  <!-- {{ item.title }} -->
                   <span v-html="item.title" />
                 </NuxtLink>
               </span>
             </span>
           </li>
-          <li v-if="manual">
+          <li
+            v-if="Array.isArray(manual)"
+            v-for="(item, index) in manual"
+          >
+            <span class="context__word">
+              <span>
+                <NuxtLink
+                  :to="item.url"
+                >
+                  <IconArrow />
+                  <span v-html="item.title" />
+                </NuxtLink>
+              </span>
+            </span>
+          </li>
+          <li v-else-if="manual">
             <span class="context__word">
               <span>
                 <NuxtLink

@@ -6,10 +6,16 @@
         title: title,
         url: fullPath,
       }"
-      :manual="{
-        title: 'About the Collection',
-        url: '/collection/about-the-collection',
-      }"
+      :manual="[
+        {
+          title: 'Collection',
+          url: '/collection',
+        },
+        {
+          title: 'About the Collection',
+          url: '/collection/about-the-collection',
+        }
+      ]"
     />
     <IntroContext
       :heading="title"
