@@ -999,6 +999,8 @@ export default {
             } else {
               if (component.items_type == 'events') {
                 chr = '&chronologies_exclude=8'; // EXCLUDE PAST AS LONG AS WE ARENT IN EXHIBITIONS
+              } else {
+                chr = '';
               }
             }
 
