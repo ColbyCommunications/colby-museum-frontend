@@ -119,6 +119,11 @@ export default {
           navigateTo(`${this.interface.backend}${this.$route.path}`, {
             external: true
           })
+
+          history.pushState(null, document.title, location.href);
+          window.addEventListener('popstate', (event) => {
+            history.pushState(null, document.title, location.href);
+          });
         }
       }
 
