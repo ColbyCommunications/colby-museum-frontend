@@ -167,6 +167,7 @@ export default {
     image: {
       deep: true,
       handler() {
+        this.animate();
         if (this.$refs.image) {
           this.$refs.image.classList.remove('context__image--broken');
         }
@@ -201,17 +202,17 @@ export default {
 
     let previousHeight = document.body.scrollHeight;
 
-    if (this.size != 'embark') {
-      this.animateInterval = setInterval(() => {
-        const currentHeight = document.body.scrollHeight;
-        if (currentHeight !== previousHeight) {
-          // console.log('Page length changed!');
-          previousHeight = currentHeight; // Update the height
+    // if (this.size != 'embark') {
+    //   this.animateInterval = setInterval(() => {
+    //     const currentHeight = document.body.scrollHeight;
+    //     if (currentHeight !== previousHeight) {
+    //       // console.log('Page length changed!');
+    //       previousHeight = currentHeight; // Update the height
 
-          this.animate();
-        }
-      }, 2000);
-    }
+    //       this.animate();
+    //     }
+    //   }, 2000);
+    // }
   },
   unmounted() {
     clearInterval(this.animateInterval);
@@ -383,7 +384,7 @@ export default {
             {
               scrollTrigger: {
                 trigger: subheading,
-                toggleActions: 'restart none none reverse',
+                toggleActions: 'restart none none none',
                 start: 'top 95%',
               },
               height: 0,
@@ -409,7 +410,7 @@ export default {
           {
             scrollTrigger: {
               trigger: subheading,
-              toggleActions: 'restart none none reverse',
+              toggleActions: 'restart none none none',
               start: 'top 95%',
             },
             height: 0,
@@ -502,7 +503,7 @@ export default {
   }
 
   &__word {
-    overflow: hidden;
+    overflow: hidden !important;
     display: inline-block;
 
     .context--embark .context__subheading & {
