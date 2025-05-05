@@ -362,7 +362,7 @@ export default {
                 // markers: true,
               },
               height: 0,
-              duration: 0.6,
+              duration: 0.4,
               ease: "expo.out",
             });
           });
