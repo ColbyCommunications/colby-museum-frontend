@@ -10,7 +10,7 @@
         <Accordion
           class="accordion"
           v-slot="accordion"
-          :single="true"
+          :single="false"
         >
           <article
             v-for="(item, index) in newItems"

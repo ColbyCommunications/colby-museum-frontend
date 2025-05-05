@@ -42,7 +42,11 @@ export default {
   },
   computed: {
     fixedUrl() {
-      return this.url.replace(`${this.interface.backend}`, '/').replace(/\/$/, '');
+      if (this.hasFileExtension(this.url)) {
+        return this.url;
+      } else {
+        return this.url.replace(`${this.interface.backend}`, '/').replace(/\/$/, ''); 
+      }
     }
   },
   async created() {
@@ -98,6 +102,9 @@ export default {
           });
         }
       }, 600);
+    },
+    hasFileExtension(fileName) {
+      return fileName.includes('.pdf');
     }
   }
 }

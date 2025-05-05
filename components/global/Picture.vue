@@ -9,8 +9,9 @@
       :src="sizes.mobile.source_url"
       :alt="alt"
       :loading="loading"
-      width="100%"
       :aspect-ratio="sizes.mobile.aspect_ratio ?? ''"
+      width="100%"
+      height="50%"
       @error="handle404"
     />
   </picture>

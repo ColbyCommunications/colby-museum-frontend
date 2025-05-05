@@ -828,7 +828,7 @@ export default {
 
           component.newItems = output.data.hits.hits.map((i) => {
             const img = i._source.Images.length > 0 ? i._source.Images[0] : undefined;
-            const imgUrl = img ? `https://ccma-iiif-cache-service.fly.dev/iiif/2/${img.IIIF_URL.substring(img.IIIF_URL.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, "")}/full/${encodeURIComponent('400,')}/0/default.jpg` : '';
+            const imgUrl = img ? `https://ccma-iiif-cache-service.fly.dev/iiif/2/${img.IIIF_URL.substring(img.IIIF_URL.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, "")}/full/${encodeURIComponent(`${component.columns == '6' ? '300,' : '400,'}`)}/0/default.jpg` : '';
 
             return {
               size: 'embark',
@@ -997,8 +997,10 @@ export default {
             } else if ((component.showChronology == 'future' || component.showFuture) && (component.items_type == 'events' || component.items_type == 'exhibitions')) {
               chr = '&chronologies_exclude=8,9'; // EXCLUDE PAST AND CURRENT
             } else {
-              if (component.$route.query.variant != 'traveling') {
-                chr = '&chronologies_exclude=8'; // EXCLUDE PAST AS LONG AS WE ARENT IN TRAVELING EXHIBITIONS
+              if (component.items_type == 'events') {
+                chr = '&chronologies_exclude=8'; // EXCLUDE PAST AS LONG AS WE ARENT IN EXHIBITIONS
+              } else {
+                chr = '';
               }
             }
 

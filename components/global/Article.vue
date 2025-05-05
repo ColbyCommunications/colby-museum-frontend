@@ -97,14 +97,15 @@ export default {
       }
     }
   },
-  created() {
+  async created() {
     this.interface = useInterfaceStore();
 
     this.setupButton();
-  },
-  async mounted() {
     this.updateImage();
   },
+  // async mounted() {
+  //   this.updateImage();
+  // },
   props: {
     post: {
       type: Object,

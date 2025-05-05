@@ -2,6 +2,7 @@ import ViteYaml from '@modyfi/vite-plugin-yaml';
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+    site: { indexable: false },
     app: {
         head: {
             htmlAttrs: {
