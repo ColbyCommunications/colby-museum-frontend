@@ -693,18 +693,33 @@ export default {
       const component = this;
 
       await axios
-        .get(`https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/future/_source/collection%2F${i}`, {
+        .get(`https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/stage/_search`, {
           auth: {
             username: 'Fr2fpegcBZ',
             password: 'Vi7vGnL3h2rtW5SuECoKRwTf'
           },
+          params: {
+            source_content_type: 'application/json',
+            source: JSON.stringify({
+              "query" : {
+                "bool": {
+                  "must": {
+                    "term": {
+                      "Portfolios.Portfolio_ID" : `${i}`
+                    }
+                  },
+                },
+              },
+            })
+          }
         })
         .then(async (output) => {
-          const concatedObjs = output.data.objects.slice(0, 7);
+          console.log(output);
+          const concatedObjs = output.data.hits.hits.slice(0, 7);
 
           component.newItems = await Promise.all(concatedObjs.map(async (i) => {
 
-            return await component.getObject(i.ident.replace('object/', ''));
+            return await component.getObject(i._id.replace('object/', ''));
           }));
         });
     },
