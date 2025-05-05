@@ -7,7 +7,7 @@
 <style lang="scss">
 .page {
   @include breakpoint(large) {
-    min-height: 160vh;
+    min-height: 300vh;
   }
 
   &--objects {
