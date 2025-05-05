@@ -36,13 +36,16 @@ export default {
       default: 1200,
     }
   },
-  created() {
+  async created() {
     this.interface = useInterfaceStore();
-  },
-  async mounted() {
+
     console.log(`Image ID: ${this.post.featured_media}`);
     this.image = await this.getImage(this.post.featured_media);
   },
+  // async mounted() {
+  //   // console.log(`Image ID: ${this.post.featured_media}`);
+  //   // this.image = await this.getImage(this.post.featured_media);
+  // },
   methods: {
     async getImage(i) {
       const component = this;

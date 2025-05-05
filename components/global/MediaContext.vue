@@ -524,7 +524,7 @@ export default {
           });
           // this.glide.mount();
         }
-      }, this.variant == 'overflow' ? 1100 : 600); // VERY IMPORTANT DELAY FOR LOADING AND CONTEXT ANIMATIONS TO GEL NICELY
+      }, this.variant == 'overflow' ? 300 : 300); // VERY IMPORTANT DELAY FOR LOADING AND CONTEXT ANIMATIONS TO GEL NICELY 1100 / 600
     },
     changeSlide(s) {
       if (s == 'next') {
@@ -805,7 +805,7 @@ export default {
           });
         }
 
-      }, this.variant == 'overflow' ? 100 : 100);
+      }, this.variant == 'overflow' ? 50 : 50);
     },
     toggleModal() {
       this.interface.toggleModal();
