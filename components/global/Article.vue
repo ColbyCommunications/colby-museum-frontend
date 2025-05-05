@@ -201,36 +201,34 @@ export default {
       let imageObj;
       let newImageObj;
 
-      await axios
-        .get(`${component.interface.endpoint}media/${i}`)
-        .then((output) => {
-          imageObj = output.data;
-          // console.log(imageObj);
+      if ('wp:featuredmedia' in this.post._embedded && this.post._embedded["wp:featuredmedia"].guid?.rendered ) {
+        imageObj = this.post._embedded["wp:featuredmedia"]      
+      } else {
+        const img = await axios.get(`${component.interface.endpoint}media/${i}`)
+        imageObj = img.data
+      }
 
-          newImageObj = {
-            artist_name: imageObj.acf.artist_name,
-            object_title: imageObj.acf.object_title,
-            object_creation_date: imageObj.acf.object_creation_date,
-            alt_text: imageObj.alt_text,
-            caption: {
-              rendered: imageObj.caption.rendered,
+      newImageObj = {
+        artist_name: imageObj.acf.artist_name,
+        object_title: imageObj.acf.object_title,
+        object_creation_date: imageObj.acf.object_creation_date,
+        alt_text: imageObj.alt_text,
+        caption: {
+          rendered: imageObj.caption.rendered,
+        },
+        media_details: {
+          sizes: {
+            desktop: {
+              source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=1200,quality=75,format=webp`,
             },
-            media_details: {
-              sizes: {
-                desktop: {
-                  source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=1200,quality=75,format=webp`,
-                },
-                mobile: {
-                  source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=600,quality=75,format=webp`,
-                },
-              }
-            }
-          };
+            mobile: {
+              source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=600,quality=75,format=webp`,
+            },
+          }
+        }
+      }
 
-          // console.log(newImageObj);
-        });
-
-      return await newImageObj;
+      return newImageObj;
     },
     async updateImage() {
       if (this.post) {
