@@ -10,6 +10,7 @@
       :alt="alt"
       :loading="loading"
       width="100%"
+      height="50%"
       @error="handle404"
     />
   </picture>
