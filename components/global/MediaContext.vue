@@ -664,7 +664,7 @@ export default {
       const imageObj = image.data
       const mediaDetails = image.data.media_details
 
-      let imageAspect = 3.0 / 4.0
+      let imageAspect
       if (mediaDetails.height > 0 && mediaDetails.width > 0) {
         imageAspect = mediaDetails.height / mediaDetails.width
       }
