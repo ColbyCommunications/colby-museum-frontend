@@ -672,8 +672,8 @@ export default {
       const desktopWidth = 1200
       const mobileWidth = 600
 
-      const desktop = { aspect_ratio: imageAspect, width: desktopWidth, height: desktopWidth * imageAspect, source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=1200,quality=75,format=webp` }
-      const mobile = { aspect_ratio: imageAspect, width: mobileWidth, height: mobileWidth * imageAspect, source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=600,quality=75,format=webp` }
+      const desktop = { aspect_ratio: imageAspect, width: desktopWidth, height: desktopWidth * imageAspect, source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=1800,quality=75,format=webp` }
+      const mobile = { aspect_ratio: imageAspect, width: mobileWidth, height: mobileWidth * imageAspect, source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=1200,quality=75,format=webp` }
 
       const newImageObj = {
             alt_text: imageObj.alt_text,
