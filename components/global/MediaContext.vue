@@ -701,6 +701,9 @@ export default {
           params: {
             source_content_type: 'application/json',
             source: JSON.stringify({
+              "sort": {
+                "accession_num_year": 'desc',
+              },
               "query" : {
                 "bool": {
                   "must": {
