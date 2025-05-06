@@ -199,42 +199,44 @@ export default {
     async getImage(i) {
       const component = this;
 
-      const image = await axios.get(`${component.interface.endpoint}media/${i}`)
-      const imageObj = image.data
-      const mediaDetails = image.data.media_details
- 
+      let imageObj
+      let newImageObj
+
+      if ('wp:featuredmedia' in this.post._embedded && this.post._embedded["wp:featuredmedia"].guid?.rendered ) {
+        imageObj = this.post._embedded["wp:featuredmedia"]      
+      } else {
+        const img = await axios.get(`${component.interface.endpoint}media/${i}`)
+        imageObj = img.data
+      }
+
+      const mediaDetails = imageObj.media_details
+
       let imageAspect
       if (mediaDetails.height > 0 && mediaDetails.width > 0) {
         imageAspect = mediaDetails.height / mediaDetails.width
       }
 
-      const desktopWidth = 1200
-      const mobileWidth = 600
-
-      const desktop = { width: desktopWidth, 
-                        height: desktopWidth * imageAspect, 
-                        aspect_ratio: imageAspect,
+      const desktop = { aspect_ratio: imageAspect,
                         source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=1200,quality=75,format=webp` }
-      const mobile = { width: mobileWidth, 
-                       height: mobileWidth * imageAspect, 
-                       aspect_ratio: imageAspect,
+
+      const mobile = { aspect_ratio: imageAspect,
                        source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=600,quality=75,format=webp` }
 
-      const newImageObj = {
-            artist_name: imageObj.acf.artist_name,
-            object_title: imageObj.acf.object_title,
-            object_creation_date: imageObj.acf.object_creation_date,
-            alt_text: imageObj.alt_text,
-            caption: {
-              rendered: imageObj.caption.rendered,
-            },
-            media_details: {
-              sizes: {
-                desktop,
-                mobile,
-              }
-            }
+      newImageObj = {
+        artist_name: imageObj.acf.artist_name,
+        object_title: imageObj.acf.object_title,
+        object_creation_date: imageObj.acf.object_creation_date,
+        alt_text: imageObj.alt_text,
+        caption: {
+          rendered: imageObj.caption.rendered,
+        },
+        media_details: {
+          sizes: {
+            desktop,
+            mobile
           }
+        }
+      }
 
       return newImageObj;
     },
