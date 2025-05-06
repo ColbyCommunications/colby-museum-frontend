@@ -1108,6 +1108,13 @@ export default {
           .then((output) => {
             imageObj = output.data;
 
+            const mediaDetails = output.data.media_details
+       
+            let imageAspect
+            if (mediaDetails.height > 0 && mediaDetails.width > 0) {
+              imageAspect = mediaDetails.height / mediaDetails.width
+            }
+
             // console.log(`${component.interface.endpoint}media/${i}`);
             // console.log(imageObj);
 
@@ -1124,9 +1131,11 @@ export default {
               media_details: {
                 sizes: {
                   desktop: {
+                    aspect_ratio: imageAspect,
                     source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=800,quality=75,format=webp`,
                   },
                   mobile: {
+                    aspect_ratio: imageAspect,
                     source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=400,quality=75,format=webp`,
                   },
                 }
