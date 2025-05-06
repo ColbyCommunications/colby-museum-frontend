@@ -196,15 +196,23 @@ export default {
 
       return `${hour == 12 || hour == 0 ? 12 : hour % 12}:${min.replace(/\s/g, '').replace('am', ' a.m.').replace('pm', ' p.m.')}`;
     },
+
     async getImage(i) {
       const component = this;
 
       let imageObj
       let newImageObj
 
-      if ('wp:featuredmedia' in this.post._embedded && this.post._embedded["wp:featuredmedia"].guid?.rendered ) {
-        imageObj = this.post._embedded["wp:featuredmedia"]      
-      } else {
+      switch (true) {
+      case ('wp:featuredmedia' in this.post._embedded 
+            && this.post._embedded["wp:featuredmedia"].guid?.rendered ):
+        imageObj = this.post._embedded["wp:featuredmedia"]
+        break
+      case ('wp:featuredmedia' in this.post._embedded)
+        imageObj = this.post._embedded["wp:featuredmedia"]
+        imageObj.guid = { rendered: this.post._embedded["wp:featuredmedia"].source_url }
+        break
+      default:
         const img = await axios.get(`${component.interface.endpoint}media/${i}`)
         imageObj = img.data
       }
