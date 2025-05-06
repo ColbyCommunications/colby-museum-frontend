@@ -949,7 +949,7 @@ export default {
 
       component.currentPage = page;
 
-      console.log(`${component.interface.endpoint}categories?parent=${component.items_category}`);
+      // console.log(`${component.interface.endpoint}categories?_embed=wp:featuredmedia&parent=${component.items_category}`);
 
       // if (component.items_type == 'events' || component.items_type == 'exhibitions') {
       //   const key = component.showChronology == 'past' ? 'end_date' : 'date';
@@ -1026,7 +1026,7 @@ export default {
 
             console.log(`${component.interface.endpoint}${component.items_type == 'posts' ? 'posts' : component.items_type}?categories_exclude=1${chr}${type}${meta_date}&categories=${component.items_category}${categories.length > 0 ? `,${categories.toString()}` : '' }&per_page=${component.per_page}&page=${page}${searchTerm ? `&search=${searchTerm}` : ''}${component.alphabeticalOrder ? '&orderby=title' : ''}${component.reverseOrder ? '&order=asc' : ''}`);
             await axios
-              .get(`${component.interface.endpoint}${component.items_type == 'posts' ? 'posts' : component.items_type}?categories_exclude=1${chr}${type}${meta_date}&categories=${component.items_category}${categories.length > 0 ? `,${categories.toString()}` : '' }&per_page=${component.per_page}&page=${page}${searchTerm ? `&search=${searchTerm}` : ''}${component.alphabeticalOrder ? '&orderby=title' : ''}${component.reverseOrder ? '&order=asc' : ''}`)
+              .get(`${component.interface.endpoint}${component.items_type == 'posts' ? 'posts' : component.items_type}?_embed=wp:featuredmedia&categories_exclude=1${chr}${type}${meta_date}&categories=${component.items_category}${categories.length > 0 ? `,${categories.toString()}` : '' }&per_page=${component.per_page}&page=${page}${searchTerm ? `&search=${searchTerm}` : ''}${component.alphabeticalOrder ? '&orderby=title' : ''}${component.reverseOrder ? '&order=asc' : ''}`)
               .then((output) => {
 
                 component.totalPages = output.headers['x-wp-totalpages'];
