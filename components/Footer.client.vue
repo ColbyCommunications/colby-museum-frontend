@@ -39,8 +39,8 @@
     <div class="footer__inner grid">
       <div class="footer__secondary">
         <Btn
-          :title="'Request Information'"
-          :url="'/request-info'"
+          :title="'Contact Us'"
+          :url="'/contact-us'"
           :size="'large'"
         />
         <!-- <input class="footer__newsletter input" placeholder="Newsletter Sign Up" /> -->
