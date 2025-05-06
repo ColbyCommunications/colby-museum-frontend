@@ -127,6 +127,13 @@
                       }"
                     />
                     <Context
+                      v-else-if="items_type = 'collections'"
+                      :size="'embark'"
+                      :heading="item.heading"
+                      :subheading="item.subheading"
+                      :button="item.button"
+                    />
+                    <Context
                       v-else
                       :size="'small'"
                       :heading="item.heading"
@@ -513,7 +520,7 @@ export default {
             type: 'slider',
             gap: this.gap,
             animationDuration: 600,
-            swipeThreshold: false,
+            swipeThreshold: this.items_type == 'objects' ? false : 80,
             autoplay: this.autoplay,
             perView: this.perView,
             breakpoints: breakpoints,
@@ -746,11 +753,12 @@ export default {
           imgUrl = img ? `https://ccma-iiif-cache-service.fly.dev/iiif/2/${img.IIIF_URL.substring(img.IIIF_URL.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, "")}/full/${encodeURIComponent('400,')}/0/default.jpg` : '';
 
           obj = {
-            heading: i.Disp_Title,
-            subheading: i.Disp_Maker_1,
+            heading: i.Disp_Maker_1,
+            subheading: i.Disp_Title,
             button: {
               title: 'Learn More',
-              url: `/objects/${i.embark_ID}`
+              url: `/objects/${i.embark_ID}`,
+              srOnly: true,
             },
             image: img ? {
               caption: {
