@@ -27,8 +27,16 @@
             <div class="super-dropdown__event-time paragraph-style-3" v-text="event.time"/>
             <!-- <ActivityTag /> -->
           </span>
+          <a
+            v-if="($route.fullPath == '/exhibitions/page-1?chronology=current&location=campus' || $route.fullPath == '/exhibitions/page-1?chronology=current&location=downtown')"
+            class="btn btn--light btn--small"
+            :size="'small'"
+            v-text="event.button.title"
+            :href="event.button.url"
+            @click="toggleActive()"
+          />
           <Btn
-            v-if="event.button"
+            v-else-if="event.button"
             :size="'small'"
             :title="event.button.title"
             :url="event.button.url"
