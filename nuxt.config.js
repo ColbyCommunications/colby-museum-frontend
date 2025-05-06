@@ -86,6 +86,6 @@ export default defineNuxtConfig({
         asyncContext: true,
     },
 
-    devtools: { enabled: true },
+    devtools: { enabled: process.mode === 'development' },
     compatibilityDate: '2025-02-27',
 });

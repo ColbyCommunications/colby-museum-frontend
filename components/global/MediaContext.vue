@@ -127,6 +127,14 @@
                       }"
                     />
                     <Context
+                      v-else-if="items_type = 'collections'"
+                      :size="'embark'"
+                      :heading="item.heading"
+                      :subheading="item.subheading"
+                      :subheading2="item.subheading2"
+                      :button="item.button"
+                    />
+                    <Context
                       v-else
                       :size="'small'"
                       :heading="item.heading"
@@ -513,7 +521,7 @@ export default {
             type: 'slider',
             gap: this.gap,
             animationDuration: 600,
-            swipeThreshold: false,
+            swipeThreshold: this.items_type == 'objects' ? false : 80,
             autoplay: this.autoplay,
             perView: this.perView,
             breakpoints: breakpoints,
@@ -659,35 +667,36 @@ export default {
     },
     async getImage(i) {
       const component = this;
-      let imageObj;
-      let newImageObj;
 
-      await axios
-        .get(`${component.interface.endpoint}media/${i}`)
-        .then((output) => {
-          imageObj = output.data;
+      const image = await axios.get(`${component.interface.endpoint}media/${i}`)
+      const imageObj = image.data
+      const mediaDetails = image.data.media_details
 
-          // console.log(imageObj);
+      let imageAspect
+      if (mediaDetails.height > 0 && mediaDetails.width > 0) {
+        imageAspect = mediaDetails.height / mediaDetails.width
+      }
 
-          newImageObj = {
+      const desktopWidth = 1200
+      const mobileWidth = 600
+
+      const desktop = { aspect_ratio: imageAspect, width: desktopWidth, height: desktopWidth * imageAspect, source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=1800,quality=75,format=webp` }
+      const mobile = { aspect_ratio: imageAspect, width: mobileWidth, height: mobileWidth * imageAspect, source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=1200,quality=75,format=webp` }
+
+      const newImageObj = {
             alt_text: imageObj.alt_text,
             caption: {
               rendered: imageObj.description.rendered.replace(/<img[^>]*>/g,"").replace(/<p[^>]*>|<\/p>/g, '').replace(/\r?\n|\r/g, "").replace(/<a[^>]*>|<\/a>/g, ''),
             },
             media_details: {
               sizes: {
-                desktop: {
-                  source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=1800,quality=75,format=webp`,
-                },
-                mobile: {
-                  source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=1200,quality=75,format=webp`,
-                },
+                desktop,
+                mobile,
               }
             }
           };
-        });
 
-      return await newImageObj;
+      return newImageObj;
     },
     async getCollection(i) {
       const component = this;
@@ -746,11 +755,13 @@ export default {
           imgUrl = img ? `https://ccma-iiif-cache-service.fly.dev/iiif/2/${img.IIIF_URL.substring(img.IIIF_URL.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, "")}/full/${encodeURIComponent('400,')}/0/default.jpg` : '';
 
           obj = {
-            heading: i.Disp_Title,
-            subheading: i.Disp_Maker_1,
+            heading: i.Disp_Maker_1,
+            subheading: i.Disp_Title,
+            subheading2: i.Disp_Create_DT,
             button: {
               title: 'Learn More',
-              url: `/objects/${i.embark_ID}`
+              url: `/objects/${i.embark_ID}`,
+              srOnly: true,
             },
             image: img ? {
               caption: {

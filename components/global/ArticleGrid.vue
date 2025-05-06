@@ -342,6 +342,11 @@
         v-text="`No results for ${input ? input : $route.query.search} found...`"
       />
       <div
+        v-if="(items_type == 'exhibitions' || items_type == 'events') && filteredItems.length == 0"
+        class="article-grid__no-results heading-style-1"
+        v-text="`No results found...`"
+      />
+      <div
         v-if="items_type == 'posts' && currentPage == 1 && per_page >= 20"
         v-for="(item, index) in newItems.slice(1)"
         class="article-grid__item"
@@ -403,7 +408,7 @@
         />
       </div>
     </div>
-    <div v-if="Number(totalPages) && per_page >= 20 && items_type != 'collection' && items_type != 'manual'" class="pagination">
+    <div v-if="Number(totalPages) && per_page >= 20 && items_type != 'collection' && items_type != 'manual' && filteredItems.length > 0" class="pagination">
       <div class="pagination__inner grid">
         <div class="pagination__main">
           <NuxtLink
@@ -1108,6 +1113,13 @@ export default {
           .then((output) => {
             imageObj = output.data;
 
+            const mediaDetails = output.data.media_details
+       
+            let imageAspect
+            if (mediaDetails.height > 0 && mediaDetails.width > 0) {
+              imageAspect = mediaDetails.height / mediaDetails.width
+            }
+
             // console.log(`${component.interface.endpoint}media/${i}`);
             // console.log(imageObj);
 
@@ -1124,9 +1136,11 @@ export default {
               media_details: {
                 sizes: {
                   desktop: {
+                    aspect_ratio: imageAspect,
                     source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=800,quality=75,format=webp`,
                   },
                   mobile: {
+                    aspect_ratio: imageAspect,
                     source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=400,quality=75,format=webp`,
                   },
                 }
@@ -1497,6 +1511,7 @@ export default {
 
   &__no-results {
     grid-column: span 12 / span 12;
+    margin-bottom: 2.25vh;
   }
 
   &__item {
