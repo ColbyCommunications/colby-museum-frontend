@@ -131,6 +131,7 @@
                       :size="'embark'"
                       :heading="item.heading"
                       :subheading="item.subheading"
+                      :subheading2="item.subheading2"
                       :button="item.button"
                     />
                     <Context
@@ -755,6 +756,7 @@ export default {
           obj = {
             heading: i.Disp_Maker_1,
             subheading: i.Disp_Title,
+            subheading2: i.Disp_Create_DT,
             button: {
               title: 'Learn More',
               url: `/objects/${i.embark_ID}`,
