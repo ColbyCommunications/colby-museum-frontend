@@ -152,7 +152,7 @@
                       <PictureLoader
                         :classes="'object-cover'"
                         :post="item.post"
-                        :loading="'eager'"
+                        :loading="index > 0 ? 'lazy' : 'eager'"
                       />
                     </NuxtLink>
                     <div
@@ -173,7 +173,7 @@
                         :classes="'object-cover'"
                         :alt="item.image.alt_text"
                         :sizes="item.image.media_details.sizes"
-                        :loading="'eager'"
+                        :loading="index > 0 ? 'lazy' : 'eager'"
                       />
                     </NuxtLink>
                     <Picture
@@ -181,7 +181,7 @@
                       :classes="'object-cover'"
                       :alt="item.image.alt_text"
                       :sizes="item.image.media_details.sizes"
-                      :loading="'eager'"
+                      :loading="index > 0 ? 'lazy' : 'eager'"
                     />
                     <div
                       v-if="item.image.caption.rendered && variant == 'full-width'"
