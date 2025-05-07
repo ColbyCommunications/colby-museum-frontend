@@ -92,7 +92,7 @@ export default {
     if ('wp:attachment' in post._links && post._links['wp:attachment'].at(0)) {
       const attachmentHref = post._links['wp:attachment'].at(0).href
 
-      const mediaDatas = await axios.get(attachmentHref)
+      const mediaDatas = await axios.get(`${attachmentHref}&per_page=20`)
       medias = mediaDatas.data
     }
 
