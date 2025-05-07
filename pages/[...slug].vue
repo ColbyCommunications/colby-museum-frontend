@@ -26,12 +26,10 @@
 import axios from 'axios';
 
 import transitionConfig from '../helpers/transitionConfig';
-import seoConfig from '../helpers/seoConfig';
+import seoConfig from '../helpers/postDataSeoConfig';
 
 export default {
   setup(props) {
-    seoConfig(props);
-
     definePageMeta({
       pageTransition: transitionConfig,
     });
@@ -78,6 +76,9 @@ export default {
       .get(`${this.interface.endpoint}pages?slug=${pageName}`)
       .then((output) => {
         const post = output.data[0];
+
+        seoConfig(output.data[0]);
+
         // console.log(post);
 
         page.title = post.title.rendered
