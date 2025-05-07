@@ -60,12 +60,6 @@ export default {
 
     this.fullPath = this.$route.fullPath;
 
-    // console.log(this.$route);
-    // console.log(this.$route.params);
-    // console.log(this.$route.params.slug);
-    // console.log(`${this.interface.endpoint}pages?slug=${this.$route.params.slug ? this.$route.params.slug : 'home'}`);
-    // console.log(slug[slug.length - 1]);
-
     if (Array.isArray(slug)) {
       pageName = slug[slug.length - 1];
     } else if (slug) {
@@ -74,41 +68,61 @@ export default {
       pageName = 'home';
     }
 
-    await axios
+    const pageDatas = await axios
       .get(`${this.interface.endpoint}pages?slug=${pageName}`)
-      .then((output) => {
-        const post = output.data[0];
-        // console.log(post);
 
-        page.title = post.title.rendered
-          .replace(/–/g, '-')
-          .replace(/“/g, '"')
-          .replace(/”/g, '"')
-          .replace(/’/g, "'");
-        
-        page.excerpt = post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '');
-        page.intro_visible = post.acf.intro_visible;
-        page.heading_visible = post.acf.heading_visible;
-        page.excerpt_visible = post.acf.excerpt_visible;
+    const post = pageDatas.data.at(0)
 
-        page.getBreadcrumbs(post);
+    if (!post) return
 
-        page.components = post.block_data.map((component) => {
-          
-          component.type = component.blockName
-            .replace('acf/','')
-            .replace(/\//g,'-');
+    page.title = post.title.rendered
+      .replace(/–/g, '-')
+      .replace(/“/g, '"')
+      .replace(/”/g, '"')
+      .replace(/’/g, "'");
+    
+    page.excerpt = post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '');
+    page.intro_visible = post.acf.intro_visible;
+    page.heading_visible = post.acf.heading_visible;
+    page.excerpt_visible = post.acf.excerpt_visible;
 
-          return {
-            type: component.type,
-            ...component.attrs.data,
-            attrs: component.attrs.data ? undefined : component.attrs,
-            innerHTML: component.rendered ? component.rendered : undefined,
-          };
-        });
+    page.getBreadcrumbs(post);
 
-        // console.log(page.components);
-      });
+    let medias = []
+    if ('wp:attachment' in post._links && post._links['wp:attachment'].at(0)) {
+      const attachmentHref = post._links['wp:attachment'].at(0).href
+
+      const mediaDatas = await axios.get(attachmentHref)
+      medias = mediaDatas.data
+    }
+
+    page.components = post.block_data.map((component) => {
+      
+      let compData = component.attrs.data      
+
+      // if (component.type === 'acf/media-context') {
+      //   compData = compData.map( (cd,i) => {
+      //     // TODO: embed media data if medias.find( m.id === item_${i}_image ) 
+      //     const media = medias.find( m => `item_${i}_image` in cd && m.id === cd[`item_${i}_image`] )
+      //     if (!media) return cd
+
+      //     cd._embedded['wp:attachment'] = media
+      //   })
+      // }
+
+      component.type = component.blockName
+        .replace('acf/','')
+        .replace(/\//g,'-');
+
+      return {
+        type: component.type,
+        ...compData,
+        medias,
+        attrs: component.attrs.data ? undefined : component.attrs,
+        innerHTML: component.rendered ? component.rendered : undefined,
+      };
+    });
+
   },
   mounted() {
     const timeLeft = ref(1);
