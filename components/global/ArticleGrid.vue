@@ -529,9 +529,9 @@ export default {
       const component = this;
       let filteredItems;
 
-      if (this.activeFilters.length > 0) {
+      if (this.activeFilters.length > 0 && this.newItems[0]?.post) {
           filteredItems = component.newItems.filter(
-              item => Object.values(item.post.acf).some(k => component.activeFilters.includes(k)),
+            item => Object.values(item.post.acf).some(k => component.activeFilters.includes(k)),
           );
       } else {
           filteredItems = component.newItems;
