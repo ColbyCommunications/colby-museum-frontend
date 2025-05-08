@@ -21,7 +21,7 @@
     />
     <DonateForm />
     <div class="core-paragraph grid paragraph-style-2" type="core-paragraph">
-      <p><strong>Contact</strong><br>Christina DeYoung, Associate Director of Museum Development<br>207-509-1630 (mobile)<br><a href="mailto:cdeyoung@colby.edu">cdeyoung@colby.edu</a></p>
+      <p><strong>Contact</strong><br>Christina DeYoung, associate director of museum development<br>207-509-1630 (mobile)<br><a href="mailto:cdeyoung@colby.edu">cdeyoung@colby.edu</a></p>
     </div>
   </div>
 </template>
