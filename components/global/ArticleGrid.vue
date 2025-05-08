@@ -1499,7 +1499,7 @@ export default {
     },
     animate() {
       setTimeout(() => {
-        if (this.$refs.filter.querySelector('.horizontal-curtain')) {
+        if (this.$refs.filter?.querySelector('.horizontal-curtain')) {
 
           gsap.to(this.$refs.filter.querySelectorAll('.horizontal-curtain'), {
             width: 0,
@@ -1510,6 +1510,8 @@ export default {
 
           console.log('gsap fired');
         }
+
+        console.log('animation fired');
       }, 600);
     }
   }
