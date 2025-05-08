@@ -516,6 +516,14 @@ export default {
       aggregationType: '',
     };
   },
+  watch: {
+    newItems: {
+      deep: true,
+      async handler() {
+        this.animate();
+      }
+    }
+  },
   computed: {
     filteredItems() {
       const component = this;
