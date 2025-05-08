@@ -408,7 +408,7 @@
         />
       </div>
     </div>
-    <div v-if="Number(totalPages) && per_page >= 20 && items_type != 'collection' && items_type != 'manual' && filteredItems.length > 0" class="pagination">
+    <div v-if="Number(totalPages) && per_page >= 20 && items_type != 'collection' && items_type != 'manual' && (filteredItems.length > 0 || newItems.length > 0)" class="pagination">
       <div class="pagination__inner grid">
         <div class="pagination__main">
           <NuxtLink
@@ -1491,7 +1491,7 @@ export default {
     },
     animate() {
       setTimeout(() => {
-        if (this.$refs.filter) {
+        if (this.$refs.filter.querySelector('.horizontal-curtain')) {
 
           gsap.to(this.$refs.filter.querySelectorAll('.horizontal-curtain'), {
             width: 0,
@@ -1502,7 +1502,7 @@ export default {
 
           console.log('gsap fired');
         }
-      }, 500);
+      }, 600);
     }
   }
 }
