@@ -66,6 +66,10 @@ export default {
     items: {
       required: true,
     },
+    speed: {
+      required: false,
+      default: 20
+    },
     blockData: {
       type: Object,
       required: false,
@@ -85,6 +89,7 @@ export default {
   mounted() {
     setTimeout(() => {
       this.width = this.$refs.marqueeOriginal.offsetWidth;
+      console.log(this.speed);
       this.animate();
     }, 1000);
   },
@@ -95,7 +100,7 @@ export default {
       this.animate();
     },
     animate() {
-      this.marqueeAnimation = gsap.fromTo(this.$refs.marqueeWrap, 20,
+      this.marqueeAnimation = gsap.fromTo(this.$refs.marqueeWrap, Number(this.speed),
         {
           x: 0,
           ease: 'none',
@@ -131,7 +136,7 @@ export default {
   background-color: map.get($layout-colors, ambiant);
 
   @include breakpoint(large) {
-    margin: 12vh 0;
+    margin: 11vh 0;
     font-size: 5.625vw;
     letter-spacing: -0.056vw;
   }
