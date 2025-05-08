@@ -1499,8 +1499,10 @@ export default {
             stagger: 0.1,
             ease: "expo.out",
           });
+
+          console.log('gsap fired');
         }
-      }, 400);
+      }, 500);
     }
   }
 }
