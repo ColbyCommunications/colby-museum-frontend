@@ -530,11 +530,11 @@ export default {
       let filteredItems;
 
       if (this.activeFilters.length > 0 && this.newItems[0]?.post) {
-          filteredItems = component.newItems.filter(
-            item => Object.values(item.post.acf).some(k => component.activeFilters.includes(k)),
-          );
+        filteredItems = component.newItems.filter(
+          item => Object.values(item.post.acf).some(k => component.activeFilters.includes(k)),
+        );
       } else {
-          filteredItems = component.newItems;
+        filteredItems = component.newItems;
       }
 
       return filteredItems;
@@ -1508,10 +1508,10 @@ export default {
             ease: "expo.out",
           });
 
-          console.log('gsap fired');
+          // console.log('gsap fired');
         }
 
-        console.log('animation fired');
+        // console.log('animation fired');
       }, 600);
     }
   }
