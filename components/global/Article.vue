@@ -202,11 +202,31 @@ export default {
       let imageObj
       let newImageObj
 
-      if ('wp:featuredmedia' in this.post._embedded && this.post._embedded["wp:featuredmedia"].guid?.rendered ) {
-        imageObj = this.post._embedded["wp:featuredmedia"]      
-      } else {
-        const img = await axios.get(`${component.interface.endpoint}media/${i}`)
-        imageObj = img.data
+      // Check for embedded media and remove the outer Array if it's there
+      switch (true) {
+        case ('wp:featuredmedia' in this.post._embedded
+                && Array.isArray(this.post._embedded['wp:featuredmedia'])):
+        
+          if (!this.post._embedded['wp:featuredmedia'].at(0)) return
+
+          imageObj = this.post._embedded['wp:featuredmedia'].at(0)
+          break
+
+        case ('wp:featuredmedia' in this.post._embedded
+                && typeof this.post._embedded['wp:featuredmedia'] === 'object'):
+          imageObj = this.post._embedded['wp:featuredmedia']
+          break
+
+        // Otherwise fetch from the endpoint
+        default:
+          const img = await axios.get(`${component.interface.endpoint}media/${i}`)
+          imageObj = img.data
+      }
+
+      // Construct the GUID for media records that don't emit it
+      // @TODO -- remove the imagedelivery plugin's -scaled.jpg bit in a smarter way
+      if (!imageObj.guid?.rendered) {
+        imageObj.guid = { rendered: imageObj.source_url.replace('-scaled.jpg','.jpg') }
       }
 
       const mediaDetails = imageObj.media_details
