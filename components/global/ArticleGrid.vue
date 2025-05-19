@@ -937,6 +937,7 @@ export default {
                 "type": { 
                   "terms": { 
                     "field": "Disp_Obj_Type",
+                    "exclude": [""],
                     "size": 300,
                     "order": { "_key": "asc" }
                     // TODO: Add filter block here as .filtered, use to populate facets
