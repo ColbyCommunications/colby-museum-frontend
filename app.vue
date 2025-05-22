@@ -60,16 +60,10 @@ export default {
     // this.headerItems = headerItems;
     this.footerItems = footerItems;
 
-    axios.get(`${this.interface.endpoint}menus/10`).then((output) => {
-      component.mainMenu = output.data;
-    });
-
-    axios.get(`${this.interface.endpoint}menus/12`).then((output) => {
-      component.utilityMenu = output.data;
-    });
-
-    axios.get(`${this.interface.endpoint}menus/11`).then((output) => {
-      component.socialMenu = output.data;
+    axios.get(`${this.interface.endpoint}menus`).then((output) => {
+      component.mainMenu = output.data.site;
+      component.utilityMenu = output.data.utility;
+      component.socialMenu = output.data.social;
     });
 
     axios.get(`${this.interface.endpointv3}options/options`).then((output) => {
