@@ -337,12 +337,12 @@
     </div>
     <div class="article-grid__inner grid">
       <div
-        v-if="items_type == 'objects' && newItems.length == 0"
+        v-if="items_type == 'objects' && newItems.length == 0 && !isLoading"
         class="article-grid__no-results heading-style-1"
         v-text="`No results for ${input ? input : $route.query.search} found...`"
       />
       <div
-        v-if="(items_type == 'exhibitions' || items_type == 'events') && filteredItems.length == 0"
+        v-if="(items_type == 'exhibitions' || items_type == 'events') && filteredItems.length == 0 && !isLoading"
         class="article-grid__no-results heading-style-1"
         v-text="`No results found...`"
       />
@@ -514,6 +514,7 @@ export default {
       aggregationSupport: '',
       aggregationYear: '',
       aggregationType: '',
+      isLoading: true,
     };
   },
   watch: {
@@ -887,6 +888,7 @@ export default {
             }
           })
         });
+      component.isLoading = false;
     },
     async getAggregations() {
       const component = this;
@@ -1089,6 +1091,7 @@ export default {
               });
           });
       // } END IF
+      component.isLoading = false;
     },
     async getPost(i) {
       const component = this;
