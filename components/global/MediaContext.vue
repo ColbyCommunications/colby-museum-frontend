@@ -457,7 +457,7 @@ export default {
       this.getPost(component.collection,'collections').then((output) => {
         component.getCollection(output.acf.embark_id);
         // component.renderGlide();
-      });
+      }); 
     } else if (typeof this.items === 'number') {
 
       await Promise.all([...Array(this.items)].map(async (el, i) => ({
@@ -668,20 +668,25 @@ export default {
     async getImage(i) {
       const component = this;
 
-      const image = await axios.get(`${component.interface.endpoint}media/${i}`)
-      const imageObj = image.data
-      const mediaDetails = image.data.media_details
+      let imageObj
+
+      const matchingMedia = this.blockData.medias.find(m => m.id === i)
+      if (matchingMedia) {
+        imageObj = matchingMedia
+      } else {
+        const image = await axios.get(`${component.interface.endpoint}media/${i}`)
+        imageObj = image.data        
+      }
+
+      const mediaDetails = imageObj.media_details
 
       let imageAspect
       if (mediaDetails.height > 0 && mediaDetails.width > 0) {
         imageAspect = mediaDetails.height / mediaDetails.width
       }
 
-      const desktopWidth = 1200
-      const mobileWidth = 600
-
-      const desktop = { aspect_ratio: imageAspect, width: desktopWidth, height: desktopWidth * imageAspect, source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=1800,quality=75,format=webp` }
-      const mobile = { aspect_ratio: imageAspect, width: mobileWidth, height: mobileWidth * imageAspect, source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=1200,quality=75,format=webp` }
+      const desktop = { aspect_ratio: imageAspect, source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=1800,quality=75,format=webp` }
+      const mobile = { aspect_ratio: imageAspect, source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=1200,quality=75,format=webp` }
 
       const newImageObj = {
             alt_text: imageObj.alt_text,
