@@ -137,7 +137,6 @@ export default {
     ccScript2.id = 'signupScript';
     ccScript2.src = '//static.ctctcdn.com/js/signup-form-widget/current/signup-form-widget.min.js';
     ccScript2.async = true;
-    ccScript2.defer = true;
 
     document.body.appendChild(ccScript1);
     document.body.appendChild(ccScript2);
