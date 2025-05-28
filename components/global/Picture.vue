@@ -10,8 +10,8 @@
       :alt="alt"
       :loading="loading"
       :aspect-ratio="sizes.mobile.aspect_ratio ?? ''"
-      width="100%"
-      height="50%"
+      :width="sizes.mobile.width ?? '100%'"
+      :height="sizes.mobile.height ?? '50%'"
       @error="handle404"
     />
   </picture>
