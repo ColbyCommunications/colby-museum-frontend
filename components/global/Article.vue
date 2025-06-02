@@ -13,7 +13,8 @@
       :button="{
         type: button_type,
         title: 'Read News',
-        url: post.link
+        url: post.link,
+        target: openNewTab ? '_blank' : '_self',
       }"
     />
     <Context
@@ -156,6 +157,10 @@ export default {
     },
     button: {
       required: false,
+    },
+    openNewTab: {
+        type: Boolean,
+        required: false,
     }
   },
   methods: {
