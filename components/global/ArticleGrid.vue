@@ -393,6 +393,7 @@
           :hover="hover"
           :bordered="bordered"
           :button_type="button_type"
+          :openNewTab="item.openNewTab"
         />
       </div>
       <div
@@ -701,6 +702,7 @@ export default {
             paragraph_entry_type: undefined,
             button: undefined,
             image: undefined,
+            openNewTab: component.openNewTab(component.blockData, i)
           }
         default:
           return {
@@ -710,12 +712,13 @@ export default {
             paragraph:  component.blockData[`items_${i}_paragraph`],
             paragraph_entry_type: component.blockData[`items_${i}_paragraph_entry_type`],
             button: component.blockData[`items_${i}_button`],
-            image: imagesData.find( img => img.id === component.blockData[`items_${i}_image`] )
+            image: imagesData.find( img => img.id === component.blockData[`items_${i}_image`] ),
+            openNewTab: component.openNewTab(component.blockData, i)
           }
         }
       })
 
-      this.newItems = [...mappedItems]
+      this.newItems = mappedItems
     }
   },
   mounted() {
@@ -740,6 +743,16 @@ export default {
     }
   },
   methods: {
+    openNewTab(blockData, i) {
+        if (
+            blockData[`items_${i}_entry_type`] == 'selection' &&
+            blockData[`items_${i}_open_new_tab`]
+        ) {
+            return blockData[`items_${i}_open_new_tab`] == 1;
+        }
+
+        return false;
+    },
     // Loads from _count API
     async getObjectCount(query, endpoint, username, password, perPage) {
       // Create a mutable clone and remove keys not legal in count reqs
