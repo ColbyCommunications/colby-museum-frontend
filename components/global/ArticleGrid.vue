@@ -598,35 +598,6 @@ export default {
       required: false,
     }
   },
-  mapImageData(restData) {
-    // Maps data from the REST API to our internal representation
-    const mediaDetails = restData.media_details
-
-    let imageAspect
-    if (mediaDetails.height > 0 && mediaDetails.width > 0) {
-      imageAspect = mediaDetails.height / mediaDetails.width
-    }
-
-    const desktopWidth = 1200
-    const mobileWidth = 600
-
-    const desktop = { aspect_ratio: imageAspect, width: desktopWidth, height: desktopWidth * imageAspect, source_url: this.imageUrlWidth(restData.guid.rendered, 1800) }
-    const mobile = { aspect_ratio: imageAspect, width: mobileWidth, height: mobileWidth * imageAspect, source_url: this.imageUrlWidth(restData.guid.rendered, 1200) }
-
-    return {
-          id: restData.id,
-          alt_text: restData.alt_text,
-          caption: {
-            rendered: restData.description.rendered.replace(/<img[^>]*>/g,"").replace(/<p[^>]*>|<\/p>/g, '').replace(/\r?\n|\r/g, "").replace(/<a[^>]*>|<\/a>/g, ''),
-          },
-          media_details: {
-            sizes: {
-              desktop,
-              mobile,
-            }
-          }
-        }
-  },
   async created() {
     this.interface = useInterfaceStore();
     const component = this;
@@ -727,6 +698,7 @@ export default {
             heading: undefined,
             subheading: undefined,
             paragraph: undefined,
+            paragraph_entry_type: undefined,
             button: undefined,
             image: undefined,
           }
@@ -736,6 +708,7 @@ export default {
             heading: component.blockData[`items_${i}_heading`],
             subheading:  component.blockData[`items_${i}_subheading`],
             paragraph:  component.blockData[`items_${i}_paragraph`],
+            paragraph_entry_type: component.blockData[`items_${i}_paragraph_entry_type`],
             button: component.blockData[`items_${i}_button`],
             image: imagesData.find( img => img.id === component.blockData[`items_${i}_image`] )
           }
@@ -1171,6 +1144,39 @@ export default {
         });
 
       return await postObj;
+    },
+    imageUrlWidth(guid,width) {
+      // Formats the GUID for use with imagedelivery, with a width
+      return `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${guid.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=${width},quality=75,format=webp`
+    },
+    mapImageData(restData) {
+      // Maps data from the REST API to our internal representation
+      const mediaDetails = restData.media_details
+
+      let imageAspect
+      if (mediaDetails.height > 0 && mediaDetails.width > 0) {
+        imageAspect = mediaDetails.height / mediaDetails.width
+      }
+
+      const desktopWidth = 1200
+      const mobileWidth = 600
+
+      const desktop = { aspect_ratio: imageAspect, width: desktopWidth, height: desktopWidth * imageAspect, source_url: this.imageUrlWidth(restData.guid.rendered, 1800) }
+      const mobile = { aspect_ratio: imageAspect, width: mobileWidth, height: mobileWidth * imageAspect, source_url: this.imageUrlWidth(restData.guid.rendered, 1200) }
+
+      return {
+            id: restData.id,
+            alt_text: restData.alt_text,
+            caption: {
+              rendered: restData.description.rendered.replace(/<img[^>]*>/g,"").replace(/<p[^>]*>|<\/p>/g, '').replace(/\r?\n|\r/g, "").replace(/<a[^>]*>|<\/a>/g, ''),
+            },
+            media_details: {
+              sizes: {
+                desktop,
+                mobile,
+              }
+            }
+          }
     },
     async getImages(imageIds) {
       const endpointUrl = new URL('media',this.interface.endpoint)
