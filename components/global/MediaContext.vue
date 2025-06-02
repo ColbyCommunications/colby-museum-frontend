@@ -54,7 +54,7 @@
                       :classes="'object-cover'"
                       :alt="item.image.alt_text"
                       :sizes="item.image.media_details.sizes"
-                      :loading="'eager'"
+                      :loading="(layoutPosition > 0 || index > 0) ? 'lazy' : 'eager'"
                     />
                   </button>
                   <div
@@ -69,14 +69,14 @@
                         :classes="'object-cover'"
                         :alt="item.image.alt_text"
                         :sizes="item.image.media_details.sizes"
-                        :loading="'eager'"
+                        :loading="(layoutPosition > 0 || index > 0) ? 'lazy' : 'eager'"
                       />
                     </NuxtLink>
                     <VueImageZoomer
                       v-else-if="artificialDelayFinished"
                       :regular="item.image.media_details.sizes.full.source_url"
                       :click-zoom="true"
-                      :lazyload="index == 0 ? false : true"
+                      :lazyload="(layoutPosition > 0 || index == 0) ? false : true"
                     />
                     <div
                       v-if="item.image.caption && variant == 'full-width'"
@@ -152,7 +152,7 @@
                       <PictureLoader
                         :classes="'object-cover'"
                         :post="item.post"
-                        :loading="index > 0 ? 'lazy' : 'eager'"
+                        :loading="(layoutPosition > 0 || index > 0) ? 'lazy' : 'eager'"
                       />
                     </NuxtLink>
                     <div
@@ -173,16 +173,18 @@
                         :classes="'object-cover'"
                         :alt="item.image.alt_text"
                         :sizes="item.image.media_details.sizes"
-                        :loading="index > 0 ? 'lazy' : 'eager'"
+                        :loading="(layoutPosition > 0 || index > 0 ) ? 'lazy' : 'eager'"
                       />
                     </NuxtLink>
+                    <!-- insert a lil comment -->
                     <Picture
                       v-else
-                      :classes="'object-cover'"
+                      :classes="`object-cover ${layoutPosition} ${index}`"
                       :alt="item.image.alt_text"
                       :sizes="item.image.media_details.sizes"
-                      :loading="index > 0 ? 'lazy' : 'eager'"
+                      :loading="(layoutPosition > 0 || index > 0 ) ? 'lazy' : 'eager'"
                     />
+                    <!-- another il comment -->
                     <div
                       v-if="item.image.caption.rendered && variant == 'full-width'"
                       class="media-context__caption"
@@ -430,6 +432,10 @@ export default {
     blockData: {
       type: Object,
       required: false,
+    },
+    layoutPosition: {
+      type: Number,
+      default: 0
     }
   },
   watch: {

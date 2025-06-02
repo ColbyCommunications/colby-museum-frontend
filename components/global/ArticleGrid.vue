@@ -356,6 +356,7 @@
           :hover="hover"
           :bordered="bordered"
           :button_type="button_type"
+          :layoutPosition="layoutPosition"
         />
       </div>
       <div
@@ -368,6 +369,7 @@
           :hover="hover"
           :bordered="bordered"
           :button_type="button_type"
+          :layoutPosition="layoutPosition"
         />
       </div>
       <div
@@ -380,6 +382,7 @@
           :hover="hover"
           :bordered="bordered"
           :button_type="button_type"
+          :layoutPosition="layoutPosition"
         />
       </div>
       <div
@@ -394,6 +397,7 @@
           :bordered="bordered"
           :button_type="button_type"
           :openNewTab="item.openNewTab"
+          :layoutPosition="layoutPosition"
         />
       </div>
       <div
@@ -406,6 +410,7 @@
           :hover="hover"
           :bordered="bordered"
           :button_type="button_type"
+          :layoutPosition="layoutPosition"
         />
       </div>
     </div>
@@ -597,6 +602,10 @@ export default {
     blockData: {
       type: Object,
       required: false,
+    },
+    layoutPosition: {
+      type: Number,
+      default: 0
     }
   },
   async created() {
