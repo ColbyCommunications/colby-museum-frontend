@@ -54,7 +54,7 @@
                       :classes="'object-cover'"
                       :alt="item.image.alt_text"
                       :sizes="item.image.media_details.sizes"
-                      :loading="'eager'"
+                      :loading="(layoutPosition > 0 || index > 0) ? 'lazy' : 'eager'"
                     />
                   </button>
                   <div
@@ -69,14 +69,14 @@
                         :classes="'object-cover'"
                         :alt="item.image.alt_text"
                         :sizes="item.image.media_details.sizes"
-                        :loading="'eager'"
+                        :loading="(layoutPosition > 0 || index > 0) ? 'lazy' : 'eager'"
                       />
                     </NuxtLink>
                     <VueImageZoomer
                       v-else-if="artificialDelayFinished"
                       :regular="item.image.media_details.sizes.full.source_url"
                       :click-zoom="true"
-                      :lazyload="index == 0 ? false : true"
+                      :lazyload="(layoutPosition > 0 || index == 0) ? false : true"
                     />
                     <div
                       v-if="item.image.caption && variant == 'full-width'"
@@ -152,7 +152,7 @@
                       <PictureLoader
                         :classes="'object-cover'"
                         :post="item.post"
-                        :loading="index > 0 ? 'lazy' : 'eager'"
+                        :loading="(layoutPosition > 0 || index > 0) ? 'lazy' : 'eager'"
                       />
                     </NuxtLink>
                     <div
@@ -173,16 +173,18 @@
                         :classes="'object-cover'"
                         :alt="item.image.alt_text"
                         :sizes="item.image.media_details.sizes"
-                        :loading="index > 0 ? 'lazy' : 'eager'"
+                        :loading="(layoutPosition > 0 || index > 0 ) ? 'lazy' : 'eager'"
                       />
                     </NuxtLink>
+                    <!-- insert a lil comment -->
                     <Picture
                       v-else
-                      :classes="'object-cover'"
+                      :classes="`object-cover ${layoutPosition} ${index}`"
                       :alt="item.image.alt_text"
                       :sizes="item.image.media_details.sizes"
-                      :loading="index > 0 ? 'lazy' : 'eager'"
+                      :loading="(layoutPosition > 0 || index > 0 ) ? 'lazy' : 'eager'"
                     />
+                    <!-- another il comment -->
                     <div
                       v-if="item.image.caption.rendered && variant == 'full-width'"
                       class="media-context__caption"
@@ -430,6 +432,10 @@ export default {
     blockData: {
       type: Object,
       required: false,
+    },
+    layoutPosition: {
+      type: Number,
+      default: 0
     }
   },
   watch: {
@@ -460,17 +466,48 @@ export default {
       });
     } else if (typeof this.items === 'number') {
 
-      await Promise.all([...Array(this.items)].map(async (el, i) => ({
-        post: component.blockData[`items_${i}_entry_type`] == 'selection' ? await component.getPost(component.blockData[`items_${i}_${component.blockData[`items_${i}_selection_type`]}_selection`], component.blockData[`items_${i}_selection_type`]) : undefined,
-        heading: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : component.blockData[`items_${i}_heading`],
-        subheading: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : component.blockData[`items_${i}_subheading`],
-        paragraph: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : component.blockData[`items_${i}_paragraph`],
-        button: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : component.blockData[`items_${i}_button`],
-        image: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : await component.getImage(component.blockData[`items_${i}_image`]),
-      }))).then((output) => {
-        component.newItems = output;
-        // component.renderGlide();
+      let postSelections = []
+      let imageIds = []
+
+      for (let itemNum=0; itemNum< this.items; itemNum++) {
+        if (component.blockData[`items_${itemNum}_entry_type`] === 'selection') {
+          // Done as arrays for spread args in the consumer downfile -- rewrite this later!
+          postSelections.push([ 
+              component.blockData[`items_${itemNum}_${component.blockData[`items_${itemNum}_selection_type`]}_selection`], 
+              component.blockData[`items_${itemNum}_selection_type`] 
+                  ])
+        } else {
+          imageIds.push(component.blockData[`items_${itemNum}_image`])
+        }
+      }
+
+      const imagesData = await this.getImages(imageIds)
+      const postsSelectionData = await Promise.all(postSelections.map( async (ps) => await this.getPost(...ps) ))
+
+      const mappedItems = [...Array(this.items)].map( (item,i) => {
+        switch (component.blockData[`items_${i}_entry_type`]) {
+        case 'selection':
+          return {
+            post: postsSelectionData.find( p => p.id === `items_${i}_${component.blockData[`items_${i}_selection_type`]}_selection`),
+            heading: undefined,
+            subheading: undefined,
+            paragraph: undefined,
+            button: undefined,
+            image: undefined,
+          }
+        default:
+          return {
+            post: undefined,
+            heading: component.blockData[`items_${i}_heading`],
+            subheading:  component.blockData[`items_${i}_subheading`],
+            paragraph:  component.blockData[`items_${i}_paragraph`],
+            button: component.blockData[`items_${i}_button`],
+            image: imagesData.find( img => img.id === component.blockData[`items_${i}_image`] )
+          }
+        }
       })
+
+      this.newItems = [...mappedItems]
     } else if (this.items_type == 'objects') {
       component.renderGlide();
     }
@@ -665,12 +702,13 @@ export default {
 
       return await postObj;
     },
-    async getImage(i) {
-      const component = this;
-
-      const image = await axios.get(`${component.interface.endpoint}media/${i}`)
-      const imageObj = image.data
-      const mediaDetails = image.data.media_details
+    imageUrlWidth(guid,width) {
+      // Formats the GUID for use with imagedelivery, with a width
+      return `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${guid.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=${width},quality=75,format=webp`
+    },
+    mapImageData(restData) {
+      // Maps data from the REST API to our internal representation
+      const mediaDetails = restData.media_details
 
       let imageAspect
       if (mediaDetails.height > 0 && mediaDetails.width > 0) {
@@ -680,13 +718,14 @@ export default {
       const desktopWidth = 1200
       const mobileWidth = 600
 
-      const desktop = { aspect_ratio: imageAspect, width: desktopWidth, height: desktopWidth * imageAspect, source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=1800,quality=75,format=webp` }
-      const mobile = { aspect_ratio: imageAspect, width: mobileWidth, height: mobileWidth * imageAspect, source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=1200,quality=75,format=webp` }
+      const desktop = { aspect_ratio: imageAspect, width: desktopWidth, height: desktopWidth * imageAspect, source_url: this.imageUrlWidth(restData.guid.rendered, 1800) }
+      const mobile = { aspect_ratio: imageAspect, width: mobileWidth, height: mobileWidth * imageAspect, source_url: this.imageUrlWidth(restData.guid.rendered, 1200) }
 
-      const newImageObj = {
-            alt_text: imageObj.alt_text,
+      return {
+            id: restData.id,
+            alt_text: restData.alt_text,
             caption: {
-              rendered: imageObj.description.rendered.replace(/<img[^>]*>/g,"").replace(/<p[^>]*>|<\/p>/g, '').replace(/\r?\n|\r/g, "").replace(/<a[^>]*>|<\/a>/g, ''),
+              rendered: restData.description.rendered.replace(/<img[^>]*>/g,"").replace(/<p[^>]*>|<\/p>/g, '').replace(/\r?\n|\r/g, "").replace(/<a[^>]*>|<\/a>/g, ''),
             },
             media_details: {
               sizes: {
@@ -694,9 +733,26 @@ export default {
                 mobile,
               }
             }
-          };
+          }
+    },
+    async getImages(imageIds) {
+      const endpointUrl = new URL('media',this.interface.endpoint)
+      endpointUrl.searchParams.set('include', imageIds)
 
-      return newImageObj;
+      const request = await axios.get(endpointUrl.href)
+      const data = request.data
+
+      const mapped = data.map( d => this.mapImageData(d) )
+
+      return mapped
+    },
+    async getImage(i) {
+      const component = this;
+
+      const image = await axios.get(`${component.interface.endpoint}media/${i}`)
+      const imageObj = image.data
+
+      return this.mapImageData(imageObj)
     },
     async getCollection(i) {
       const component = this;
