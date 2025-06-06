@@ -685,14 +685,19 @@ export default {
       let postSelections = []
       let imageIds = []
 
-      for (let itemNum=0; itemNum< this.items; itemNum++) {
-        if (component.blockData[`items_${itemNum}_entry_type`] === 'selection') {
+      for (let itemNum=0; itemNum < this.items; itemNum++) {
+        const entryType = component.blockData[`items_${itemNum}_entry_type`]
+
+        if (entryType === 'selection') {
           // Done as arrays for spread args in the consumer downfile -- rewrite this later!
           postSelections.push([ 
               component.blockData[`items_${itemNum}_${component.blockData[`items_${itemNum}_selection_type`]}_selection`], 
               component.blockData[`items_${itemNum}_selection_type`] 
                   ])
-        } else {
+          continue
+        } 
+
+        if (component.blockData[`items_${itemNum}_image`] || component.blockData[`items_${itemNum}_image`] === 0) {
           imageIds.push(component.blockData[`items_${itemNum}_image`])
         }
       }
@@ -707,17 +712,20 @@ export default {
             post: postsSelectionData.find( p => p.id === `items_${i}_${component.blockData[`items_${i}_selection_type`]}_selection`),
             heading: undefined,
             subheading: undefined,
+            subheading2: undefined,
             paragraph: undefined,
             paragraph_entry_type: undefined,
             button: undefined,
             image: undefined,
             openNewTab: component.openNewTab(component.blockData, i)
           }
+
         default:
           return {
             post: undefined,
             heading: component.blockData[`items_${i}_heading`],
             subheading:  component.blockData[`items_${i}_subheading`],
+            subheading2:  component.blockData[`items_${i}_subheading2`],
             paragraph:  component.blockData[`items_${i}_paragraph`],
             paragraph_entry_type: component.blockData[`items_${i}_paragraph_entry_type`],
             button: component.blockData[`items_${i}_button`],
@@ -1189,6 +1197,9 @@ export default {
       return {
             id: restData.id,
             alt_text: restData.alt_text,
+            artist_name: restData.acf?.artist_name,
+            object_title: restData.acf?.object_title,
+            object_creation_date: restData.acf?.object_creation_date,
             caption: {
               rendered: restData.description.rendered.replace(/<img[^>]*>/g,"").replace(/<p[^>]*>|<\/p>/g, '').replace(/\r?\n|\r/g, "").replace(/<a[^>]*>|<\/a>/g, ''),
             },
