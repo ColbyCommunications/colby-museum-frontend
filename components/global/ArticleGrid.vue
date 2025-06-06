@@ -1632,6 +1632,7 @@ export default {
 
 <style lang="scss">
 .article-grid {
+  min-height: 200px;
 
   &__no-results {
     grid-column: span 12 / span 12;

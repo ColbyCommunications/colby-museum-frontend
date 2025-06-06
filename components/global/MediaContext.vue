@@ -946,6 +946,8 @@ export default {
 // @import "node_modules/@glidejs/glide/src/assets/sass/glide.core";
 
 .media-context {
+  min-height: 200px;
+
   &--inactive {
     display: none;
   }

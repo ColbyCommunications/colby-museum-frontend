@@ -51,6 +51,7 @@ export default {
 <style lang="scss">
 .intro-context {
 
+  min-height: 100px;
   &.sr-only--heading.sr-only--excerpt {
     @extend .sr-only;
   }
