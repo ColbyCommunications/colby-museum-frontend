@@ -356,6 +356,7 @@
           :hover="hover"
           :bordered="bordered"
           :button_type="button_type"
+          :layoutPosition="layoutPosition"
         />
       </div>
       <div
@@ -368,6 +369,7 @@
           :hover="hover"
           :bordered="bordered"
           :button_type="button_type"
+          :layoutPosition="layoutPosition"
         />
       </div>
       <div
@@ -380,6 +382,7 @@
           :hover="hover"
           :bordered="bordered"
           :button_type="button_type"
+          :layoutPosition="layoutPosition"
         />
       </div>
       <div
@@ -394,6 +397,7 @@
           :bordered="bordered"
           :button_type="button_type"
           :openNewTab="item.openNewTab"
+          :layoutPosition="layoutPosition"
         />
       </div>
       <div
@@ -406,6 +410,7 @@
           :hover="hover"
           :bordered="bordered"
           :button_type="button_type"
+          :layoutPosition="layoutPosition"
         />
       </div>
     </div>
@@ -597,6 +602,10 @@ export default {
     blockData: {
       type: Object,
       required: false,
+    },
+    layoutPosition: {
+      type: Number,
+      default: 0
     }
   },
   async created() {
@@ -673,20 +682,60 @@ export default {
 
     // If selecting items individually
     } else if (typeof this.items === 'number') {
+      let postSelections = []
+      let imageIds = []
 
-      await Promise.all([...Array(this.items)].map(async (el, i) => ({
-        post: component.blockData[`items_${i}_entry_type`] == 'selection' ? await component.getPost(component.blockData[`items_${i}_post_selection`]) : undefined,
-        heading: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : component.blockData[`items_${i}_heading`],
-        subheading: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : component.blockData[`items_${i}_subheading`],
-        subheading2: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : component.blockData[`items_${i}_subheading2`],
-        paragraph_entry_type: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : component.blockData[`items_${i}_paragraph_entry_type`],
-        paragraph: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : component.blockData[`items_${i}_paragraph`],
-        button: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : component.blockData[`items_${i}_button`],
-        image: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : await component.getImage(component.blockData[`items_${i}_image`]),
-        openNewTab: component.openNewTab(component.blockData, i),
-      }))).then((output) => {
-        component.newItems = output; 
+      for (let itemNum=0; itemNum < this.items; itemNum++) {
+        const entryType = component.blockData[`items_${itemNum}_entry_type`]
+
+        if (entryType === 'selection') {
+          // Done as arrays for spread args in the consumer downfile -- rewrite this later!
+          postSelections.push([ 
+              component.blockData[`items_${itemNum}_${component.blockData[`items_${itemNum}_selection_type`]}_selection`], 
+              component.blockData[`items_${itemNum}_selection_type`] 
+                  ])
+          continue
+        } 
+
+        if (component.blockData[`items_${itemNum}_image`] || component.blockData[`items_${itemNum}_image`] === 0) {
+          imageIds.push(component.blockData[`items_${itemNum}_image`])
+        }
+      }
+
+      const imagesData = await this.getImages(imageIds)
+      const postsSelectionData = await Promise.all(postSelections.map( async (ps) => await this.getPost(...ps) ))
+
+      const mappedItems = [...Array(this.items)].map( (item,i) => {
+        switch (component.blockData[`items_${i}_entry_type`]) {
+        case 'selection':
+          return {
+            post: postsSelectionData.find( p => p.id === `items_${i}_${component.blockData[`items_${i}_selection_type`]}_selection`),
+            heading: undefined,
+            subheading: undefined,
+            subheading2: undefined,
+            paragraph: undefined,
+            paragraph_entry_type: undefined,
+            button: undefined,
+            image: undefined,
+            openNewTab: component.openNewTab(component.blockData, i)
+          }
+
+        default:
+          return {
+            post: undefined,
+            heading: component.blockData[`items_${i}_heading`],
+            subheading:  component.blockData[`items_${i}_subheading`],
+            subheading2:  component.blockData[`items_${i}_subheading2`],
+            paragraph:  component.blockData[`items_${i}_paragraph`],
+            paragraph_entry_type: component.blockData[`items_${i}_paragraph_entry_type`],
+            button: component.blockData[`items_${i}_button`],
+            image: imagesData.find( img => img.id === component.blockData[`items_${i}_image`] ),
+            openNewTab: component.openNewTab(component.blockData, i)
+          }
+        }
       })
+
+      this.newItems = mappedItems
     }
   },
   mounted() {
@@ -1125,6 +1174,53 @@ export default {
         });
 
       return await postObj;
+    },
+    imageUrlWidth(guid,width) {
+      // Formats the GUID for use with imagedelivery, with a width
+      return `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${guid.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=${width},quality=75,format=webp`
+    },
+    mapImageData(restData) {
+      // Maps data from the REST API to our internal representation
+      const mediaDetails = restData.media_details
+
+      let imageAspect
+      if (mediaDetails.height > 0 && mediaDetails.width > 0) {
+        imageAspect = mediaDetails.height / mediaDetails.width
+      }
+
+      const desktopWidth = 1200
+      const mobileWidth = 600
+
+      const desktop = { aspect_ratio: imageAspect, width: desktopWidth, height: desktopWidth * imageAspect, source_url: this.imageUrlWidth(restData.guid.rendered, 1800) }
+      const mobile = { aspect_ratio: imageAspect, width: mobileWidth, height: mobileWidth * imageAspect, source_url: this.imageUrlWidth(restData.guid.rendered, 1200) }
+
+      return {
+            id: restData.id,
+            alt_text: restData.alt_text,
+            artist_name: restData.acf?.artist_name,
+            object_title: restData.acf?.object_title,
+            object_creation_date: restData.acf?.object_creation_date,
+            caption: {
+              rendered: restData.description.rendered.replace(/<img[^>]*>/g,"").replace(/<p[^>]*>|<\/p>/g, '').replace(/\r?\n|\r/g, "").replace(/<a[^>]*>|<\/a>/g, ''),
+            },
+            media_details: {
+              sizes: {
+                desktop,
+                mobile,
+              }
+            }
+          }
+    },
+    async getImages(imageIds) {
+      const endpointUrl = new URL('media',this.interface.endpoint)
+      endpointUrl.searchParams.set('include', imageIds)
+
+      const request = await axios.get(endpointUrl.href)
+      const data = request.data
+
+      const mapped = data.map( d => this.mapImageData(d) )
+
+      return mapped
     },
     async getImage(i) {
       const component = this;

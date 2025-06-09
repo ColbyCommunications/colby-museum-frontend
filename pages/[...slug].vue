@@ -93,13 +93,14 @@ export default {
 
         page.getBreadcrumbs(post);
 
-        page.components = post.block_data.map((component) => {
+        page.components = post.block_data.map((component, i) => {
           
           component.type = component.blockName
             .replace('acf/','')
             .replace(/\//g,'-');
 
           return {
+            layoutPosition: i,
             type: component.type,
             ...component.attrs.data,
             attrs: component.attrs.data ? undefined : component.attrs,

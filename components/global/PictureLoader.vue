@@ -1,6 +1,5 @@
 <template>
   <Picture
-    v-if="image"
     :classes="classes"
     :alt="image.alt_text"
     :sizes="image.media_details.sizes"
