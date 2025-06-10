@@ -36,30 +36,50 @@ import axios from 'axios';
 import transitionConfig from '../helpers/transitionConfig';
 import { useInterfaceStore } from "~/store/interface";
 
+const setPageMeta = async () => {
+    const route = useRoute();
+    const pageMeta = ref()
+    
+    const user = 'Fr2fpegcBZ'
+    const pass = 'Vi7vGnL3h2rtW5SuECoKRwTf'
+
+    const endpointUrl = computed( () => `https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/stage/_source/object%2F${encodeURIComponent(route.params.slug[0])}` )
+
+    let authToken
+    if (process.client) {
+      authToken = btoa(`${user}:${pass}`)
+    } 
+    else {
+      authToken = Buffer.from(`${user}:${pass}`).toString('base64')
+    }
+
+    const {data, error, status} = await useFetch(endpointUrl.value, { credentials: 'include', headers: { authorization: `Basic ${authToken}` } })
+
+    if (error.value) {
+      console.error(`Could not fetch metadata from ${endpointUrl.value}`,error.value)
+      return
+    }
+
+    if (!data.value) {
+      console.error(`Received empty head meta from the endpoint!`)
+      return
+    }
+
+    pageMeta.value = data.value
+    const fallbackImage = computed( () => `${useInterfaceStore().backend}wp-content/uploads/2025/03/default.jpg`)
+
+    await useSeoMeta({
+      ogTitle: () => `${pageMeta.value.Disp_Title ? pageMeta.value.Disp_Title.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' + pageMeta.value.Disp_Maker_1.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' : ''}Colby College Museum of Art`,
+      title: () => `${pageMeta.value.Disp_Title ? pageMeta.value.Disp_Title.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' + pageMeta.value.Disp_Maker_1.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' : ''}Colby College Museum of Art`,
+      ogDescription: () => pageMeta.value?.Disp_Medium,
+      description: () => pageMeta.value?.Disp_Medium,
+      ogImage: () => pageMeta.value?.Images?.length > 0 ? `https://ccma-iiif-cache-service.fly.dev/iiif/2/${pageMeta.value.Images[0].IIIF_URL.substring(pageMeta.value.Images[0].IIIF_URL.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, "")}/full/${encodeURIComponent('400,')}/0/default.jpg` : fallbackImage ,
+    });
+}
+
 export default {
   setup(props) {
-    const route = useRoute();
-    const todo = ref({})
-
-    useFetch(() => 
-      axios.get(`https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/stage/_source/object%2F${encodeURIComponent(route.params.slug[0])}`, {
-        auth: {
-          username: 'Fr2fpegcBZ',
-          password: 'Vi7vGnL3h2rtW5SuECoKRwTf'
-        }
-      })
-      .then((output) => (todo.value = output.data))
-    )
-
-    console.log(todo.value);
-
-    useSeoMeta({
-      ogTitle: () => `${todo.value.Disp_Title ? todo.value.Disp_Title.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' + todo.value.Disp_Maker_1.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' : ''}Colby College Museum of Art · Colby College`,
-      title: () => `${todo.value.Disp_Title ? todo.value.Disp_Title.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' + todo.value.Disp_Maker_1.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' : ''}Colby College Museum of Art · Colby College`,
-      ogDescription: () => todo.value?.Disp_Medium,
-      description: () => todo.value?.Disp_Medium,
-      ogImage: () => todo.value?.Images?.length > 0 ? `https://ccma-iiif-cache-service.fly.dev/iiif/2/${todo.value.Images[0].IIIF_URL.substring(todo.value.Images[0].IIIF_URL.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, "")}/full/${encodeURIComponent('400,')}/0/default.jpg` : `${useInterfaceStore().backend}wp-content/uploads/2025/03/default.jpg`,
-    });
+    setPageMeta()
 
     definePageMeta({
       pageTransition: transitionConfig,

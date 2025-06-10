@@ -31,8 +31,8 @@ import seoConfig from '../../helpers/seoConfig';
 export default {
   setup(props) {
     useSeoMeta({
-      ogTitle: () => 'Donation Form | Colby College Museum of Art · Colby College',
-      title: () => 'Donation Form | Colby College Museum of Art · Colby College',
+      ogTitle: () => 'Donation Form | Colby College Museum of Art',
+      title: () => 'Donation Form | Colby College Museum of Art',
       ogDescription: () => 'Contact Colby College Museum of Art for any inquiry.',
       description: () => 'Contact Colby College Museum of Art for any inquiry.',
     });

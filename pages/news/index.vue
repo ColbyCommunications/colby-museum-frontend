@@ -20,19 +20,29 @@ import transitionConfig from '../helpers/transitionConfig';
 export default {
   setup(props) {
     const route = useRoute();
-    const todo = ref({});
+    const pageMeta = ref();
 
-    useFetch(() => 
-      fetch(`${props.interface.endpoint}pages?slug=news`)
-        .then(res => res.json())
-        .then((output) => (todo.value = output[0]))
-    )
+    const endpointUrl = `${props.interface.endpoint}pages?slug=news`
+    useFetch(endpointUrl, {})
+      .then(({data, error, status}) => {
+        if (error.value) {
+          console.error(`Could not fetch metadata from ${endpointUrl}`)
+          return
+        }
+
+        if (!data.value?.at(0)) {
+          console.error(`Received empty head meta from the endpoint!`)
+          return
+        }
+
+        pageMeta.value = data.value.at(0)
+      }) 
 
     useSeoMeta({
-      ogTitle: () => `${todo.value.title ? todo.value.title?.rendered + ' | ' : ''}Colby College Museum of Art · Colby College`,
-      title: () => `${todo.value.title ? todo.value.title?.rendered + ' | ' : ''}Colby College Museum of Art · Colby College`,
-      ogDescription: () => todo.value.excerpt?.rendered,
-      description: () => todo.value.excerpt?.rendered,
+      ogTitle: () => `${pageMeta.value.title ? pageMeta.value.title?.rendered + ' | ' : ''}Colby College Museum of Art`,
+      title: () => `${pageMeta.value.title ? pageMeta.value.title?.rendered + ' | ' : ''}Colby College Museum of Art`,
+      ogDescription: () => pageMeta.value.excerpt?.rendered,
+      description: () => pageMeta.value.excerpt?.rendered,
     });
 
     definePageMeta({
