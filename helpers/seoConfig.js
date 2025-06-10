@@ -10,7 +10,7 @@ const pageSEO = async (props, type) => {
   const endpointType = type ? type : 'pages'
   const endpointUrl = computed( () => `${props.interface.endpoint}${endpointType}` )
 
-  const { data, error, status } = await useFetch(endpointUrl.value, { method: 'GET', query: { slug, _embed: 'wp:featuredmedia' } })
+  const { data, error, status } = await useFetch(endpointUrl.value, { immediate: false, lazy: true, method: 'GET', query: { slug, _embed: 'wp:featuredmedia' } })
 
   if (error.value) {
     console.error(`Encountered an error when fetching page metadata from ${endpointUrl.value}:`,error)
