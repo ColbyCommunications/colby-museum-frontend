@@ -32,8 +32,8 @@ export default {
     console.log(route);
 
     useSeoMeta({
-      ogTitle: () => `Exhibitions - Page ${route.params.id} | Colby College Museum of Art · Colby College`,
-      title: () => `Exhibitions - Page ${route.params.id} | Colby College Museum of Art · Colby College`,
+      ogTitle: () => `Exhibitions - Page ${route.params.id} | Colby College Museum of Art`,
+      title: () => `Exhibitions - Page ${route.params.id} | Colby College Museum of Art`,
       ogDescription: () => 'Explore Colby Museum’s current exhibitions.',
       description: () => 'Explore Colby Museum’s current exhibitions.',
     });
