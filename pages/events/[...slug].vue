@@ -123,13 +123,14 @@ export default {
         page.start_time = page.formatTime(post.acf.start_time);
         page.end_time = page.formatTime(post.acf.end_time);
 
-        page.components = post.block_data.map((component) => {
+        page.components = post.block_data.map((component,i) => {
           
           component.type = component.blockName
             .replace('acf/','')
             .replace(/\//g,'-');
 
           return {
+            layoutPosition: i,
             type: component.type,
             ...component.attrs.data,
             attrs: component.attrs.data ? undefined : component.attrs,
