@@ -9,6 +9,7 @@
       :variant="'default'"
       :items="1"
       :blockData="{
+        layoutPosition: 0,
         items_0_selection_type: 'posts',
         items_0_entry_type: 'selection',
         items_0_posts_selection: newItems[0].post.id,

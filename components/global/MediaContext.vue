@@ -465,13 +465,13 @@ export default {
         // component.renderGlide();
       });
     } else if (typeof this.items === 'number') {
-
       let postSelections = []
       let imageIds = []
 
       for (let itemNum=0; itemNum< this.items; itemNum++) {
         if (component.blockData[`items_${itemNum}_entry_type`] === 'selection') {
           // Done as arrays for spread args in the consumer downfile -- rewrite this later!
+
           postSelections.push([ 
               component.blockData[`items_${itemNum}_${component.blockData[`items_${itemNum}_selection_type`]}_selection`], 
               component.blockData[`items_${itemNum}_selection_type`] 
@@ -487,13 +487,18 @@ export default {
       const mappedItems = [...Array(this.items)].map( (item,i) => {
         switch (component.blockData[`items_${i}_entry_type`]) {
         case 'selection':
+          const selectionType = component.blockData[`items_${i}_selection_type`]
+          const ident = component.blockData[`items_${i}_${selectionType}_selection`]
+          const post = postsSelectionData.find( p => p.id === ident )
+
+          const image = post?._embedded['wp:featuredmedia']
           return {
-            post: postsSelectionData.find( p => p.id === `items_${i}_${component.blockData[`items_${i}_selection_type`]}_selection`),
+            post,
             heading: undefined,
             subheading: undefined,
             paragraph: undefined,
             button: undefined,
-            image: undefined,
+            image,
           }
         default:
           return {
@@ -663,12 +668,9 @@ export default {
         type = '&variant=14';
       }
 
-      // console.log(`${component.interface.endpoint}${component.items_type}?categories_exclude=1${chr}${type}&per_page=5&page=1`);
-
-      console.log(`${component.interface.endpoint}${component.items_type}?categories_exclude=1${chr}${type}&per_page=8&page=1`);
-
+      const url = `${component.interface.endpoint}${component.items_type}?categories_exclude=1${chr}${type}&per_page=8&page=1&_embed=wp:featuredmedia`
       await axios
-        .get(`${component.interface.endpoint}${component.items_type}?categories_exclude=1${chr}${type}&per_page=8&page=1`)
+        .get(url)
         .then((output) => {
           component.newItems = output.data.map((i) => ({
             post: i,
@@ -695,7 +697,7 @@ export default {
       let postObj;
 
       await axios
-        .get(`${component.interface.endpoint}${type}/${i}`)
+        .get(`${component.interface.endpoint}${type}/${i}?_embed=wp:featuredmedia`)
         .then((output) => {
           postObj = output.data;
         });
