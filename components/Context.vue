@@ -66,12 +66,14 @@
         <Picture
           :alt="image.alt_text"
           :sizes="image.media_details.sizes"
+          :loading="layoutPosition > 0 ? 'lazy' : 'eager'"
         />
       </NuxtLink>
       <Picture
         v-else
         :alt="image.alt_text"
         :sizes="image.media_details.sizes"
+        :loading="layoutPosition > 0 ? 'lazy' : 'eager'"
       />
     </div>
     <p
@@ -149,6 +151,10 @@ export default {
     },
     button: {
       required: false,
+    },
+    layoutPosition: {
+      type: Number,
+      default: 0
     }
   },
   watch: {

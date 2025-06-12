@@ -57,7 +57,7 @@ export default {
     // console.log(this.$route.params.slug);
 
     await axios
-      .get(`${this.interface.endpoint}pages?slug=news`)
+      .get(`${this.interface.endpoint}pages?slug=news&_embed=wp:featuredmedia`)
       .then((output) => {
         const post = output.data[0];
         console.log(post);
@@ -70,13 +70,14 @@ export default {
         
         page.excerpt = post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '');
 
-        page.components = post.block_data.map((component) => {
+        page.components = post.block_data.map((component,i) => {
           
           component.type = component.blockName
             .replace('acf/','')
             .replace(/\//g,'-');
 
           return {
+            layoutPosition: i,
             type: component.type,
             ...component.attrs.data,
             attrs: component.attrs.data ? undefined : component.attrs,

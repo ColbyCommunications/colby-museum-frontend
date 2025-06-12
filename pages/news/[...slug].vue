@@ -52,10 +52,10 @@ export default {
   async mounted() {
     const page = this;
 
-    // console.log(this.$route.params.slug);
+    console.log(this.$route.params.slug);
 
     await axios
-      .get(`${this.interface.endpoint}posts?slug=${this.$route.params.slug}`)
+      .get(`${this.interface.endpoint}posts?slug=${this.$route.params.slug}&_embed=wp:featuredmedia`)
       .then((output) => {
         const post = output.data[0];
 
@@ -67,13 +67,14 @@ export default {
         
         page.excerpt = post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '');
 
-        page.components = post.block_data.map((component) => {
+        page.components = post.block_data.map((component,i) => {
           
           component.type = component.blockName
             .replace('acf/','')
             .replace(/\//g,'-');
 
           return {
+            layoutPosition: i,
             type: component.type,
             ...component.attrs.data,
             attrs: component.attrs.data ? undefined : component.attrs,
