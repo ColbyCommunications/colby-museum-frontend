@@ -72,8 +72,8 @@ import transitionConfig from '../helpers/transitionConfig';
 export default {
   setup() {
     useSeoMeta({
-      ogTitle: () => 'Search | Colby College Museum of Art · Colby College',
-      title: () => 'Search | Colby College Museum of Art · Colby College',
+      ogTitle: () => 'Search | Colby College Museum of Art',
+      title: () => 'Search | Colby College Museum of Art',
     });
 
     definePageMeta({

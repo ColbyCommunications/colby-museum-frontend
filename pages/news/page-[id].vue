@@ -27,8 +27,8 @@ export default {
     const todo = ref({})
 
     useSeoMeta({
-      ogTitle: () => `News - Page ${route.params.id} | Colby College Museum of Art · Colby College`,
-      title: () => `News - Page ${route.params.id} | Colby College Museum of Art · Colby College`,
+      ogTitle: () => `News - Page ${route.params.id} | Colby College Museum of Art`,
+      title: () => `News - Page ${route.params.id} | Colby College Museum of Art`,
       ogDescription: () => 'Find out what’s happening at Colby Museum.',
       description: () => 'Find out what’s happening at Colby Museum.',
     });

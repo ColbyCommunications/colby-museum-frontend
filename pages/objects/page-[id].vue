@@ -49,8 +49,8 @@ export default {
     // console.log(todo.value);
 
     useSeoMeta({
-      ogTitle: () => `Objects - Page ${route.params.id} | Colby College Museum of Art · Colby College`,
-      title: () => `Objects - Page ${route.params.id} | Colby College Museum of Art · Colby College`,
+      ogTitle: () => `Objects - Page ${route.params.id} | Colby College Museum of Art`,
+      title: () => `Objects - Page ${route.params.id} | Colby College Museum of Art`,
       ogDescription: () => 'Explore the more than ten thousand artworks that reside in the collection of the Colby College Museum of Art and shape its teaching mission. The collection represents the breadth and complexity of American art, and also includes works by international artists from antiquity to the present.',
       description: () => 'Explore the more than ten thousand artworks that reside in the collection of the Colby College Museum of Art and shape its teaching mission. The collection represents the breadth and complexity of American art, and also includes works by international artists from antiquity to the present.',
     });
