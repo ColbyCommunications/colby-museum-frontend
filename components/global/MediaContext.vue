@@ -756,7 +756,7 @@
                     endpointParams = endpointParams + '&key=date&order=asc';
                 } else {
                     if (component.showVariant != 'traveling') {
-                        chr = '&chronologies_exclude=8'; // EXCLUDE PAST AS LONG AS WE ARENT IN TRAVELING EXHIBITIONS
+                      endpointParams = endpointParams + '&key=date&order=asc'; // EXCLUDE PAST AS LONG AS WE ARENT IN TRAVELING EXHIBITIONS
                     }
                 }
 
