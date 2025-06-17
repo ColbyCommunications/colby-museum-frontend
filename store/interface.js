@@ -11,9 +11,11 @@ export const useInterfaceStore = defineStore({
     id: 'interface',
     state: () => {
         return {
-            backend: 'https://dev-54ta5gq-fr35dlu44eniu.us-4.platformsh.site/',
-            endpoint: 'https://dev-54ta5gq-fr35dlu44eniu.us-4.platformsh.site/wp-json/wp/v2/',
-            endpointv3: 'https://dev-54ta5gq-fr35dlu44eniu.us-4.platformsh.site/wp-json/acf/v3/',
+            backend: 'https://fix-mc-dates-crc3s5a-fr35dlu44eniu.us-4.platformsh.site/',
+            endpoint:
+                'https://fix-mc-dates-crc3s5a-fr35dlu44eniu.us-4.platformsh.site/wp-json/wp/v2/',
+            endpointv3:
+                'https://fix-mc-dates-crc3s5a-fr35dlu44eniu.us-4.platformsh.site/wp-json/acf/v3/',
             drawer: false,
             dark: false,
             modal: false,
