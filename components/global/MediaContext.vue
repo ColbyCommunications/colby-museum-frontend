@@ -96,31 +96,31 @@
                     class="glide__context"
                   >
                     <Context
-                      v-if="item.post && item.post.type == 'post'"
+                      v-if="item.post && item.post.post_type == 'post'"
                       :size="'small'"
-                      :heading="item.post.title.rendered"
-                      :subheading="formatDate(item.post.date)"
+                      :heading="item.post.post_title"
+                      :subheading="formatDate(item.post.post_date)"
                       :button="{
                         title: 'Read News',
                         url: item.post.link
                       }"
                     />
                     <Context
-                      v-else-if="item.post && (item.post.type == 'events' || item.post.type == 'exhibitions')"
+                      v-else-if="item.post && (item.post.post_type == 'events' || item.post.post_type == 'exhibitions')"
                       :size="'small'"
-                      :heading="item.post.title.rendered"
+                      :heading="item.post.post_title"
                       :subheading="formatDate(item.post.acf.date, 'events') + (item.post.acf.end_date && item.post.acf.date != item.post.acf.end_date ? `&ndash;${formatDate(item.post.acf.end_date, 'events')}` : '' )"
-                      :subheading2="item.post.type == 'events' ? `${formatTime(item.post.acf.start_time)}&ndash;${formatTime(item.post.acf.end_time)}` : undefined"
+                      :subheading2="item.post.post_type == 'events' ? `${formatTime(item.post.acf.start_time)}&ndash;${formatTime(item.post.acf.end_time)}` : undefined"
                       :button="{
-                        title: item.post.type == 'events' ? 'Event Details' : 'Exhibition Details',
+                        title: item.post.post_type == 'events' ? 'Event Details' : 'Exhibition Details',
                         url: item.post.link
                       }"
                     />
                     <Context
                       v-else-if="item.post"
                       :size="'small'"
-                      :subheading="formatDate(item.post.date)"
-                      :heading="item.post.title.rendered"
+                      :subheading="formatDate(item.post.post_date)"
+                      :heading="item.post.post_title"
                       :button="{
                         title: 'Read News',
                         url: item.post.link
@@ -195,9 +195,9 @@
                     class="glide__small-context"
                   >
                     <Context
-                      v-if="item.post && item.post.type == 'post'"
+                      v-if="item.post && item.post.post_type == 'post'"
                       :size="'small'"
-                      :paragraph="item.post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
+                      :paragraph="item.post.post_excerpt.replace(/<\/?[^>]+(>|$)/g, '')"
                     />
                     <Context
                       v-else-if="item.post && (item.post.type == 'events' || item.post.type == 'exhibitions')"
@@ -207,7 +207,7 @@
                     <Context
                       v-else-if="item.post"
                       :size="'small'"
-                      :paragraph="item.post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
+                      :paragraph="item.post.post_excerpt.replace(/<\/?[^>]+(>|$)/g, '')"
                     />
                     <Context
                       v-else
@@ -264,33 +264,33 @@
           :class="{ 'media-context__context-panel--active': activeSlide == index }"
         >
           <Context
-            v-if="item.post && item.post.type == 'post'"
+            v-if="item.post && item.post.post_type == 'post'"
             :size="'small'"
-            :heading="item.post.title.rendered"
-            :subheading="formatDate(item.post.date)"
-            :paragraph="item.post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
+            :heading="item.post.post_title"
+            :subheading="formatDate(item.post.post_date)"
+            :paragraph="item.post.post_excerpt.replace(/<\/?[^>]+(>|$)/g, '')"
             :button="{
               title: 'Read News',
               url: item.post.link
             }"
           />
           <Context
-            v-else-if="item.post && (item.post.type == 'events' || item.post.type == 'exhibitions')"
+            v-else-if="item.post && (item.post.post_type == 'events' || item.post.post_type == 'exhibitions')"
             :size="'small'"
-            :heading="item.post.title.rendered"
+            :heading="item.post.post_title"
             :subheading="formatDate(item.post.acf.date, 'events') + (item.post.acf.end_date && item.post.acf.date != item.post.acf.end_date ? `-${formatDate(item.post.acf.end_date, 'events')}` : '' )"
-            :paragraph="item.post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
+            :paragraph="item.post.post_excerpt.replace(/<\/?[^>]+(>|$)/g, '')"
             :button="{
-              title: item.post.type == 'events' ? 'Event Details' : 'Exhibition Details',
+              title: item.post.post_type == 'events' ? 'Event Details' : 'Exhibition Details',
               url: item.post.link
             }"
           />
           <Context
             v-else-if="item.post"
             :size="'small'"
-            :subheading="formatDate(item.post.date)"
-            :heading="item.post.title.rendered"
-            :paragraph="item.post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
+            :subheading="formatDate(item.post.post_date)"
+            :heading="item.post.post_title"
+            :paragraph="item.post.post_excerpt.replace(/<\/?[^>]+(>|$)/g, '')"
             :button="{
               title: 'Read News',
               url: item.post.link
