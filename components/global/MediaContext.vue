@@ -96,31 +96,31 @@
                     class="glide__context"
                   >
                     <Context
-                      v-if="item.post && item.post.type == 'post'"
+                      v-if="item.post && item.post.post_type == 'post'"
                       :size="'small'"
-                      :heading="item.post.title.rendered"
-                      :subheading="formatDate(item.post.date)"
+                      :heading="item.post.post_title"
+                      :subheading="formatDate(item.post.post_date)"
                       :button="{
                         title: 'Read News',
                         url: item.post.link
                       }"
                     />
                     <Context
-                      v-else-if="item.post && (item.post.type == 'events' || item.post.type == 'exhibitions')"
+                      v-else-if="item.post && (item.post.post_type == 'events' || item.post.post_type == 'exhibitions')"
                       :size="'small'"
-                      :heading="item.post.title.rendered"
+                      :heading="item.post.post_title"
                       :subheading="formatDate(item.post.acf.date, 'events') + (item.post.acf.end_date && item.post.acf.date != item.post.acf.end_date ? `&ndash;${formatDate(item.post.acf.end_date, 'events')}` : '' )"
-                      :subheading2="item.post.type == 'events' ? `${formatTime(item.post.acf.start_time)}&ndash;${formatTime(item.post.acf.end_time)}` : undefined"
+                      :subheading2="item.post.post_type == 'events' ? `${formatTime(item.post.acf.start_time)}&ndash;${formatTime(item.post.acf.end_time)}` : undefined"
                       :button="{
-                        title: item.post.type == 'events' ? 'Event Details' : 'Exhibition Details',
+                        title: item.post.post_type == 'events' ? 'Event Details' : 'Exhibition Details',
                         url: item.post.link
                       }"
                     />
                     <Context
                       v-else-if="item.post"
                       :size="'small'"
-                      :subheading="formatDate(item.post.date)"
-                      :heading="item.post.title.rendered"
+                      :subheading="formatDate(item.post.post_date)"
+                      :heading="item.post.post_title"
                       :button="{
                         title: 'Read News',
                         url: item.post.link
@@ -195,9 +195,9 @@
                     class="glide__small-context"
                   >
                     <Context
-                      v-if="item.post && item.post.type == 'post'"
+                      v-if="item.post && item.post.post_type == 'post'"
                       :size="'small'"
-                      :paragraph="item.post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
+                      :paragraph="item.post.post_excerpt.replace(/<\/?[^>]+(>|$)/g, '')"
                     />
                     <Context
                       v-else-if="item.post && (item.post.type == 'events' || item.post.type == 'exhibitions')"
@@ -207,7 +207,7 @@
                     <Context
                       v-else-if="item.post"
                       :size="'small'"
-                      :paragraph="item.post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
+                      :paragraph="item.post.post_excerpt.replace(/<\/?[^>]+(>|$)/g, '')"
                     />
                     <Context
                       v-else
@@ -264,33 +264,33 @@
           :class="{ 'media-context__context-panel--active': activeSlide == index }"
         >
           <Context
-            v-if="item.post && item.post.type == 'post'"
+            v-if="item.post && item.post.post_type == 'post'"
             :size="'small'"
-            :heading="item.post.title.rendered"
-            :subheading="formatDate(item.post.date)"
-            :paragraph="item.post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
+            :heading="item.post.post_title"
+            :subheading="formatDate(item.post.post_date)"
+            :paragraph="item.post.post_excerpt.replace(/<\/?[^>]+(>|$)/g, '')"
             :button="{
               title: 'Read News',
               url: item.post.link
             }"
           />
           <Context
-            v-else-if="item.post && (item.post.type == 'events' || item.post.type == 'exhibitions')"
+            v-else-if="item.post && (item.post.post_type == 'events' || item.post.post_type == 'exhibitions')"
             :size="'small'"
-            :heading="item.post.title.rendered"
+            :heading="item.post.post_title"
             :subheading="formatDate(item.post.acf.date, 'events') + (item.post.acf.end_date && item.post.acf.date != item.post.acf.end_date ? `-${formatDate(item.post.acf.end_date, 'events')}` : '' )"
-            :paragraph="item.post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
+            :paragraph="item.post.post_excerpt.replace(/<\/?[^>]+(>|$)/g, '')"
             :button="{
-              title: item.post.type == 'events' ? 'Event Details' : 'Exhibition Details',
+              title: item.post.post_type == 'events' ? 'Event Details' : 'Exhibition Details',
               url: item.post.link
             }"
           />
           <Context
             v-else-if="item.post"
             :size="'small'"
-            :subheading="formatDate(item.post.date)"
-            :heading="item.post.title.rendered"
-            :paragraph="item.post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '')"
+            :subheading="formatDate(item.post.post_date)"
+            :heading="item.post.post_title"
+            :paragraph="item.post.post_excerpt.replace(/<\/?[^>]+(>|$)/g, '')"
             :button="{
               title: 'Read News',
               url: item.post.link
@@ -605,20 +605,36 @@ export default {
       return `${hour == 12 || hour == 0 ? 12 : hour % 12}:${min.replace(/\s/g, '').replace('am', ' a.m.').replace('pm', ' p.m.')}`;
     },
     async getPosts() {
+      console.log('here');
       const component = this;
       let chr;
       let type = '';
       let meta_date;
 
-      if ((component.showChronology == 'current') && (component.items_type == 'events' || component.items_type == 'exhibitions')) {
-        chr = '&chronologies=9';
-      } else if ((component.showChronology == 'past') && (component.items_type == 'events' || component.items_type == 'exhibitions')) {
-        chr = '&chronologies=8';
-      } else if ((component.showChronology == 'future') && (component.items_type == 'events' || component.items_type == 'exhibitions')) {
-        chr = '&chronologies_exclude=8,9';
+      let key;
+      let order;
+      let endpointParams;
+
+      endpointParams = `chronology=${component.showChronology}&type=${component.items_type}&per_page=8&page=1`;
+
+      if (
+        component.showChronology == 'current' &&
+        (component.items_type == 'events' || component.items_type == 'exhibitions')
+      ) {
+        endpointParams = endpointParams + `&key=date&order=asc`;
+      } else if (
+        component.showChronology == 'past' &&
+        (component.items_type == 'events' || component.items_type == 'exhibitions')
+      ) {
+        endpointParams = endpointParams + '&key=end_date&order=desc';
+      } else if (
+        component.showChronology == 'future' &&
+        (component.items_type == 'events' || component.items_type == 'exhibitions')
+      ) {
+        endpointParams = endpointParams + '&key=date&order=asc';
       } else {
         if (component.showVariant != 'traveling') {
-          chr = '&chronologies_exclude=8'; // EXCLUDE PAST AS LONG AS WE ARENT IN TRAVELING EXHIBITIONS
+          endpointParams = endpointParams + '&key=date&order=asc'; // EXCLUDE PAST AS LONG AS WE ARENT IN TRAVELING EXHIBITIONS
         }
       }
 
@@ -626,41 +642,54 @@ export default {
         type = '&variant=14';
       }
 
-      // console.log(`${component.interface.endpoint}${component.items_type}?categories_exclude=1${chr}${type}&per_page=5&page=1`);
-
-      console.log(`${component.interface.endpoint}${component.items_type}?categories_exclude=1${chr}${type}&per_page=8&page=1`);
+      console.log(`${component.interface.endpoint}eoe?${endpointParams}`);
 
       await axios
-        .get(`${component.interface.endpoint}${component.items_type}?categories_exclude=1${chr}${type}&per_page=8&page=1`)
+        .get(`${component.interface.endpoint}eoe?${endpointParams}`)
         .then((output) => {
           component.newItems = output.data.map((i) => ({
             post: i,
-            event_date: i.acf.date ? component.formatDate(i.acf.date, 'events-raw') : undefined,
-            end_date: i.acf.end_date ? component.formatDate(i.acf.end_date, 'events-raw') : undefined,
+            event_date: i.acf.date
+              ? component.formatDate(i.acf.date, 'events-raw')
+              : undefined,
+            end_date: i.acf.end_date
+              ? component.formatDate(i.acf.end_date, 'events-raw')
+              : undefined,
           }));
 
           // Temporary solution for ordering by start date
           if (component.items_type == 'events') {
-            component.newItems.sort((a,b) => a.event_date.getTime() - b.event_date.getTime());
+            component.newItems.sort(
+                (a, b) => a.event_date.getTime() - b.event_date.getTime()
+            );
           } else if (component.items_type == 'exhibitions') {
             if (component.showChronology == 'future') {
-              component.newItems.sort((a,b) => a.event_date.getTime() - b.event_date.getTime());
+              component.newItems.sort(
+                (a, b) => a.event_date.getTime() - b.event_date.getTime()
+              );
             } else if (component.showChronology == 'past') {
-              component.newItems.sort((a,b) => b.end_date.getTime() - a.end_date.getTime());
+              component.newItems.sort(
+                (a, b) => b.end_date.getTime() - a.end_date.getTime()
+              );
             } else {
-              component.newItems.sort((a,b) => b.event_date.getTime() - a.event_date.getTime());
+              component.newItems.sort(
+                (a, b) => b.event_date.getTime() - a.event_date.getTime()
+              );
             }
           }
-        });
+          component.newItems.forEach((item) => {
+            console.log(item.post);
+          });
+      });
     },
     async getPost(i, type) {
       const component = this;
       let postObj;
 
       await axios
-        .get(`${component.interface.endpoint}${type}/${i}`)
+        .get(`${component.interface.endpoint}eoe/${i}?type=post`)
         .then((output) => {
-          postObj = output.data;
+            postObj = output.data;
         });
 
       return await postObj;

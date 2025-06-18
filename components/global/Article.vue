@@ -10,6 +10,7 @@
       :heading="post.title.rendered"
       :subheading="formatDate(post.date)"
       :image="stagedImage"
+      :layoutPosition="layoutPosition"
       :button="{
         type: button_type,
         title: 'Read News',
@@ -25,6 +26,7 @@
       :subheading="formatDate(post.acf.date, 'events') + (post.acf.end_date && post.acf.end_date != '' && post.acf.date != post.acf.end_date ? `&ndash;${formatDate(post.acf.end_date, 'events')}` : '' )"
       :subheading2="post.type == 'events' ? `${formatTime(post.acf.start_time)}&ndash;${formatTime(post.acf.end_time)}` : undefined"
       :image="stagedImage"
+      :layoutPosition="layoutPosition"
       :button="{
         type: button_type,
         title: post.type == 'events' ? 'Event Details' : 'Exhibition Details',
@@ -37,6 +39,7 @@
       :bordered="bordered"
       :heading="post.title.rendered"
       :image="stagedImage"
+      :layoutPosition="layoutPosition"
       :button="{
         srOnly: true,
         type: button_type,
@@ -51,6 +54,7 @@
       :heading="post.title.rendered"
       :subheading="formatDate(post.date)"
       :image="stagedImage"
+      :layoutPosition="layoutPosition"
       :button="{
         type: button_type,
         title: 'Read News',
@@ -65,6 +69,7 @@
       :subheading="paragraph_entry_type == 'description' && image ? image.object_title : subheading"
       :subheading2="paragraph_entry_type == 'description' && image ? image.object_creation_date : subheading2"
       :image="image"
+      :layoutPosition="layoutPosition"
       :caption="paragraph_entry_type == 'description' && image ? image.caption.rendered : undefined"
       :paragraph="paragraph"
       :button="stagedButton"
@@ -159,8 +164,12 @@ export default {
       required: false,
     },
     openNewTab: {
-        type: Boolean,
-        required: false,
+      type: Boolean,
+      required: false,
+    },
+    layoutPosition: {
+      type: Number,
+      default: 0
     }
   },
   methods: {
