@@ -4,7 +4,7 @@ import { useInterfaceStore } from "~/store/interface";
 const pageSEO = async (props, type) => {
   const nuxtApp = useNuxtApp()
   const route = useRoute();
-  const pageMeta = ref();
+  const pageMeta = ref({});
 
   const slug = computed( () => route.params.slug ? route.params.slug : 'home' )
   const endpointType = type ? type : 'pages'
@@ -14,7 +14,7 @@ const pageSEO = async (props, type) => {
                     method: 'GET', 
                     query: { slug: slug.value, _embed: 'wp:featuredmedia' } 
                   }
-  const { data, error, status } = await useFetch( () => endpointUrl.value, )
+  const { data, error, status } = await useFetch( () => endpointUrl.value, options)
 
   if (error.value) {
     console.error(`Encountered an error when fetching page metadata from ${endpointUrl.value}:`,error)
