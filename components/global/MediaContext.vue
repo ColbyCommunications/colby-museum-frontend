@@ -460,17 +460,15 @@ export default {
       });
     } else if (typeof this.items === 'number') {
 
-      await Promise.all([...Array(this.items)].map(async (el, i) => ({
+      const items = await Promise.all([...Array(this.items)].map(async (el, i) => ({
         post: component.blockData[`items_${i}_entry_type`] == 'selection' ? await component.getPost(component.blockData[`items_${i}_${component.blockData[`items_${i}_selection_type`]}_selection`], component.blockData[`items_${i}_selection_type`]) : undefined,
         heading: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : component.blockData[`items_${i}_heading`],
         subheading: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : component.blockData[`items_${i}_subheading`],
         paragraph: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : component.blockData[`items_${i}_paragraph`],
         button: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : component.blockData[`items_${i}_button`],
         image: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : await component.getImage(component.blockData[`items_${i}_image`]),
-      }))).then((output) => {
-        component.newItems = output;
-        // component.renderGlide();
-      })
+      })))
+      this.newItems = items
     } else if (this.items_type == 'objects') {
       component.renderGlide();
     }
@@ -605,7 +603,6 @@ export default {
       return `${hour == 12 || hour == 0 ? 12 : hour % 12}:${min.replace(/\s/g, '').replace('am', ' a.m.').replace('pm', ' p.m.')}`;
     },
     async getPosts() {
-      console.log('here');
       const component = this;
       let chr;
       let type = '';
@@ -613,39 +610,46 @@ export default {
 
       let key;
       let order;
-      let endpointParams;
-
-      endpointParams = `chronology=${component.showChronology}&type=${component.items_type}&per_page=8&page=1`;
+      let endpointParams = new URLSearchParams([
+                            ['chronology',component.showChronology],
+                            ['type',component.items_type],
+                            ['per_page',8],
+                            ['page',1]
+                          ]);
 
       if (
         component.showChronology == 'current' &&
         (component.items_type == 'events' || component.items_type == 'exhibitions')
       ) {
-        endpointParams = endpointParams + `&key=date&order=asc`;
+        endpointParams.append('key','date')
+        endpointParams.append('order','asc')
       } else if (
         component.showChronology == 'past' &&
         (component.items_type == 'events' || component.items_type == 'exhibitions')
       ) {
-        endpointParams = endpointParams + '&key=end_date&order=desc';
+        endpointParams.append('key','end_date')
+        endpointParams.append('order','desc')
       } else if (
         component.showChronology == 'future' &&
         (component.items_type == 'events' || component.items_type == 'exhibitions')
       ) {
-        endpointParams = endpointParams + '&key=date&order=asc';
+        endpointParams.append('key','date')
+        endpointParams.append('order','asc')
       } else {
         if (component.showVariant != 'traveling') {
-          endpointParams = endpointParams + '&key=date&order=asc'; // EXCLUDE PAST AS LONG AS WE ARENT IN TRAVELING EXHIBITIONS
+          // EXCLUDE PAST AS LONG AS WE ARENT IN TRAVELING EXHIBITIONS
+          endpointParams.append('key','date')
+          endpointParams.append('order','asc')
         }
       }
 
       if (component.showVariant == 'traveling') {
-        type = '&variant=14';
+        // TODO: Verify this is correct, was: type = '&variant=14';
+        endpointParams.append('variant',14)
       }
 
-      console.log(`${component.interface.endpoint}eoe?${endpointParams}`);
-
       await axios
-        .get(`${component.interface.endpoint}eoe?${endpointParams}`)
+        .get(`${component.interface.endpoint}eoe?${endpointParams.toString()}`)
         .then((output) => {
           component.newItems = output.data.map((i) => ({
             post: i,
@@ -684,15 +688,11 @@ export default {
     },
     async getPost(i, type) {
       const component = this;
-      let postObj;
 
-      await axios
-        .get(`${component.interface.endpoint}eoe/${i}?type=post`)
-        .then((output) => {
-            postObj = output.data;
-        });
+      const output = await axios.get(`${component.interface.endpoint}eoe/${i}?type=post`)
+      const posts = output.data
 
-      return await postObj;
+      return posts.at(0);
     },
     async getImage(i) {
       const component = this;
