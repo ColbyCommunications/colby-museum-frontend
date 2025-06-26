@@ -10,18 +10,19 @@ const pageSEO = async (props, type) => {
   const endpointType = type ? type : 'pages'
   const endpointUrl = computed( () => `${props.interface.endpoint}${endpointType}` )
 
-  const { data, error, status } = await useFetch(endpointUrl.value, { method: 'GET', query: { slug, _embed: 'wp:featuredmedia' } })
+  const { data, error, status } = await useFetch( () => endpointUrl.value, { method: 'GET', query: { slug: slug.value, _embed: 'wp:featuredmedia' } })
 
   if (error.value) {
     console.error(`Encountered an error when fetching page metadata from ${endpointUrl.value}:`,error)
     return
   }
 
-  pageMeta.value = data.value.at(0)
-  if (!pageMeta.value) {
-    console.error("Fetched empty page metadata!")
+  if (!data.value || !data.value.at(0)) {
+    console.error(`Fetched empty data from ${endpointUrl.value} ${slug.value} and ${ status.value }!`)
     return
   }
+
+  pageMeta.value = data.value.at(0)
 
   // Unwrap any embedded media data
   const { _embedded } = pageMeta.value
