@@ -35,8 +35,8 @@ import seoConfig from '../helpers/seoConfig';
 export default {
   setup(props) {
     useSeoMeta({
-      ogTitle: () => 'Friends of Art | Colby College Museum of Art · Colby College',
-      title: () => 'Friends of Art | Colby College Museum of Art · Colby College',
+      ogTitle: () => 'Friends of Art | Colby College Museum of Art',
+      title: () => 'Friends of Art | Colby College Museum of Art',
       ogDescription: () => 'Friends of Art at the Colby College Museum of Art.',
       description: () => 'Friends of Art at the Colby College Museum of Art.',
     });
