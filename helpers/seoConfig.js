@@ -17,7 +17,7 @@ const pageSEO = async (props, type) => {
     return
   }
 
-  pageMeta.value = data.at(0)
+  pageMeta.value = data.value.at(0)
   if (!pageMeta.value) {
     console.error("Fetched empty page metadata!")
     return
