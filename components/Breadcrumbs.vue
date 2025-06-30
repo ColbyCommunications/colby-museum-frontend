@@ -94,22 +94,10 @@ export default {
       required: false,
     },
   },
-  watch: {
-    items: {
-      deep: true,
-      async handler() {
-        setTimeout(() => {
-          this.animate();
-        }, 100);
-      }
-    },
-  },
   mounted() {
-    if (this.manual) {
-      setTimeout(() => {
-        this.animate();
-      }, 100);
-    }
+    setTimeout(() => {
+      this.animate();
+    }, 100);
   },
   methods: {
     animate() {
