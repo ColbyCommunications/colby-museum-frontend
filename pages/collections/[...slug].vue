@@ -51,60 +51,49 @@ import transitionConfig from '../helpers/transitionConfig';
 import seoConfig from '../helpers/seoConfig';
 
 export default {
-  setup(props) {
-    seoConfig(props, 'collections');
+  async setup(props) {
+    const { data } = await seoConfig(props, 'collections');
 
     definePageMeta({
       pageTransition: transitionConfig,
     });
-  },
-  data() {
+
+    const post = data.value[0];
+
+    const embark_id = post.acf.embark_id;
+
+    const title = post.title.rendered
+      .replace(/–/g, '-')
+      .replace(/“/g, '"')
+      .replace(/”/g, '"')
+      .replace(/’/g, "'");
+    
+    const excerpt = post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '');
+
+    const components = post.block_data.map((component) => {
+      component.type = component.blockName
+        .replace('acf/','')
+        .replace(/\//g,'-');
+
+      return {
+        type: component.type,
+        ...component.attrs.data,
+        attrs: component.attrs.data ? undefined : component.attrs,
+        innerHTML: component.rendered ? component.rendered : undefined,
+      };
+    });
+
     return {
-      title: undefined,
-      excerpt: undefined,
-      embark_id: undefined,
-      components: undefined,
-    };
+      title,
+      excerpt,
+      embark_id,
+      components,
+    }
   },
   props: {
     interface: {
       required: false,
     },
-  },
-  async mounted() {
-    const page = this;
-
-    // console.log(this.$route.params.slug);
-
-    await axios
-      .get(`${this.interface.endpoint}collections?slug=${this.$route.params.slug ? this.$route.params.slug : 'home'}`)
-      .then((output) => {
-        const post = output.data[0];
-
-        page.embark_id = post.acf.embark_id;
-
-        page.title = post.title.rendered
-          .replace(/–/g, '-')
-          .replace(/“/g, '"')
-          .replace(/”/g, '"')
-          .replace(/’/g, "'");
-        
-        page.excerpt = post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '');
-
-        page.components = post.block_data.map((component) => {
-          
-          component.type = component.blockName
-            .replace('acf/','')
-            .replace(/\//g,'-');
-
-          return {
-            type: component.type,
-            ...component.attrs.data,
-            attrs: component.attrs.data ? undefined : component.attrs,
-            innerHTML: component.rendered ? component.rendered : undefined,
-          };
-        });
-      });
   }
 }
 </script>
