@@ -37,73 +37,75 @@ import { useInterfaceStore } from '~/store/interface';
 import footerItems from '~/assets/data/footer.yml';
 
 export default {
-  data() {
+  async setup() {
+    let footerItems = [];
+
+    const iface = useInterfaceStore();
+
+    const { data } = await useAsyncData( 'app', async () => {
+      
+      const menus = await $fetch(`${iface.endpoint}menus`)
+      // console.log(menus,iface.endpoint)
+      const { acf: globalOptions } = await $fetch(`${iface.endpointv3}options/options`)
+      // console.log(globalOptions)
+      const events = await $fetch(`${iface.endpoint}events?categories_exclude=1&chronologies=9`)
+      // console.log(events)
+
+      return { menus, globalOptions, events }
+    })
+
+    const menus = data.value?.menus ?? {}
+    const events = data.value?.events ?? []
+    const globalOptions = data.value?.globalOptions ?? {}
+
+    const mainMenu = menus.site;
+    const utilityMenu = menus.utility;
+    const socialMenu = menus.social;
+
+    const campusEvents = events.filter((event) => event.acf.location == 'campus');
+    const downtownEvents = events.filter((event) => event.acf.location == 'downtown');
+
+    let campusCurrentEvents = []
+    if (campusEvents.length >= 1) {
+      campusCurrentEvents = campusEvents.map((i) => ({
+        heading: i.title.rendered,
+        location: i.acf.location,
+        time: `${component.formatTime(
+            i.acf.start_time
+        )}-${component.formatTime(i.acf.end_time)}`,
+        button: {
+            title: 'Event Details',
+            url: i.link,
+        },
+      }));
+    }
+
+    let downtownCurrentEvents = []
+    if (downtownEvents.length >= 1) {
+      downtownCurrentEvents = downtownEvents.map((i) => ({
+        heading: i.title.rendered,
+        location: i.acf.location,
+        time: `${component.formatTime(
+            i.acf.start_time
+        )}-${component.formatTime(i.acf.end_time)}`,
+        button: {
+            title: 'Event Details',
+            url: i.link,
+        },
+      }));
+    }  
+
     return {
-      globalOptions: {},
-      interface: undefined,
-      mainMenu: [],
-      utilityMenu: [],
-      socialMenu: [],
+      globalOptions,
+      interface: iface,
+      mainMenu,
+      utilityMenu,
+      socialMenu,
       headerItems: [],
       footerItems: [],
-      campusCurrentEvents: undefined,
-      downtownCurrentEvents: undefined,
-    };
-  },
-  created() {
-    const component = this;
-    let campusEvents;
-    let downtownEvents;
-
-    this.interface = useInterfaceStore();
-
-    // this.headerItems = headerItems;
-    this.footerItems = footerItems;
-
-    axios.get(`${this.interface.endpoint}menus`).then((output) => {
-      component.mainMenu = output.data.site;
-      component.utilityMenu = output.data.utility;
-      component.socialMenu = output.data.social;
-    });
-
-    axios.get(`${this.interface.endpointv3}options/options`).then((output) => {
-      component.globalOptions = output.data.acf;
-    });
-
-    axios
-      .get(`${this.interface.endpoint}events?categories_exclude=1&chronologies=9`)
-      .then((output) => {
-          campusEvents = output.data.filter((event) => event.acf.location == 'campus');
-          downtownEvents = output.data.filter((event) => event.acf.location == 'downtown');
-
-          if (campusEvents.length >= 1) {
-            component.campusCurrentEvents = campusEvents.map((i) => ({
-              heading: i.title.rendered,
-              location: i.acf.location,
-              time: `${component.formatTime(
-                  i.acf.start_time
-              )}-${component.formatTime(i.acf.end_time)}`,
-              button: {
-                  title: 'Event Details',
-                  url: i.link,
-              },
-            }));
-          }
-
-          if (downtownEvents.length >= 1) {
-            component.downtownCurrentEvents = downtownEvents.map((i) => ({
-              heading: i.title.rendered,
-              location: i.acf.location,
-              time: `${component.formatTime(
-                  i.acf.start_time
-              )}-${component.formatTime(i.acf.end_time)}`,
-              button: {
-                  title: 'Event Details',
-                  url: i.link,
-              },
-            }));
-          }
-      });
+      campusCurrentEvents,
+      downtownCurrentEvents,
+    }
   },
   mounted() {
     gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
