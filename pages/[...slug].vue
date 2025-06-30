@@ -1,4 +1,4 @@
-
+<!-- CCMA Site index slug handler -->
 <template>
   <div class="page page--default">
     <Breadcrumbs
@@ -29,87 +29,71 @@ import transitionConfig from '../helpers/transitionConfig';
 import seoConfig from '../helpers/seoConfig';
 
 export default {
-  setup(props) {
-    seoConfig(props);
-
+  async setup(props) {
+    const route = useRoute()
     definePageMeta({
       pageTransition: transitionConfig,
     });
-  },
-  data() {
-    return {
-      title: undefined,
-      fullPath: undefined,
-      excerpt: undefined,
-      intro_visible: undefined,
-      breadcrumbs: undefined,
-      components: undefined,
-      excerpt_visible: true,
-      heading_visible: true,
-    };
+
+    const { data } = await useAsyncData('posts', async () => {
+      const { data } = await seoConfig(props)
+
+      const pageData = computed( () => data.value?.at(0) )
+
+      const url = computed( () => `https://museum-backend.colby.edu/wp-json/wp/v2/breadcrumbs/${ pageData.value.id }` )
+      
+      const crumbData = await $fetch(url.value) 
+      const breadcrumbs = crumbData ? crumbData : []
+
+      return { pageData, breadcrumbs }
+    })
+
+    const pageData = data.value?.pageData ?? {}
+    const breadcrumbs = data.value?.breadcrumbs ?? [] 
+
+
+    const title = pageData?.title?.rendered
+      .replace(/–/g, '-')
+      .replace(/“/g, '"')
+      .replace(/”/g, '"')
+      .replace(/’/g, "'");
+    
+    const excerpt = pageData?.excerpt?.rendered.replace(/<\/?[^>]+(>|$)/g, '');
+    const intro_visible = pageData?.acf?.intro_visible;
+    const heading_visible = pageData?.acf?.heading_visible;
+    const excerpt_visible = pageData?.acf?.excerpt_visible;
+
+    // page.getBreadcrumbs(post);
+
+    const components = (pageData?.block_data ?? []).map((comp, i) => {
+      let component = { ...comp }
+      component.type = component.blockName
+        .replace('acf/','')
+        .replace(/\//g,'-');
+
+      return {
+        layoutPosition: i,
+        type: component.type,
+        ...component.attrs.data,
+        attrs: component.attrs.data ? undefined : component.attrs,
+        innerHTML: component.rendered ? component.rendered : undefined,
+      };
+    });
+
+    return { title, 
+             excerpt, 
+             intro_visible, 
+             heading_visible, 
+             excerpt_visible, 
+             breadcrumbs,
+             components, 
+             pageData,
+             fullPath: route.fullPath }
   },
   props: {
     interface: {
       required: false,
     },
-  },
-  async created() {
-    const page = this;
-    const slug = this.$route.params.slug;
-    let pageName;
-
-    this.fullPath = this.$route.fullPath;
-
-    // console.log(this.$route);
-    // console.log(this.$route.params);
-    // console.log(this.$route.params.slug);
-    // console.log(`${this.interface.endpoint}pages?slug=${this.$route.params.slug ? this.$route.params.slug : 'home'}`);
-    // console.log(slug[slug.length - 1]);
-
-    if (Array.isArray(slug)) {
-      pageName = slug[slug.length - 1];
-    } else if (slug) {
-      pageName = slug;
-    } else {
-      pageName = 'home';
-    }
-
-    await axios
-      .get(`${this.interface.endpoint}pages?slug=${pageName}`)
-      .then((output) => {
-        const post = output.data[0];
-        // console.log(post);
-
-        page.title = post.title.rendered
-          .replace(/–/g, '-')
-          .replace(/“/g, '"')
-          .replace(/”/g, '"')
-          .replace(/’/g, "'");
-        
-        page.excerpt = post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '');
-        page.intro_visible = post.acf.intro_visible;
-        page.heading_visible = post.acf.heading_visible;
-        page.excerpt_visible = post.acf.excerpt_visible;
-
-        page.getBreadcrumbs(post);
-
-        page.components = post.block_data.map((component, i) => {
-          
-          component.type = component.blockName
-            .replace('acf/','')
-            .replace(/\//g,'-');
-
-          return {
-            layoutPosition: i,
-            type: component.type,
-            ...component.attrs.data,
-            attrs: component.attrs.data ? undefined : component.attrs,
-            innerHTML: component.rendered ? component.rendered : undefined,
-          };
-        });
-
-        // console.log(page.components);
-      });
   },
   mounted() {
     const timeLeft = ref(1);
@@ -132,15 +116,6 @@ export default {
     }, 100);
   },
   methods: {
-    async getBreadcrumbs(post) {
-      const component = this;
-
-      await axios
-        .get(`${this.interface.endpoint}breadcrumbs/${post.id}`)
-        .then((output_b) => {
-          component.breadcrumbs = output_b.data;
-        });
-    },
     hasFileExtension(fileName) {
       return fileName.includes('.pdf');
     }
