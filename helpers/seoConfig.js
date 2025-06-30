@@ -10,8 +10,7 @@ const pageSEO = async (props, type) => {
   const endpointType = type ? type : 'pages'
   const endpointUrl = computed( () => `${props.interface.endpoint}${endpointType}` )
 
-  const options = { lazy: true,
-                    method: 'GET', 
+  const options = { method: 'GET', 
                     query: { slug: slug.value, _embed: 'wp:featuredmedia' } 
                   }
   const { data, error, status } = await useFetch( () => endpointUrl.value, options)
@@ -43,6 +42,8 @@ const pageSEO = async (props, type) => {
     description: () => pageMeta.value.excerpt?.rendered.replace(/<p[^>]*>|<\/p>/g, ''),
     ogImage: () => postImageUrl,
   }));
+
+  return { data, error, status }
 }
 
 export default pageSEO;
