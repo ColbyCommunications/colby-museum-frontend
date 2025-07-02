@@ -681,9 +681,6 @@ export default {
               );
             }
           }
-          component.newItems.forEach((item) => {
-            console.log(item.post);
-          });
       });
     },
     async getPost(i, type) {
