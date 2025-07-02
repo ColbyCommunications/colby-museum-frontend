@@ -1,11 +1,10 @@
-<template>
+$route.<template>
   <div class="page page--default">
     <Breadcrumbs
       v-if="$route.params.slug != ''"
-      :items="breadcrumbs"
       :current="{
         title: title,
-        url: fullPath,
+        url: $route.fullPath,
       }"
       :manual="{
         title: 'Lunder Institute News',
@@ -31,18 +30,42 @@ import transitionConfig from '../helpers/transitionConfig';
 import seoConfig from '../helpers/seoConfig';
 
 export default {
-  setup(props) {
-    seoConfig(props, 'posts');
-
+  async setup(props) {
     definePageMeta({
       pageTransition: transitionConfig,
     });
-  },
-  data() {
+
+    const { data, error } = await seoConfig(props, 'posts');
+
+    const post = data.value[0];
+
+    const title = post.title.rendered
+      .replace(/–/g, '-')
+      .replace(/“/g, '"')
+      .replace(/”/g, '"')
+      .replace(/’/g, "'");
+    
+    const excerpt = post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '');
+
+    const components = post.block_data.map((component) => {
+      
+      component.type = component.blockName
+        .replace('acf/','')
+        .replace(/\//g,'-');
+
+      return {
+        type: component.type,
+        ...component.attrs.data,
+        attrs: component.attrs.data ? undefined : component.attrs,
+        innerHTML: component.rendered ? component.rendered : undefined,
+      };
+    });
+
     return {
-      title: undefined,
-      excerpt: undefined,
-      components: undefined,
+      title,
+      excerpt,
+      components,
+      breadcrumbs: []
     };
   },
   props: {
@@ -50,40 +73,5 @@ export default {
       required: false,
     },
   },
-  async mounted() {
-    const page = this;
-
-    // console.log(this.$route.params.slug);
-
-    await axios
-      .get(`${this.interface.endpoint}posts?slug=${this.$route.params.slug}`)
-      .then((output) => {
-        const post = output.data[0];
-
-        console.log(post);
-
-        page.title = post.title.rendered
-          .replace(/–/g, '-')
-          .replace(/“/g, '"')
-          .replace(/”/g, '"')
-          .replace(/’/g, "'");
-        
-        page.excerpt = post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '');
-
-        page.components = post.block_data.map((component) => {
-          
-          component.type = component.blockName
-            .replace('acf/','')
-            .replace(/\//g,'-');
-
-          return {
-            type: component.type,
-            ...component.attrs.data,
-            attrs: component.attrs.data ? undefined : component.attrs,
-            innerHTML: component.rendered ? component.rendered : undefined,
-          };
-        });
-      });
-  }
 }
 </script>

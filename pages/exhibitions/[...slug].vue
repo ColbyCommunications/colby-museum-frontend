@@ -4,7 +4,7 @@
       v-if="$route.params.slug != ''"
       :current="{
         title: title,
-        url: fullPath,
+        url: $route.fullPath,
       }"
       :manual="{
         title: 'Exhibitions',
@@ -51,89 +51,90 @@ import transitionConfig from '../helpers/transitionConfig';
 import seoConfig from '../helpers/seoConfig';
 
 export default {
-  setup(props) {
-    seoConfig(props, 'exhibitions');
-
+  async setup(props) {
     definePageMeta({
       pageTransition: transitionConfig,
     });
-  },
-  data() {
+
+    const { data } = await useAsyncData('posts', async () => {
+      const { data } = await seoConfig(props, 'exhibitions')
+
+      const pageData = computed( () => data.value?.at(0) )
+
+      const url = computed( () => `https://museum-backend.colby.edu/wp-json/wp/v2/breadcrumbs/${ pageData.value.id }` )
+      
+      const crumbData = await $fetch(url.value) 
+      const breadcrumbs = crumbData ? crumbData : []
+
+      return { pageData, breadcrumbs }
+    })
+
+    const post = data.value?.pageData ?? {}
+    const breadcrumbs = data.value?.breadcrumbs ?? [] 
+
+    const title = post.title.rendered
+      .replace(/–/g, '-')
+      .replace(/“/g, '"')
+      .replace(/”/g, '"')
+      .replace(/’/g, "'");
+    
+    const excerpt = post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '');
+    const intro_visible = post.acf.intro_visible;
+    const heading_visible = post.acf.heading_visible;
+    const excerpt_visible = post.acf.excerpt_visible;
+    const location = post.acf.location;
+    const address = post.acf.address;
+
+    let start_time, end_time
+    const date = new Date(`${post.acf.date.substr(0,4)}-${post.acf.date.substr(4,2)}-${post.acf.date.substr(6,2)}T00:00:00`).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: '2-digit',
+      hour12: false
+    });
+
+    let end_date
+    if (post.acf.end_date) {
+      end_date = new Date(`${post.acf.end_date.substr(0,4)}-${post.acf.end_date.substr(4,2)}-${post.acf.end_date.substr(6,2)}T00:00:00`).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: '2-digit',
+        hour12: false
+      });
+    }
+
+    const components = post.block_data.map((component) => {
+      component.type = component.blockName
+        .replace('acf/','')
+        .replace(/\//g,'-');
+
+      return {
+        type: component.type,
+        ...component.attrs.data,
+        attrs: component.attrs.data ? undefined : component.attrs,
+        innerHTML: component.rendered ? component.rendered : undefined,
+      };
+    });
+
     return {
-      title: undefined,
-      excerpt: undefined,
-      location: undefined,
-      address: undefined,
-      date: undefined,
-      end_date: undefined,
-      start_time: undefined,
-      end_time: undefined,
-      components: undefined,
+      title,
+      excerpt,
+      location,
+      address,
+      date,
+      end_date,
+      start_time,
+      end_time,
+      components,
+      breadcrumbs,
+      heading_visible: true,
+      excerpt_visible: true,
     };
   },
   props: {
     interface: {
       required: false,
     },
-  },
-  async mounted() {
-    const page = this;
-
-    // console.log(this.$route.params.slug);
-
-    await axios
-      .get(`${this.interface.endpoint}exhibitions?slug=${this.$route.params.slug ? this.$route.params.slug : 'home'}`)
-      .then((output) => {
-        const post = output.data[0];
-
-        page.title = post.title.rendered
-          .replace(/–/g, '-')
-          .replace(/“/g, '"')
-          .replace(/”/g, '"')
-          .replace(/’/g, "'");
-        
-        page.excerpt = post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '');
-        page.intro_visible = post.acf.intro_visible;
-        page.heading_visible = post.acf.heading_visible;
-        page.excerpt_visible = post.acf.excerpt_visible;
-        page.location = post.acf.location;
-        page.address = post.acf.address;
-        page.date = new Date(`${post.acf.date.substr(0,4)}-${post.acf.date.substr(4,2)}-${post.acf.date.substr(6,2)}T00:00:00`).toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: '2-digit',
-          hour12: false
-        });
-
-        if (post.acf.end_date) {
-          page.end_date = new Date(`${post.acf.end_date.substr(0,4)}-${post.acf.end_date.substr(4,2)}-${post.acf.end_date.substr(6,2)}T00:00:00`).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: '2-digit',
-            hour12: false
-          });
-        }
-
-        page.getBreadcrumbs(post);
-
-        // Exhibitions do not have start and end times so thsi will be deleted.
-        // page.start_time = this.formatTime(post.acf.start_time);
-        // page.end_time = this.formatTime(post.acf.end_time);
-
-        page.components = post.block_data.map((component) => {
-          
-          component.type = component.blockName
-            .replace('acf/','')
-            .replace(/\//g,'-');
-
-          return {
-            type: component.type,
-            ...component.attrs.data,
-            attrs: component.attrs.data ? undefined : component.attrs,
-            innerHTML: component.rendered ? component.rendered : undefined,
-          };
-        });
-      });
   },
   methods: {
     formatTime(t) {
@@ -145,15 +146,6 @@ export default {
 
       return `${hour == 12 || hour == 0 ? 12 : hour % 12}:${min}${ampm}`
     },
-    async getBreadcrumbs(post) {
-      const component = this;
-
-      await axios
-        .get(`${this.interface.endpoint}breadcrumbs/${post.id}`)
-        .then((output_b) => {
-          component.breadcrumbs = output_b.data;
-        });
-    }
   }
 }
 </script>
