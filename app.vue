@@ -36,6 +36,16 @@ import { useInterfaceStore } from '~/store/interface';
 
 import footerItems from '~/assets/data/footer.yml';
 
+function formatTime(t) {
+      const time = t.split(':');
+      const hour = parseInt(time[0]);
+      const min = time[1];
+      const sec = parseInt(time[2]);
+      const ampm = (hour >= 12) ? " p.m." : " a.m.";
+
+      return `${hour == 12 || hour == 0 ? 12 : hour % 12}:${min.replace(/\s/g, '').replace('am', ' a.m.').replace('pm', ' p.m.').replace(' - ', '&ndash;')}`;
+    }
+
 export default {
   async setup() {
     let footerItems = [];
@@ -70,9 +80,9 @@ export default {
       campusCurrentEvents = campusEvents.map((i) => ({
         heading: i.title.rendered,
         location: i.acf.location,
-        time: `${component.formatTime(
+        time: `${formatTime(
             i.acf.start_time
-        )}-${component.formatTime(i.acf.end_time)}`,
+        )}-${formatTime(i.acf.end_time)}`,
         button: {
             title: 'Event Details',
             url: i.link,
@@ -85,9 +95,9 @@ export default {
       downtownCurrentEvents = downtownEvents.map((i) => ({
         heading: i.title.rendered,
         location: i.acf.location,
-        time: `${component.formatTime(
+        time: `${formatTime(
             i.acf.start_time
-        )}-${component.formatTime(i.acf.end_time)}`,
+        )}-${formatTime(i.acf.end_time)}`,
         button: {
             title: 'Event Details',
             url: i.link,
@@ -116,17 +126,6 @@ export default {
       //     effects: true,
       // });
     }, 600);
-  },
-  methods: {
-    formatTime(t) {
-      const time = t.split(':');
-      const hour = parseInt(time[0]);
-      const min = time[1];
-      const sec = parseInt(time[2]);
-      const ampm = (hour >= 12) ? " p.m." : " a.m.";
-
-      return `${hour == 12 || hour == 0 ? 12 : hour % 12}:${min.replace(/\s/g, '').replace('am', ' a.m.').replace('pm', ' p.m.').replace(' - ', '&ndash;')}`;
-    },
   },
 };
 </script>
