@@ -16,8 +16,6 @@ export default {
   },
   async created() {
     this.interface = useInterfaceStore();
-
-    console.log('test');
   },
   methods: {
     animate() {
