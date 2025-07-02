@@ -50,15 +50,13 @@ export default {
   async setup() {
     let footerItems = [];
 
-    const iface = useInterfaceStore();
-
     const { data } = await useAsyncData( 'app', async () => {
       
-      const menus = await $fetch(`${iface.endpoint}menus`)
-      // console.log(menus,iface.endpoint)
-      const { acf: globalOptions } = await $fetch(`${iface.endpointv3}options/options`)
+      const menus = await $fetch(`${useInterfaceStore().endpoint}menus`)
+
+      const { acf: globalOptions } = await $fetch(`${useInterfaceStore().endpointv3}options/options`)
       // console.log(globalOptions)
-      const events = await $fetch(`${iface.endpoint}events?categories_exclude=1&chronologies=9`)
+      const events = await $fetch(`${useInterfaceStore().endpoint}events?categories_exclude=1&chronologies=9`)
       // console.log(events)
 
       return { menus, globalOptions, events }
@@ -107,7 +105,7 @@ export default {
 
     return {
       globalOptions,
-      interface: iface,
+      interface: useInterfaceStore(),
       mainMenu,
       utilityMenu,
       socialMenu,
