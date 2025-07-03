@@ -60,7 +60,7 @@ const setPageMeta = async () => {
       return
     }
 
-    const pageMeta = data.value
+    const pageMeta = data.value ?? {}
     const fallbackImage = computed( () => `${useInterfaceStore().backend}wp-content/uploads/2025/03/default.jpg`)
 
     nuxtApp.runWithContext(() => {
