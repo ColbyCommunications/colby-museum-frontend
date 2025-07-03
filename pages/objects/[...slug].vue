@@ -63,15 +63,15 @@ const setPageMeta = async () => {
     const pageMeta = data.value ?? {}
     const fallbackImage = computed( () => `${useInterfaceStore().backend}wp-content/uploads/2025/03/default.jpg`)
 
-    nuxtApp.runWithContext(() => {
-      useSeoMeta({
-        ogTitle: () => `${pageMeta?.Disp_Title ? pageMeta?.Disp_Title.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' + pageMeta?.Disp_Maker_1.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' : ''}Colby College Museum of Art`,
-        title: () => `${pageMeta?.Disp_Title ? pageMeta?.Disp_Title.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' + pageMeta?.Disp_Maker_1.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' : ''}Colby College Museum of Art`,
-        ogDescription: () => pageMeta?.Disp_Medium,
-        description: () => pageMeta?.Disp_Medium,
-        ogImage: () => pageMeta?.Images?.length > 0 ? `https://ccma-iiif-cache-service.fly.dev/iiif/2/${pageMeta?.Images?.at(0).IIIF_URL.substring(pageMeta?.Images.at(0).IIIF_URL.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, "")}/full/${encodeURIComponent('400,')}/0/default.jpg` : fallbackImage ,
-      });
-    }) 
+    // nuxtApp.runWithContext(() => {
+    //   useSeoMeta({
+    //     ogTitle: () => `${pageMeta?.Disp_Title ? pageMeta?.Disp_Title.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' + pageMeta?.Disp_Maker_1.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' : ''}Colby College Museum of Art`,
+    //     title: () => `${pageMeta?.Disp_Title ? pageMeta?.Disp_Title.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' + pageMeta?.Disp_Maker_1.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' : ''}Colby College Museum of Art`,
+    //     ogDescription: () => pageMeta?.Disp_Medium,
+    //     description: () => pageMeta?.Disp_Medium,
+    //     ogImage: () => pageMeta?.Images?.length > 0 ? `https://ccma-iiif-cache-service.fly.dev/iiif/2/${pageMeta?.Images?.at(0).IIIF_URL.substring(pageMeta?.Images.at(0).IIIF_URL.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, "")}/full/${encodeURIComponent('400,')}/0/default.jpg` : fallbackImage.value ,
+    //   });
+    // }) 
 
     return data    
 }
