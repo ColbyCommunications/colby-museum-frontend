@@ -482,9 +482,6 @@ export default {
     if (this.items_type == 'objects') {
       this.renderGlide()
 
-      const { ring } = await import('ldrs');
-      ring.register();
-
       this.resizeZooms();
     }
   },
