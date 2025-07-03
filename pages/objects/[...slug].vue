@@ -87,22 +87,22 @@ export default {
 
     const post = data.value;
 
-    let title = post.Disp_Title === '' ? 'Untitled' : post.Disp_Title?.replace(/–/g, '-')
+    let title = post?.Disp_Title === '' ? 'Untitled' : post?.Disp_Title?.replace(/–/g, '-')
                                                         .replace(/“/g, '"')
                                                         .replace(/”/g, '"')
                                                         .replace(/’/g, "'")
 
-    const artist = post.Disp_Maker_1;
-    const period = post.Disp_Create_DT;
+    const artist = post?.Disp_Maker_1;
+    const period = post?.Disp_Create_DT;
     
     let images = []    
-    if (post.Images.length > 0) {
-      images = post.Images.map((i) => ({
+    if (post?.Images.length > 0) {
+      images = post?.Images.map((i) => ({
         image: {
           caption: {
-            rendered: `<strong>${post.Disp_Maker_1}</strong>, <i>${post.Disp_Title}</i>, ${post.Disp_Create_DT}. ${post.Disp_Medium}${post.Disp_Dimen ? ', ' + post.Disp_Dimen : ''}. Colby College Museum of Art${post.Dedication ? ', ' + post.Dedication : ''}; ${post.Disp_Access_No}`,
+            rendered: `<strong>${post?.Disp_Maker_1}</strong>, <i>${post?.Disp_Title}</i>, ${post?.Disp_Create_DT}. ${post?.Disp_Medium}${post?.Disp_Dimen ? ', ' + post?.Disp_Dimen : ''}. Colby College Museum of Art${post?.Dedication ? ', ' + post?.Dedication : ''}; ${post?.Disp_Access_No}`,
           },
-          alt_text: post.Disp_Medium,
+          alt_text: post?.Disp_Medium,
           media_details: {
             sizes: {
               full: {
@@ -120,23 +120,23 @@ export default {
     const items = [
       {
         heading: 'Object Type',
-        paragraph: post.Disp_Obj_Type,
+        paragraph: post?.Disp_Obj_Type,
       },
       {
         heading: 'Medium',
-        paragraph: post.Disp_Medium,
+        paragraph: post?.Disp_Medium,
       },
       {
         heading: 'Dimensions',
-        paragraph: post.Disp_Dimen,
+        paragraph: post?.Disp_Dimen,
       },
       {
         heading: 'Credit Line',
-        paragraph: post.Dedication,
+        paragraph: post?.Dedication,
       },
       {
         heading: 'Accession Number',
-        paragraph: post.Disp_Access_No,
+        paragraph: post?.Disp_Access_No,
       },
     ]
 
