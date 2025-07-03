@@ -72,12 +72,15 @@
                         :loading="'eager'"
                       />
                     </NuxtLink>
-                    <VueImageZoomer
-                      v-else-if="artificialDelayFinished"
-                      :regular="item.image.media_details.sizes.full.source_url"
-                      :click-zoom="true"
-                      :lazyload="index == 0 ? false : true"
-                    />
+                    <ClientOnly
+                        v-else-if="artificialDelayFinished"
+                    >
+                      <VueImageZoomer
+                        :regular="item.image.media_details.sizes.full.source_url"
+                        :click-zoom="true"
+                        :lazyload="index == 0 ? false : true"
+                      />
+                    </ClientOnly>
                     <div
                       v-if="item.image.caption && variant == 'full-width'"
                       class="media-context__caption"
@@ -433,12 +436,12 @@ export default {
     }
   },
   watch: {
-    items: {
-      deep: true,
-      async handler() {
-        this.renderGlide();
-      }
-    },
+    // items: {
+    //   deep: true,
+    //   async handler() {
+    //     this.renderGlide();
+    //   }
+    // },
     newItems: {
       deep: true,
       async handler() {
@@ -470,13 +473,15 @@ export default {
       })))
       this.newItems = items
     } else if (this.items_type == 'objects') {
-      component.renderGlide();
+      // component.renderGlide();
     }
   },
   async mounted() {
     this.id = self.crypto.randomUUID();
 
     if (this.items_type == 'objects') {
+      this.renderGlide()
+
       const { ring } = await import('ldrs');
       ring.register();
 

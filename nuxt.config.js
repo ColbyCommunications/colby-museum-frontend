@@ -42,7 +42,7 @@ export default defineNuxtConfig({
     },
 
     build: {
-        transpile: ['gsap', '@glidejs/glide', '@gsap/shockingly'],
+        transpile: ['gsap', '@glidejs/glide', '@gsap/shockingly', 'vue-image-zoomer'],
     },
 
     modules: [
