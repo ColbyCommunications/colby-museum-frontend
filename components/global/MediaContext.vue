@@ -373,7 +373,7 @@ import Glide from '@glidejs/glide';
 import gsap from 'gsap';
 import axios from 'axios';
 import { useInterfaceStore } from "~/store/interface";
-import VueImageZoomer from 'vue-image-zoomer';
+import { VueImageZoomer } from 'vue-image-zoomer';
 
 export default {
   components: {
