@@ -66,11 +66,11 @@ const setPageMeta = async () => {
 
     nuxtApp.runWithContext(() => {
       useSeoMeta({
-        ogTitle: () => `${pageMeta.value.Disp_Title ? pageMeta.value.Disp_Title.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' + pageMeta.value.Disp_Maker_1.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' : ''}Colby College Museum of Art`,
-        title: () => `${pageMeta.value.Disp_Title ? pageMeta.value.Disp_Title.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' + pageMeta.value.Disp_Maker_1.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' : ''}Colby College Museum of Art`,
+        ogTitle: () => `${pageMeta.value?.Disp_Title ? pageMeta.value?.Disp_Title.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' + pageMeta.value?.Disp_Maker_1.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' : ''}Colby College Museum of Art`,
+        title: () => `${pageMeta.value?.Disp_Title ? pageMeta.value?.Disp_Title.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' + pageMeta.value?.Disp_Maker_1.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' : ''}Colby College Museum of Art`,
         ogDescription: () => pageMeta.value?.Disp_Medium,
         description: () => pageMeta.value?.Disp_Medium,
-        ogImage: () => pageMeta.value?.Images?.length > 0 ? `https://ccma-iiif-cache-service.fly.dev/iiif/2/${pageMeta.value.Images?.at(0).IIIF_URL.substring(pageMeta.value.Images.at(0).IIIF_URL.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, "")}/full/${encodeURIComponent('400,')}/0/default.jpg` : fallbackImage ,
+        ogImage: () => pageMeta.value?.Images?.length > 0 ? `https://ccma-iiif-cache-service.fly.dev/iiif/2/${pageMeta.value?.Images?.at(0).IIIF_URL.substring(pageMeta.value?.Images.at(0).IIIF_URL.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, "")}/full/${encodeURIComponent('400,')}/0/default.jpg` : fallbackImage ,
       });
     }) 
 
