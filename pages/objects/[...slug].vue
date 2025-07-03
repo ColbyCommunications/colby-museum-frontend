@@ -87,8 +87,7 @@ export default {
 
     const post = data.value;
 
-    let title = post.Disp_Title === '' ? 'Untitled' : post.Disp_Title
-                                                        .replace(/–/g, '-')
+    let title = post.Disp_Title === '' ? 'Untitled' : post.Disp_Title?.replace(/–/g, '-')
                                                         .replace(/“/g, '"')
                                                         .replace(/”/g, '"')
                                                         .replace(/’/g, "'")
