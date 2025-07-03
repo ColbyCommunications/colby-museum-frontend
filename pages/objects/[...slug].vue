@@ -95,7 +95,7 @@ export default {
     const period = post?.Disp_Create_DT;
     
     let images = []    
-    if (post?.Images.length > 0) {
+    if (post?.Images?.length > 0) {
       images = post?.Images.map((i) => ({
         image: {
           caption: {
