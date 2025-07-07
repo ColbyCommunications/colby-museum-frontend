@@ -72,15 +72,12 @@
                         :loading="'eager'"
                       />
                     </NuxtLink>
-                    <ClientOnly
-                        v-else-if="artificialDelayFinished"
-                    >
-                      <VueImageZoomer
-                        :regular="item.image.media_details.sizes.full.source_url"
-                        :click-zoom="true"
-                        :lazyload="index == 0 ? false : true"
-                      />
-                    </ClientOnly>
+                    <VueImageZoomer
+                      v-else-if="artificialDelayFinished"
+                      :regular="item.image.media_details.sizes.full.source_url"
+                      :click-zoom="true"
+                      :lazyload="index == 0 ? false : true"
+                    />
                     <div
                       v-if="item.image.caption && variant == 'full-width'"
                       class="media-context__caption"
@@ -396,7 +393,8 @@ export default {
       gap: 0,
       artificialDelayFinished: true,
       loaded: false,
-    };
+      renderTimeout: undefined,
+    };    
   },
   props: {
     modal: {

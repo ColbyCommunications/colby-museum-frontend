@@ -6,13 +6,14 @@
       :subheading="title"
       :subheading2="period"
     />
-    <MediaContext
-      v-if="images"
-      :variant="'offset'"
-      :items="images"
-      :items_type="'objects'"
-      :autoplay="false"
-    />
+    <ClientOnly v-if="images">
+      <MediaContext
+        :variant="'offset'"
+        :items="images"
+        :items_type="'objects'"
+        :autoplay="false"
+      />
+    </ClientOnly>
     <MetaDataList
       :heading="'Object Details'"
       :items="items"
