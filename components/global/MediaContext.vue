@@ -688,7 +688,7 @@ export default {
     }
 
     return {
-      id: crypto.randomUUID(),
+      id: useRoute().name,
       interface: useInterfaceStore(),
       items_type: props.items_type,
       newItems,
