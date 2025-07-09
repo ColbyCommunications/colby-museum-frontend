@@ -660,6 +660,7 @@ export default {
     },
   },
   async setup(props) {
+    const route = useRoute();
     const iface = useInterfaceStore();
     let newItems = []
 
@@ -688,7 +689,7 @@ export default {
     }
 
     return {
-      id: useRoute().name,
+      id: route.fullPath,
       interface: useInterfaceStore(),
       items_type: props.items_type,
       newItems,
