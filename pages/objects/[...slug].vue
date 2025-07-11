@@ -6,28 +6,28 @@
       :subheading="title"
       :subheading2="period"
     />
-    <ClientOnly v-if="images">
+<!--     <ClientOnly v-if="images">
       <MediaContext
         :variant="'offset'"
         :items="images"
         :items_type="'objects'"
         :autoplay="false"
       />
-    </ClientOnly>
-    <MetaDataList
+    </ClientOnly> -->
+<!--     <MetaDataList
       :heading="'Object Details'"
       :items="items"
-    />
+    /> -->
     <div class="core-paragraph grid full paragraph-style-2" type="core-paragraph">
       <p>Object information is a work in progress and is updated as new research becomes available. Information about images and permissions is available <NuxtLink href="/collection/requests">here</NuxtLink>.</p>
     </div>
-    <BigArrowBtnSection
+<!--     <BigArrowBtnSection
       :button="{
         reverse: true,
         title: 'Search the Collection',
         url: '/objects/page-1?has_image=false'
       }"
-    />
+    /> -->
   </div>
 </template>
 
