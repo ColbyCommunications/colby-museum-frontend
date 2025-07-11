@@ -5,13 +5,13 @@
   >
     <div class="intro-context__inner grid">
       <div class="intro-context__main">
-        <Context
+<!--         <Context
           :size="'xlarge'"
           :heading="heading"
           :headingElement="headingElement"
           :subheading="subheading"
           :subheading2="subheading2"
-        />
+        /> -->
         <BigArrowBtn
           v-if="button"
           v-bind="button"
