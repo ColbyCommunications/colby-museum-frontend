@@ -38,13 +38,13 @@
         />
       </ClientOnly>
     </component> -->
-    <ClientOnly v-if="subheading">
+<!--     <ClientOnly v-if="subheading">
       <div
         class="context__subheading"
         v-html="preppedSubheading"
         ref="subheading"
       />
-    </ClientOnly>
+    </ClientOnly> -->
     <ClientOnly v-if="subheading2" >
       <div
         v-if="subheading2"
