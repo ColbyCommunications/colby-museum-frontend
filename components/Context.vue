@@ -51,7 +51,7 @@
         ref="subheading2"
       >
         <span class="context__word" aria-hidden="true">
-          <span aria-hidden="true">{{ subheading2 }}</span>
+          <span aria-hidden="true" v-html="subheading2" />
         </span>
       </div>
     </ClientOnly>
