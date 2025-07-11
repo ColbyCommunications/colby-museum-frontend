@@ -45,14 +45,14 @@
         ref="subheading"
       />
     </ClientOnly> -->
-    <ClientOnly v-if="subheading2" >
+<!--     <ClientOnly v-if="subheading2" >
       <div
         v-if="subheading2"
         class="context__subheading"
         v-html="preppedSubheading2"
         ref="subheading2"
       />
-    </ClientOnly>
+    </ClientOnly> -->
     <div
       v-if="image"
       class="context__image"
