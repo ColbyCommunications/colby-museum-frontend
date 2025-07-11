@@ -32,19 +32,19 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 import transitionConfig from '../helpers/transitionConfig';
 import { useInterfaceStore } from "~/store/interface";
 
 const setPageMeta = async () => {
     const nuxtApp = useNuxtApp()
-    const route = useRoute();
-    
+
+    const { params } = useRoute()
+    const { backend } = useInterfaceStore()
+
     const user = 'Fr2fpegcBZ'
     const pass = 'Vi7vGnL3h2rtW5SuECoKRwTf'
 
-    const endpointUrl = computed( () => `https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/stage/_source/object%2F${encodeURIComponent(route.params.slug[0])}` )
+    const endpointUrl = `https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/stage/_source/object%2F${encodeURIComponent(params.slug[0])}`
 
     let authToken
     if (process.client) {
@@ -54,15 +54,15 @@ const setPageMeta = async () => {
       authToken = Buffer.from(`${user}:${pass}`).toString('base64')
     }
     
-    const {data, error, status} = await useFetch(endpointUrl.value, { credentials: 'include', headers: { authorization: `Basic ${authToken}` } })
+    const {data, error, status} = await useFetch(endpointUrl, { credentials: 'include', headers: { authorization: `Basic ${authToken}` } })
 
     if (error.value) {
-      console.error(`Could not fetch metadata from ${endpointUrl.value}`,error.value)
+      console.error(`Could not fetch metadata from ${endpointUrl}`,error.value)
       return
     }
 
     const pageMeta = data.value ?? {}
-    const fallbackImage = computed( () => `${useInterfaceStore().backend}wp-content/uploads/2025/03/default.jpg`)
+    const fallbackImage = `${backend}wp-content/uploads/2025/03/default.jpg`
 
     // nuxtApp.runWithContext(() => {
     //   useSeoMeta({
