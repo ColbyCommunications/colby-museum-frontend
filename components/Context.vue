@@ -22,7 +22,7 @@
         />
       </NuxtLink>
     </component>
-    <component :is="headingElement"
+<!--     <component :is="headingElement"
       v-else-if="heading"
       class="context__heading"
       ref="heading"
@@ -47,7 +47,7 @@
       class="context__subheading"
       v-html="preppedSubheading2"
       ref="subheading2"
-    />
+    /> -->
     <div
       v-if="image"
       class="context__image"
