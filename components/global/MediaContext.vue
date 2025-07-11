@@ -480,11 +480,10 @@ const getPost = async (i, endpoint) => {
 }
 
 const getImage = async (i, endpoint) => {
-  const component = this;
+  const { data } = await axios.get(`${endpoint}media/${i}`)
 
-  const image = await axios.get(`${endpoint}media/${i}`)
-  const imageObj = image.data
-  const mediaDetails = image.data.media_details
+  const imageObj = data
+  const mediaDetails = data.media_details
 
   let imageAspect
   if (mediaDetails.height > 0 && mediaDetails.width > 0) {
@@ -514,8 +513,6 @@ const getImage = async (i, endpoint) => {
 }
 
 const getCollection = async (i) => {
-  const component = this;
-
   const { data } = await axios.get(`https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/stage/_search`, {
       auth: {
         username: 'Fr2fpegcBZ',
