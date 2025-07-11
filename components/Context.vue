@@ -30,24 +30,29 @@
       <span class="sr-only"
         v-text="heading"
       />
-      <span
-        class="context__word-group"
-        aria-hidden="true"
-        v-html="preppedHeading"
-      />
+      <ClientOnly>
+        <span
+          class="context__word-group"
+          aria-hidden="true"
+          v-html="preppedHeading"
+        />
+      </ClientOnly>
     </component>
-    <div
-      v-if="subheading"
-      class="context__subheading"
-      v-html="preppedSubheading"
-      ref="subheading"
-    />
-    <div
-      v-if="subheading2"
-      class="context__subheading"
-      v-html="preppedSubheading2"
-      ref="subheading2"
-    />
+    <ClientOnly v-if="subheading">
+      <div
+        class="context__subheading"
+        v-html="preppedSubheading"
+        ref="subheading"
+      />
+    </ClientOnly>
+    <ClientOnly v-if="subheading2" >
+      <div
+        v-if="subheading2"
+        class="context__subheading"
+        v-html="preppedSubheading2"
+        ref="subheading2"
+      />
+    </ClientOnly>
     <div
       v-if="image"
       class="context__image"
@@ -194,13 +199,13 @@ export default {
   },
   computed: {
     preppedHeading() {
-      return this.heading.replace(/\S+/g, '<span class="context__word" aria-hidden="true"><span aria-hidden="true">$&</span></span>');
+      return spanWrapWords(this.heading ?? '');
     },
     preppedSubheading() {
-      return this.subheading.replace(/\S+/g, '<span class="context__word" aria-hidden="true"><span aria-hidden="true">$&</span></span>');
+      return spanWrapWords(this.subheading ?? '');
     },
     preppedSubheading2() {
-      return this.subheading2.replace(/\S+/g, '<span class="context__word" aria-hidden="true"><span aria-hidden="true">$&</span></span>');
+      return spanWrapWords(this.subheading2 ?? '');
     },
     preppedCaption() {
       return this.caption.replace(/\n/g, '<br />');
