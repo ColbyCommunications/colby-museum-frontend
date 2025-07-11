@@ -187,15 +187,15 @@ export default {
     //     this.animate();
     //   }
     // },
-    image: {
-      deep: true,
-      handler() {
-        this.animate();
-        if (this.$refs.image) {
-          this.$refs.image.classList.remove('context__image--broken');
-        }
-      }
-    }
+    // image: {
+    //   deep: true,
+    //   handler() {
+    //     this.animate();
+    //     if (this.$refs.image) {
+    //       this.$refs.image.classList.remove('context__image--broken');
+    //     }
+    //   }
+    // }
   },
   computed: {
     preppedHeading() {
@@ -227,7 +227,7 @@ export default {
   //   this.interface = useInterfaceStore();
   // },
   mounted() {
-    this.animate();
+    // this.animate();
 
     let previousHeight = document.body.scrollHeight;
 
