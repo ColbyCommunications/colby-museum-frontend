@@ -22,7 +22,7 @@
         />
       </NuxtLink>
     </component>
-    <component :is="headingElement"
+<!--     <component :is="headingElement"
       v-else-if="heading"
       class="context__heading"
       ref="heading"
@@ -37,7 +37,7 @@
           v-html="preppedHeading"
         />
       </ClientOnly>
-    </component>
+    </component> -->
     <ClientOnly v-if="subheading">
       <div
         class="context__subheading"
@@ -227,7 +227,7 @@ export default {
   //   this.interface = useInterfaceStore();
   // },
   mounted() {
-    // this.animate();
+    this.animate();
 
     let previousHeight = document.body.scrollHeight;
 
