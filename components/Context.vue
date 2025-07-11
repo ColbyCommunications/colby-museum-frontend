@@ -45,14 +45,16 @@
         ref="subheading"
       />
     </ClientOnly> -->
-<!--     <ClientOnly v-if="subheading2" >
+    <ClientOnly v-if="subheading2" >
       <div
-        v-if="subheading2"
         class="context__subheading"
-        v-html="preppedSubheading2"
         ref="subheading2"
-      />
-    </ClientOnly> -->
+      >
+        <span class="context__word" aria-hidden="true">
+          <span aria-hidden="true">{{ subheading2 }}</span>
+        </span>
+      </div>
+    </ClientOnly>
     <div
       v-if="image"
       class="context__image"
