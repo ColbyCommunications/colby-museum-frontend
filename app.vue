@@ -49,7 +49,7 @@ function formatTime(t) {
 export default {
   async setup() {
     let footerItems = [];
-
+    const iface = useInterfaceStore()
     const { data } = await useAsyncData( 'app', async () => {
       
       const menus = await $fetch(`${useInterfaceStore().endpoint}menus`)
@@ -105,7 +105,7 @@ export default {
 
     return {
       globalOptions,
-      interface: useInterfaceStore(),
+      interface: iface,
       mainMenu,
       utilityMenu,
       socialMenu,

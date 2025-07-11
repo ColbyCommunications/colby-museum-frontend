@@ -53,7 +53,7 @@ const setPageMeta = async () => {
     else {
       authToken = Buffer.from(`${user}:${pass}`).toString('base64')
     }
-
+    
     const {data, error, status} = await useFetch(endpointUrl.value, { credentials: 'include', headers: { authorization: `Basic ${authToken}` } })
 
     if (error.value) {
@@ -147,11 +147,6 @@ export default {
       images,
       items,
     };    
-  },
-  props: {
-    interface: {
-      required: false,
-    },
-  },
+  }
 }
 </script>

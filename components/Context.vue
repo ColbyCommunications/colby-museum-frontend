@@ -200,9 +200,15 @@ export default {
       return this.button.url.replace(`${this.interface.backend}`, '/').replace(/\/$/, '');
     }
   },
-  async created() {
-    this.interface = useInterfaceStore();
+  setup() {
+    const iface = useInterfaceStore()
+    return {
+      interface: iface
+    }
   },
+  // async created() {
+  //   this.interface = useInterfaceStore();
+  // },
   mounted() {
     this.animate();
 
