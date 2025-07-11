@@ -22,7 +22,7 @@
         />
       </NuxtLink>
     </component>
-<!--     <component :is="headingElement"
+    <component :is="headingElement"
       v-else-if="heading"
       class="context__heading"
       ref="heading"
@@ -47,7 +47,7 @@
       class="context__subheading"
       v-html="preppedSubheading2"
       ref="subheading2"
-    /> -->
+    />
     <div
       v-if="image"
       class="context__image"
@@ -109,6 +109,18 @@ import gsap from 'gsap';
 
 import { useInterfaceStore } from "~/store/interface";
 
+/**
+ * @function spanWrapWords
+ * 
+ * @argument {String} text - input text
+ * 
+ * @return `text` with each word wrapped in <span></span>
+ * 
+ **/ 
+const spanWrapWords = (text) => {
+  return text.replace(/\S+/g, '<span class="context__word" aria-hidden="true"><span aria-hidden="true">$&</span></span>');
+}
+
 export default {
   props: {
     size: {
@@ -158,18 +170,18 @@ export default {
     }
   },
   watch: {
-    heading: {
-      deep: true,
-      handler() {
-        this.animate();
-      }
-    },
-    subheading: {
-      deep: true,
-      handler() {
-        this.animate();
-      }
-    },
+    // heading: {
+    //   deep: true,
+    //   handler() {
+    //     this.animate();
+    //   }
+    // },
+    // subheading: {
+    //   deep: true,
+    //   handler() {
+    //     this.animate();
+    //   }
+    // },
     image: {
       deep: true,
       handler() {
