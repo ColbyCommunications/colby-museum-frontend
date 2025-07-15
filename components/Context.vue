@@ -230,7 +230,7 @@ export default {
   //   this.interface = useInterfaceStore();
   // },
   mounted() {
-    // this.animate();
+    this.animate();
 
     let previousHeight = document.body.scrollHeight;
 
