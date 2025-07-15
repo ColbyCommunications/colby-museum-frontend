@@ -36,20 +36,19 @@
           v-html="preppedHeading"
         />
     </component> -->
-    <ClientOnly >
-      <div
+<!--       <div
         v-if="subheading"
         class="context__subheading"
         v-html="preppedSubheading"
         ref="subheading"
       />
-      <div
-        v-if="subheading2"
-        class="context__subheading"
-        v-html="preppedSubheading2"
-        ref="subheading2"
-      />
-    </ClientOnly>
+ -->      
+    <div
+      v-if="subheading2"
+      class="context__subheading"
+      v-html="subheading2"
+      ref="subheading2"
+    />
     <div
       v-if="image"
       class="context__image"
