@@ -45,8 +45,9 @@
         ref="subheading"
       />
     </ClientOnly> -->
-    <ClientOnly v-if="subheading2" >
+    <ClientOnly >
       <div
+        v-if="subheading2"
         class="context__subheading"
         ref="subheading2"
       >
