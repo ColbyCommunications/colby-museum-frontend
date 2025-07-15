@@ -15,7 +15,7 @@
       :subheading="title"
       :subheading2="period"
     />
-<!--     <ClientOnly>
+    <ClientOnly>
       <MediaContext
         v-if="images"
         :variant="'offset'"
@@ -23,7 +23,7 @@
         :items_type="'objects'"
         :autoplay="false"
       />
-    </ClientOnly> -->
+    </ClientOnly>
     <MetaDataList
       :heading="'Object Details'"
       :items="items"
