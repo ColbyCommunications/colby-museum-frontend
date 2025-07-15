@@ -101,7 +101,7 @@ export default {
       pageTransition: transitionConfig,
     });
 
-    const data = useAsyncData(() => {
+    const data = await useAsyncData( async () => {
       const meta = await setPageMeta()    
 
       return meta
