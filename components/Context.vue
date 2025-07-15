@@ -30,31 +30,25 @@
       <span class="sr-only"
         v-text="heading"
       />
-      <ClientOnly>
         <span
           class="context__word-group"
           aria-hidden="true"
           v-html="preppedHeading"
         />
-      </ClientOnly>
     </component> -->
-<!--     <ClientOnly v-if="subheading">
+    <ClientOnly >
       <div
+        v-if="subheading"
         class="context__subheading"
         v-html="preppedSubheading"
         ref="subheading"
       />
-    </ClientOnly> -->
-    <ClientOnly >
       <div
         v-if="subheading2"
         class="context__subheading"
+        v-html="preppedSubheading2"
         ref="subheading2"
-      >
-        <span class="context__word" aria-hidden="true">
-          <span aria-hidden="true" v-html="subheading2" />
-        </span>
-      </div>
+      />
     </ClientOnly>
     <div
       v-if="image"
