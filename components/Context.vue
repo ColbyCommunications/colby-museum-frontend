@@ -3,7 +3,7 @@
     class="context"
     :class="[size ? `context--${ size }` : '', bordered == true ? 'context--bordered' : '']"
   >
-    <component :is="headingElement"
+    <!-- <component :is="headingElement"
       v-if="heading && button"
       class="context__heading"
       ref="heading"
@@ -21,7 +21,7 @@
           v-html="preppedHeading"
         />
       </NuxtLink>
-    </component>
+    </component> -->
 <!--     <component :is="headingElement"
       v-else-if="heading"
       class="context__heading"
