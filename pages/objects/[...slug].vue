@@ -58,12 +58,21 @@ const setPageMeta = async () => {
     let authToken
     if (process.client) {
       authToken = btoa(`${user}:${pass}`)
-    } 
+    }
     else {
       authToken = Buffer.from(`${user}:${pass}`).toString('base64')
     }
-    
-    const {data, error, status} = await useFetch(endpointUrl, { credentials: 'include', headers: { authorization: `Basic ${authToken}` } })
+ 
+    const pick = [ 'Disp_Title',
+                   'Disp_Maker_1',
+                   'Disp_Medium',
+                   'Dedication',
+                   'Disp_Create_DT',
+                   'Disp_Access_No',
+                   'Images',
+                 ]
+
+    const {data, error, status} = await useFetch(endpointUrl, { pick, credentials: 'include', headers: { authorization: `Basic ${authToken}` } })
 
     if (error.value) {
       console.error(`Could not fetch metadata from ${endpointUrl}`,error.value)

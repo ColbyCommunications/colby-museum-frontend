@@ -15,7 +15,7 @@
         :globalOptions="globalOptions"
       />
       <NuxtLayout>
-        <NuxtPage />
+        <NuxtPage :interface="interface"/>
       </NuxtLayout>
       <Footer
         :primary="mainMenu"
