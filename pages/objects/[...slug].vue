@@ -72,14 +72,14 @@ const setPageMeta = async () => {
                    'Images',
                  ]
 
-    const {data, error, status} = await useFetch(endpointUrl, { pick, credentials: 'include', headers: { authorization: `Basic ${authToken}` } })
+    const data = await $fetch(endpointUrl, { pick, credentials: 'include', headers: { authorization: `Basic ${authToken}` } })
 
-    if (error.value) {
-      console.error(`Could not fetch metadata from ${endpointUrl}`,error.value)
-      return
-    }
+    // if (error.value) {
+    //   console.error(`Could not fetch metadata from ${endpointUrl}`,error.value)
+    //   return
+    // }
 
-    const pageMeta = data.value ?? {}
+    const pageMeta = data ?? {}
     const fallbackImage = `${backend}wp-content/uploads/2025/03/default.jpg`
 
     // nuxtApp.runWithContext(() => {
@@ -101,7 +101,11 @@ export default {
       pageTransition: transitionConfig,
     });
 
-    const data = await setPageMeta()
+    const data = useAsyncData(() => {
+      const meta = await setPageMeta()    
+
+      return meta
+    })
 
     const post = data.value;
 
