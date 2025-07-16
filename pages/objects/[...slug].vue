@@ -75,11 +75,6 @@ const setPageMeta = async () => {
 
     const data = await $fetch(endpointUrl, { pick, credentials: 'include', headers: { authorization: `Basic ${authToken}` } })
 
-    // if (error.value) {
-    //   console.error(`Could not fetch metadata from ${endpointUrl}`,error.value)
-    //   return
-    // }
-
     const pageMeta = data ?? {}
     const fallbackImage = `${backend}wp-content/uploads/2025/03/default.jpg`
 
