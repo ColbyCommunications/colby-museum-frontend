@@ -87,4 +87,11 @@ export default defineNuxtConfig({
 
     devtools: { enabled: process.mode === 'development' },
     compatibilityDate: '2025-02-27',
+    nitro: {
+      preset: "cloudflare_module",
+      cloudflare: {
+        deployConfig: true,
+        nodeCompat: true
+      }
+    }
 });
