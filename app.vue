@@ -54,9 +54,8 @@ export default {
       const menus = await $fetch(`${useInterfaceStore().endpoint}menus`)
 
       const { acf: globalOptions } = await $fetch(`${useInterfaceStore().endpointv3}options/options`)
-      // console.log(globalOptions)
+
       const events = await $fetch(`${useInterfaceStore().endpoint}events?categories_exclude=1&chronologies=9`)
-      // console.log(events)
 
       return { menus, globalOptions, events }
     })
@@ -85,6 +84,15 @@ export default {
             url: i.link,
         },
       }));
+    } else {
+      campusCurrentEvents = [{
+          location: 'No event scheduled for today.',
+          // time: new Date().getDay() == 0 ? '12:00 p.m.–5:00 p.m.' : '10:00 a.m.–5:00 p.m.',
+          button: {
+            title: "What's On",
+            url: '/exhibitions/page-1?chronology=current&location=campus',
+          }
+        }]
     }
 
     let downtownCurrentEvents = []
@@ -100,7 +108,16 @@ export default {
             url: i.link,
         },
       }));
-    }  
+    } else {
+      downtownCurrentEvents = [{
+          location: 'No event scheduled for today.',
+          // time: '11:00 a.m.–7:00 p.m.',
+          button: {
+            title: "What's On",
+            url: '/exhibitions/page-1?chronology=current&location=downtown',
+          }
+        }]
+    }
 
     return {
       globalOptions,
