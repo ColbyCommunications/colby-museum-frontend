@@ -30,18 +30,18 @@
       <span class="sr-only"
         v-text="heading"
       />
-      <span
-        class="context__word-group"
-        aria-hidden="true"
-        v-html="preppedHeading"
-      />
+        <span
+          class="context__word-group"
+          aria-hidden="true"
+          v-html="preppedHeading"
+        />
     </component>
     <div
       v-if="subheading"
       class="context__subheading"
       v-html="preppedSubheading"
       ref="subheading"
-    />
+    />    
     <div
       v-if="subheading2"
       class="context__subheading"
@@ -109,6 +109,18 @@ import gsap from 'gsap';
 
 import { useInterfaceStore } from "~/store/interface";
 
+/**
+ * @function spanWrapWords
+ * 
+ * @argument {String} text - input text
+ * 
+ * @return `text` with each word wrapped in <span></span>
+ * 
+ **/ 
+const spanWrapWords = (text) => {
+  return text.replace(/\S+/g, '<span class="context__word" aria-hidden="true"><span aria-hidden="true">$&</span></span>');
+}
+
 export default {
   props: {
     size: {
@@ -158,37 +170,37 @@ export default {
     }
   },
   watch: {
-    heading: {
-      deep: true,
-      handler() {
-        this.animate();
-      }
-    },
-    subheading: {
-      deep: true,
-      handler() {
-        this.animate();
-      }
-    },
-    image: {
-      deep: true,
-      handler() {
-        this.animate();
-        if (this.$refs.image) {
-          this.$refs.image.classList.remove('context__image--broken');
-        }
-      }
-    }
+    // heading: {
+    //   deep: true,
+    //   handler() {
+    //     this.animate();
+    //   }
+    // },
+    // subheading: {
+    //   deep: true,
+    //   handler() {
+    //     this.animate();
+    //   }
+    // },
+    // image: {
+    //   deep: true,
+    //   handler() {
+    //     this.animate();
+    //     if (this.$refs.image) {
+    //       this.$refs.image.classList.remove('context__image--broken');
+    //     }
+    //   }
+    // }
   },
   computed: {
     preppedHeading() {
-      return this.heading.replace(/\S+/g, '<span class="context__word" aria-hidden="true"><span aria-hidden="true">$&</span></span>');
+      return spanWrapWords(this.heading ?? '');
     },
     preppedSubheading() {
-      return this.subheading.replace(/\S+/g, '<span class="context__word" aria-hidden="true"><span aria-hidden="true">$&</span></span>');
+      return spanWrapWords(this.subheading ?? '');
     },
     preppedSubheading2() {
-      return this.subheading2.replace(/\S+/g, '<span class="context__word" aria-hidden="true"><span aria-hidden="true">$&</span></span>');
+      return spanWrapWords(this.subheading2 ?? '');
     },
     preppedCaption() {
       return this.caption.replace(/\n/g, '<br />');
@@ -200,9 +212,15 @@ export default {
       return this.button.url.replace(`${this.interface.backend}`, '/').replace(/\/$/, '');
     }
   },
-  async created() {
-    this.interface = useInterfaceStore();
+  setup() {
+    const iface = useInterfaceStore()
+    return {
+      interface: iface
+    }
   },
+  // async created() {
+  //   this.interface = useInterfaceStore();
+  // },
   mounted() {
     this.animate();
 
@@ -424,7 +442,7 @@ export default {
             ease: "expo.out",
           });
         }
-      }, 900); // VERY IMPORTANT DELAY FOR ANIMATIONS TO TRIGGER APPROPRIATELY AFTER API LOAD. CAUTION 1100
+      }, 150); // VERY IMPORTANT DELAY FOR ANIMATIONS TO TRIGGER APPROPRIATELY AFTER API LOAD. CAUTION 1100
     }
   }
 }

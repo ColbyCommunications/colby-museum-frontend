@@ -15,7 +15,7 @@
         :globalOptions="globalOptions"
       />
       <NuxtLayout>
-        <NuxtPage :interface="interface" />
+        <NuxtPage :interface="interface"/>
       </NuxtLayout>
       <Footer
         :primary="mainMenu"
@@ -27,7 +27,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ScrollSmoother } from 'gsap/ScrollSmoother';
@@ -49,7 +48,7 @@ function formatTime(t) {
 export default {
   async setup() {
     let footerItems = [];
-
+    const iface = useInterfaceStore()
     const { data } = await useAsyncData( 'app', async () => {
       
       const menus = await $fetch(`${useInterfaceStore().endpoint}menus`)
@@ -105,7 +104,7 @@ export default {
 
     return {
       globalOptions,
-      interface: useInterfaceStore(),
+      interface: iface,
       mainMenu,
       utilityMenu,
       socialMenu,

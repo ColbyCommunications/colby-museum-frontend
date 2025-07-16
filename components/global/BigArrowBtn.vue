@@ -49,8 +49,14 @@ export default {
       }
     }
   },
+  setup() {
+    const iface = useInterfaceStore()
+    return {
+      interface: iface
+    }
+  },
   async created() {
-    this.interface = useInterfaceStore();
+    // this.interface = useInterfaceStore();
   },
   mounted() {
     this.animate();

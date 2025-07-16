@@ -27,38 +27,34 @@ import transitionConfig from '../helpers/transitionConfig';
 import seoConfig from '../helpers/seoConfig';
 
 export default {
-  setup(props) {
+  async setup(props) {
     const route = useRoute();
-    const pageMeta = ref()
+    let pageMeta = {}
 
     const endpointUrl = `${props.interface.endpoint}pages?slug=objects`
-    useFetch(endpointUrl, {})
-      .then(({data, error, status}) => {
-        if (error.value) {
-          console.error(`Could not fetch metadata from ${endpointUrl}`)
-          return
-        }
-        
-        if (!data.value?.at(0)) {
-          console.error(`Received empty head meta from the endpoint!`)
-          return
-        }
+    const {data, error, status} = await useFetch(endpointUrl, {})
 
-        pageMeta.value = data.value.at(0)
-      }) 
+    if (error.value) {
+      console.error(`Could not fetch metadata from ${endpointUrl}`)
+    }
+
+    if (data.value?.at(0)) {
+      pageMeta = data.value.at(0)
+    } else {
+      console.warn("Received empty head meta!")
+    }
 
     useSeoMeta({
-      ogTitle: () => `${pageMeta.value.title ? pageMeta.value.title?.rendered + ' | ' : ''}Colby College Museum of Art`,
-      title: () => `${pageMeta.value.title ? pageMeta.value.title?.rendered + ' | ' : ''}Colby College Museum of Art`,
-      ogDescription: () => pageMeta.value.excerpt?.rendered,
-      description: () => pageMeta.value.excerpt?.rendered,
+      ogTitle: () => `${pageMeta.title ? pageMeta.title?.rendered + ' | ' : ''}Colby College Museum of Art`,
+      title: () => `${pageMeta.title ? pageMeta.title?.rendered + ' | ' : ''}Colby College Museum of Art`,
+      ogDescription: () => pageMeta.excerpt?.rendered,
+      description: () => pageMeta.excerpt?.rendered,
     });
 
     definePageMeta({
       pageTransition: transitionConfig,
     });
-  },
-  data() {
+
     return {
       title: undefined,
       excerpt: undefined,
@@ -72,8 +68,6 @@ export default {
   },
   async mounted() {
     const page = this;
-
-    // console.log(this.$route.params.slug);
 
     await axios
       .get(`${this.interface.endpoint}pages?slug=objects`)

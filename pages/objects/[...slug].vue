@@ -1,4 +1,13 @@
 <template>
+  <NuxtErrorBoundary @error="someErrorLogger">
+    <!-- You use the default slot to render your content -->
+    <template #error="{ error, clearError }">
+      You can display the error locally here: {{ error }}
+      <button @click="clearError">
+        This will clear the error.
+      </button>
+    </template>
+  </NuxtErrorBoundary>
   <div class="page page--object">
     <IntroContext
       :heading="artist"
@@ -6,13 +15,15 @@
       :subheading="title"
       :subheading2="period"
     />
-    <MediaContext
-      v-if="images"
-      :variant="'offset'"
-      :items="images"
-      :items_type="'objects'"
-      :autoplay="false"
-    />
+    <ClientOnly>
+      <MediaContext
+        v-if="images"
+        :variant="'offset'"
+        :items="images"
+        :items_type="'objects'"
+        :autoplay="false"
+      />
+    </ClientOnly>
     <MetaDataList
       :heading="'Object Details'"
       :items="items"
@@ -31,37 +42,41 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 import transitionConfig from '../helpers/transitionConfig';
 import { useInterfaceStore } from "~/store/interface";
 
 const setPageMeta = async () => {
     const nuxtApp = useNuxtApp()
-    const route = useRoute();
-    
+
+    const { params } = useRoute()
+    const { backend } = useInterfaceStore()
+
     const user = 'Fr2fpegcBZ'
     const pass = 'Vi7vGnL3h2rtW5SuECoKRwTf'
 
-    const endpointUrl = computed( () => `https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/stage/_source/object%2F${encodeURIComponent(route.params.slug[0])}` )
+    const endpointUrl = `https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/stage/_source/object%2F${encodeURIComponent(params.slug[0])}`
 
     let authToken
     if (process.client) {
       authToken = btoa(`${user}:${pass}`)
-    } 
+    }
     else {
       authToken = Buffer.from(`${user}:${pass}`).toString('base64')
     }
+ 
+    const pick = [ 'Disp_Title',
+                   'Disp_Maker_1',
+                   'Disp_Medium',
+                   'Dedication',
+                   'Disp_Create_DT',
+                   'Disp_Access_No',
+                   'Images',
+                 ]
 
-    const {data, error, status} = await useFetch(endpointUrl.value, { credentials: 'include', headers: { authorization: `Basic ${authToken}` } })
+    const data = await $fetch(endpointUrl, { pick, credentials: 'include', headers: { authorization: `Basic ${authToken}` } })
 
-    if (error.value) {
-      console.error(`Could not fetch metadata from ${endpointUrl.value}`,error.value)
-      return
-    }
-
-    const pageMeta = data.value
-    const fallbackImage = computed( () => `${useInterfaceStore().backend}wp-content/uploads/2025/03/default.jpg`)
+    const pageMeta = data ?? {}
+    const fallbackImage = `${backend}wp-content/uploads/2025/03/default.jpg`
 
     nuxtApp.runWithContext(() => {
       useSeoMeta({
@@ -69,7 +84,7 @@ const setPageMeta = async () => {
         title: () => `${pageMeta?.Disp_Title ? pageMeta?.Disp_Title.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' + pageMeta?.Disp_Maker_1.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' : ''}Colby College Museum of Art`,
         ogDescription: () => pageMeta?.Disp_Medium,
         description: () => pageMeta?.Disp_Medium,
-        ogImage: () => pageMeta?.Images?.length > 0 ? `https://ccma-iiif-cache-service.fly.dev/iiif/2/${pageMeta?.Images?.at(0).IIIF_URL.substring(pageMeta?.Images.at(0).IIIF_URL.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, "")}/full/${encodeURIComponent('400,')}/0/default.jpg` : fallbackImage ,
+        ogImage: () => pageMeta?.Images?.length > 0 ? `https://ccma-iiif-cache-service.fly.dev/iiif/2/${pageMeta?.Images?.at(0).IIIF_URL.substring(pageMeta?.Images.at(0).IIIF_URL.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, "")}/full/${encodeURIComponent('400,')}/0/default.jpg` : fallbackImage.value ,
       });
     }) 
 
@@ -82,7 +97,11 @@ export default {
       pageTransition: transitionConfig,
     });
 
-    const data = await setPageMeta()
+    const { data } = await useAsyncData( async () => {
+      const meta = await setPageMeta()    
+
+      return meta
+    })
 
     const post = data.value;
 
@@ -95,7 +114,7 @@ export default {
     const period = post?.Disp_Create_DT;
     
     let images = []    
-    if (post?.Images.length > 0) {
+    if (post?.Images?.length > 0) {
       images = post?.Images.map((i) => ({
         image: {
           caption: {
@@ -146,11 +165,6 @@ export default {
       images,
       items,
     };    
-  },
-  props: {
-    interface: {
-      required: false,
-    },
-  },
+  }
 }
 </script>
