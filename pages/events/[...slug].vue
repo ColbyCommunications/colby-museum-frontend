@@ -53,101 +53,99 @@ import axios from 'axios';
 
 import transitionConfig from '../helpers/transitionConfig';
 import seoConfig from '../helpers/seoConfig';
+import { useInterfaceStore } from '~/store/interface';
+
+const formatTime = (t) => {
+  const time = t.split(':');
+  const hour = parseInt(time[0]);
+  const min = time[1];
+  const sec = parseInt(time[2]);
+  const ampm = (hour >= 12) ? " p.m." : " a.m.";
+
+  return `${hour == 12 || hour == 0 ? 12 : hour % 12}:${min.replace(/\s/g, '').replace('am', ' a.m.').replace('pm', ' p.m.')}`;
+}
 
 export default {
-  setup(props) {
-    seoConfig(props, 'events');
-
+  async setup(props) {
     definePageMeta({
       pageTransition: transitionConfig,
     });
-  },
-  data() {
+
+    const iface = useInterfaceStore()
+    const { data } = await seoConfig({...props, interface: useInterfaceStore()}, 'events');
+
+    // const { data } = await useAsyncData(() => {
+    //   const { data: postData } = $fetch(`${iface.endpoint}events?slug=${useRoute().params.slug ? useRoute().params.slug : 'home'}`)
+
+    //   return postData
+    // })
+
+    const post = data.value.at(0)
+
+    const title = post.title.rendered
+      .replace(/–/g, '-')
+      .replace(/“/g, '"')
+      .replace(/”/g, '"')
+      .replace(/’/g, "'");
+    
+    const excerpt = post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '');
+    const intro_visible = post.acf.intro_visible;
+    const heading_visible = post.acf.heading_visible;
+    const excerpt_visible = post.acf.excerpt_visible;
+    const location = post.acf.location;
+    const address = post.acf.address;
+    const date = new Date(`${post.acf.date.substr(0,4)}-${post.acf.date.substr(4,2)}-${post.acf.date.substr(6,2)}T00:00:00`).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: '2-digit',
+      hour12: false
+    });
+
+    let end_date
+    if (post.acf.end_date) {
+      end_date = new Date(`${post.acf.end_date.substr(0,4)}-${post.acf.end_date.substr(4,2)}-${post.acf.end_date.substr(6,2)}T00:00:00`).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: '2-digit',
+        hour12: false
+      });
+    }
+
+    const start_time = formatTime(post.acf.start_time);
+    const end_time = formatTime(post.acf.end_time);
+
+    const components = post.block_data.map((component) => {
+      
+      component.type = component.blockName
+        .replace('acf/','')
+        .replace(/\//g,'-');
+
+      return {
+        type: component.type,
+        ...component.attrs.data,
+        attrs: component.attrs.data ? undefined : component.attrs,
+        innerHTML: component.rendered ? component.rendered : undefined,
+      };
+    });
+
     return {
-      title: undefined,
-      excerpt: undefined,
-      location: undefined,
-      address: undefined,
-      date: undefined,
-      start_time: undefined,
-      end_time: undefined,
-      components: undefined,
+      interface: useInterfaceStore(),
+      title,
+      excerpt,
+      location,
+      address,
+      date,
+      start_time,
+      end_time,
+      components,
+      excerpt_visible,
+      intro_visible,
+      heading_visible,
+      fullPath: useRoute().fullPath
     };
   },
-  props: {
-    interface: {
-      required: false,
-    },
-  },
-  async mounted() {
-    const page = this;
-
-    // console.log(this.$route.params.slug);
-
-    await axios
-      .get(`${this.interface.endpoint}events?slug=${this.$route.params.slug ? this.$route.params.slug : 'home'}`)
-      .then((output) => {
-        const post = output.data[0];
-        // console.log(post);
-
-        page.title = post.title.rendered
-          .replace(/–/g, '-')
-          .replace(/“/g, '"')
-          .replace(/”/g, '"')
-          .replace(/’/g, "'");
-        
-        page.excerpt = post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '');
-        page.intro_visible = post.acf.intro_visible;
-        page.heading_visible = post.acf.heading_visible;
-        page.excerpt_visible = post.acf.excerpt_visible;
-        page.location = post.acf.location;
-        page.address = post.acf.address;
-        page.date = new Date(`${post.acf.date.substr(0,4)}-${post.acf.date.substr(4,2)}-${post.acf.date.substr(6,2)}T00:00:00`).toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: '2-digit',
-          hour12: false
-        });
-
-        if (post.acf.end_date) {
-          page.end_date = new Date(`${post.acf.end_date.substr(0,4)}-${post.acf.end_date.substr(4,2)}-${post.acf.end_date.substr(6,2)}T00:00:00`).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: '2-digit',
-            hour12: false
-          });
-
-          console.log(page.end_date);
-        }
-
-        page.start_time = page.formatTime(post.acf.start_time);
-        page.end_time = page.formatTime(post.acf.end_time);
-
-        page.components = post.block_data.map((component) => {
-          
-          component.type = component.blockName
-            .replace('acf/','')
-            .replace(/\//g,'-');
-
-          return {
-            type: component.type,
-            ...component.attrs.data,
-            attrs: component.attrs.data ? undefined : component.attrs,
-            innerHTML: component.rendered ? component.rendered : undefined,
-          };
-        });
-      });
-  },
   methods: {
-    formatTime(t) {
-      const time = t.split(':');
-      const hour = parseInt(time[0]);
-      const min = time[1];
-      const sec = parseInt(time[2]);
-      const ampm = (hour >= 12) ? " p.m." : " a.m.";
-
-      return `${hour == 12 || hour == 0 ? 12 : hour % 12}:${min.replace(/\s/g, '').replace('am', ' a.m.').replace('pm', ' p.m.')}`;
-    }
+    formatTime
   }
 }
 </script>
