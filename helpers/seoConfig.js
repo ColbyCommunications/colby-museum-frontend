@@ -17,15 +17,15 @@ const pageSEO = async (props, type) => {
 
   if (error.value) {
     console.error(`Encountered an error when fetching page metadata from ${endpointUrl.value}:`,error)
-    return
+    // return
   }
 
-  if (!data.value || !data.value.at(0)) {
-    console.error(`Fetched empty data from ${endpointUrl.value} ${slug.value} and ${ status.value }!`)
-    return
-  }
+  // if (!data.value || !data.value.at(0)) {
+  //   console.error(`Fetched empty data from ${endpointUrl.value} ${slug.value} and ${ status.value }!`)
+  //   return
+  // }
 
-  pageMeta.value = data.value.at(0)
+  pageMeta.value = data.value?.at(0) ?? {} 
 
   // Unwrap any embedded media data
   // const { _embedded } = pageMeta.value
