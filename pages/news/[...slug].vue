@@ -44,7 +44,7 @@ export default {
 
       const post = computed(() => data.value?.at(0))
 
-      return post    
+      return post.value    
     })
 
     const title = post.value?.title.rendered
