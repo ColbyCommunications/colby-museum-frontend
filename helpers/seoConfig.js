@@ -28,7 +28,7 @@ const pageSEO = async (props, type) => {
   pageMeta.value = data.value.at(0)
 
   // Unwrap any embedded media data
-  const { _embedded } = pageMeta.value
+  // const { _embedded } = pageMeta.value
   let postImageUrl = `${useInterfaceStore().backend}wp-content/uploads/2025/03/default.jpg`
 
   // Because the component may have lost the app context, request it before setting meta.
