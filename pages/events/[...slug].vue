@@ -76,7 +76,7 @@ export default {
 
     const { data } = await seoConfig({interface: iface}, 'events')
 
-    const post = computed( () => data.value.at(0) )
+    const post = computed( () => data.value?.at(0) )
 
     const title = post.value.title?.rendered
       .replace(/–/g, '-')
