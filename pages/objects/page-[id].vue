@@ -6,15 +6,6 @@
       :headingElement="'h1'"
       :subheading="'Explore the more than ten thousand artworks that reside in the collection of the Colby College Museum of Art and shape its teaching mission. The collection represents the breadth and complexity of American art, and also includes works by international artists from antiquity to the present.'"
     />
-    <!-- <ArticleGrid
-      :variant="'curated'"
-      :hover="'text'"
-      :items_type="'objects'"
-      :per_page="20"
-      :page="$route.params.id"
-      :button_type="'text'"
-      :embark_ID="$route.query.embark_id"
-    /> -->
     <ArticleGrid
       :hover="'text'"
       :items_type="'objects'"
@@ -36,17 +27,6 @@ import seoConfig from '../helpers/seoConfig';
 export default {
   setup(props) {
     const route = useRoute();
-    const todo = ref({})
-
-    // console.log(route);
-
-    // useFetch(() => 
-    //   fetch(`${props.interface.endpoint}pages?slug=objects`)
-    //     .then(res => res.json())
-    //     .then((output) => (todo.value = output[0]))
-    // )
-    
-    // console.log(todo.value);
 
     useSeoMeta({
       ogTitle: () => `Objects - Page ${route.params.id} | Colby College Museum of Art`,
@@ -58,18 +38,13 @@ export default {
     definePageMeta({
       pageTransition: transitionConfig,
     });
-  },
-  data() {
+
     return {
+      interface: useInterfaceStore(),
       title: undefined,
       excerpt: undefined,
       components: undefined,
     };
-  },
-  props: {
-    interface: {
-      required: false,
-    },
   },
   async mounted() {
     const page = this;
