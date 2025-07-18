@@ -68,12 +68,13 @@ const formatTime = (t) => {
 export default {
   async setup(props) {
     const route = useRoute()
+    const iface = useInterfaceStore()
+
     definePageMeta({
       pageTransition: transitionConfig,
     });
 
-    const iface = useInterfaceStore()
-    const { data } = await seoConfig({...props, interface: useInterfaceStore()}, 'events');
+    const { data } = await seoConfig({interface: iface}, 'events');
 
     // const { data } = await useAsyncData(() => {
     //   const { data: postData } = $fetch(`${iface.endpoint}events?slug=${useRoute().params.slug ? useRoute().params.slug : 'home'}`)
