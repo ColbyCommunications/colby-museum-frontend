@@ -28,26 +28,34 @@ import axios from 'axios';
 
 import transitionConfig from '../helpers/transitionConfig';
 import seoConfig from '../helpers/seoConfig';
+import { useInterfaceStore } from '~/store/interface';
 
 export default {
   async setup(props) {
+    const route = useRoute()
+    const iface = useInterfaceStore()
+
     definePageMeta({
       pageTransition: transitionConfig,
     });
 
-    const { data, error } = await seoConfig(props, 'posts');
+    const { data: post } = await useAsyncData(`lunder-news-${route.params.slug}`, async () => {
+      const { data } = await seoConfig({interface: iface}, 'posts');
 
-    const post = data.value[0];
+      const post = computed(() => data.value.at(0));
 
-    const title = post.title.rendered
+      return post.value
+    })
+
+    const title = post.value?.title?.rendered
       .replace(/–/g, '-')
       .replace(/“/g, '"')
       .replace(/”/g, '"')
       .replace(/’/g, "'");
     
-    const excerpt = post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '');
+    const excerpt = post.value?.excerpt?.rendered?.replace(/<\/?[^>]+(>|$)/g, '');
 
-    const components = post.block_data.map((component) => {
+    const components = post.value?.block_data?.map((component) => {
       
       component.type = component.blockName
         .replace('acf/','')
