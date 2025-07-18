@@ -96,15 +96,19 @@ export default {
     const excerpt_visible = post.acf?.excerpt_visible;
     const location = post.acf?.location;
     const address = post.acf?.address;
-    const date = new Date(`${post.acf.date.substr(0,4)}-${post.acf.date.substr(4,2)}-${post.acf.date.substr(6,2)}T00:00:00`).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: '2-digit',
-      hour12: false
-    });
 
-    let end_date
-    if (post.acf.end_date) {
+    let date = ''
+    if (post.acf?.date) {
+      date = new Date(`${post.acf.date.substr(0,4)}-${post.acf.date.substr(4,2)}-${post.acf.date.substr(6,2)}T00:00:00`).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: '2-digit',
+        hour12: false
+      });
+    }
+
+    let end_date = ''
+    if (post.acf?.end_date) {
       end_date = new Date(`${post.acf.end_date.substr(0,4)}-${post.acf.end_date.substr(4,2)}-${post.acf.end_date.substr(6,2)}T00:00:00`).toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
@@ -113,10 +117,10 @@ export default {
       });
     }
 
-    const start_time = formatTime(post.acf.start_time);
-    const end_time = formatTime(post.acf.end_time);
+    const start_time = post.acf?.start_time ? formatTime(post.acf.start_time) : '';
+    const end_time = post.acf?.end_time ? formatTime(post.acf.end_time) : '';
 
-    const components = post.block_data.map((component) => {
+    const components = ( post.block_data ?? [] ).map((component) => {
       
       component.type = component.blockName
         .replace('acf/','')
@@ -131,7 +135,7 @@ export default {
     });
 
     return {
-      interface: useInterfaceStore(),
+      interface: iface,
       title,
       excerpt,
       location,
