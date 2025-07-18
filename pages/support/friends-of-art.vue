@@ -31,9 +31,13 @@ import axios from 'axios';
 
 import transitionConfig from '../helpers/transitionConfig';
 import seoConfig from '../helpers/seoConfig';
+import { useInterfaceStore } from '~/store/interface'
 
 export default {
-  setup(props) {
+  async setup(props) {
+    const iface = useInterfaceStore()
+    const route = useRoute()
+
     useSeoMeta({
       ogTitle: () => 'Friends of Art | Colby College Museum of Art',
       title: () => 'Friends of Art | Colby College Museum of Art',
@@ -44,84 +48,51 @@ export default {
     definePageMeta({
       pageTransition: transitionConfig,
     });
-  },
-  data() {
+
+    const { data } = await useAsyncData('friends-of-art', async () => {
+      const data = await $fetch(`${iface.endpoint}pages?slug=friends-of-art`)
+      const post = data?.at(0)
+
+      const crumbs = await $fetch(`${iface.endpoint}breadcrumbs/${post?.id}`)
+
+      return { post, crumbs }
+    })
+
+    const post = data.value?.post
+    const breadcrumbs = data.value?.crumbs
+
+    const title = post?.title?.rendered
+      .replace(/–/g, '-')
+      .replace(/“/g, '"')
+      .replace(/”/g, '"')
+      .replace(/’/g, "'");
+    
+    const excerpt = post?.excerpt?.rendered?.replace(/<\/?[^>]+(>|$)/g, '');
+    const heading_visible = post?.acf?.heading_visible;
+    const excerpt_visible = post?.acf?.excerpt_visible;
+
+    const components = post?.block_data?.map((component) => {
+      
+      component.type = component.blockName
+        .replace('acf/','')
+        .replace(/\//g,'-');
+
+      return {
+        type: component.type,
+        ...component.attrs.data,
+        attrs: component.attrs.data ? undefined : component.attrs,
+      };
+    });
+    // console.log(route)
     return {
-      title: undefined,
-      fullPath: undefined,
-      excerpt: undefined,
-      breadcrumbs: undefined,
-      components: undefined,
+      title,
+      fullPath: route.fullPath,
+      excerpt,
+      breadcrumbs,
+      components,
+      heading_visible,
+      excerpt_visible
     };
-  },
-  props: {
-    interface: {
-      required: false,
-    },
-  },
-  async created() {
-    const page = this;
-    const slug = this.$route.params.slug;
-    let pageName;
-
-    this.fullPath = this.$route.fullPath;
-
-    console.log(this.$route);
-    // console.log(this.$route.params);
-    console.log(this.$route.params.slug);
-    // console.log(`${this.interface.endpoint}pages?slug=${this.$route.params.slug ? this.$route.params.slug : 'home'}`);
-    // console.log(slug[slug.length - 1]);
-
-    if (Array.isArray(slug)) {
-      pageName = slug[slug.length - 1];
-    } else if (slug) {
-      pageName = slug;
-    } else {
-      pageName = 'Friends of Art';
-    }
-
-    await axios
-      .get(`${this.interface.endpoint}pages?slug=friends-of-art`)
-      .then((output) => {
-        const post = output.data[0];
-        // console.log(post);
-
-        page.title = post.title.rendered
-          .replace(/–/g, '-')
-          .replace(/“/g, '"')
-          .replace(/”/g, '"')
-          .replace(/’/g, "'");
-        
-        page.excerpt = post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '');
-        page.heading_visible = post.acf.heading_visible;
-        page.excerpt_visible = post.acf.excerpt_visible;
-
-        page.getBreadcrumbs(post);
-
-        page.components = post.block_data.map((component) => {
-          
-          component.type = component.blockName
-            .replace('acf/','')
-            .replace(/\//g,'-');
-
-          return {
-            type: component.type,
-            ...component.attrs.data,
-            attrs: component.attrs.data ? undefined : component.attrs,
-          };
-        });
-      });
-  },
-  methods: {
-    async getBreadcrumbs(post) {
-      const component = this;
-
-      await axios
-        .get(`${this.interface.endpoint}breadcrumbs/${post.id}`)
-        .then((output_b) => {
-          component.breadcrumbs = output_b.data;
-        });
-    }
   }
 }
 </script>
