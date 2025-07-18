@@ -20,23 +20,25 @@ import { useInterfaceStore } from '~/store/interface';
 
 export default {
   async setup(props) {
+    const nuxtApp = useNuxtApp()
     const route = useRoute();
 
     const endpointUrl = `${props.interface.endpoint}pages?slug=events`
-    const { data, error } = await useFetch(endpointUrl, {})
+    const { data, error } = await useFetch(endpointUrl)
 
     if (error.value) {
       console.error(`Could not fetch metadata from ${endpointUrl}`)
     }
 
     const pageMeta = data.value.at(0) ?? {}
-    
-    useSeoMeta({
-      ogTitle: () => `${pageMeta?.title ? pageMeta?.title?.rendered + ' | ' : ''}Colby College Museum of Art`,
-      title: () => `${pageMeta?.title ? pageMeta?.title?.rendered + ' | ' : ''}Colby College Museum of Art`,
-      ogDescription: () => pageMeta?.excerpt?.rendered,
-      description: () => pageMeta?.excerpt?.rendered,
-    });
+    nuxtApp.runWithContext(() => {
+      useSeoMeta({
+        ogTitle: () => `${pageMeta?.title ? pageMeta?.title?.rendered + ' | ' : ''}Colby College Museum of Art`,
+        title: () => `${pageMeta?.title ? pageMeta?.title?.rendered + ' | ' : ''}Colby College Museum of Art`,
+        ogDescription: () => pageMeta?.excerpt?.rendered,
+        description: () => pageMeta?.excerpt?.rendered,
+      });
+    })
 
     definePageMeta({
       pageTransition: transitionConfig,

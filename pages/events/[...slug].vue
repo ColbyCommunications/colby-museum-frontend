@@ -67,6 +67,7 @@ const formatTime = (t) => {
 
 export default {
   async setup(props) {
+    const route = useRoute()
     definePageMeta({
       pageTransition: transitionConfig,
     });
@@ -80,20 +81,20 @@ export default {
     //   return postData
     // })
 
-    const post = data.value.at(0)
+    const post = data.value.at(0) ?? {}
 
-    const title = post.title.rendered
+    const title = post.title?.rendered
       .replace(/–/g, '-')
       .replace(/“/g, '"')
       .replace(/”/g, '"')
       .replace(/’/g, "'");
     
-    const excerpt = post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '');
-    const intro_visible = post.acf.intro_visible;
-    const heading_visible = post.acf.heading_visible;
-    const excerpt_visible = post.acf.excerpt_visible;
-    const location = post.acf.location;
-    const address = post.acf.address;
+    const excerpt = post.excerpt?.rendered.replace(/<\/?[^>]+(>|$)/g, '');
+    const intro_visible = post.acf?.intro_visible;
+    const heading_visible = post.acf?.heading_visible;
+    const excerpt_visible = post.acf?.excerpt_visible;
+    const location = post.acf?.location;
+    const address = post.acf?.address;
     const date = new Date(`${post.acf.date.substr(0,4)}-${post.acf.date.substr(4,2)}-${post.acf.date.substr(6,2)}T00:00:00`).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
@@ -141,7 +142,7 @@ export default {
       excerpt_visible,
       intro_visible,
       heading_visible,
-      fullPath: useRoute().fullPath
+      fullPath: route.fullPath
     };
   },
   methods: {
