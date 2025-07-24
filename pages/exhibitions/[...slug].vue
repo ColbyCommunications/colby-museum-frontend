@@ -131,11 +131,6 @@ export default {
       excerpt_visible: true,
     };
   },
-  props: {
-    interface: {
-      required: false,
-    },
-  },
   methods: {
     formatTime(t) {
       const time = t.split(':');
