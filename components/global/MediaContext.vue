@@ -365,37 +365,9 @@ import gsap from 'gsap';
 import axios from 'axios';
 import { useInterfaceStore } from "~/store/interface";
 import { VueImageZoomer } from 'vue-image-zoomer';
-
-const formatDate = (d, style) => {
-  let formattedDate;
-
-  if (style == 'numeric') {
-    formattedDate = new Date(d).toLocaleDateString('en-US', {
-      year: '2-digit',
-      month: 'numeric',
-      day: 'numeric',
-      hour12: false
-    })
-    .replaceAll('/', '.');
-  } else if (style == 'events') {
-    formattedDate = new Date(`${d.substr(0,4)}-${d.substr(4,2)}-${d.substr(6,2)}T00:00:00`).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: '2-digit',
-      hour12: false
-    });
-  } else if (style == 'events-raw') {
-    formattedDate = new Date(`${d.substr(0,4)}-${d.substr(4,2)}-${d.substr(6,2)}T00:00:00`);
-  } else {
-    formattedDate = new Date(d).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: '2-digit',
-      hour12: false
-    });
-  }
-  return formattedDate;
-}
+import fetchWith from '~/helpers/fetchWith'
+import formatDate from '~/helpers/formatDate'
+import getImage from '~/helpers/getImage'
 
 const getPosts = async ({items_type, showChronology, showVariant}, endpoint) => {
   let endpointParams = new URLSearchParams([
@@ -436,7 +408,7 @@ const getPosts = async ({items_type, showChronology, showVariant}, endpoint) => 
     endpointParams.append('variant',14)
   }
 
-  const { data } = await axios.get(`${endpoint}eoe?${endpointParams.toString()}`)
+  const data = await $fetch(`${endpoint}eoe?${endpointParams.toString()}`)
 
   let newItems = data.map((i) => ({
     post: i,
@@ -473,54 +445,13 @@ const getPosts = async ({items_type, showChronology, showVariant}, endpoint) => 
 }
 
 const getPost = async (i, endpoint) => {
-  const output = await axios.get(`${endpoint}eoe/${i}?type=post`)
-  const posts = output.data
+  const posts = await $fetch(`${endpoint}eoe/${i}?type=post`)
 
   return posts.at(0);
 }
 
-const getImage = async (i, endpoint) => {
-  const { data } = await axios.get(`${endpoint}media/${i}`)
-
-  const imageObj = data
-  const mediaDetails = data.media_details
-
-  let imageAspect
-  if (mediaDetails.height > 0 && mediaDetails.width > 0) {
-    imageAspect = mediaDetails.height / mediaDetails.width
-  }
-
-  const desktopWidth = 1200
-  const mobileWidth = 600
-
-  const desktop = { aspect_ratio: imageAspect, width: desktopWidth, height: desktopWidth * imageAspect, source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=1800,quality=75,format=webp` }
-  const mobile = { aspect_ratio: imageAspect, width: mobileWidth, height: mobileWidth * imageAspect, source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=1200,quality=75,format=webp` }
-
-  const newImageObj = {
-        alt_text: imageObj.alt_text,
-        caption: {
-          rendered: imageObj.description.rendered.replace(/<img[^>]*>/g,"").replace(/<p[^>]*>|<\/p>/g, '').replace(/\r?\n|\r/g, "").replace(/<a[^>]*>|<\/a>/g, ''),
-        },
-        media_details: {
-          sizes: {
-            desktop,
-            mobile,
-          }
-        }
-      };
-
-  return newImageObj;
-}
-
 const getCollection = async (i) => {
-  const { data } = await axios.get(`https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/stage/_search`, {
-      auth: {
-        username: 'Fr2fpegcBZ',
-        password: 'Vi7vGnL3h2rtW5SuECoKRwTf'
-      },
-      params: {
-        source_content_type: 'application/json',
-        source: JSON.stringify({
+  const query = {
           "sort": {
             "accession_num_year": 'desc',
           },
@@ -533,9 +464,12 @@ const getCollection = async (i) => {
               },
             },
           },
-        })
-      }
-    })
+        }
+
+  const username = 'Fr2fpegcBZ'
+  const password = 'Vi7vGnL3h2rtW5SuECoKRwTf'
+
+  const data = await fetchWith(`https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/stage/_search`, query, username, password)
 
   const concatedObjs = (data.hits.hits ?? []).slice(0, 7);
 
@@ -601,6 +535,17 @@ const getObject = async (i) => {
       return obj;
     }
 
+const openNewTab = (blockData, i) => {
+  if (
+      blockData[`items_${i}_entry_type`] == 'selection' &&
+      blockData[`items_${i}_open_new_tab`]
+  ) {
+      return blockData[`items_${i}_open_new_tab`] == 1;
+  }
+
+  return false;
+}
+
 export default {
   components: {
     VueImageZoomer
@@ -659,37 +604,71 @@ export default {
   async setup(props) {
     const route = useRoute();
     const iface = useInterfaceStore();
-    let newItems = []
 
-    if (props.items_type != 'manual' && props.items_type != 'objects' && props.items_type != 'collection') {
-      const posts = await getPosts(props, iface.endpoint);
+    const { data: items } = await useAsyncData( `mc-${ props.items_type }-${ props.collection ?? props.items ?? 'component' }`, async () => {
 
-      newItems = posts
-    } else if (props.items_type == 'collection') {
-      const post = await getPost(component.collection, iface.endpoint)
+      if (props.items_type !== 'manual' 
+        && props.items_type !== 'objects' 
+        && props.items_type !== 'collection') {
 
-      const collection = await getCollection(post.acf.embark_id)
-      newItems = collection
-    } else if (typeof props.items === 'number') {
+        return await getPosts(props, iface.endpoint)
+      } else if (props.items_type === 'collection') {
+        const post = await getPost(props.collection, iface.endpoint)
 
-      const items = await Promise.all([...Array(props.items)].map(async (el, i) => ({
-        post: props.blockData[`items_${i}_entry_type`] == 'selection' ? await getPost(props.blockData[`items_${i}_${props.blockData[`items_${i}_selection_type`]}_selection`], iface.endpoint) : undefined,
-        heading: props.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : props.blockData[`items_${i}_heading`],
-        subheading: props.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : props.blockData[`items_${i}_subheading`],
-        paragraph: props.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : props.blockData[`items_${i}_paragraph`],
-        button: props.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : props.blockData[`items_${i}_button`],
-        image: props.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : await getImage(props.blockData[`items_${i}_image`], iface.endpoint),
-      })))
-      newItems = items
-    } else if (props.items_type == 'objects') {
-      // component.renderGlide();
-    }
+        return await getCollection(post.acf.embark_id)
+      } else if (typeof props.items === 'number') {
+        const these = await Promise.all([...Array(props.items)].map( async (el, i) => {
+          const entryType = props.blockData[`items_${i}_entry_type`]
 
+          if (entryType === 'selection') {
+
+            const selection = props.blockData[`items_${i}_post_selection`]
+            // const post = await getPost(selection, iface.endpoint)
+
+            return new Promise( async (resolve,reject) => {
+              resolve({
+                post: await getPost(selection, iface.endpoint),
+                heading: undefined,
+                subheading: undefined,
+                subheadgin2: undefined,
+                paragraph_entry_type: undefined,
+                paragraph: undefined,
+                button: undefined,
+                image: undefined,
+                openNewTab: openNewTab(props.blockData, i),
+              })
+            })
+          }
+
+          // const image = 
+
+          return new Promise( async (resolve,reject) => {
+            resolve({
+                post: undefined,
+                heading: props.blockData[`items_${i}_heading`],
+                subheading: props.blockData[`items_${i}_subheading`],
+                subheading2: props.blockData[`items_${i}_subheading2`],
+                paragraph_entry_type: props.blockData[`items_${i}_paragraph_entry_type`],
+                paragraph: props.blockData[`items_${i}_paragraph`],
+                button: props.blockData[`items_${i}_button`],
+                image: await getImage(props.blockData[`items_${i}_image`], iface.endpoint),
+                openNewTab: openNewTab(props.blockData, i),
+              })
+            })
+          }))
+
+        return these
+
+
+      }
+    })
+
+    // console.log(typeof items.value, Array.isArray(items.value))
     return {
-      id: route.fullPath,
-      interface: useInterfaceStore(),
+      id: `${props.items_type}-${props.items}`,
+      interface: iface,
       items_type: props.items_type,
-      newItems,
+      newItems: items.value,
       activeSlide: ref(0),
       window: undefined,
       glide: undefined,

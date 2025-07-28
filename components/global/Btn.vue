@@ -60,8 +60,10 @@ export default {
       }
     }
   },
-  async created() {
-    this.interface = useInterfaceStore();
+  setup() {
+    return {
+      interface: useInterfaceStore(),
+    }
   },
   mounted() {
     this.animate();

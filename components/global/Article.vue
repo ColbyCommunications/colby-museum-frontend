@@ -148,7 +148,7 @@ export default {
     const iface = useInterfaceStore()
     let stagedImage, stagedButton
 
-    const { data } = await useAsyncData(async () => {
+    const { data } = await useAsyncData(`article-${props.post?.featured_media ?? 0}`, async () => {
       if (props.post && props.post?.featured_media) {
         return await getImage(props.post?.featured_media, props.post, iface.endpoint);
       }
@@ -168,7 +168,7 @@ export default {
 
     return {
       interface: iface,
-      stagedImage,
+      stagedImage: data.value,
       stagedButton,
     }
   },

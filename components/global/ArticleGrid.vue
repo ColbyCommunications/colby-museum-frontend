@@ -439,7 +439,7 @@
 import gsap from 'gsap';
 
 import { useInterfaceStore } from "~/store/interface";
-
+import fetchWith from '~/helpers/fetchWith'
 import filtersEvents from '~/assets/data/filters-events.yml';
 import filtersExhibitions from '~/assets/data/filters-exhibitions.yml';
 import filtersObjects from '~/assets/data/filters-objects.yml';
@@ -459,37 +459,6 @@ const sorters = []
 const endpoint = 'https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/stage'
 const username = 'Fr2fpegcBZ'
 const password = 'Vi7vGnL3h2rtW5SuECoKRwTf'
-
-/**
- * @function fetchWith
- * 
- * @param {String} endpoint - Elastic endpoint to query
- * @param {Object} query - Elastic query to use
- * @param {String|Null} username - username to use (optional)
- * @param {String|Null} password - password to use (optional)
- * 
- * @returns Data fetched from this query
- **/ 
-const fetchWith = async (endpoint, query, username, password) => {
-  let headers = {}
-  const params = { source_content_type: 'application/json',
-                   source: JSON.stringify(query) }
-  let options = { params }
-
-  if (process.client && username && password) {
-    const token = btoa(`${username}:${password}`)
-    headers.authorization = `Basic ${token}`
-    options.credentials = 'include'
-  }
-  else if (username && password) {
-    const token = Buffer.from(`${username}:${password}`).toString('base64')
-    headers.authorization = `Basic ${token}`
-    options.credentials = 'include'
-  }
-
-  options.headers = headers
-  return await $fetch(endpoint, options)
-}
 
 /**
  * @function makeElasticQuery
@@ -807,7 +776,7 @@ const getObjectCount = async (query, endpoint, username, password, perPage) => {
  **/ 
 const getImage = async (i, endpoint) => {
   if (!i) return
-
+  // console.log(i,endpoint)
   const url = new URL(`media/${i}`, endpoint)
   const imageObj = await $fetch(url.href)
 
@@ -1084,7 +1053,8 @@ export default {
                           }
         let response
 
-        const { data } = await useAsyncData(async () => {
+        // TODO: All these useAsyncData calls need keys to disambiguate their cache entries
+        const { data } = await useAsyncData(`articlegrid-${props.page}-${route.query.search}`, async () => {
           if (props.page) {
             response = await getObjectItems(props.page, route.query.search, queryArgs)
           } else {
@@ -1153,7 +1123,7 @@ export default {
           endpoint: iface.endpoint,
           route: route
         }
-        const { data: response } = await useAsyncData(async () => {
+        const { data: response } = await useAsyncData(`postItems-${ Object.values(postItemsParams ).join('') }`, async () => {
           const posts = await getPostItems(postItemsParams) 
 
           return posts 
@@ -1183,7 +1153,7 @@ export default {
                 route: route
               }
       
-              const { data: posts } = await useAsyncData( async () => {
+              const { data: posts } = await useAsyncData( `ag-manual-${ Object.values(postItemsParams).join('') }`, async () => {
                 // console.log('boopin that boop')
       
                 const p = await getPostItems(postItemsParams)        
@@ -1205,7 +1175,7 @@ export default {
             }
       // If selecting items individually
       case (typeof props.items === 'number'):
-        const { data: postDatas } = await useAsyncData(async () => {
+        const { data: postDatas } = await useAsyncData( `ag-number-${route.fullPath}-${props.items}`, async () => {
           const posts = [...Array(props.items)].map(async (el, i) => {
             const entryType = props.blockData[`items_${i}_entry_type`]
 
@@ -1611,7 +1581,7 @@ export default {
       const drawer = this.$refs.drawer.querySelector('.filter__drawer');
       let term;
 
-      console.log(drawer);
+      // console.log(drawer);
 
       if (e.target == undefined) {
         term = e; 

@@ -51,7 +51,16 @@
 import { gsap } from 'gsap';
 
 export default {
-  data() {
+  setup(props) {
+    let newItems = []
+
+    if (typeof props.items === 'number') {
+      newItems = [...Array(props.items)].map((el, i) => ({
+        heading: props.blockData[`items_${i}_heading`],
+        context: props.blockData[`items_${i}_context`],
+      }));
+    }
+
     return {
       newItems: [],
     };
@@ -66,16 +75,6 @@ export default {
     blockData: {
       type: Object,
       required: false,
-    }
-  },
-  created() {
-    const component = this;
-
-    if (typeof component.items === 'number') {
-      component.newItems = [...Array(this.items)].map((el, i) => ({
-        heading: component.blockData[`items_${i}_heading`],
-        context: component.blockData[`items_${i}_context`],
-      }));
     }
   },
   mounted() {

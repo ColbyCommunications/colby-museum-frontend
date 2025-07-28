@@ -50,13 +50,9 @@ export default {
     }
   },
   setup() {
-    const iface = useInterfaceStore()
     return {
-      interface: iface
+      interface: useInterfaceStore()
     }
-  },
-  async created() {
-    // this.interface = useInterfaceStore();
   },
   mounted() {
     this.animate();

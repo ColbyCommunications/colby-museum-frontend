@@ -8,14 +8,16 @@
 import { useInterfaceStore } from "~/store/interface";
 
 export default {
+  setup() {
+    return {
+      interface: useInterfaceStore()
+    }
+  },
   props: {
     attrs: {
       type: Object,
       required: true,
     }
-  },
-  async created() {
-    this.interface = useInterfaceStore();
   },
   methods: {
     animate() {
