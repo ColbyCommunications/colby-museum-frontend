@@ -1174,7 +1174,6 @@ export default {
             }
       // If selecting items individually
       case (typeof props.items === 'number'):
-        console.log('sup',props.items)
         // Generate a signature for this async batch of reqs from the req IDs
         const reqSignature = Object.entries(props.blockData).filter(([k,v]) => k.endsWith('_image')).map(([k,v]) => v).join('-')
 
@@ -1220,7 +1219,7 @@ export default {
 
           return items
         })
-        console.log(postDatas.value)
+
         newItems = postDatas.value
         break
     }
