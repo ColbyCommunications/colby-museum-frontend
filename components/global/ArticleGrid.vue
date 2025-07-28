@@ -1053,7 +1053,6 @@ export default {
                           }
         let response
 
-        // TODO: All these useAsyncData calls need keys to disambiguate their cache entries
         const { data } = await useAsyncData(`articlegrid-${props.page}-${route.query.search}`, async () => {
           if (props.page) {
             response = await getObjectItems(props.page, route.query.search, queryArgs)
@@ -1066,12 +1065,12 @@ export default {
           return { items: response.items, totalObjects: response.totalObjects, totalPages: response.totalPages }
         }) 
 
-        newItems = data.value.items
-        totalObjects = data.value.totalObjects
-        totalPages = data.value.totalPages
+        newItems = data.value?.items
+        totalObjects = data.value?.totalObjects
+        totalPages = data.value?.totalPages
 
         // Check paged hit lengths and disable buttons
-        if (newItems.length < props.per_page + 1) {
+        if (newItems?.length < props.per_page + 1) {
           nextPageAvailable = false;
         } else {
           nextPageAvailable = true;
@@ -1129,9 +1128,9 @@ export default {
           return posts 
         })
         // console.log('got events')
-        totalPages = response.value.totalPages;
-        newItems = response.value.items
-        nextPageAvailable = response.value.totalPages === currentPage
+        totalPages = response.value?.totalPages;
+        newItems = response.value?.items
+        nextPageAvailable = response.value?.totalPages === currentPage
 
         pagination = pageRange(currentPage, response.value.totalPages, 6);
         isLoading = false;
@@ -1162,7 +1161,7 @@ export default {
       
                 return p
               })
-              // console.log('got manual')
+              console.log('got not manual')
               newItems = posts.value?.items
               totalPages = posts.value?.totalPages
               nextPageAvailable = posts.value?.totalPages === currentPage
@@ -1175,7 +1174,11 @@ export default {
             }
       // If selecting items individually
       case (typeof props.items === 'number'):
-        const { data: postDatas } = await useAsyncData( `ag-number-${route.fullPath}-${props.items}`, async () => {
+        console.log('sup',props.items)
+        // Generate a signature for this async batch of reqs from the req IDs
+        const reqSignature = Object.entries(props.blockData).filter(([k,v]) => k.endsWith('_image')).map(([k,v]) => v).join('-')
+
+        const { data: postDatas } = await useAsyncData( `ag-number-${route.fullPath}-${props.items}-${reqSignature}`, async () => {
           const posts = [...Array(props.items)].map(async (el, i) => {
             const entryType = props.blockData[`items_${i}_entry_type`]
 
@@ -1183,7 +1186,8 @@ export default {
               const selection = props.blockData[`items_${i}_post_selection`]
               const post = await getPost(selection, iface.endpoint)
 
-              return {
+              return new Promise( (resolve,reject) => { 
+                resolve({
                 post,
                 heading: undefined,
                 subheading: undefined,
@@ -1193,12 +1197,13 @@ export default {
                 button: undefined,
                 image: undefined,
                 openNewTab: openNewTab(props.blockData, i),
-              }
+              })})
             }
 
             const image = await getImage(props.blockData[`items_${i}_image`], iface.endpoint)
 
-            return {
+            return new Promise( (resolve,reject) => {
+              resolve({
                   post: undefined,
                   heading: props.blockData[`items_${i}_heading`],
                   subheading: props.blockData[`items_${i}_subheading`],
@@ -1208,14 +1213,14 @@ export default {
                   button: props.blockData[`items_${i}_button`],
                   image,
                   openNewTab: openNewTab(props.blockData, i),
-                }
+                })})
           })
 
           const items = await Promise.all(posts)
 
           return items
         })
-
+        console.log(postDatas.value)
         newItems = postDatas.value
         break
     }
