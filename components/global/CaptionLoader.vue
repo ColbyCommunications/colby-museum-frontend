@@ -10,12 +10,13 @@ import { useInterfaceStore } from "~/store/interface";
 import getImage from '~/helpers/getImage'
 
 export default {
-  async setup() {
-    const image = await getImage(this.post.featured_media, this.interface.endpoint);
+  async setup(props) {
+    const iface = useInterfaceStore()
+    const image = await getImage(props.post?.featured_media, iface.endpoint);
 
     return {
-      interface: useInterfaceStore(),
-      image: undefined,
+      interface: iface,
+      image,
     }
   },
   props: {

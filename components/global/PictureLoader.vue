@@ -13,13 +13,13 @@ import { useInterfaceStore } from "~/store/interface";
 import getImage from '~/helpers/getImage'
 
 export default {
-  async setup() {
+  async setup(props) {
     const iface = useInterfaceStore();
-    const { data: image } = await useAsyncData( await getImage(this.post.featured_media, iface.endpoint) )
+    const { data: image } = await useAsyncData( `pictureloader-${props.post?.featured_media}`, async () => await getImage(props.post.featured_media, iface.endpoint) )
 
     return {
       interface: iface,
-      image,
+      image: image.value,
     }
   },
   props: {
