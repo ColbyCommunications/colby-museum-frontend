@@ -382,7 +382,7 @@
             v-if="page"
             class="pagination__btn pagination__btn--prev"
             :class="[currentPage == 1 ? 'pagination__btn--inactive' : '']"
-            :to="`/${items_type == 'posts' ? 'news' : items_type}/page-${Number(page) - 1}${this.$route.query.search || this.$route.query.maker || this.$route.query.year || this.$route.query.type || this.$route.query.sort || this.$route.query.sortby || this.$route.query.has_image || this.$route.query.chronology || this.$route.query.location || this.$route.query.variant || this.$route.query.category || this.$route.query.embark_id ? '?' + this.$route.fullPath.split('?').pop() : ''}`"
+            :to="`/${items_type == 'posts' ? 'news' : items_type}/page-${Number(page) - 1}${$route.query.search || $route.query.maker || $route.query.year || $route.query.type || $route.query.sort || $route.query.sortby || $route.query.has_image || $route.query.chronology || $route.query.location || $route.query.variant || $route.query.category || $route.query.embark_id ? '?' + $route.fullPath.split('?').pop() : ''}`"
           ><IconArrow />Previous</NuxtLink>
           <button
             v-else
@@ -409,7 +409,7 @@
               </span>
               <NuxtLink
                 v-else
-                :to="`/${items_type == 'posts' ? 'news' : items_type}/page-${index}${this.$route.query.search || this.$route.query.maker || this.$route.query.year || this.$route.query.type || this.$route.query.sort || this.$route.query.sortby || this.$route.query.has_image || this.$route.query.chronology || this.$route.query.location || this.$route.query.variant || this.$route.query.category || this.$route.query.embark_id ? '?' + this.$route.fullPath.split('?').pop() : ''}`"
+                :to="`/${items_type == 'posts' ? 'news' : items_type}/page-${index}${$route.query.search || $route.query.maker || $route.query.year || $route.query.type || $route.query.sort || $route.query.sortby || $route.query.has_image || $route.query.chronology || $route.query.location || $route.query.variant || $route.query.category || $route.query.embark_id ? '?' + $route.fullPath.split('?').pop() : ''}`"
               >
                 <span class="sr-only">Go to Page </span>{{ index }}
                 <IconArrow />
@@ -420,7 +420,7 @@
             v-if="page"
             class="pagination__btn pagination__btn--next"
             :class="[nextPageAvailable == false ? 'pagination__btn--inactive' : '']"
-            :to="`/${items_type == 'posts' ? 'news' : items_type}/page-${Number(page) + 1}${this.$route.query.search || this.$route.query.maker || this.$route.query.year || this.$route.query.type || this.$route.query.sort || this.$route.query.sortby || this.$route.query.has_image || this.$route.query.chronology || this.$route.query.location || this.$route.query.category || this.$route.query.embark_id ? '?' + this.$route.fullPath.split('?').pop() : ''}`"
+            :to="`/${items_type == 'posts' ? 'news' : items_type}/page-${Number(page) + 1}${$route.query.search || $route.query.maker || $route.query.year || $route.query.type || $route.query.sort || $route.query.sortby || $route.query.has_image || $route.query.chronology || $route.query.location || $route.query.category || $route.query.embark_id ? '?' + $route.fullPath.split('?').pop() : ''}`"
           >Next<IconArrow /></NuxtLink>
           <button
             v-else
@@ -1055,7 +1055,6 @@ export default {
                             objectsSort
                           }
         let response
-
         const { data } = await useAsyncData(`articlegrid-${props.page}-${route.query.search}`, async () => {
           if (props.page) {
             response = await getObjectItems(props.page, route.query.search, queryArgs)
@@ -1063,14 +1062,17 @@ export default {
             response = await getObjectItems(1, route.query.search, queryArgs)
           }
 
+          // Establishes aggregations. Prevents them from changing everytime we make a
+          // request to the endpoint.
           aggregations = await getAggregations({query: response.query, username, password});
 
-          return { items: response.items, totalObjects: response.totalObjects, totalPages: response.totalPages }
+          return { items: response.items, totalObjects: response.totalObjects, totalPages: response.totalPages, aggregations }
         }) 
 
         newItems = data.value?.items
         totalObjects = data.value?.totalObjects
         totalPages = data.value?.totalPages
+        aggregations = data.value?.aggregations
 
         // Check paged hit lengths and disable buttons
         if (newItems?.length < props.per_page + 1) {
@@ -1079,10 +1081,8 @@ export default {
           nextPageAvailable = true;
         }
 
-        // Establishes aggregations. Prevents them from changing everytime we make a
-        // request to the endpoint.
-
         isLoading = false
+        console.log('suppers')
         break
       case (props.items_type == 'collection'):
         const args = { ...props,
@@ -1682,24 +1682,24 @@ export default {
         navigateTo({
           path: `/objects/page-1`,
           query: {
-            search: component.input,
-            maker: component.aggregationMakerList,
-            year: component.aggregationYearList,
-            type: component.aggregationTypeList,
-            sort: component.objectsSort,
-            sortby: component.objectsSortBy,
-            embark_id: component.$route.query.embark_id,
-            has_image: component.activeFilters.includes('Has Image') ? true : false,
+            search: this.input,
+            maker: this.aggregationMakerList,
+            year: this.aggregationYearList,
+            type: this.aggregationTypeList,
+            sort: this.objectsSort,
+            sortby: this.objectsSortBy,
+            embark_id: this.$route.query.embark_id,
+            has_image: this.activeFilters.includes('Has Image') ? true : false,
           }
         });
       } else {
         navigateTo({
-          path: `/${component.items_type}/page-1`,
+          path: `/${this.items_type}/page-1`,
           query: {
-            search: component.input,
+            search: this.input,
             chronology: chrono,
-            location: component.location,
-            variant: component.$route.query.variant
+            location: this.location,
+            variant: this.$route.query.variant
           }
         });
       }

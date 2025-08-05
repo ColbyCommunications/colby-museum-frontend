@@ -6,17 +6,15 @@
       :headingElement="'h1'"
       :subheading="'Explore the more than ten thousand artworks that reside in the collection of the Colby College Museum of Art and shape its teaching mission. The collection represents the breadth and complexity of American art, and also includes works by international artists from antiquity to the present.'"
     />
-    <ClientOnly>
-      <ArticleGrid
-        :hover="'text'"
-        :items_type="'objects'"
-        :columns="'6'"
-        :per_page="30"
-        :page="$route.params.id"
-        :button_type="'text'"
-        :embark_ID="$route.query.embark_id"
-      />
-    </ClientOnly>
+    <ArticleGrid
+      :hover="'text'"
+      :items_type="'objects'"
+      :columns="'6'"
+      :per_page="30"
+      :page="$route.params.id"
+      :button_type="'text'"
+      :embark_ID="$route.query.embark_id"
+    />
   </div>
 </template>
 
