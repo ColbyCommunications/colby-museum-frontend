@@ -6,7 +6,7 @@
     :downtownEvent="[]"
     :globalOptions="[]"
   />
-  <div class="page page--default">
+  <div class="page page--error">
     <h1>Oops! {{ error?.message }}</h1>
 
     <AccordionSection :items="[{ heading: 'Details', context: `<h2>Error ${ error?.statusCode }</h2> ${error.stack}` }]"/>
@@ -27,7 +27,7 @@
     display: none;
   }
 
-  div.page.page--default {
+  div.page.page--error {
     font-family: $font-primary;
     margin: 1rem 3.75rem;
 
