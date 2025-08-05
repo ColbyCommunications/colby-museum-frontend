@@ -16,6 +16,9 @@
                  :reverse="true"
                  title="Go to Museum Home" />
   </div>
+  <Footer :primary="menus.site"
+          :utility="menus.social"
+          :globalOptions="[]" />
 </template>
 
 <style lang="scss">
