@@ -8,9 +8,8 @@
   />
   <div class="page page--default">
     <h1>Oops! {{ error?.message }}</h1>
-    <h2>Error {{ error?.statusCode }}</h2>
 
-    <AccordionSection :items="[{ heading: 'Stack trace', context: error.stack }]"/>
+    <AccordionSection :items="[{ heading: 'Details', context: `<h2>Error ${ error?.statusCode }</h2> ${error.stack}` }]"/>
 
     <BigArrowBtn :url="'/'"
                  :reverse="true"
