@@ -44,8 +44,6 @@ export default {
     fixedUrl() {
       if (this.hasFileExtension(this.url)) {
         return this.url;
-      } else if (this.url === '/') {
-        return this.url
       } else {
         return this.url.replace(`${this.interface.backend}`, '/').replace(/\/$/, ''); 
       }
