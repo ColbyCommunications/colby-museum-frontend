@@ -7,10 +7,11 @@
     :globalOptions="[]"
   />
   <div class="page page--default">
-    <h2>{{ error?.statusCode }}</h2>
-    <p>
-      Oops! The page you’re looking for doesn’t exist.
-    </p>
+    <h1>Oops! {{ error?.message }}</h1>
+    <h2>Error {{ error?.statusCode }}</h2>
+
+    <p v-html="error.stack" />
+
     <BigArrowBtn :url="'/'"
                  :reverse="true"
                  title="Go Back Home" />
@@ -20,20 +21,25 @@
 <style lang="scss">
   div.page.page--default {
     font-family: $font-primary;
-    margin: 1em 3.75em;
+    margin: 1rem 3.75rem;
+
+    h1 {
+      font-size: 3rem;
+      margin: 0.5rem 0.5rem;
+    }
 
     h2 {
       font-size: 2.5rem;
-      margin: 0.5em 0.5em;
+      margin: 1rem 0.5rem;
     }
 
-    p {
+    p, span {
       font-size: 2rem;
-      margin: 0.5em 0.5em;
+      margin: 0.5rem 0.5rem;
     }
 
     .big-arrow-btn {
-      margin: 0.5em 0.5em;
+      margin: 0.5rem 0.5rem;
     }
   }
 </style>

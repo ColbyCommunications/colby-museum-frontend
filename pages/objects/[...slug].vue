@@ -155,7 +155,7 @@ export default {
       .catch(() => {
         throw createError({
           statusCode: 404,
-          message: 'not found',
+          message: 'Page Not Found',
           fatal: true
         })
       })
