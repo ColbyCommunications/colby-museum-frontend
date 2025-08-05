@@ -20,14 +20,20 @@
 <style lang="scss">
   div.page.page--default {
     font-family: $font-primary;
-    padding: 0 3.75em;
+    margin: 1em 3.75em;
 
     h2 {
       font-size: 2.5rem;
+      margin: 0.5em 0.5em;
     }
 
     p {
       font-size: 2rem;
+      margin: 0.5em 0.5em;
+    }
+
+    .big-arrow-btn {
+      margin: 0.5em 0.5em;
     }
   }
 </style>
