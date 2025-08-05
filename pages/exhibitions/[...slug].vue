@@ -45,20 +45,19 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 import transitionConfig from '../helpers/transitionConfig';
 import seoConfig from '../helpers/seoConfig';
+import { useInterfaceStore } from '~/store/interface'
 
 export default {
   async setup(props) {
+    const route = useRoute()
     definePageMeta({
       pageTransition: transitionConfig,
     });
-
-    const { data } = await useAsyncData('posts', async () => {
-      const { data } = await seoConfig(props, 'exhibitions')
-
+    const { data } = await useAsyncData(`exhibition-${route.params.slug}`, async () => {
+      const { data } = await seoConfig({...props, interface: useInterfaceStore()}, 'exhibitions')
+  
       const pageData = computed( () => data.value?.at(0) )
 
       const url = computed( () => `https://museum-backend.colby.edu/wp-json/wp/v2/breadcrumbs/${ pageData.value.id }` )
@@ -69,24 +68,26 @@ export default {
       return { pageData, breadcrumbs }
     })
 
-    const post = data.value?.pageData ?? {}
+    const pageData = data.value?.pageData ?? {}
     const breadcrumbs = data.value?.breadcrumbs ?? [] 
 
-    const title = post.title.rendered
-      .replace(/–/g, '-')
+    const title = pageData?.title?.rendered?.replace(/–/g, '-')
       .replace(/“/g, '"')
       .replace(/”/g, '"')
       .replace(/’/g, "'");
     
-    const excerpt = post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '');
-    const intro_visible = post.acf.intro_visible;
-    const heading_visible = post.acf.heading_visible;
-    const excerpt_visible = post.acf.excerpt_visible;
-    const location = post.acf.location;
-    const address = post.acf.address;
+    const excerpt = pageData?.excerpt?.rendered?.replace(/<\/?[^>]+(>|$)/g, '');
+    const intro_visible = pageData?.acf?.intro_visible;
+    const heading_visible = pageData?.acf?.heading_visible;
+    const excerpt_visible = pageData?.acf?.excerpt_visible;
+    const location = pageData?.acf?.location;
+    const address = pageData?.acf?.address;
+
 
     let start_time, end_time
-    const date = new Date(`${post.acf.date.substr(0,4)}-${post.acf.date.substr(4,2)}-${post.acf.date.substr(6,2)}T00:00:00`).toLocaleDateString('en-US', {
+
+    const postDate = pageData?.acf?.date
+    const date = new Date(`${postDate?.substr(0,4)}-${postDate?.substr(4,2)}-${postDate?.substr(6,2)}T00:00:00`).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: '2-digit',
@@ -94,8 +95,8 @@ export default {
     });
 
     let end_date
-    if (post.acf.end_date) {
-      end_date = new Date(`${post.acf.end_date.substr(0,4)}-${post.acf.end_date.substr(4,2)}-${post.acf.end_date.substr(6,2)}T00:00:00`).toLocaleDateString('en-US', {
+    if (pageData?.acf?.end_date) {
+      end_date = new Date(`${pageData.acf.end_date.substr(0,4)}-${pageData.acf.end_date.substr(4,2)}-${pageData.acf.end_date.substr(6,2)}T00:00:00`).toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
         day: '2-digit',
@@ -103,7 +104,7 @@ export default {
       });
     }
 
-    const components = post.block_data.map((component) => {
+    const components = pageData?.block_data?.map((component) => {
       component.type = component.blockName
         .replace('acf/','')
         .replace(/\//g,'-');
