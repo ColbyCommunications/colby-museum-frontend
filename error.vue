@@ -10,7 +10,7 @@
     <h1>Oops! {{ error?.message }}</h1>
     <h2>Error {{ error?.statusCode }}</h2>
 
-    <button class="trace-toggle" @click="toggleTrace()">Show Error Trace</button>
+    <button class="trace-toggle" @click="toggleTrace()">{{ trace ? 'Hide' : 'Show' }} Error Trace</button>
     <p v-if="trace" v-html="error.stack" />
 
     <BigArrowBtn :url="'/'"
