@@ -10,7 +10,8 @@
     <h1>Oops! {{ error?.message }}</h1>
     <h2>Error {{ error?.statusCode }}</h2>
 
-    <p v-html="error.stack" />
+    <button class="trace-toggle" @click="toggleTrace()">Show Error Trace</button>
+    <p v-if="trace" v-html="error.stack" />
 
     <BigArrowBtn :url="'/'"
                  :reverse="true"
@@ -19,6 +20,12 @@
 </template>
 
 <style lang="scss">
+  @use "sass:map";
+
+  .hidden {
+    display: none;
+  }
+
   div.page.page--default {
     font-family: $font-primary;
     margin: 1rem 3.75rem;
@@ -38,6 +45,38 @@
       margin: 0.5rem 0.5rem;
     }
 
+    button.trace-toggle {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 54px;
+      height: 54px;
+      padding: 0;
+      background-color: map.get($layout-colors, accent);
+      border: 5px solid map.get($layout-colors, color);
+      border-radius: 100%;
+      cursor: pointer;
+
+      .dark-mode & {
+        background-color: map.get($layout-dm-colors, accent);
+        border: 5px solid map.get($layout-dm-colors, color);
+      }
+
+      @include breakpoint(medium) {
+        width: 5.139vw; // 74 / 1440
+        height: 5.139vw; // 74 / 1440
+        border: 0.486vw solid map.get($layout-colors, color);
+
+        .dark-mode & {
+          border: 0.486vw solid map.get($layout-dm-colors, color);
+        }
+      }
+
+      &:hover {
+        background-color: map.get($layout-colors, ambiant);
+      }
+    }
+
     .big-arrow-btn {
       margin: 0.5rem 0.5rem;
     }
@@ -51,8 +90,13 @@ export default {
       type: Object,
     }
   },
-  setup(props) {
-    return { ...props }
+  setup() {
+    return { trace: ref(false) }
   },
+  methods: {
+    toggleTrace() {
+      this.trace = !this.trace
+    }
+  }
 };
 </script>
