@@ -530,11 +530,13 @@ const makeElasticQuery = ({ searchTerm,
     filterSort.push({"accession_num_year": objectsSort});
   }
 
-  const should = (aggregationMakerList.length > 0 || aggregationMediumList.length > 0 || aggregationSupportList.length > 0 || aggregationYearList.length > 0 || aggregationTypeList.length > 0) ? filterTerms : undefined
-  const must = filterMust.length > 0 ? filterMust : undefined
+  const should = (aggregationMakerList.length > 0 || aggregationMediumList.length > 0 || aggregationSupportList.length > 0 || aggregationYearList.length > 0 || aggregationTypeList.length > 0) ? filterTerms : []
+  const must = filterMust.length > 0 ? filterMust : []
 
-  const searchQuery = { size: per_page + 1,
-                        from: 0 + ( per_page * (page - 1)),
+  const size = Number(per_page) + 1
+  const from = Number(per_page) * (Number(page) - 1)
+  const searchQuery = { size,
+                        from,
                         sort: filterSort,
                         query: {
                           bool: {
@@ -1006,7 +1008,7 @@ export default {
     let aggregationMediumList = []
     let aggregationSupportList = []
     let currentPage = props.page ?? 1
-    let objectsSort = ''
+    let objectsSort = 'desc'
     let objectsSortBy = ''
     let showPast = false
     let showCurrent = false
@@ -1042,6 +1044,7 @@ export default {
         }
 
         const queryArgs = { ...props,
+
                             activeFilters,  
                             aggregationMakerList,
                             aggregationMediumList,
@@ -1082,8 +1085,39 @@ export default {
         isLoading = false
         break
       case (props.items_type == 'collection'):
-        // TODO:
-        // this.getObjects(1);
+        const args = { ...props,
+                      searchTerm: route.query.search, 
+                      activeFilters, 
+                      aggregationMakerList,
+                      aggregationMediumList,
+                      aggregationSupportList,
+                      aggregationYearList,
+                      aggregationTypeList,
+                      objectsSortBy,
+                      objectsSort,
+                      page: currentPage,
+                          }
+
+        const { data: collexData } = await useAsyncData(`collection-${ currentPage }-${ route.query.search }-${ props.embark_ID }`, async () => {
+
+          const { items: hits, query: searchQuery, totalObjects, totalPages } = await getObjectItems(currentPage, route.query.search, args)
+          // const aggregations = await getAggregations(searchQuery, username, password);
+
+          return { hits, totalObjects, totalPages }
+        })
+
+        newItems = collexData.value?.hits
+        totalObjects = collexData.value?.totalObjects
+        totalPages = collexData.value?.totalPages
+        console.log('sup',newItems)
+        // Check paged hit lengths and disable buttons
+        if (collexData.value?.hits?.length < props.per_page + 1) {
+          nextPageAvailable = false;
+        } else {
+          nextPageAvailable = true;
+        }
+
+        isLoading = false
         break
 
       case (props.items_type == 'events' || props.items_type == 'exhibitions'): {  
