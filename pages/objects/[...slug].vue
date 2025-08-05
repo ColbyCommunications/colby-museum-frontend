@@ -151,7 +151,15 @@ export default {
             paragraph: post.Disp_Access_No,
           },
         ]
-      });
+      })
+      .catch(() => {
+        throw createError({
+          statusCode: 404,
+          message: 'Page Not Found',
+          fatal: true
+        })
+      })
+;
   }
 }
 </script>
