@@ -10,12 +10,11 @@
     <h1>Oops! {{ error?.message }}</h1>
     <h2>Error {{ error?.statusCode }}</h2>
 
-    <button class="trace-toggle" @click="toggleTrace()">{{ trace ? 'Hide' : 'Show' }} Error Trace</button>
-    <p v-if="trace" v-html="error.stack" />
+    <AccordionSection :items="[{ heading: 'Stack trace', context: error.stack }]"/>
 
     <BigArrowBtn :url="'/'"
                  :reverse="true"
-                 title="Go Back Home" />
+                 title="Go to Museum Home" />
   </div>
 </template>
 
@@ -90,7 +89,11 @@ export default {
       type: Object,
     }
   },
-  setup() {
+  setup(props) {
+    useSeoMeta({
+      title: 'Not Found | Colby College Museum of Art'
+    })
+
     return { trace: ref(false) }
   },
   methods: {
