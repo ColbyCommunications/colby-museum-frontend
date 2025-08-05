@@ -59,10 +59,12 @@ export default {
         heading: props.blockData[`items_${i}_heading`],
         context: props.blockData[`items_${i}_context`],
       }));
+    } else {
+      newItems = props.items
     }
 
     return {
-      newItems: [],
+      newItems,
     };
   },
   props: {
