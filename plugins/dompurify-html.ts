@@ -4,7 +4,6 @@
  *
  **/ 
 import VueDOMPurifyHTML from 'vue-dompurify-html';
-import { JSDOM } from 'jsdom';
 import DOMPurify from 'isomorphic-dompurify';
 
 export default defineNuxtPlugin((nuxtApp) => {
