@@ -18,7 +18,7 @@
         <span
           class="context__word-group"
           aria-hidden="true"
-          v-html="preppedHeading"
+          v-dompurify-html="preppedHeading"
         />
       </NuxtLink>
     </component>
@@ -33,19 +33,19 @@
         <span
           class="context__word-group"
           aria-hidden="true"
-          v-html="preppedHeading"
+          v-dompurify-html="preppedHeading"
         />
     </component>
     <div
       v-if="subheading"
       class="context__subheading"
-      v-html="preppedSubheading"
+      v-dompurify-html="preppedSubheading"
       ref="subheading"
     />    
     <div
       v-if="subheading2"
       class="context__subheading"
-      v-html="preppedSubheading2"
+      v-dompurify-html="preppedSubheading2"
       ref="subheading2"
     />
     <div
@@ -84,9 +84,9 @@
       <span
         class="vertical-curtain"
       />
-      <span v-html="preppedCaption" />
+      <span v-dompurify-html="preppedCaption" />
     </p>
-    <p
+    <div
       v-if="paragraph"
       class="context__p"
       ref="paragraph"
@@ -94,8 +94,8 @@
       <span
         class="vertical-curtain"
       />
-      <span v-html="preppedParagraph" />
-    </p>
+      <div v-dompurify-html="preppedParagraph" />
+    </div>
     <Btn
       v-if="button"
       class="context__btn"
@@ -118,6 +118,8 @@ import { useInterfaceStore } from "~/store/interface";
  * 
  **/ 
 const spanWrapWords = (text) => {
+  if (!text) return ''
+
   return text.replace(/\S+/g, '<span class="context__word" aria-hidden="true"><span aria-hidden="true">$&</span></span>');
 }
 
