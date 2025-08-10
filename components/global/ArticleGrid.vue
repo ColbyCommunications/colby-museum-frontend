@@ -241,7 +241,7 @@
               <label v-text="'Clear filters'" />
             </button>
           </div>
-          <div v-if="aggregations" class="filter__drawer-group">
+          <div v-if="aggregations.length > 0" class="filter__drawer-group">
             <SuperDropdown
               v-for="(aggregation, key, index) in aggregations"
               :size="'large'"
@@ -262,7 +262,7 @@
                       >
                     </div>
                     <label
-                      v-html="bucket.key"
+                      v-dompurify-html="bucket.key"
                       @click="aggregationChange($event, key)"
                     />
                   </div>
@@ -1049,8 +1049,9 @@ export default {
                             objectsSortBy,
                             objectsSort
                           }
-        let response
+
         const { data } = await useAsyncData(`articlegrid-${props.page}-${route.query.search}`, async () => {
+          let response
           if (props.page) {
             response = await getObjectItems(props.page, route.query.search, queryArgs)
           } else {
@@ -1059,7 +1060,7 @@ export default {
 
           // Establishes aggregations. Prevents them from changing everytime we make a
           // request to the endpoint.
-          aggregations = await getAggregations({query: response.query, username, password});
+          const aggregations = await getAggregations({query: response.query, username, password});
 
           return { items: response.items, totalObjects: response.totalObjects, totalPages: response.totalPages, aggregations }
         }) 
@@ -1264,13 +1265,13 @@ export default {
       showPast: false,
       showCurrent: false,
       showFuture: false,
-      drawerActive: false,
+      drawerActive: ref(false),
       reverseOrder: false,
       alphabeticalOrder: false,
       location: [],
       input: undefined,
-      objectsSort,
-      objectsSortBy,
+      objectsSort: ref(objectsSort),
+      objectsSortBy: ref(objectsSortBy),
       aggregations,
       aggregationMakerList,
       aggregationMediumList,

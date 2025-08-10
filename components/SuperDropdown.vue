@@ -61,7 +61,7 @@
 export default {
   setup() {
     return {
-      active: false,
+      active: ref(false),
     };
   },
   props: {
