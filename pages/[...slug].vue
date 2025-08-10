@@ -23,8 +23,6 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 import transitionConfig from '../helpers/transitionConfig';
 import seoConfig from '../helpers/seoConfig';
 
@@ -35,7 +33,7 @@ export default {
       pageTransition: transitionConfig,
     });
 
-    const { data } = await useAsyncData('posts', async () => {
+    const { data } = await useAsyncData(`posts-${route.params.slug}`, async () => {
       const { data } = await seoConfig(props)
 
       const pageData = computed( () => data.value?.at(0) )
@@ -48,9 +46,8 @@ export default {
       return { pageData, breadcrumbs }
     })
 
-    const pageData = data.value?.pageData ?? {}
-    const breadcrumbs = data.value?.breadcrumbs ?? [] 
-
+    const pageData = data.value?.pageData
+    const breadcrumbs = data.value?.breadcrumbs 
 
     const title = pageData?.title?.rendered
       .replace(/–/g, '-')
@@ -62,8 +59,6 @@ export default {
     const intro_visible = pageData?.acf?.intro_visible;
     const heading_visible = pageData?.acf?.heading_visible;
     const excerpt_visible = pageData?.acf?.excerpt_visible;
-
-    // page.getBreadcrumbs(post);
 
     const components = (pageData?.block_data ?? []).map((comp, i) => {
       let component = { ...comp }

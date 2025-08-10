@@ -146,15 +146,16 @@ const getImage = async (img, post, endpoint) => {
 export default {
   async setup(props) {
     const iface = useInterfaceStore()
-    let stagedImage, stagedButton
+    let stagedImage = {}
+    let stagedButton
 
-    const { data } = await useAsyncData(`article-${props.post?.featured_media ?? 0}`, async () => {
-      if (props.post && props.post?.featured_media) {
+    if (props.post && props.post?.featured_media) {
+      const { data } = await useAsyncData(`article-${props.post?.featured_media ?? 0}`, async () => {
         return await getImage(props.post?.featured_media, props.post, iface.endpoint);
-      }
+      })
 
-      return {}
-    })
+      stagedImage = data.value
+    }
 
     if (props.button) {
       stagedButton = {
@@ -168,7 +169,7 @@ export default {
 
     return {
       interface: iface,
-      stagedImage: data.value,
+      stagedImage,
       stagedButton,
     }
   },
@@ -252,7 +253,6 @@ export default {
   methods: {
     async updateImage() {
       if (this.post && this.post.featured_media) {
-        // console.log(this.post);
         this.stagedImage = await getImage(this.post.featured_media, this.post, this.interface.endpoint);
       }
     },

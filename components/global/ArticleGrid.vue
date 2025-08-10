@@ -1082,7 +1082,6 @@ export default {
         }
 
         isLoading = false
-        console.log('suppers')
         break
       case (props.items_type == 'collection'):
         const args = { ...props,
@@ -1233,7 +1232,10 @@ export default {
               })})
             }
 
-            const image = await getImage(props.blockData[`items_${i}_image`], iface.endpoint)
+            let image
+            if (props.blockData[`items_${i}_image`]) {
+              image = await getImage(props.blockData[`items_${i}_image`], iface.endpoint)
+            }
 
             return new Promise( (resolve,reject) => {
               resolve({
