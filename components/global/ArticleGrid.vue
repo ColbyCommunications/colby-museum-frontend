@@ -520,11 +520,11 @@ const makeElasticQuery = ({ searchTerm,
     filterTerms.push({ "terms": { "Disp_Obj_Type" : aggregationTypeList }})
   }
 
-  if (objectsSortBy == 'name') {
+  if (objectsSortBy === 'name') {
     filterSort.push({'Artist_Maker.sort_name' : objectsSort});
-  } else if (objectsSort == 'year') {
+  } else if (objectsSort === 'year') {
     filterSort.push({'dates.start_year' : 'desc'});
-  } else if (objectsSortBy == 'title') {
+  } else if (objectsSortBy === 'title') {
     filterSort.push({"Disp_Title": objectsSort});
   } else {
     filterSort.push({"accession_num_year": objectsSort});
@@ -657,7 +657,6 @@ const getPostItems = async ({page,
   const terminated = endpoint.endsWith('/') ? endpoint : endpoint + '/'
   const catsParams = { parent: itemsCategory }
   const catsUrl = new URL('categories', endpoint)
-  // console.log('setting up to boop')
   const catsResp = await $fetch(catsUrl.href, { params: catsParams }) 
   const categories = (catsResp ?? []).map((c) => c.id)
 
@@ -752,8 +751,7 @@ const getPostItems = async ({page,
       }
     }
   }
-  // console.log('done boopping')
-  // console.log(postItems)
+
   return { items: postItems, totalPages }
 }
 
@@ -778,7 +776,7 @@ const getObjectCount = async (query, endpoint, username, password, perPage) => {
  **/ 
 const getImage = async (i, endpoint) => {
   if (!i) return
-  // console.log(i,endpoint)
+
   const url = new URL(`media/${i}`, endpoint)
   const imageObj = await $fetch(url.href)
 
@@ -817,16 +815,15 @@ const getImage = async (i, endpoint) => {
 }
 
 // Loads from _search API
-const getObjectItems = async (page, searchTerm, component) => {  
-  const searchQuery = makeElasticQuery({searchTerm, page, ...component})
-
-  const { totalObjects, totalPages } = await getObjectCount(searchQuery, endpoint, username, password, component.per_page)
+const getObjectItems = async (page, searchTerm, queryArgs) => {  
+  const searchQuery = makeElasticQuery({searchTerm, page, ...queryArgs})
+  const { totalObjects, totalPages } = await getObjectCount(searchQuery, endpoint, username, password, queryArgs.per_page)
 
   const response = await fetchWith(`${endpoint}/_search`, searchQuery, username, password)
 
   const items = response.hits.hits.map((i) => {
     const img = i._source.Images.length > 0 ? i._source.Images[0] : undefined;
-    const imgUrl = img ? `https://ccma-iiif-cache-service.fly.dev/iiif/2/${img.IIIF_URL.substring(img.IIIF_URL.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, "")}/full/${encodeURIComponent(`${component.columns === '6' ? '300,' : '400,'}`)}/0/default.jpg` : '';
+    const imgUrl = img ? `https://ccma-iiif-cache-service.fly.dev/iiif/2/${img.IIIF_URL.substring(img.IIIF_URL.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, "")}/full/${encodeURIComponent(`${queryArgs.columns === '6' ? '300,' : '400,'}`)}/0/default.jpg` : '';
 
     return {
       size: 'embark',
@@ -883,6 +880,7 @@ const getObjectItems = async (page, searchTerm, component) => {
  * 
  **/ 
 const loadFilters = (items_type, activeFilters) => {
+  let active = activeFilters ?? []
   let filtersConfig;
   switch (items_type) {
     case 'events':
@@ -897,16 +895,14 @@ const loadFilters = (items_type, activeFilters) => {
     default:
       return []
   }
-  const filters = []
 
-  // TODO:
-  // const filters = filtersConfig.map((f) => ({
-  //   name: f.name,
-  //   items: f.items.map((i) => ({
-  //     name: i,
-  //     active: i === 'Has Image' && activeFilters.includes('Has Image') ? true : false,
-  //   }))
-  // }));
+  const filters = filtersConfig.map((f) => ({
+    name: f.name,
+    items: f.items.map((i) => ({
+      name: i,
+      active: i === 'Has Image' && activeFilters.includes('Has Image') ? true : false,
+    }))
+  }));
 
   return filters
 }
@@ -1001,7 +997,7 @@ export default {
     const route = useRoute()
     const iface = useInterfaceStore();
 
-    let activeFilters = []
+    let activeFilters = props.activeFilters ?? []
     let aggregationMakerList = []
     let aggregationTypeList = []
     let aggregationYearList = []
@@ -1009,11 +1005,11 @@ export default {
     let aggregationSupportList = []
     let currentPage = props.page ?? 1
     let objectsSort = 'desc'
-    let objectsSortBy = ''
+    let objectsSortBy = 'accession'
     let showPast = false
     let showCurrent = false
     let showFuture = false
-    let filters = loadFilters(props.items_type, props.activeFilters ?? [])
+    let filters = loadFilters(props.items_type, activeFilters)
     let newItems = []
     let totalObjects = undefined
     let isLoading = true
@@ -1031,20 +1027,19 @@ export default {
         aggregationYearList = route.query.year ? wrapArray(route.query.year) : [];
         aggregationTypeList = route.query.type ? wrapArray(route.query.type) : [];
         
-        if (route.query.sort === 'desc' || route.query.sort === null) {
+        if (route.query.sort === 'desc' || !route.query.sort) {
           objectsSort = 'desc';
         } else {
           objectsSort = route.query.sort;
         }
 
-        if (route.query.sortby === 'accession' || route.query.sort === null) {
+        if (route.query.sortby === 'accession' || !route.query.sort) {
           objectsSortBy = 'accession';
         } else {
           objectsSortBy = route.query.sortby;
         }
 
         const queryArgs = { ...props,
-
                             activeFilters,  
                             aggregationMakerList,
                             aggregationMediumList,
@@ -1108,7 +1103,7 @@ export default {
         newItems = collexData.value?.hits
         totalObjects = collexData.value?.totalObjects
         totalPages = collexData.value?.totalPages
-        console.log('sup',newItems)
+
         // Check paged hit lengths and disable buttons
         if (collexData.value?.hits?.length < props.per_page + 1) {
           nextPageAvailable = false;
@@ -1160,15 +1155,14 @@ export default {
 
           return posts 
         })
-        // console.log('got events')
+
         totalPages = response.value?.totalPages;
         newItems = response.value?.items
         nextPageAvailable = response.value?.totalPages === currentPage
 
         pagination = pageRange(currentPage, response.value.totalPages, 6);
         isLoading = false;
-        // console.log(newItems, totalPages)
-        // console.log('finished events', newItems)
+
         break
       }
 
@@ -1186,15 +1180,11 @@ export default {
               }
       
               const { data: posts } = await useAsyncData( `ag-manual-${ Object.values(postItemsParams).join('') }`, async () => {
-                // console.log('boopin that boop')
-      
                 const p = await getPostItems(postItemsParams)        
-                // console.log('booped that boop',response)
-      
       
                 return p
               })
-              console.log('got not manual')
+
               newItems = posts.value?.items
               totalPages = posts.value?.totalPages
               nextPageAvailable = posts.value?.totalPages === currentPage
@@ -1202,7 +1192,6 @@ export default {
               pagination = pageRange(currentPage, posts.value?.totalPages, 6);
               isLoading = false;
               
-              // console.log('finished manual', newItems)
               break
             }
       // If selecting items individually
@@ -1621,8 +1610,6 @@ export default {
       const drawer = this.$refs.drawer.querySelector('.filter__drawer');
       let term;
 
-      // console.log(drawer);
-
       if (e.target == undefined) {
         term = e; 
       } else {
@@ -1660,8 +1647,6 @@ export default {
       }
 
       component.triggerNavigateTo();
-
-      // console.log(this.$route.fullPath.split('?').pop());
 
       this.getObjects(1, this.input);
     },
@@ -1721,11 +1706,7 @@ export default {
             stagger: 0.1,
             ease: "expo.out",
           });
-
-          // console.log('gsap fired');
         }
-
-        // console.log('animation fired');
       }, 150);
     }
   }
