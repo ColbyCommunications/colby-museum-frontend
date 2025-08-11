@@ -1,6 +1,5 @@
 <script>
   import { defineComponent,h } from 'vue';
-  import DOMPurify from 'isomorphic-dompurify'
 
   export default defineComponent({
     props: {
@@ -14,7 +13,7 @@
       },
     },
     setup(props, { slots }) {
-      return () => h(props.tag, { innerHTML: DOMPurify.sanitize(props.html) });
+      return () => h(props.tag, { innerHTML: props.html });
     },
   });
 </script>
