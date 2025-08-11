@@ -1394,7 +1394,22 @@ export default {
         }, 600);
       }
 
-      const { items: hits, query: searchQuery, totalObjects, totalPages } = await getObjectItems(page, searchTerm, {...this})
+      const queryArgs = {
+        searchTerm, 
+        activeFilters: this.activeFilters, 
+        page: this.page, 
+        per_page: this.per_page, 
+        embark_ID: this.embark_ID, 
+        aggregationMakerList: this.aggregationMakerList,
+        aggregationMediumList: this.aggregationMediumList,
+        aggregationSupportList: this.aggregationSupportList,
+        aggregationYearList: this.aggregationYearList,
+        aggregationTypeList: this.aggregationTypeList,
+        objectsSortBy: this.objectsSortBy,
+        objectsSort: this.objectsSort,
+        variant: this.variant
+      }
+      const { items: hits, query: searchQuery, totalObjects, totalPages } = await getObjectItems(page, searchTerm, queryArgs)
 
       this.newItems = hits
       this.totalObjects = totalObjects
