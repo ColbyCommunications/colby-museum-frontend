@@ -261,10 +261,12 @@
                         @click="aggregationChange($event, key)"
                       >
                     </div>
-                    <label
-                      v-dompurify-html="bucket.key"
-                      @click="aggregationChange($event, key)"
-                    />
+                    <ClientOnly>
+                      <label
+                        v-html="bucket.key"
+                        @click="aggregationChange($event, key)"
+                      />
+                    </ClientOnly>
                   </div>
                 </li>
               </ul>
