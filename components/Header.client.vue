@@ -125,10 +125,10 @@ export default {
     }
 
     return {  interface: iface,
-              active: undefined,
-              drawerActive: false,
-              searchActive: false,
-              input: '',
+              active: ref(undefined),
+              drawerActive: ref(false),
+              searchActive: ref(false),
+              input: ref(''),
               campusIsOpen,
               downtownIsOpen
            }
