@@ -1249,7 +1249,7 @@ export default {
         newItems = postDatas.value
         break
     }
-    console.log(aggregations)
+
     return {
       interface: iface,
       newItems: ref(newItems),
