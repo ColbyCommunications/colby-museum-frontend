@@ -15,11 +15,10 @@
         <span class="sr-only"
           v-text="heading"
         />
-        <span
+        <div
           class="context__word-group"
           aria-hidden="true"
-          v-dompurify-html="preppedHeading"
-        />
+        ><ClientOnly><PureHtml tag="div" :html="preppedHeading"/></ClientOnly></div>
       </NuxtLink>
     </component>
     <component :is="headingElement"
@@ -30,24 +29,20 @@
       <span class="sr-only"
         v-text="heading"
       />
-        <span
-          class="context__word-group"
-          aria-hidden="true"
-          v-dompurify-html="preppedHeading"
-        />
+      <div
+        class="context__word-group"
+        aria-hidden="true"
+      ><ClientOnly><PureHtml tag="div" :html="preppedHeading"/></ClientOnly></div>
     </component>
     <div
       v-if="subheading"
       class="context__subheading"
-      v-dompurify-html="preppedSubheading"
       ref="subheading"
-    />    
+    ><ClientOnly><PureHtml tag="div" :html="preppedSubheading" /></ClientOnly></div>    
     <div
       v-if="subheading2"
       class="context__subheading"
-      v-dompurify-html="preppedSubheading2"
-      ref="subheading2"
-    />
+      ref="subheading2"><ClientOnly><PureHtml tag="div" :html="preppedSubheading2"/></ClientOnly></div>
     <div
       v-if="image"
       class="context__image"
@@ -76,7 +71,7 @@
         :loading="layoutPosition > 0 ? 'lazy' : 'eager'"
       />
     </div>
-    <p
+    <div
       v-if="caption"
       class="context__caption"
       ref="caption"
@@ -84,8 +79,8 @@
       <span
         class="vertical-curtain"
       />
-      <span v-dompurify-html="preppedCaption" />
-    </p>
+      <div><ClientOnly><PureHtml tag="div" :html="preppedCaption" /></ClientOnly></div>
+    </div>
     <div
       v-if="paragraph"
       class="context__p"
@@ -94,7 +89,7 @@
       <span
         class="vertical-curtain"
       />
-      <div v-dompurify-html="preppedParagraph" />
+      <ClientOnly><PureHtml tag="div" :html="preppedParagraph" /></ClientOnly>
     </div>
     <Btn
       v-if="button"
