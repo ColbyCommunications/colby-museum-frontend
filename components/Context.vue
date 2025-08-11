@@ -167,27 +167,27 @@ export default {
     }
   },
   watch: {
-    // heading: {
-    //   deep: true,
-    //   handler() {
-    //     this.animate();
-    //   }
-    // },
-    // subheading: {
-    //   deep: true,
-    //   handler() {
-    //     this.animate();
-    //   }
-    // },
-    // image: {
-    //   deep: true,
-    //   handler() {
-    //     this.animate();
-    //     if (this.$refs.image) {
-    //       this.$refs.image.classList.remove('context__image--broken');
-    //     }
-    //   }
-    // }
+    heading: {
+      deep: true,
+      handler() {
+        this.animate();
+      }
+    },
+    subheading: {
+      deep: true,
+      handler() {
+        this.animate();
+      }
+    },
+    image: {
+      deep: true,
+      handler() {
+        this.animate();
+        if (this.$refs.image) {
+          this.$refs.image.classList.remove('context__image--broken');
+        }
+      }
+    }
   },
   computed: {
     preppedHeading() {
