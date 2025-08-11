@@ -47,7 +47,7 @@ export default {
       this.player = new YTPlayer(this.$refs.iframe);
 
       this.player.load(this.id);
-    }, 2000);
+    }, 150);
   },
   props: {
     id: {

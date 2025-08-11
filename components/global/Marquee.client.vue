@@ -88,7 +88,7 @@ export default {
       this.width = this.$refs.marqueeOriginal.offsetWidth;
       console.log(this.speed);
       this.animate();
-    }, 1000);
+    }, 150);
   },
   methods: {
     calculateWidth() {

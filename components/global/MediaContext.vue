@@ -733,7 +733,7 @@ export default {
           });
           // this.glide.mount();
         }
-      }, this.variant == 'overflow' ? 300 : 150); // VERY IMPORTANT DELAY FOR LOADING AND CONTEXT ANIMATIONS TO GEL NICELY 1100 / 600
+      }, this.variant == 'overflow' ? 300 : 150);
     },
     changeSlide(s) {
       if (s == 'next') {

@@ -103,7 +103,7 @@ export default {
             });
           });
         }
-      }, 600);
+      }, 150);
     },
     hasFileExtension(fileName) {
       return fileName.includes('.pdf');

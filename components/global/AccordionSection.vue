@@ -102,7 +102,7 @@ export default {
             duration: 0.4,
             stagger: 0.1,
           });
-      }, 400);
+      }, 150);
     }
   }
 }
