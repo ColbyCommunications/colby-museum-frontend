@@ -241,7 +241,7 @@
               <label v-text="'Clear filters'" />
             </button>
           </div>
-          <div v-if="aggregations.length > 0" class="filter__drawer-group">
+          <div v-if="aggregations" class="filter__drawer-group">
             <SuperDropdown
               v-for="(aggregation, key, index) in aggregations"
               :size="'large'"
@@ -253,7 +253,7 @@
                 <li v-for="(bucket, index) in aggregation.buckets">
                   <div
                     class="checkbox checkbox--small"
-                    :class="[aggregationMakerList.includes(bucket.key) || aggregationTypeList.includes(bucket.key) || aggregationYearList.includes(bucket.key)  ? 'checkbox--active' : '']"
+                    :class="[ aggregationMakerList.includes(bucket.key) || aggregationTypeList.includes(bucket.key) || aggregationYearList.includes(bucket.key)  ? 'checkbox--active' : '']"
                   >
                     <div class="checkbox__main">
                       <input
@@ -261,12 +261,10 @@
                         @click="aggregationChange($event, key)"
                       >
                     </div>
-                    <ClientOnly>
                       <label
                         v-html="bucket.key"
                         @click="aggregationChange($event, key)"
                       />
-                    </ClientOnly>
                   </div>
                 </li>
               </ul>
@@ -1016,7 +1014,7 @@ export default {
     let totalObjects = undefined
     let isLoading = true
     let nextPageAvailable = false
-    let aggregations = []
+    let aggregations = {}
     let pagination = []
 
     let items, totalPages
@@ -1251,10 +1249,10 @@ export default {
         newItems = postDatas.value
         break
     }
-
+    console.log(aggregations)
     return {
       interface: iface,
-      newItems,
+      newItems: ref(newItems),
       totalPages,
       totalObjects,
       currentPage,
@@ -1274,7 +1272,7 @@ export default {
       input: ref(undefined),
       objectsSort: ref(objectsSort),
       objectsSortBy: ref(objectsSortBy),
-      aggregations,
+      aggregations: ref(aggregations),
       aggregationMakerList,
       aggregationMediumList,
       aggregationSupportList,
@@ -1543,8 +1541,6 @@ export default {
       this.getPosts(1);
     },
     toggleAlphabetical(term) {
-      
-
       if (this.items_type == 'objects') {
         if (term == `Accession Number Descending`) {
           this.objectsSortBy = 'accession';
