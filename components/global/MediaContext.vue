@@ -640,8 +640,6 @@ export default {
             })
           }
 
-          // const image = 
-
           return new Promise( async (resolve,reject) => {
             resolve({
                 post: undefined,
@@ -663,12 +661,11 @@ export default {
       }
     })
 
-    // console.log(typeof items.value, Array.isArray(items.value))
     return {
       id: `${props.items_type}-${props.items}`,
       interface: iface,
       items_type: props.items_type,
-      newItems: items.value,
+      newItems: items.value ? items.value : [],
       activeSlide: ref(0),
       window: undefined,
       glide: undefined,
