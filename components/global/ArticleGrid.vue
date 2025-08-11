@@ -1582,14 +1582,12 @@ export default {
       }
     },
     recieveInput(input) {
-      const component = this;
       this.input = input;
 
-      if (this.items_type == 'objects' && this.page) {
-        component.triggerNavigateTo();
-
+      if (this.items_type === 'objects' && this.page) {
+        this.triggerNavigateTo();
         this.getObjects(1, input);
-      } else if (this.items_type == 'objects') {
+      } else if (this.items_type === 'objects') {
         this.getObjects(1, input);
       } else {
         this.triggerNavigateTo();
@@ -1643,21 +1641,18 @@ export default {
       this.getObjects(1, this.input);
     },
     triggerNavigateTo() {
-      const component = this;
-      let chrono;
+      let chrono = '';
 
-      if (this.showPast == true) {
+      if (this.showPast === true) {
         chrono = 'past';
-      } else if (this.showCurrent == true) {
+      } else if (this.showCurrent === true) {
         chrono = 'current';
-      } else if (this.showFuture == true) {
+      } else if (this.showFuture === true) {
         chrono = 'future';
-      } else {
-        chrono = '';
       }
 
       // These are seperate due to differences in Elasticsearch REST API and Wordpress REST API options
-      if (component.items_type == 'objects') {
+      if (this.items_type === 'objects') {
         navigateTo({
           path: `/objects/page-1`,
           query: {
