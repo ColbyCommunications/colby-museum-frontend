@@ -1394,7 +1394,7 @@ export default {
         }, 600);
       }
 
-      const { items: hits, query: searchQuery, totalObjects, totalPages } = await getObjectItems(page, searchTerm, this)
+      const { items: hits, query: searchQuery, totalObjects, totalPages } = await getObjectItems(page, searchTerm, {...this})
 
       this.newItems = hits
       this.totalObjects = totalObjects
