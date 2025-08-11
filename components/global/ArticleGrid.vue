@@ -900,7 +900,7 @@ const loadFilters = (items_type, activeFilters) => {
     name: f.name,
     items: f.items.map((i) => ({
       name: i,
-      active: i === 'Has Image' && activeFilters.includes('Has Image') ? true : false,
+      active: i === 'Has Image' && active.includes('Has Image') ? true : false,
     }))
   }));
 
@@ -1291,19 +1291,17 @@ export default {
   },
   computed: {
     filteredItems() {
-      const component = this;
       let filteredItems;
 
       if (this.activeFilters.length > 0 && this.newItems[0]?.post) {
-        filteredItems = component.newItems.filter(
-          item => Object.values(item.post.acf).some(k => component.activeFilters.includes(k)),
+        filteredItems = this.newItems.filter(
+          item => Object.values(item.post.acf).some(k => this.activeFilters.includes(k)),
         );
       } else {
-        filteredItems = component.newItems;
+        filteredItems = this.newItems;
       }
 
       return filteredItems;
-
     },
   },
   props: {
