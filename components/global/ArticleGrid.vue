@@ -1016,6 +1016,7 @@ export default {
     let nextPageAvailable = false
     let aggregations = {}
     let pagination = []
+    let location = []
 
     let items, totalPages
 
