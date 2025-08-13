@@ -622,8 +622,7 @@ export default {
 
           if (entryType === 'selection') {
 
-            const selection = props.blockData[`items_${i}_post_selection`]
-            // const post = await getPost(selection, iface.endpoint)
+            const selection = props.blockData[`items_${i}_posts_selection`]
 
             return new Promise( async (resolve,reject) => {
               resolve({
