@@ -28,12 +28,14 @@ import { useInterfaceStore } from "~/store/interface";
 import YTPlayer from 'yt-player';
 
 export default {
-  async setup() {
+  async setup(props) {
     const iface = useInterfaceStore();
-    const { data } = await useAsyncData( async () => {
-      return await getImage(component.image);
-    })
 
+    const { data } = await useAsyncData( `video-poster-${props.image}`, async () => {
+      const img = await getImage(props.image, iface.endpoint);
+
+      return img
+    })
 
     return {
       interface: iface,
@@ -43,11 +45,9 @@ export default {
     };
   },
   mounted() {
-    setTimeout(() => {
-      this.player = new YTPlayer(this.$refs.iframe);
+    this.player = new YTPlayer(this.$refs.iframe);
 
-      this.player.load(this.id);
-    }, 150);
+    this.player.load(this.id);
   },
   props: {
     id: {
