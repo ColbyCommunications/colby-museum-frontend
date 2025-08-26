@@ -1129,8 +1129,6 @@ export default {
 
 
           filters[1].items.find(item => item.name === route.query.chronology).active = true
-        } else {
-          // showPast = true;
         }
 
         if (route.query.location) {
