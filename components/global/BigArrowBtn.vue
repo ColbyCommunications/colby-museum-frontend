@@ -49,8 +49,10 @@ export default {
       }
     }
   },
-  async created() {
-    this.interface = useInterfaceStore();
+  setup() {
+    return {
+      interface: useInterfaceStore()
+    }
   },
   mounted() {
     this.animate();
@@ -101,7 +103,7 @@ export default {
             });
           });
         }
-      }, 600);
+      }, 150);
     },
     hasFileExtension(fileName) {
       return fileName.includes('.pdf');

@@ -15,7 +15,7 @@
         :globalOptions="globalOptions"
       />
       <NuxtLayout>
-        <NuxtPage :interface="interface" />
+        <NuxtPage :interface="interface"/>
       </NuxtLayout>
       <Footer
         :primary="mainMenu"
@@ -27,7 +27,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ScrollSmoother } from 'gsap/ScrollSmoother';
@@ -36,74 +35,101 @@ import { useInterfaceStore } from '~/store/interface';
 
 import footerItems from '~/assets/data/footer.yml';
 
+function formatTime(t) {
+      const time = t.split(':');
+      const hour = parseInt(time[0]);
+      const min = time[1];
+      const sec = parseInt(time[2]);
+      const ampm = (hour >= 12) ? " p.m." : " a.m.";
+
+      return `${hour == 12 || hour == 0 ? 12 : hour % 12}:${min.replace(/\s/g, '').replace('am', ' a.m.').replace('pm', ' p.m.').replace(' - ', '&ndash;')}`;
+    }
+
 export default {
-  data() {
+  async setup() {
+    let footerItems = [];
+    const iface = useInterfaceStore()
+    const { data } = await useAsyncData( 'app', async () => {
+      
+      const menus = await $fetch(`${useInterfaceStore().endpoint}menus`)
+
+      const { acf: globalOptions } = await $fetch(`${useInterfaceStore().endpointv3}options/options`)
+
+      const events = await $fetch(`${useInterfaceStore().endpoint}events?categories_exclude=1&chronologies=9`)
+
+      return { menus, globalOptions, events }
+    })
+
+    const menus = data.value?.menus ?? {}
+    const events = data.value?.events ?? []
+    const globalOptions = data.value?.globalOptions ?? {}
+
+    const mainMenu = menus.site;
+    const utilityMenu = menus.utility;
+    const socialMenu = menus.social;
+
+    const campusEvents = events.filter((event) => event.acf.location == 'campus');
+    const downtownEvents = events.filter((event) => event.acf.location == 'downtown');
+
+    let campusCurrentEvents = []
+    if (campusEvents.length >= 1) {
+      campusCurrentEvents = campusEvents.map((i) => ({
+        heading: i.title.rendered,
+        location: i.acf.location,
+        time: `${formatTime(
+            i.acf.start_time
+        )}-${formatTime(i.acf.end_time)}`,
+        button: {
+            title: 'Event Details',
+            url: i.link,
+        },
+      }));
+    } else {
+      campusCurrentEvents = [{
+          location: 'No event scheduled for today.',
+          // time: new Date().getDay() == 0 ? '12:00 p.m.–5:00 p.m.' : '10:00 a.m.–5:00 p.m.',
+          button: {
+            title: "What's On",
+            url: '/exhibitions/page-1?chronology=current&location=campus',
+          }
+        }]
+    }
+
+    let downtownCurrentEvents = []
+    if (downtownEvents.length >= 1) {
+      downtownCurrentEvents = downtownEvents.map((i) => ({
+        heading: i.title.rendered,
+        location: i.acf.location,
+        time: `${formatTime(
+            i.acf.start_time
+        )}-${formatTime(i.acf.end_time)}`,
+        button: {
+            title: 'Event Details',
+            url: i.link,
+        },
+      }));
+    } else {
+      downtownCurrentEvents = [{
+          location: 'No event scheduled for today.',
+          // time: '11:00 a.m.–7:00 p.m.',
+          button: {
+            title: "What's On",
+            url: '/exhibitions/page-1?chronology=current&location=downtown',
+          }
+        }]
+    }
+
     return {
-      globalOptions: {},
-      interface: undefined,
-      mainMenu: [],
-      utilityMenu: [],
-      socialMenu: [],
+      globalOptions,
+      interface: iface,
+      mainMenu,
+      utilityMenu,
+      socialMenu,
       headerItems: [],
       footerItems: [],
-      campusCurrentEvents: undefined,
-      downtownCurrentEvents: undefined,
-    };
-  },
-  created() {
-    const component = this;
-    let campusEvents;
-    let downtownEvents;
-
-    this.interface = useInterfaceStore();
-
-    // this.headerItems = headerItems;
-    this.footerItems = footerItems;
-
-    axios.get(`${this.interface.endpoint}menus`).then((output) => {
-      component.mainMenu = output.data.site;
-      component.utilityMenu = output.data.utility;
-      component.socialMenu = output.data.social;
-    });
-
-    axios.get(`${this.interface.endpointv3}options/options`).then((output) => {
-      component.globalOptions = output.data.acf;
-    });
-
-    axios
-      .get(`${this.interface.endpoint}events?categories_exclude=1&chronologies=9`)
-      .then((output) => {
-          campusEvents = output.data.filter((event) => event.acf.location == 'campus');
-          downtownEvents = output.data.filter((event) => event.acf.location == 'downtown');
-
-          if (campusEvents.length >= 1) {
-            component.campusCurrentEvents = campusEvents.map((i) => ({
-              heading: i.title.rendered,
-              location: i.acf.location,
-              time: `${component.formatTime(
-                  i.acf.start_time
-              )}-${component.formatTime(i.acf.end_time)}`,
-              button: {
-                  title: 'Event Details',
-                  url: i.link,
-              },
-            }));
-          }
-
-          if (downtownEvents.length >= 1) {
-            component.downtownCurrentEvents = downtownEvents.map((i) => ({
-              heading: i.title.rendered,
-              location: i.acf.location,
-              time: `${component.formatTime(
-                  i.acf.start_time
-              )}-${component.formatTime(i.acf.end_time)}`,
-              button: {
-                  title: 'Event Details',
-                  url: i.link,
-              },
-            }));
-          }
-      });
+      campusCurrentEvents,
+      downtownCurrentEvents,
+    }
   },
   mounted() {
     gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
@@ -114,17 +140,6 @@ export default {
       //     effects: true,
       // });
     }, 600);
-  },
-  methods: {
-    formatTime(t) {
-      const time = t.split(':');
-      const hour = parseInt(time[0]);
-      const min = time[1];
-      const sec = parseInt(time[2]);
-      const ampm = (hour >= 12) ? " p.m." : " a.m.";
-
-      return `${hour == 12 || hour == 0 ? 12 : hour % 12}:${min.replace(/\s/g, '').replace('am', ' a.m.').replace('pm', ' p.m.').replace(' - ', '&ndash;')}`;
-    },
   },
 };
 </script>

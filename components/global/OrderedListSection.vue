@@ -31,9 +31,19 @@ import gsap from 'gsap';
 import { useInterfaceStore } from "~/store/interface";
 
 export default {
-  data() {
+  setup(props) {
+    const iface = useInterfaceStore();
+    let newItems = []
+
+    if (typeof props.items === 'number') {
+      newItems = [...Array(props.items)].map((el, i) => ({
+        text: props.blockData[`items_${i}_text`],
+      }));
+    }
+
     return {
-      newItems: [],
+      interface: iface,
+      newItems,
     };
   },
   props: {
@@ -46,16 +56,6 @@ export default {
     blockData: {
       type: Object,
       required: false,
-    }
-  },
-  created() {
-    const component = this;
-    this.interface = useInterfaceStore();
-
-    if (typeof component.items === 'number') {
-      component.newItems = [...Array(this.items)].map((el, i) => ({
-        text: component.blockData[`items_${i}_text`],
-      }));
     }
   },
   mounted() {

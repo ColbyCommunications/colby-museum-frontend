@@ -1,6 +1,6 @@
 <template>
-  <div class="core-list grid paragraph-style-2">
-    {{ innerHTML }}
+  <div class="core-list grid paragraph-style-2"
+        v-html="innerHTML">
   </div>
 </template>
 
@@ -10,6 +10,10 @@ export default {
     attrs: {
       type: Object,
       required: true,
+    },
+    innerHTML: {
+      type: String,
+      required: false,
     }
   }
 }

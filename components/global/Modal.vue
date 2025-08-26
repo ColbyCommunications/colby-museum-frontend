@@ -20,13 +20,10 @@ import { useInterfaceStore } from "~/store/interface";
 import gsap from 'gsap';
 
 export default {
-  data() {
+  setup() {
     return {
-      interface: undefined,
+      interface: useInterfaceStore(),
     };
-  },
-  created() {
-    this.interface = useInterfaceStore();
   },
   mounted() {
     if (this.$refs.modal) {

@@ -14,7 +14,7 @@
 import debounce from 'lodash.debounce';
 
 export default {
-  data() {
+  setup() {
     return {
       debounce: debounce,
       input: '',

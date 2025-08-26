@@ -108,38 +108,30 @@ import { useInterfaceStore } from "~/store/interface";
 import isOpen from '../helpers/isOpen';
 
 export default {
-  data() {
-    return {
-      interface: undefined,
-      active: undefined,
-      drawerActive: false,
-      searchActive: false,
-      input: '',
-      campusIsOpen: undefined,
-      downtownIsOpen: undefined,
-    };
-  },
-  created() {
-    this.interface = useInterfaceStore();
+  setup(props) {
+    const iface = useInterfaceStore();
 
-    this.campusIsOpen = isOpen('10:00:00', '17:00:00', 'campus');
-    this.downtownIsOpen = isOpen('11:00:00', '19:00:00', 'downtown');
+    let campusIsOpen = isOpen('10:00:00', '17:00:00', 'campus');
+    let downtownIsOpen = isOpen('11:00:00', '19:00:00', 'downtown');
 
-    setInterval(() => {
-      if (this.globalOptions) {
-        if (this.globalOptions.campus_closed_override) {
-          this.campusIsOpen = false;
-        } else {
-          this.campusIsOpen = isOpen('10:00:00', '17:00:00', 'campus');
-        }
-
-        if (this.globalOptions.downtown_closed_override) {
-          this.downtownIsOpen = false;
-        } else {
-          this.downtownIsOpen = isOpen('11:00:00', '19:00:00', 'downtown');
-        }
+    if (props.globalOptions) {
+      if (props.globalOptions.campus_closed_override) {
+        campusIsOpen = false;
       }
-    }, 60 * 1000);
+
+      if (props.globalOptions.downtown_closed_override) {
+        downtownIsOpen = false;
+      }
+    }
+
+    return {  interface: iface,
+              active: ref(undefined),
+              drawerActive: ref(false),
+              searchActive: ref(false),
+              input: ref(''),
+              campusIsOpen,
+              downtownIsOpen
+           }
   },
   props: {
     utility: {
@@ -152,53 +144,15 @@ export default {
     },
     campusEvent: {
       type: Array,
-      required: false,
-      default: [
-        {
-          location: 'No event scheduled for today.',
-          // time: new Date().getDay() == 0 ? '12:00 p.m.–5:00 p.m.' : '10:00 a.m.–5:00 p.m.',
-          button: {
-            title: "What's On",
-            url: '/exhibitions/page-1?chronology=current&location=campus',
-          }
-        }
-      ]
+      required: false
     },
     downtownEvent: {
       type: Array,
-      required: false,
-      default: [
-        {
-          location: 'No event scheduled for today.',
-          // time: '11:00 a.m.–7:00 p.m.',
-          button: {
-            title: "What's On",
-            url: '/exhibitions/page-1?chronology=current&location=downtown',
-          }
-        }
-      ]
+      required: false
     },
     globalOptions: {
       type: Object,
       required: false
-    }
-  },
-  watch: {
-    globalOptions: {
-      deep: true,
-      async handler() {
-        if (this.globalOptions.campus_closed_override) {
-          this.campusIsOpen = false;
-        } else {
-          this.campusIsOpen = isOpen('10:00:00', '17:00:00', 'campus');
-        }
-
-        if (this.globalOptions.downtown_closed_override) {
-          this.downtownIsOpen = false;
-        } else {
-          this.downtownIsOpen = isOpen('11:00:00', '19:00:00', 'downtown');
-        }
-      }
     }
   },
   methods: {

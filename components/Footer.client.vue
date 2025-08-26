@@ -71,10 +71,25 @@
 import isOpen from '../helpers/isOpen';
 
 export default {
-  data() {
+  setup(props) {
+    let campusIsOpen = false
+    let downtownIsOpen = false
+
+    if (props.globalOptions.campus_closed_override) {
+      campusIsOpen = false;
+    } else {
+      campusIsOpen = isOpen('10:00:00', '17:00:00', 'campus');
+    }
+
+    if (props.globalOptions.downtown_closed_override) {
+      downtownIsOpen = false;
+    } else {
+      downtownIsOpen = isOpen('11:00:00', '19:00:00', 'downtown');
+    }
+
     return {
-      campusIsOpen: undefined,
-      downtownIsOpen: undefined,
+      campusIsOpen,
+      downtownIsOpen,
     };
   },
   props: {
@@ -142,6 +157,8 @@ export default {
     document.body.appendChild(ccScript2);
 
     setTimeout(() => {
+      if (!document.getElementById('email_address_1')) return
+
       document.getElementById('email_address_1').placeholder = 'Newsletter Sign Up';
       document.querySelector('.ctct-form-button').innerHTML = 'Submit';
     }, 4000);
