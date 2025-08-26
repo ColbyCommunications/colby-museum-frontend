@@ -1186,7 +1186,7 @@ export default {
                 endpoint: iface.endpoint,
                 route: route
               }
-      
+
               const { data: posts } = await useAsyncData( `ag-manual-${ Object.values(postItemsParams).join('') }`, async () => {
                 const p = await getPostItems(postItemsParams)        
       
@@ -1205,7 +1205,7 @@ export default {
       // If selecting items individually
       case (typeof props.items === 'number'):
         // Generate a signature for this async batch of reqs from the req IDs
-        const reqSignature = Object.entries(props.blockData).filter(([k,v]) => k.endsWith('_image')).map(([k,v]) => v).join('-')
+        const reqSignature = Object.entries(props.blockData).filter(([k,v]) => k.endsWith('_image') || k.endsWith('_heading') || k.endsWith('_subheading') ).map(([k,v]) => v).join('-')
 
         const { data: postDatas } = await useAsyncData( `ag-number-${route.fullPath}-${props.items}-${reqSignature}`, async () => {
           const posts = [...Array(props.items)].map(async (el, i) => {
