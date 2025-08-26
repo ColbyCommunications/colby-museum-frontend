@@ -86,5 +86,5 @@ export default defineNuxtConfig({
     },
 
     devtools: { enabled: process.mode === 'development' },
-    compatibilityDate: '2025-05-57'
+    compatibilityDate: '2025-08-26'
 });
