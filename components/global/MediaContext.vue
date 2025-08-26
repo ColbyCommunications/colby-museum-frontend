@@ -605,7 +605,7 @@ export default {
     const route = useRoute();
     const iface = useInterfaceStore();
 
-    const { data: items } = await useAsyncData( `mc-${ props.items_type }-${ props.collection ?? props.items ?? 'component' }`, async () => {
+    const { data: items } = await useAsyncData( `mc-${ props.items_type }-${ props.collection ?? props.items ?? 'component' }-${ props.showChronology }`, async () => {
 
       if (props.items_type !== 'manual' 
         && props.items_type !== 'objects' 
