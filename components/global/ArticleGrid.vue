@@ -445,15 +445,13 @@ import filtersExhibitions from '~/assets/data/filters-exhibitions.yml';
 import filtersObjects from '~/assets/data/filters-objects.yml';
 import filtersSort from '~/assets/data/filters-sort.yml';
 
-const sorters = []
-// TODO:
-// const sorters = filtersSort.map((f) => ({
-//   name: f.name,
-//   items: f.items.map((i) => ({
-//     name: i,
-//     active: false,
-//   }))
-// }));
+const sorters = filtersSort.map((f) => ({
+  name: f.name,
+  items: f.items.map((i) => ({
+    name: i,
+    active: false,
+  }))
+}));
 
 // TODO: Load from iface  
 const endpoint = 'https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/stage'
@@ -1003,6 +1001,8 @@ export default {
     let aggregationYearList = []
     let aggregationMediumList = []
     let aggregationSupportList = []
+    let alphabeticalOrder = false
+    let reverseOrder = false
     let currentPage = props.page ?? 1
     let objectsSort = 'desc'
     let objectsSortBy = 'accession'
@@ -1020,7 +1020,7 @@ export default {
 
     let items, totalPages
 
-    // Set up the grid's various forms based on componen input params
+    // Set up the grid's various forms based on component input params
     switch (true) {
       case (props.items_type === 'objects'):
         activeFilters = route.query.has_image !== 'false' ? ['Has Image'] : [];
@@ -1127,30 +1127,36 @@ export default {
             showFuture = true;
           }
 
-          // filters[1].items.find(item => item.name === route.query.chronology).active = true;
+
+          filters[1].items.find(item => item.name === route.query.chronology).active = true
         } else {
-          // component.showPast = true;
+          showPast = true;
         }
 
         if (route.query.location) {
 
           location = route.query.location ? wrapArray(route.query.location) : [];
           location.forEach((l) => {
-            // filters[0].items.find(item => item.name == l ).active = true;
+            filters[0].items.find(item => item.name == l ).active = true;
           });
 
           activeFilters.push(...location);
         }
 
         const postItemsParams = {
-          page: currentPage, 
+          alphabeticalOrder,
+          endpoint: iface.endpoint,
           itemsCategory: props.items_category,  
           itemsType: props.items_type, 
-          searchTerm: route.query.search, 
-          showChronology: props.showChronology, 
+          page: currentPage, 
           perPage: props.per_page,
-          endpoint: iface.endpoint,
-          route: route
+          reverseOrder,
+          route: route,
+          searchTerm: route.query.search, 
+          showChronology: props.showChronology,
+          showPast,
+          showFuture,
+          showCurrent,
         }
         const { data: response } = await useAsyncData(`postItems-${ Object.values(postItemsParams ).join('') }`, async () => {
           const posts = await getPostItems(postItemsParams) 
@@ -1263,9 +1269,9 @@ export default {
       filters,
       sorters,
       activeFilters: ref(activeFilters),
-      showPast: false,
-      showCurrent: false,
-      showFuture: false,
+      showPast,
+      showCurrent,
+      showFuture,
       drawerActive: ref(false),
       reverseOrder: ref(false),
       alphabeticalOrder: ref(false),
