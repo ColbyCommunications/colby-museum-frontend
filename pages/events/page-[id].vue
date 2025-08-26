@@ -39,13 +39,9 @@ export default {
     definePageMeta({
       pageTransition: transitionConfig,
     });
-  },
-  data() {
+
     return {
-      title: undefined,
-      excerpt: undefined,
-      components: undefined,
-    };
+    }    
   },
   props: {
     interface: {

@@ -1116,21 +1116,21 @@ export default {
         isLoading = false
         break
 
-      case (props.items_type == 'events' || props.items_type == 'exhibitions'): {  
+      case (props.items_type === 'events' || props.items_type === 'exhibitions'): {  
         if (route.query.chronology) {
           // Deal with chronology flags. Different sorting order based on chronology
-          if (route.query.chronology == 'past') {
+          if (route.query.chronology === 'past') {
             showPast = true;
-          } else if (route.query.chronology == 'current') {
+          } else if (route.query.chronology === 'current') {
             showCurrent = true;
-          } else if (route.query.chronology == 'future') {
+          } else if (route.query.chronology === 'future') {
             showFuture = true;
           }
 
 
           filters[1].items.find(item => item.name === route.query.chronology).active = true
         } else {
-          showPast = true;
+          // showPast = true;
         }
 
         if (route.query.location) {
