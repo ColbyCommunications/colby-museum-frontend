@@ -121,22 +121,24 @@ export default {
   },
   created() {
     this.interface = useInterfaceStore();
-
-    this.campusIsOpen = isOpen('10:00:00', '17:00:00', 'campus');
-    this.downtownIsOpen = isOpen('11:00:00', '19:00:00', 'downtown');
+    console.log(this.globalOptions);
+    if (Object.keys(this.globalOptions).length) {
+      this.campusIsOpen = isOpen(this.globalOptions.campus_hours, 'campus');
+      this.downtownIsOpen = isOpen(this.globalOptions.downtown_hours, 'downtown');
+    }
 
     setInterval(() => {
       if (this.globalOptions) {
         if (this.globalOptions.campus_closed_override) {
           this.campusIsOpen = false;
         } else {
-          this.campusIsOpen = isOpen('10:00:00', '17:00:00', 'campus');
+          this.campusIsOpen = isOpen(this.globalOptions.campus_hours, 'campus');
         }
 
         if (this.globalOptions.downtown_closed_override) {
           this.downtownIsOpen = false;
         } else {
-          this.downtownIsOpen = isOpen('11:00:00', '19:00:00', 'downtown');
+          this.downtownIsOpen = isOpen(this.globalOptions.downtown_hours, 'downtown');
         }
       }
     }, 60 * 1000);
@@ -190,13 +192,13 @@ export default {
         if (this.globalOptions.campus_closed_override) {
           this.campusIsOpen = false;
         } else {
-          this.campusIsOpen = isOpen('10:00:00', '17:00:00', 'campus');
+          this.campusIsOpen = isOpen(this.globalOptions.campus_hours, 'campus');
         }
 
         if (this.globalOptions.downtown_closed_override) {
           this.downtownIsOpen = false;
         } else {
-          this.downtownIsOpen = isOpen('11:00:00', '19:00:00', 'downtown');
+          this.downtownIsOpen = isOpen(this.globalOptions.downtown_hours, 'downtown');
         }
       }
     }
