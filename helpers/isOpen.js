@@ -8,7 +8,7 @@ const isOpen = (hours, location) => {
   const dayLabel = dt.toLocaleString('en-US', options);
 
   const hoursToday = hours.find(day => day[`${location}_day_label`] === dayLabel);
-
+  console.log(hoursToday);
   // Return false (closed) if Monday for Campus or Tuesday for downtown
   if (hoursToday[`${location}_day_open_time`] === '' || hoursToday[`${location}_day_close_time`] === '') {
     return false;
