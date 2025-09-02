@@ -121,7 +121,6 @@ export default {
   },
   created() {
     this.interface = useInterfaceStore();
-    console.log(this.globalOptions);
     if (Object.keys(this.globalOptions).length) {
       this.campusIsOpen = isOpen(this.globalOptions.campus_hours, 'campus');
       this.downtownIsOpen = isOpen(this.globalOptions.downtown_hours, 'downtown');
