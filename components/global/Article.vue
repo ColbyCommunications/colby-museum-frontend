@@ -169,7 +169,7 @@ export default {
 
     return {
       interface: iface,
-      stagedImage,
+      stagedImage: ref(stagedImage),
       stagedButton,
     }
   },
@@ -177,13 +177,13 @@ export default {
     post: {
       deep: true,
       async handler() {
-        this.updateImage();
+        await this.updateImage();
       }
     },
     button: {
       deep: true,
       async handler() {
-        this.setupButton();
+        await this.setupButton();
       }
     }
   },
@@ -253,7 +253,8 @@ export default {
   methods: {
     async updateImage() {
       if (this.post && this.post.featured_media) {
-        this.stagedImage = await getImage(this.post.featured_media, this.post, this.interface.endpoint);
+        const img = await getImage(this.post.featured_media, this.post, this.interface.endpoint);
+        this.stagedImage = img 
       }
     },
     async setupButton() {

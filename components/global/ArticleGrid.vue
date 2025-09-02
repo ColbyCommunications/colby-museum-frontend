@@ -1374,8 +1374,7 @@ export default {
   },
   beforeUnmount() {
     if (this.$refs.drawer) {
-      const component = this;
-      const drawer = component.$refs.drawer;
+      const drawer = this.$refs.drawer;
 
       gsap.to(drawer.querySelector('.filter__drawer'), {
         x: '100%',
@@ -1459,7 +1458,8 @@ export default {
       this.nextPageAvailable = totalPages === this.currentPage
       this.newItems = items
 
-      this.pagination = this.preparedPagination(component.currentPage, component.totalPages, 6);
+      this.pagination = pageRange(page, totalPages, 6);
+
       this.isLoading = false;
     },
     formatDate,
@@ -1616,7 +1616,6 @@ export default {
       }
     },
     aggregationChange(e, key) {
-      const component = this;
       const drawer = this.$refs.drawer.querySelector('.filter__drawer');
       let term;
 
@@ -1656,7 +1655,7 @@ export default {
           this.aggregationTypeList.push(term);
       }
 
-      component.triggerNavigateTo();
+      this.triggerNavigateTo();
 
       this.getObjects(1, this.input);
     },
