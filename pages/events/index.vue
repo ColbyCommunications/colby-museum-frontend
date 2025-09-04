@@ -16,44 +16,40 @@
 import axios from 'axios';
 
 import transitionConfig from '../helpers/transitionConfig';
+import { useInterfaceStore } from '~/store/interface';
 
 export default {
-  setup(props) {
+  async setup(props) {
+    const nuxtApp = useNuxtApp()
     const route = useRoute();
-    const todo = ref({})
 
-    // console.log(route);
+    const endpointUrl = `${props.interface.endpoint}pages?slug=events`
+    const { data, error } = await useFetch(endpointUrl)
 
-    useFetch(() => 
-      fetch(`${props.interface.endpoint}pages?slug=events`)
-        .then(res => res.json())
-        .then((output) => (todo.value = output[0]))
-    )
-    
-    // console.log(todo.value);
+    if (error.value) {
+      console.error(`Could not fetch metadata from ${endpointUrl}`)
+    }
 
-    useSeoMeta({
-      ogTitle: () => `${todo.value.title ? todo.value.title?.rendered + ' | ' : ''}Colby College Museum of Art · Colby College`,
-      title: () => `${todo.value.title ? todo.value.title?.rendered + ' | ' : ''}Colby College Museum of Art · Colby College`,
-      ogDescription: () => todo.value.excerpt?.rendered,
-      description: () => todo.value.excerpt?.rendered,
-    });
+    const pageMeta = data.value.at(0) ?? {}
+    nuxtApp.runWithContext(() => {
+      useSeoMeta({
+        ogTitle: () => `${pageMeta?.title ? pageMeta?.title?.rendered + ' | ' : ''}Colby College Museum of Art`,
+        title: () => `${pageMeta?.title ? pageMeta?.title?.rendered + ' | ' : ''}Colby College Museum of Art`,
+        ogDescription: () => pageMeta?.excerpt?.rendered,
+        description: () => pageMeta?.excerpt?.rendered,
+      });
+    })
 
     definePageMeta({
       pageTransition: transitionConfig,
     });
-  },
-  data() {
+
     return {
+      interface: useInterfaceStore(),
       title: undefined,
       excerpt: undefined,
       components: undefined,
     };
-  },
-  props: {
-    interface: {
-      required: false,
-    },
   },
   async mounted() {
     const page = this;

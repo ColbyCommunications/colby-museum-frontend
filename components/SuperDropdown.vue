@@ -59,9 +59,9 @@
 
 <script>
 export default {
-  data() {
+  setup() {
     return {
-      active: false,
+      active: ref(false),
     };
   },
   props: {

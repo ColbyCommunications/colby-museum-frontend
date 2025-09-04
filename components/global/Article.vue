@@ -78,40 +78,118 @@
 </template>
 
 <script>
-import axios from 'axios';
 import { useInterfaceStore } from "~/store/interface";
 
+const getImage = async (img, post, endpoint) => {
+  let imageObj
+
+  // console.log(post)
+  // Check for embedded media and remove the outer Array if it's there
+  switch (true) {
+    case ('wp:featuredmedia' in post._embedded
+            && Array.isArray(post._embedded['wp:featuredmedia'])):
+      
+      if (!post._embedded['wp:featuredmedia'].at(0)) return
+
+      imageObj = post._embedded['wp:featuredmedia'].at(0)
+      break
+
+    case ('wp:featuredmedia' in post._embedded
+            && typeof post._embedded['wp:featuredmedia'] === 'object'):
+      imageObj = post._embedded['wp:featuredmedia']
+      break
+
+    // Otherwise fetch from the endpoint
+    default:
+      imageObj = await $fetch(`${endpoint}media/${img}`)
+      break
+  }
+  // console.log(imageObj)
+  // Construct the GUID for media records that don't emit it
+  // @TODO -- remove the imagedelivery plugin's -scaled.jpg bit in a smarter way
+  if (!imageObj.guid?.rendered) {
+    imageObj.guid = { rendered: imageObj.source_url.replace('-scaled.jpg','.jpg') }
+  }
+
+  const mediaDetails = imageObj.media_details
+
+  let imageAspect
+  if (mediaDetails.height > 0 && mediaDetails.width > 0) {
+    imageAspect = mediaDetails.height / mediaDetails.width
+  }
+
+  const desktop = { aspect_ratio: imageAspect,
+                    source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=1200,quality=75,format=webp` }
+
+  const mobile = { aspect_ratio: imageAspect,
+                   source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=600,quality=75,format=webp` }
+
+  const mapped = {
+    artist_name: imageObj.acf.artist_name,
+    object_title: imageObj.acf.object_title,
+    object_creation_date: imageObj.acf.object_creation_date,
+    alt_text: imageObj.alt_text,
+    caption: {
+      rendered: imageObj.caption.rendered,
+    },
+    media_details: {
+      sizes: {
+        desktop,
+        mobile
+      }
+    }
+  }
+
+  return mapped;
+}
+
 export default {
-  data() {
+  async setup(props) {
+    const iface = useInterfaceStore()
+    let stagedImage = {}
+    let stagedButton
+
+    if (props.post && props.post?.featured_media) {
+      const { data } = await useAsyncData(`article-${props.post?.featured_media ?? 0}`, async () => {
+        return await getImage(props.post?.featured_media, props.post, iface.endpoint);
+      })
+
+      stagedImage = data.value
+    }
+
+    if (props.button) {
+      stagedButton = {
+        srOnly: props.button.srOnly,
+        type: props.hover == 'all' ? 'text' : props.button_type,
+        title: props.button.title,
+        url: props.button.url,
+        target: props.button.target,
+      };
+    }
+
     return {
-      interface: undefined,
-      stagedImage: undefined,
-      stagedButton: undefined,
-    };
+      interface: iface,
+      stagedImage: ref(stagedImage),
+      stagedButton,
+    }
   },
   watch: {
     post: {
       deep: true,
       async handler() {
-        this.updateImage();
+        await this.updateImage();
       }
     },
     button: {
       deep: true,
       async handler() {
-        this.setupButton();
+        await this.setupButton();
       }
     }
   },
-  async created() {
-    this.interface = useInterfaceStore();
-
-    this.setupButton();
-    this.updateImage();
+  async mounted() {
+    await this.updateImage();
   },
-  // async mounted() {
-  //   this.updateImage();
-  // },
   props: {
     post: {
       type: Object,
@@ -173,6 +251,23 @@ export default {
     }
   },
   methods: {
+    async updateImage() {
+      if (this.post && this.post.featured_media) {
+        const img = await getImage(this.post.featured_media, this.post, this.interface.endpoint);
+        this.stagedImage = img 
+      }
+    },
+    async setupButton() {
+      if (this.button) {
+        this.stagedButton = {
+          srOnly: this.button.srOnly,
+          type: this.hover == 'all' ? 'text' : this.button_type,
+          title: this.button.title,
+          url: this.button.url,
+          target: this.button.target,
+        };
+      }
+    },
     formatDate(d, style) {
       let formattedDate;
 
@@ -209,87 +304,6 @@ export default {
       const ampm = (hour >= 12) ? " p.m." : " a.m.";
 
       return `${hour == 12 || hour == 0 ? 12 : hour % 12}:${min.replace(/\s/g, '').replace('am', ' a.m.').replace('pm', ' p.m.')}`;
-    },
-    async getImage(i) {
-      const component = this;
-
-      let imageObj
-      let newImageObj
-
-      // Check for embedded media and remove the outer Array if it's there
-      switch (true) {
-        case ('wp:featuredmedia' in this.post._embedded
-                && Array.isArray(this.post._embedded['wp:featuredmedia'])):
-        
-          if (!this.post._embedded['wp:featuredmedia'].at(0)) return
-
-          imageObj = this.post._embedded['wp:featuredmedia'].at(0)
-          break
-
-        case ('wp:featuredmedia' in this.post._embedded
-                && typeof this.post._embedded['wp:featuredmedia'] === 'object'):
-          imageObj = this.post._embedded['wp:featuredmedia']
-          break
-
-        // Otherwise fetch from the endpoint
-        default:
-          const img = await axios.get(`${component.interface.endpoint}media/${i}`)
-          imageObj = img.data
-      }
-
-      // Construct the GUID for media records that don't emit it
-      // @TODO -- remove the imagedelivery plugin's -scaled.jpg bit in a smarter way
-      if (!imageObj.guid?.rendered) {
-        imageObj.guid = { rendered: imageObj.source_url.replace('-scaled.jpg','.jpg') }
-      }
-
-      const mediaDetails = imageObj.media_details
-
-      let imageAspect
-      if (mediaDetails.height > 0 && mediaDetails.width > 0) {
-        imageAspect = mediaDetails.height / mediaDetails.width
-      }
-
-      const desktop = { aspect_ratio: imageAspect,
-                        source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=1200,quality=75,format=webp` }
-
-      const mobile = { aspect_ratio: imageAspect,
-                       source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=600,quality=75,format=webp` }
-
-      newImageObj = {
-        artist_name: imageObj.acf.artist_name,
-        object_title: imageObj.acf.object_title,
-        object_creation_date: imageObj.acf.object_creation_date,
-        alt_text: imageObj.alt_text,
-        caption: {
-          rendered: imageObj.caption.rendered,
-        },
-        media_details: {
-          sizes: {
-            desktop,
-            mobile
-          }
-        }
-      }
-
-      return newImageObj;
-    },
-    async updateImage() {
-      if (this.post) {
-        // console.log(this.post);
-        this.stagedImage = this.post.featured_media ? await this.getImage(this.post.featured_media) : undefined;
-      }
-    },
-    async setupButton() {
-      if (this.button) {
-        this.stagedButton = {
-          srOnly: this.button.srOnly,
-          type: this.hover == 'all' ? 'text' : this.button_type,
-          title: this.button.title,
-          url: this.button.url,
-          target: this.button.target,
-        };
-      }
     }
   }
 }

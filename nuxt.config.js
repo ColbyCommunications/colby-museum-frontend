@@ -42,7 +42,7 @@ export default defineNuxtConfig({
     },
 
     build: {
-        transpile: ['gsap', '@glidejs/glide', '@gsap/shockingly'],
+        transpile: ['gsap', '@glidejs/glide', '@gsap/shockingly', 'vue-image-zoomer'],
     },
 
     modules: [
@@ -86,5 +86,5 @@ export default defineNuxtConfig({
     },
 
     devtools: { enabled: process.mode === 'development' },
-    compatibilityDate: '2025-02-27',
+    compatibilityDate: '2025-08-26'
 });

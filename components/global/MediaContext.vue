@@ -12,15 +12,6 @@
       >
         <div class="media-context__media-inner">
           <div
-            v-if="items_type == 'objects' && variant == 'offset'"
-            class="horizontal-curtain horiztonal-curtain--loader"
-            :class="loaded ? 'horizontal-curtain--inactive' : ''"
-          >
-            <!-- <ClientOnly>
-              <l-ring color="black" size="80"></l-ring>
-            </ClientOnly> -->
-          </div>
-          <div
             class="horizontal-curtain"
             ref="curtain"
           />
@@ -86,7 +77,7 @@
                   </div>
                 </li>
                 <li
-                  v-else-if="newItems.length"
+                  v-else-if="newItems.length > 0"
                   v-for="(item, index) in newItems"
                   class="glide__slide"
                 > 
@@ -374,26 +365,190 @@ import gsap from 'gsap';
 import axios from 'axios';
 import { useInterfaceStore } from "~/store/interface";
 import { VueImageZoomer } from 'vue-image-zoomer';
+import fetchWith from '~/helpers/fetchWith'
+import formatDate from '~/helpers/formatDate'
+import getImage from '~/helpers/getImage'
+
+const getPosts = async ({items_type, showChronology, showVariant}, endpoint) => {
+  let endpointParams = new URLSearchParams([
+                        ['chronology',showChronology],
+                        ['type',items_type],
+                        ['per_page',8],
+                        ['page',1]
+                      ]);
+
+  if (
+    showChronology == 'current' &&
+    (items_type == 'events' || items_type == 'exhibitions')
+  ) {
+    endpointParams.append('key','date')
+    endpointParams.append('order','asc')
+  } else if (
+    showChronology == 'past' &&
+    (items_type == 'events' || items_type == 'exhibitions')
+  ) {
+    endpointParams.append('key','end_date')
+    endpointParams.append('order','desc')
+  } else if (
+    showChronology == 'future' &&
+    (items_type == 'events' || items_type == 'exhibitions')
+  ) {
+    endpointParams.append('key','date')
+    endpointParams.append('order','asc')
+  } else {
+    if (showVariant != 'traveling') {
+      // EXCLUDE PAST AS LONG AS WE ARENT IN TRAVELING EXHIBITIONS
+      endpointParams.append('key','date')
+      endpointParams.append('order','asc')
+    }
+  }
+
+  if (showVariant == 'traveling') {
+    // TODO: Verify this is correct, was: type = '&variant=14';
+    endpointParams.append('variant',14)
+  }
+
+  const data = await $fetch(`${endpoint}eoe?${endpointParams.toString()}`)
+
+  let newItems = data.map((i) => ({
+    post: i,
+    event_date: i.acf.date
+      ? formatDate(i.acf.date, 'events-raw')
+      : undefined,
+    end_date: i.acf.end_date
+      ? formatDate(i.acf.end_date, 'events-raw')
+      : undefined,
+  }));
+
+  // Temporary solution for ordering by start date
+  if (items_type == 'events') {
+    newItems.sort(
+        (a, b) => a.event_date.getTime() - b.event_date.getTime()
+    );
+  } else if (items_type == 'exhibitions') {
+    if (showChronology == 'future') {
+      newItems.sort(
+        (a, b) => a.event_date.getTime() - b.event_date.getTime()
+      );
+    } else if (showChronology == 'past') {
+      newItems.sort(
+        (a, b) => b.end_date.getTime() - a.end_date.getTime()
+      );
+    } else {
+      newItems.sort(
+        (a, b) => b.event_date.getTime() - a.event_date.getTime()
+      );
+    }
+  }
+
+  return newItems
+}
+
+const getPost = async (i, endpoint) => {
+  const posts = await $fetch(`${endpoint}eoe/${i}?type=post`)
+
+  return posts.at(0);
+}
+
+const getCollection = async (i) => {
+  const query = {
+          "sort": {
+            "accession_num_year": 'desc',
+          },
+          "query" : {
+            "bool": {
+              "must": {
+                "term": {
+                  "Portfolios.Portfolio_ID" : `${i}`
+                }
+              },
+            },
+          },
+        }
+
+  const username = 'Fr2fpegcBZ'
+  const password = 'Vi7vGnL3h2rtW5SuECoKRwTf'
+
+  const data = await fetchWith(`https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/stage/_search`, query, username, password)
+
+  const concatedObjs = (data.hits.hits ?? []).slice(0, 7);
+
+  component.newItems = await Promise.all(concatedObjs.map(async (i) => {
+    return await getObject(i._id.replace('object/', ''));
+  }));
+}
+
+const getObject = async (i) => {
+      const { data } = await axios
+        .get(`https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/future/_source/object%2F${i}`, {
+          auth: {
+            username: 'Fr2fpegcBZ',
+            password: 'Vi7vGnL3h2rtW5SuECoKRwTf'
+          },
+        })
+
+      const img = data.Images.length > 0 ? data.Images[0] : undefined;
+      const imgUrl = img ? `https://ccma-iiif-cache-service.fly.dev/iiif/2/${img.IIIF_URL.substring(img.IIIF_URL.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, "")}/full/${encodeURIComponent('400,')}/0/default.jpg` : '';
+
+      const obj = {
+        heading: data.Disp_Maker_1,
+        subheading: data.Disp_Title,
+        subheading2: data.Disp_Create_DT,
+        button: {
+          title: 'Learn More',
+          url: `/objects/${data.embark_ID}`,
+          srOnly: true,
+        },
+        image: img ? {
+          caption: {
+            rendered: data.Disp_Medium,
+          },
+          alt_text: data.Disp_Medium,
+          media_details: {
+            sizes: {
+              full: {
+                source_url: imgUrl,
+              },
+              mobile: {
+                source_url: imgUrl,
+              }
+            }
+          }
+        } : {
+          caption: {
+            rendered: 'No Image Available',
+          },
+          alt_text: 'No Image Available',
+          media_details: {
+            sizes: {
+              full: {
+                source_url: `/blanks/blank_${ Math.floor(Math.random() * (3 - 1 + 1) + 1) }.png`
+              },
+              mobile: {
+                source_url: `/blanks/blank_${ Math.floor(Math.random() * (3 - 1 + 1) + 1) }.png`
+              },
+            }
+          }
+        },
+      }
+      
+      return obj;
+    }
+
+const openNewTab = (blockData, i) => {
+  if (
+      blockData[`items_${i}_entry_type`] == 'selection' &&
+      blockData[`items_${i}_open_new_tab`]
+  ) {
+      return blockData[`items_${i}_open_new_tab`] == 1;
+  }
+
+  return false;
+}
 
 export default {
   components: {
     VueImageZoomer
-  },
-  data() {
-    return {
-      id: undefined,
-      interface: undefined,
-      newItems: [],
-      activeSlide: 0,
-      window: undefined,
-      glide: undefined,
-      autoplay: false,
-      perView: 1,
-      stopped: true,
-      gap: 0,
-      artificialDelayFinished: true,
-      loaded: false,
-    };
   },
   props: {
     modal: {
@@ -433,12 +588,12 @@ export default {
     }
   },
   watch: {
-    items: {
-      deep: true,
-      async handler() {
-        this.renderGlide();
-      }
-    },
+    // items: {
+    //   deep: true,
+    //   async handler() {
+    //     this.renderGlide();
+    //   }
+    // },
     newItems: {
       deep: true,
       async handler() {
@@ -446,39 +601,86 @@ export default {
       }
     },
   },
-  async created() {
-    this.interface = useInterfaceStore();
-    const component = this;
+  async setup(props) {
+    const route = useRoute();
+    const iface = useInterfaceStore();
 
-    if (this.items_type != 'manual' && this.items_type != 'objects' && this.items_type != 'collection') {
+    const { data: items } = await useAsyncData( `mc-${ props.items_type }-${ props.collection ?? props.items ?? 'component' }-${ props.showChronology }`, async () => {
 
-      this.getPosts();
-    } else if (this.items_type == 'collection') {
-      this.getPost(component.collection,'collections').then((output) => {
-        component.getCollection(output.acf.embark_id);
-        // component.renderGlide();
-      });
-    } else if (typeof this.items === 'number') {
+      if (props.items_type !== 'manual' 
+        && props.items_type !== 'objects' 
+        && props.items_type !== 'collection') {
 
-      const items = await Promise.all([...Array(this.items)].map(async (el, i) => ({
-        post: component.blockData[`items_${i}_entry_type`] == 'selection' ? await component.getPost(component.blockData[`items_${i}_${component.blockData[`items_${i}_selection_type`]}_selection`], component.blockData[`items_${i}_selection_type`]) : undefined,
-        heading: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : component.blockData[`items_${i}_heading`],
-        subheading: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : component.blockData[`items_${i}_subheading`],
-        paragraph: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : component.blockData[`items_${i}_paragraph`],
-        button: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : component.blockData[`items_${i}_button`],
-        image: component.blockData[`items_${i}_entry_type`] == 'selection' ? undefined : await component.getImage(component.blockData[`items_${i}_image`]),
-      })))
-      this.newItems = items
-    } else if (this.items_type == 'objects') {
-      component.renderGlide();
-    }
+        return await getPosts(props, iface.endpoint)
+      } else if (props.items_type === 'collection') {
+        const post = await getPost(props.collection, iface.endpoint)
+
+        return await getCollection(post.acf.embark_id)
+      } else if (typeof props.items === 'number') {
+        const these = await Promise.all([...Array(props.items)].map( async (el, i) => {
+          const entryType = props.blockData[`items_${i}_entry_type`]
+
+          if (entryType === 'selection') {
+
+            const selection = props.blockData[`items_${i}_posts_selection`]
+
+            return new Promise( async (resolve,reject) => {
+              resolve({
+                post: await getPost(selection, iface.endpoint),
+                heading: undefined,
+                subheading: undefined,
+                subheadgin2: undefined,
+                paragraph_entry_type: undefined,
+                paragraph: undefined,
+                button: undefined,
+                image: undefined,
+                openNewTab: openNewTab(props.blockData, i),
+              })
+            })
+          }
+
+          return new Promise( async (resolve,reject) => {
+            resolve({
+                post: undefined,
+                heading: props.blockData[`items_${i}_heading`],
+                subheading: props.blockData[`items_${i}_subheading`],
+                subheading2: props.blockData[`items_${i}_subheading2`],
+                paragraph_entry_type: props.blockData[`items_${i}_paragraph_entry_type`],
+                paragraph: props.blockData[`items_${i}_paragraph`],
+                button: props.blockData[`items_${i}_button`],
+                image: await getImage(props.blockData[`items_${i}_image`], iface.endpoint),
+                openNewTab: openNewTab(props.blockData, i),
+              })
+            })
+          }))
+
+        return these
+
+
+      }
+    })
+
+    return {
+      id: `${props.items_type}-${props.items}`,
+      interface: iface,
+      items_type: props.items_type,
+      newItems: items.value ? items.value : [],
+      activeSlide: ref(0),
+      window: undefined,
+      glide: undefined,
+      autoplay: ref(false),
+      perView: 1,
+      stopped: ref(true),
+      gap: 0,
+      artificialDelayFinished: true,
+      loaded: false,
+      renderTimeout: undefined,
+    };    
   },
-  async mounted() {
-    this.id = self.crypto.randomUUID();
-
+  mounted() {
+    this.renderGlide()
     if (this.items_type == 'objects') {
-      const { ring } = await import('ldrs');
-      ring.register();
+      // this.renderGlide()
 
       this.resizeZooms();
     }
@@ -530,7 +732,7 @@ export default {
           });
           // this.glide.mount();
         }
-      }, this.variant == 'overflow' ? 600 : 300); // VERY IMPORTANT DELAY FOR LOADING AND CONTEXT ANIMATIONS TO GEL NICELY 1100 / 600
+      }, this.variant == 'overflow' ? 300 : 150);
     },
     changeSlide(s) {
       if (s == 'next') {
@@ -554,7 +756,6 @@ export default {
       }
     },
     toggleAutoplay() {
-
       if (this.stopped) {
         this.playCarousel();
         this.stopped = false;
@@ -563,36 +764,7 @@ export default {
         this.stopped = true;
       }
     },
-    formatDate(d, style) {
-      let formattedDate;
-
-      if (style == 'numeric') {
-        formattedDate = new Date(d).toLocaleDateString('en-US', {
-          year: '2-digit',
-          month: 'numeric',
-          day: 'numeric',
-          hour12: false
-        })
-        .replaceAll('/', '.');
-      } else if (style == 'events') {
-        formattedDate = new Date(`${d.substr(0,4)}-${d.substr(4,2)}-${d.substr(6,2)}T00:00:00`).toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: '2-digit',
-          hour12: false
-        });
-      } else if (style == 'events-raw') {
-        formattedDate = new Date(`${d.substr(0,4)}-${d.substr(4,2)}-${d.substr(6,2)}T00:00:00`);
-      } else {
-        formattedDate = new Date(d).toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: '2-digit',
-          hour12: false
-        });
-      }
-      return formattedDate;
-    },
+    formatDate,
     formatTime(t) {
       const time = t.split(':');
       const hour = parseInt(time[0]);
@@ -601,232 +773,6 @@ export default {
       const ampm = (hour >= 12) ? " p.m." : " a.m.";
 
       return `${hour == 12 || hour == 0 ? 12 : hour % 12}:${min.replace(/\s/g, '').replace('am', ' a.m.').replace('pm', ' p.m.')}`;
-    },
-    async getPosts() {
-      const component = this;
-      let chr;
-      let type = '';
-      let meta_date;
-
-      let key;
-      let order;
-      let endpointParams = new URLSearchParams([
-                            ['chronology',component.showChronology],
-                            ['type',component.items_type],
-                            ['per_page',8],
-                            ['page',1]
-                          ]);
-
-      if (
-        component.showChronology == 'current' &&
-        (component.items_type == 'events' || component.items_type == 'exhibitions')
-      ) {
-        endpointParams.append('key','date')
-        endpointParams.append('order','asc')
-      } else if (
-        component.showChronology == 'past' &&
-        (component.items_type == 'events' || component.items_type == 'exhibitions')
-      ) {
-        endpointParams.append('key','end_date')
-        endpointParams.append('order','desc')
-      } else if (
-        component.showChronology == 'future' &&
-        (component.items_type == 'events' || component.items_type == 'exhibitions')
-      ) {
-        endpointParams.append('key','date')
-        endpointParams.append('order','asc')
-      } else {
-        if (component.showVariant != 'traveling') {
-          // EXCLUDE PAST AS LONG AS WE ARENT IN TRAVELING EXHIBITIONS
-          endpointParams.append('key','date')
-          endpointParams.append('order','asc')
-        }
-      }
-
-      if (component.showVariant == 'traveling') {
-        // TODO: Verify this is correct, was: type = '&variant=14';
-        endpointParams.append('variant',14)
-      }
-
-      await axios
-        .get(`${component.interface.endpoint}eoe?${endpointParams.toString()}`)
-        .then((output) => {
-          component.newItems = output.data.map((i) => ({
-            post: i,
-            event_date: i.acf.date
-              ? component.formatDate(i.acf.date, 'events-raw')
-              : undefined,
-            end_date: i.acf.end_date
-              ? component.formatDate(i.acf.end_date, 'events-raw')
-              : undefined,
-          }));
-
-          // Temporary solution for ordering by start date
-          if (component.items_type == 'events') {
-            component.newItems.sort(
-                (a, b) => a.event_date.getTime() - b.event_date.getTime()
-            );
-          } else if (component.items_type == 'exhibitions') {
-            if (component.showChronology == 'future') {
-              component.newItems.sort(
-                (a, b) => a.event_date.getTime() - b.event_date.getTime()
-              );
-            } else if (component.showChronology == 'past') {
-              component.newItems.sort(
-                (a, b) => b.end_date.getTime() - a.end_date.getTime()
-              );
-            } else {
-              component.newItems.sort(
-                (a, b) => b.event_date.getTime() - a.event_date.getTime()
-              );
-            }
-          }
-          component.newItems.forEach((item) => {
-            console.log(item.post);
-          });
-      });
-    },
-    async getPost(i, type) {
-      const component = this;
-
-      const output = await axios.get(`${component.interface.endpoint}eoe/${i}?type=post`)
-      const posts = output.data
-
-      return posts.at(0);
-    },
-    async getImage(i) {
-      const component = this;
-
-      const image = await axios.get(`${component.interface.endpoint}media/${i}`)
-      const imageObj = image.data
-      const mediaDetails = image.data.media_details
-
-      let imageAspect
-      if (mediaDetails.height > 0 && mediaDetails.width > 0) {
-        imageAspect = mediaDetails.height / mediaDetails.width
-      }
-
-      const desktopWidth = 1200
-      const mobileWidth = 600
-
-      const desktop = { aspect_ratio: imageAspect, width: desktopWidth, height: desktopWidth * imageAspect, source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=1800,quality=75,format=webp` }
-      const mobile = { aspect_ratio: imageAspect, width: mobileWidth, height: mobileWidth * imageAspect, source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=1200,quality=75,format=webp` }
-
-      const newImageObj = {
-            alt_text: imageObj.alt_text,
-            caption: {
-              rendered: imageObj.description.rendered.replace(/<img[^>]*>/g,"").replace(/<p[^>]*>|<\/p>/g, '').replace(/\r?\n|\r/g, "").replace(/<a[^>]*>|<\/a>/g, ''),
-            },
-            media_details: {
-              sizes: {
-                desktop,
-                mobile,
-              }
-            }
-          };
-
-      return newImageObj;
-    },
-    async getCollection(i) {
-      const component = this;
-
-      await axios
-        .get(`https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/stage/_search`, {
-          auth: {
-            username: 'Fr2fpegcBZ',
-            password: 'Vi7vGnL3h2rtW5SuECoKRwTf'
-          },
-          params: {
-            source_content_type: 'application/json',
-            source: JSON.stringify({
-              "sort": {
-                "accession_num_year": 'desc',
-              },
-              "query" : {
-                "bool": {
-                  "must": {
-                    "term": {
-                      "Portfolios.Portfolio_ID" : `${i}`
-                    }
-                  },
-                },
-              },
-            })
-          }
-        })
-        .then(async (output) => {
-          console.log(output);
-          const concatedObjs = output.data.hits.hits.slice(0, 7);
-
-          component.newItems = await Promise.all(concatedObjs.map(async (i) => {
-
-            return await component.getObject(i._id.replace('object/', ''));
-          }));
-        });
-    },
-    async getObject(i) {
-      const component = this;
-      let obj;
-      let img;
-      let imgUrl;
-
-      await axios
-        .get(`https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/future/_source/object%2F${i}`, {
-          auth: {
-            username: 'Fr2fpegcBZ',
-            password: 'Vi7vGnL3h2rtW5SuECoKRwTf'
-          },
-        })
-        .then((output) => {
-          let i = output.data;
-
-          img = i.Images.length > 0 ? i.Images[0] : undefined;
-          imgUrl = img ? `https://ccma-iiif-cache-service.fly.dev/iiif/2/${img.IIIF_URL.substring(img.IIIF_URL.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, "")}/full/${encodeURIComponent('400,')}/0/default.jpg` : '';
-
-          obj = {
-            heading: i.Disp_Maker_1,
-            subheading: i.Disp_Title,
-            subheading2: i.Disp_Create_DT,
-            button: {
-              title: 'Learn More',
-              url: `/objects/${i.embark_ID}`,
-              srOnly: true,
-            },
-            image: img ? {
-              caption: {
-                rendered: i.Disp_Medium,
-              },
-              alt_text: i.Disp_Medium,
-              media_details: {
-                sizes: {
-                  full: {
-                    source_url: imgUrl,
-                  },
-                  mobile: {
-                    source_url: imgUrl,
-                  }
-                }
-              }
-            } : {
-              caption: {
-                rendered: 'No Image Available',
-              },
-              alt_text: 'No Image Available',
-              media_details: {
-                sizes: {
-                  full: {
-                    source_url: `/blanks/blank_${ Math.floor(Math.random() * (3 - 1 + 1) + 1) }.png`
-                  },
-                  mobile: {
-                    source_url: `/blanks/blank_${ Math.floor(Math.random() * (3 - 1 + 1) + 1) }.png`
-                  },
-                }
-              }
-            },
-          } // END RETURN
-        });
-      
-      return await obj;
     },
     animate() {
       let mm = gsap.matchMedia();

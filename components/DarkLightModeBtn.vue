@@ -13,18 +13,19 @@
 import { useInterfaceStore } from "~/store/interface";
 
 export default {
-  data() {
-    return {
-      interface: undefined,
-      dark: undefined,
-    };
-  },
-  created() {
-    this.interface = useInterfaceStore();
+  setup() {
+    const iface = useInterfaceStore();
+    let dark = false;
 
     if (localStorage.getItem('darkMode') == 'true') {
-      this.interface.toggleDark();
+      iface.toggleDark();
+      dark = true
     }
+
+    return {
+      interface: iface,
+      dark: undefined,
+    };
   },
   methods: {
     toggleMode() {

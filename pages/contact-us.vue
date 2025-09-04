@@ -18,8 +18,8 @@ import seoConfig from '../helpers/seoConfig';
 export default {
   setup(props) {
     useSeoMeta({
-      ogTitle: () => 'Contact Us | Colby College Museum of Art · Colby College',
-      title: () => 'Contact Us | Colby College Museum of Art · Colby College',
+      ogTitle: () => 'Contact Us | Colby College Museum of Art',
+      title: () => 'Contact Us | Colby College Museum of Art',
       ogDescription: () => 'Contact Colby College Museum of Art for any inquiry.',
       description: () => 'Contact Colby College Museum of Art for any inquiry.',
     });

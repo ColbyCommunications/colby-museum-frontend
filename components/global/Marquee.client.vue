@@ -55,9 +55,17 @@ export default {
   directives: {
     resize,
   },
-  data() {
+  setup(props) {
+    let newItems = []
+
+    if (typeof props.items === 'number') {
+      newItems = [...Array(props.items)].map((el, i) => ({
+        heading: props.blockData[`items_${i}_heading`],
+      }));
+    }
+
     return {
-      newItems: [],
+      newItems,
       width: undefined,
       marqueeAnimation: undefined,
     };
@@ -75,23 +83,12 @@ export default {
       required: false,
     }
   },
-  created() {
-    const component = this;
-
-    if (typeof this.items === 'number') {
-      component.newItems = [...Array(this.items)].map((el, i) => ({
-        heading: component.blockData[`items_${i}_heading`],
-      }));
-
-      // console.log(component.newItems);
-    }
-  },
   mounted() {
     setTimeout(() => {
       this.width = this.$refs.marqueeOriginal.offsetWidth;
       console.log(this.speed);
       this.animate();
-    }, 1000);
+    }, 150);
   },
   methods: {
     calculateWidth() {
