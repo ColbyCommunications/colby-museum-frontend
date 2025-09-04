@@ -1,8 +1,8 @@
 import { defineNitroPlugin } from 'nitropack/runtime';
 
 let deployUrl = 'https://museum.colby.edu/'
-if (process.env.CF_PAGES && process.env.CF_PAGES_BRANCH !== 'master') {
-    deployUrl = process.env.CF_PAGES_URL    
+if (context.env.CF_PAGES && context.env.CF_PAGES_BRANCH !== 'master') {
+    deployUrl = context.env.CF_PAGES_URL    
 }
 
 export default defineNitroPlugin((nitroApp) => {
