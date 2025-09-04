@@ -23,32 +23,31 @@
 </template>
 
 <script>
-import axios from 'axios';
+import getImage from '~/helpers/getImage'  
+import { useInterfaceStore } from "~/store/interface";
 import YTPlayer from 'yt-player';
 
-import { useInterfaceStore } from "~/store/interface";
-
 export default {
-  data() {
+  async setup(props) {
+    const iface = useInterfaceStore();
+
+    const { data } = await useAsyncData( `video-poster-${props.image}`, async () => {
+      const img = await getImage(props.image, iface.endpoint);
+
+      return img
+    })
+
     return {
-      interface: undefined,
+      interface: iface,
       active: false,
       player: null,
-      newImage: undefined,
+      newImage: data.value,
     };
   },
-  async created() {
-    this.interface = useInterfaceStore();
-    const component = this;
-
-    this.newImage = await component.getImage(component.image);
-  },
   mounted() {
-    setTimeout(() => {
-      this.player = new YTPlayer(this.$refs.iframe);
+    this.player = new YTPlayer(this.$refs.iframe);
 
-      this.player.load(this.id);
-    }, 2000);
+    this.player.load(this.id);
   },
   props: {
     id: {
@@ -68,36 +67,6 @@ export default {
       this.active = true;
 
       this.player.play();
-    },
-    async getImage(i) {
-      const component = this;
-      let imageObj;
-      let newImageObj;
-
-      await axios
-        .get(`${component.interface.endpoint}media/${i}`)
-        .then((output) => {
-          imageObj = output.data;
-
-          newImageObj = {
-            alt_text: imageObj.alt_text,
-            caption: {
-              rendered: imageObj.caption.rendered,
-            },
-            media_details: {
-              sizes: {
-                desktop: {
-                  source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=1200,quality=75,format=webp`,
-                },
-                mobile: {
-                  source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=600,quality=75,format=webp`,
-                },
-              }
-            }
-          };
-        });
-
-      return await newImageObj;
     },
   },
 }

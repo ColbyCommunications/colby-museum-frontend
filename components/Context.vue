@@ -15,11 +15,10 @@
         <span class="sr-only"
           v-text="heading"
         />
-        <span
+        <div
           class="context__word-group"
           aria-hidden="true"
-          v-html="preppedHeading"
-        />
+        ><ClientOnly><PureHtml tag="div" :html="preppedHeading"/></ClientOnly></div>
       </NuxtLink>
     </component>
     <component :is="headingElement"
@@ -30,24 +29,20 @@
       <span class="sr-only"
         v-text="heading"
       />
-      <span
+      <div
         class="context__word-group"
         aria-hidden="true"
-        v-html="preppedHeading"
-      />
+      ><ClientOnly><PureHtml tag="div" :html="preppedHeading"/></ClientOnly></div>
     </component>
     <div
       v-if="subheading"
       class="context__subheading"
-      v-html="preppedSubheading"
       ref="subheading"
-    />
+    ><ClientOnly><PureHtml tag="div" :html="preppedSubheading" /></ClientOnly></div>    
     <div
       v-if="subheading2"
       class="context__subheading"
-      v-html="preppedSubheading2"
-      ref="subheading2"
-    />
+      ref="subheading2"><ClientOnly><PureHtml tag="div" :html="preppedSubheading2"/></ClientOnly></div>
     <div
       v-if="image"
       class="context__image"
@@ -76,7 +71,7 @@
         :loading="layoutPosition > 0 ? 'lazy' : 'eager'"
       />
     </div>
-    <p
+    <div
       v-if="caption"
       class="context__caption"
       ref="caption"
@@ -84,9 +79,9 @@
       <span
         class="vertical-curtain"
       />
-      <span v-html="preppedCaption" />
-    </p>
-    <p
+      <div><ClientOnly><PureHtml tag="div" :html="preppedCaption" /></ClientOnly></div>
+    </div>
+    <div
       v-if="paragraph"
       class="context__p"
       ref="paragraph"
@@ -94,8 +89,8 @@
       <span
         class="vertical-curtain"
       />
-      <span v-html="preppedParagraph" />
-    </p>
+      <ClientOnly><PureHtml tag="div" :html="preppedParagraph" /></ClientOnly>
+    </div>
     <Btn
       v-if="button"
       class="context__btn"
@@ -108,6 +103,20 @@
 import gsap from 'gsap';
 
 import { useInterfaceStore } from "~/store/interface";
+
+/**
+ * @function spanWrapWords
+ * 
+ * @argument {String} text - input text
+ * 
+ * @return `text` with each word wrapped in <span></span>
+ * 
+ **/ 
+const spanWrapWords = (text) => {
+  if (!text) return ''
+
+  return text.replace(/\S+/g, '<span class="context__word" aria-hidden="true"><span aria-hidden="true">$&</span></span>');
+}
 
 export default {
   props: {
@@ -182,13 +191,13 @@ export default {
   },
   computed: {
     preppedHeading() {
-      return this.heading.replace(/\S+/g, '<span class="context__word" aria-hidden="true"><span aria-hidden="true">$&</span></span>');
+      return spanWrapWords(this.heading ?? '');
     },
     preppedSubheading() {
-      return this.subheading.replace(/\S+/g, '<span class="context__word" aria-hidden="true"><span aria-hidden="true">$&</span></span>');
+      return spanWrapWords(this.subheading ?? '');
     },
     preppedSubheading2() {
-      return this.subheading2.replace(/\S+/g, '<span class="context__word" aria-hidden="true"><span aria-hidden="true">$&</span></span>');
+      return spanWrapWords(this.subheading2 ?? '');
     },
     preppedCaption() {
       return this.caption.replace(/\n/g, '<br />');
@@ -200,9 +209,15 @@ export default {
       return this.button.url.replace(`${this.interface.backend}`, '/').replace(/\/$/, '');
     }
   },
-  async created() {
-    this.interface = useInterfaceStore();
+  setup() {
+    const iface = useInterfaceStore()
+    return {
+      interface: iface
+    }
   },
+  // async created() {
+  //   this.interface = useInterfaceStore();
+  // },
   mounted() {
     this.animate();
 
@@ -424,7 +439,7 @@ export default {
             ease: "expo.out",
           });
         }
-      }, 900); // VERY IMPORTANT DELAY FOR ANIMATIONS TO TRIGGER APPROPRIATELY AFTER API LOAD. CAUTION 1100
+      }, 150);
     }
   }
 }

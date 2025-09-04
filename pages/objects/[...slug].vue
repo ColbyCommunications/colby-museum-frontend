@@ -6,13 +6,15 @@
       :subheading="title"
       :subheading2="period"
     />
-    <MediaContext
-      v-if="images"
-      :variant="'offset'"
-      :items="images"
-      :items_type="'objects'"
-      :autoplay="false"
-    />
+    <ClientOnly>
+      <MediaContext
+        v-if="images"
+        :variant="'offset'"
+        :items="images"
+        :items_type="'objects'"
+        :autoplay="false"
+      />
+    </ClientOnly>
     <MetaDataList
       :heading="'Object Details'"
       :items="items"
@@ -31,127 +33,129 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 import transitionConfig from '../helpers/transitionConfig';
 import { useInterfaceStore } from "~/store/interface";
 
+const setPageMeta = async () => {
+    const nuxtApp = useNuxtApp()
+
+    const { params } = useRoute()
+    const { backend } = useInterfaceStore()
+
+    const user = 'Fr2fpegcBZ'
+    const pass = 'Vi7vGnL3h2rtW5SuECoKRwTf'
+
+    const endpointUrl = `https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/stage/_source/object%2F${encodeURIComponent(params.slug[0])}`
+
+    let authToken
+    if (process.client) {
+      authToken = btoa(`${user}:${pass}`)
+    }
+    else {
+      authToken = Buffer.from(`${user}:${pass}`).toString('base64')
+    }
+ 
+    const pick = [ 'Disp_Title',
+                   'Disp_Maker_1',
+                   'Disp_Medium',
+                   'Dedication',
+                   'Disp_Create_DT',
+                   'Disp_Access_No',
+                   'Images',
+                 ]
+
+    const data = await $fetch(endpointUrl, { pick, credentials: 'include', headers: { authorization: `Basic ${authToken}` } })
+
+    const pageMeta = data ?? {}
+    const fallbackImage = `${backend}wp-content/uploads/2025/03/default.jpg`
+
+    nuxtApp.runWithContext(() => {
+      useSeoMeta({
+        ogTitle: () => `${pageMeta?.Disp_Title ? pageMeta?.Disp_Title.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' + pageMeta?.Disp_Maker_1.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' : ''}Colby College Museum of Art`,
+        title: () => `${pageMeta?.Disp_Title ? pageMeta?.Disp_Title.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' + pageMeta?.Disp_Maker_1.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' : ''}Colby College Museum of Art`,
+        ogDescription: () => pageMeta?.Disp_Medium,
+        description: () => pageMeta?.Disp_Medium,
+        ogImage: () => pageMeta?.Images?.length > 0 ? `https://ccma-iiif-cache-service.fly.dev/iiif/2/${pageMeta?.Images?.at(0).IIIF_URL.substring(pageMeta?.Images.at(0).IIIF_URL.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, "")}/full/${encodeURIComponent('400,')}/0/default.jpg` : fallbackImage.value ,
+      });
+    }) 
+
+    return data    
+}
+
 export default {
-  setup(props) {
-    const route = useRoute();
-    const todo = ref({})
-
-    useFetch(() => 
-      axios.get(`https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/stage/_source/object%2F${encodeURIComponent(route.params.slug[0])}`, {
-        auth: {
-          username: 'Fr2fpegcBZ',
-          password: 'Vi7vGnL3h2rtW5SuECoKRwTf'
-        }
-      })
-      .then((output) => (todo.value = output.data))
-    )
-
-    console.log(todo.value);
-
-    useSeoMeta({
-      ogTitle: () => `${todo.value.Disp_Title ? todo.value.Disp_Title.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' + todo.value.Disp_Maker_1.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' : ''}Colby College Museum of Art · Colby College`,
-      title: () => `${todo.value.Disp_Title ? todo.value.Disp_Title.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' + todo.value.Disp_Maker_1.replace(/&quot;/g, '\"').replace(/&#39;/g, "\'") + ' | ' : ''}Colby College Museum of Art · Colby College`,
-      ogDescription: () => todo.value?.Disp_Medium,
-      description: () => todo.value?.Disp_Medium,
-      ogImage: () => todo.value?.Images?.length > 0 ? `https://ccma-iiif-cache-service.fly.dev/iiif/2/${todo.value.Images[0].IIIF_URL.substring(todo.value.Images[0].IIIF_URL.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, "")}/full/${encodeURIComponent('400,')}/0/default.jpg` : `${useInterfaceStore().backend}wp-content/uploads/2025/03/default.jpg`,
-    });
-
+  async setup(props) {
     definePageMeta({
       pageTransition: transitionConfig,
     });
-  },
-  data() {
-    return {
-      title: undefined,
-      artist: undefined,
-      period: undefined,
-      images: undefined,
-      items: undefined,
-    };
-  },
-  props: {
-    interface: {
-      required: false,
-    },
-  },
-  async mounted() {
-    const page = this;
 
-    // console.log(encodeURIComponent(this.$route.params.slug[0]));
-    console.log(`https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/stage/_source/object%2F${encodeURIComponent(this.$route.params.slug[0])}`);
+    const { data } = await useAsyncData( async () => {
+      const meta = await setPageMeta()    
 
-    await axios
-      .get(`https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/stage/_source/object%2F${encodeURIComponent(this.$route.params.slug[0])}`, {
-        auth: {
-          username: 'Fr2fpegcBZ',
-          password: 'Vi7vGnL3h2rtW5SuECoKRwTf'
-        }
-      })
-      .then((output) => {
-        console.log(output.data);
-        const post = output.data;
+      return meta
+    })
 
-        page.title = post.Disp_Title
-          .replace(/–/g, '-')
-          .replace(/“/g, '"')
-          .replace(/”/g, '"')
-          .replace(/’/g, "'");
+    const post = data.value;
 
-        page.title == '' ? page.title = 'Untitled' : page.title;
-        page.artist = post.Disp_Maker_1;
-        page.period = post.Disp_Create_DT;
+    let title = post?.Disp_Title === '' ? 'Untitled' : post?.Disp_Title?.replace(/–/g, '-')
+                                                        .replace(/“/g, '"')
+                                                        .replace(/”/g, '"')
+                                                        .replace(/’/g, "'")
 
-        // page.images = post.Images.length > 0 ? `https://ccma-iiif-cache-service.fly.dev/iiif/2/${post.Disp_Access_No}_001_cd/full/2200%2C/0/default.jpg` : undefined;
-        
-        if (post.Images.length > 0) {
-          page.images = post.Images.map((i) => ({
-            image: {
-              caption: {
-                rendered: `<strong>${post.Disp_Maker_1}</strong>, <i>${post.Disp_Title}</i>, ${post.Disp_Create_DT}. ${post.Disp_Medium}${post.Disp_Dimen ? ', ' + post.Disp_Dimen : ''}. Colby College Museum of Art${post.Dedication ? ', ' + post.Dedication : ''}; ${post.Disp_Access_No}`,
+    const artist = post?.Disp_Maker_1;
+    const period = post?.Disp_Create_DT;
+    
+    let images = []    
+    if (post?.Images?.length > 0) {
+      images = post?.Images.map((i) => ({
+        image: {
+          caption: {
+            rendered: `<strong>${post?.Disp_Maker_1}</strong>, <i>${post?.Disp_Title}</i>, ${post?.Disp_Create_DT}. ${post?.Disp_Medium}${post?.Disp_Dimen ? ', ' + post?.Disp_Dimen : ''}. Colby College Museum of Art${post?.Dedication ? ', ' + post?.Dedication : ''}; ${post?.Disp_Access_No}`,
+          },
+          alt_text: post?.Disp_Medium,
+          media_details: {
+            sizes: {
+              full: {
+                source_url: `https://ccma-iiif-cache-service.fly.dev/iiif/2/${i.IIIF_URL.substring(i.IIIF_URL.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, "")}/full/1800%2C/0/default.jpg`,
               },
-              alt_text: post.Disp_Medium,
-              media_details: {
-                sizes: {
-                  full: {
-                    source_url: `https://ccma-iiif-cache-service.fly.dev/iiif/2/${i.IIIF_URL.substring(i.IIIF_URL.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, "")}/full/1800%2C/0/default.jpg`,
-                  },
-                  mobile: {
-                    source_url: `https://ccma-iiif-cache-service.fly.dev/iiif/2/${i.IIIF_URL.substring(i.IIIF_URL.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, "")}/full/400%2C/0/default.jpg`,
-                  }
-                }
+              mobile: {
+                source_url: `https://ccma-iiif-cache-service.fly.dev/iiif/2/${i.IIIF_URL.substring(i.IIIF_URL.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, "")}/full/400%2C/0/default.jpg`,
               }
             }
-          }))
+          }
         }
+      }))
+    }
 
-        page.items = [
-          {
-            heading: 'Object Type',
-            paragraph: post.Disp_Obj_Type,
-          },
-          {
-            heading: 'Medium',
-            paragraph: post.Disp_Medium,
-          },
-          {
-            heading: 'Dimensions',
-            paragraph: post.Disp_Dimen,
-          },
-          {
-            heading: 'Credit Line',
-            paragraph: post.Dedication,
-          },
-          {
-            heading: 'Accession Number',
-            paragraph: post.Disp_Access_No,
-          },
-        ]
-      });
+    const items = [
+      {
+        heading: 'Object Type',
+        paragraph: post?.Disp_Obj_Type,
+      },
+      {
+        heading: 'Medium',
+        paragraph: post?.Disp_Medium,
+      },
+      {
+        heading: 'Dimensions',
+        paragraph: post?.Disp_Dimen,
+      },
+      {
+        heading: 'Credit Line',
+        paragraph: post?.Dedication,
+      },
+      {
+        heading: 'Accession Number',
+        paragraph: post?.Disp_Access_No,
+      },
+    ]
+
+    return {
+      title,
+      artist,
+      period,
+      images,
+      items,
+    };    
   }
 }
 </script>

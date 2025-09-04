@@ -78,17 +78,39 @@
 </template>
 
 <script>
-import axios from 'axios';
 import gsap from 'gsap';
 
 import { useInterfaceStore } from "~/store/interface";
+import getImage from '~/helpers/getImage'
+
+const getImageItem = async (el, i) => {
+  return {
+    button: component.blockData[`items_${i}_button`],
+    image: await getImage(component.blockData[`items_${i}_image`]),
+  }
+}
 
 export default {
-  data() {
+  async setup(props) {
+    const iface = useInterfaceStore();
+
+    const { data } = useAsyncData( async () => {
+      let newImage
+      let newItems = []
+
+      if (typeof props.items === 'number') {      
+        const newItems = await Promise.all([...Array(this.items)].map(getImageItem))
+      } else {
+        newImage = await getImage(component.image);
+      }      
+
+      return { newImage, newItems }
+    })
+
     return {
-      interface: undefined,
-      newItems: [],
-      newImage: undefined,
+      interface: iface,
+      newItems: data.value?.newItems,
+      newImage: data.value?.newImage,
       activeSlide: 0,
     };
   },
@@ -124,55 +146,12 @@ export default {
       }
     },
   },
-  async created() {
-    this.interface = useInterfaceStore();
-    const component = this;
-
-    if (typeof this.items === 'number') {
-
-      await Promise.all([...Array(this.items)].map(async (el, i) => ({
-        button: component.blockData[`items_${i}_button`],
-        image: await component.getImage(component.blockData[`items_${i}_image`]),
-      }))).then((output) => {
-        component.newItems = output;
-      })
-    } else {
-      this.newImage = await component.getImage(component.image);
-    }
-  },
   mounted() {
     this.animate();
   },
   methods: {
     toggleSlide(i) {
       this.activeSlide = i;
-    },
-    async getImage(i) {
-      const component = this;
-      let imageObj;
-      let newImageObj;
-
-      await axios
-        .get(`${component.interface.endpoint}media/${i}`)
-        .then((output) => {
-          imageObj = output.data;
-
-          newImageObj = {
-            alt_text: imageObj.alt_text,
-            media_details: {
-              sizes: {
-                desktop: {
-                  source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=1000,quality=75,format=webp`,
-                },
-                mobile: {
-                  source_url: `https://imagedelivery.net/O3WFf73JpL0l5z5Q_yyhTw/${imageObj.guid.rendered.replace('https://', '').replace('http://', '').replace('wp-content/uploads/', '').replace('wp-json/wp/v2/', '')}/w=800,quality=75,format=webp`,
-                },
-              }
-            }
-          };
-        });
-
-      return await newImageObj;
     },
     animate() {
       setTimeout(() => {
@@ -216,7 +195,7 @@ export default {
             ease: "expo.out",
           });
         }
-      }, 2000);
+      }, 150);
     }
   }
 }

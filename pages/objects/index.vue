@@ -27,32 +27,34 @@ import transitionConfig from '../helpers/transitionConfig';
 import seoConfig from '../helpers/seoConfig';
 
 export default {
-  setup(props) {
+  async setup(props) {
     const route = useRoute();
-    const todo = ref({})
+    let pageMeta = {}
 
-    console.log(route);
+    const endpointUrl = `${props.interface.endpoint}pages?slug=objects`
+    const {data, error, status} = await useFetch(endpointUrl, {})
 
-    useFetch(() => 
-      fetch(`${props.interface.endpoint}pages?slug=objects`)
-        .then(res => res.json())
-        .then((output) => (todo.value = output[0]))
-    )
-    
-    console.log(todo.value);
+    if (error.value) {
+      console.error(`Could not fetch metadata from ${endpointUrl}`)
+    }
+
+    if (data.value?.at(0)) {
+      pageMeta = data.value.at(0)
+    } else {
+      console.warn("Received empty head meta!")
+    }
 
     useSeoMeta({
-      ogTitle: () => `${todo.value.title ? todo.value.title?.rendered + ' | ' : ''}Colby College Museum of Art · Colby College`,
-      title: () => `${todo.value.title ? todo.value.title?.rendered + ' | ' : ''}Colby College Museum of Art · Colby College`,
-      ogDescription: () => todo.value.excerpt?.rendered,
-      description: () => todo.value.excerpt?.rendered,
+      ogTitle: () => `${pageMeta.title ? pageMeta.title?.rendered + ' | ' : ''}Colby College Museum of Art`,
+      title: () => `${pageMeta.title ? pageMeta.title?.rendered + ' | ' : ''}Colby College Museum of Art`,
+      ogDescription: () => pageMeta.excerpt?.rendered,
+      description: () => pageMeta.excerpt?.rendered,
     });
 
     definePageMeta({
       pageTransition: transitionConfig,
     });
-  },
-  data() {
+
     return {
       title: undefined,
       excerpt: undefined,
@@ -66,8 +68,6 @@ export default {
   },
   async mounted() {
     const page = this;
-
-    // console.log(this.$route.params.slug);
 
     await axios
       .get(`${this.interface.endpoint}pages?slug=objects`)

@@ -27,13 +27,11 @@ import transitionConfig from '../helpers/transitionConfig';
 export default {
   setup(props) {
     const route = useRoute();
-    const todo = ref({})
-
-    console.log(route);
+    const pageMeta = ref()
 
     useSeoMeta({
-      ogTitle: () => `Events - Page ${route.params.id} | Colby College Museum of Art · Colby College`,
-      title: () => `Events - Page ${route.params.id} | Colby College Museum of Art · Colby College`,
+      ogTitle: () => `Events - Page ${route.params.id} | Colby College Museum of Art`,
+      title: () => `Events - Page ${route.params.id} | Colby College Museum of Art`,
       ogDescription: () => 'Find out what’s happening at all of Colby Museum’s locations.',
       description: () => 'Find out what’s happening at all of Colby Museum’s locations.',
     });
@@ -41,13 +39,9 @@ export default {
     definePageMeta({
       pageTransition: transitionConfig,
     });
-  },
-  data() {
+
     return {
-      title: undefined,
-      excerpt: undefined,
-      components: undefined,
-    };
+    }    
   },
   props: {
     interface: {

@@ -1,45 +1,49 @@
 import axios from "axios";
 import { useInterfaceStore } from "~/store/interface";
 
-const pageSEO = (props, type) => {
+const pageSEO = async (props, type) => {
+  const nuxtApp = useNuxtApp()
   const route = useRoute();
-  const todo = ref({});
-  let imagePath;
+  const pageMeta = ref({});
 
-  fetch(`${props.interface.endpoint}${type ? type : 'pages'}?slug=${route.params.slug ? route.params.slug : 'home'}`)
-    .then(res => res.json())
-    .then((output) => (todo.value = output[0]))
-    .then(async () => { 
-      let imageObj;
+  const slug = computed( () => route.params.slug ? route.params.slug : 'home' )
+  const endpointType = type ? type : 'pages'
+  const endpointUrl = computed( () => `${props.interface.endpoint}${endpointType}` )
 
-      if (todo.value?.featured_media) {
-        await axios
-          .get(`${useInterfaceStore().endpoint}media/${todo.value.featured_media}`)
-          .then((output) => {
-            // console.log(output);
-            imageObj = output.data;
-            imagePath = imageObj ? imageObj.media_details?.sizes?.desktop?.source_url : '';
-            // console.log(imagePath);
-          })
-          .then(() => {
-            useSeoMeta({
-              ogTitle: () => `${todo.value.title ? todo.value.title?.rendered.replace(/&quot;/g, '\"').replace('&#8217;',"'").replace('&amp;', '&').replace('&#038;',"&") + ' | ' : ''}Colby College Museum of Art · Colby College`,
-              title: () => `${todo.value.title ? todo.value.title?.rendered.replace(/&quot;/g, '\"').replace('&#8217;',"'").replace('&amp;', '&').replace('&#038;',"&") + ' | ' : ''}Colby College Museum of Art · Colby College`,
-              ogDescription: () => todo.value.excerpt?.rendered.replace(/<p[^>]*>|<\/p>/g, ''),
-              description: () => todo.value.excerpt?.rendered.replace(/<p[^>]*>|<\/p>/g, ''),
-              ogImage: () => `${imagePath}`,
-            });
-          });
-      } else {
-        useSeoMeta({
-          ogTitle: () => `${todo.value.title ? todo.value.title?.rendered.replace(/&quot;/g, '\"').replace('&#8217;',"'").replace('&amp;', '&').replace('&#038;',"&") + ' | ' : ''}Colby College Museum of Art · Colby College`,
-          title: () => `${todo.value.title ? todo.value.title?.rendered.replace(/&quot;/g, '\"').replace('&#8217;',"'").replace('&amp;', '&').replace('&#038;',"&") + ' | ' : ''}Colby College Museum of Art · Colby College`,
-          ogDescription: () => todo.value.excerpt?.rendered.replace(/<p[^>]*>|<\/p>/g, ''),
-          description: () => todo.value.excerpt?.rendered.replace(/<p[^>]*>|<\/p>/g, ''),
-          ogImage: () => `${useInterfaceStore().backend}wp-content/uploads/2025/03/default.jpg`,
-        });
-      }
-     })
+  const options = { method: 'GET', 
+                    query: { slug: slug.value, _embed: 'wp:featuredmedia' } 
+                  }
+  const { data, error, status } = await useFetch( () => endpointUrl.value, options)
+
+  if (error.value) {
+    console.error(`Encountered an error when fetching page metadata from ${endpointUrl.value}:`,error)
+    // return
+  }
+
+  // if (!data.value || !data.value.at(0)) {
+  //   console.error(`Fetched empty data from ${endpointUrl.value} ${slug.value} and ${ status.value }!`)
+  //   return
+  // }
+
+  pageMeta.value = data.value?.at(0) ?? {} 
+
+  // Unwrap any embedded media data
+  // const { _embedded } = pageMeta.value
+  let postImageUrl = `${useInterfaceStore().backend}wp-content/uploads/2025/03/default.jpg`
+
+  // Because the component may have lost the app context, request it before setting meta.
+  // Without this line the composable will error out, preventing prerendering meta tags 
+
+  // See https://nuxt.com/docs/api/composables/use-nuxt-app#runwithcontext for more
+  nuxtApp.runWithContext(() => useSeoMeta({
+    ogTitle: () => `${pageMeta.value.title ? pageMeta.value.title?.rendered.replace(/&quot;/g, '\"').replace('&#8217;',"'").replace('&amp;', '&').replace('&#038;',"&") + ' | ' : ''}Colby College Museum of Art`,
+    title: () => `${pageMeta.value.title ? pageMeta.value.title?.rendered.replace(/&quot;/g, '\"').replace('&#8217;',"'").replace('&amp;', '&').replace('&#038;',"&") + ' | ' : ''}Colby College Museum of Art`,
+    ogDescription: () => pageMeta.value.excerpt?.rendered.replace(/<p[^>]*>|<\/p>/g, ''),
+    description: () => pageMeta.value.excerpt?.rendered.replace(/<p[^>]*>|<\/p>/g, ''),
+    ogImage: () => postImageUrl,
+  }));
+
+  return { data, error, status }
 }
 
 export default pageSEO;
