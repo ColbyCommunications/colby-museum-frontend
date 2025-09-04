@@ -110,9 +110,12 @@ import isOpen from '../helpers/isOpen';
 export default {
   setup(props) {
     const iface = useInterfaceStore();
+    let campusIsOpen = false;
+    let downtownIsOpen = false;
 
-    let campusIsOpen = isOpen('10:00:00', '17:00:00', 'campus');
-    let downtownIsOpen = isOpen('11:00:00', '19:00:00', 'downtown');
+    campusIsOpen = isOpen(props.globalOptions.campus_hours, 'campus');
+    downtownIsOpen = isOpen(props.globalOptions.downtown_hours, 'downtown');
+    
 
     if (props.globalOptions) {
       if (props.globalOptions.campus_closed_override) {
