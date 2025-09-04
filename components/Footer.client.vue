@@ -74,17 +74,17 @@ export default {
   setup(props) {
     let campusIsOpen = false
     let downtownIsOpen = false
+    
+    campusIsOpen = isOpen(props.globalOptions.campus_hours, 'campus');
+    downtownIsOpen = isOpen(props.globalOptions.downtown_hours, 'downtown');
+
 
     if (props.globalOptions.campus_closed_override) {
       campusIsOpen = false;
-    } else {
-      campusIsOpen = isOpen('10:00:00', '17:00:00', 'campus');
     }
 
     if (props.globalOptions.downtown_closed_override) {
       downtownIsOpen = false;
-    } else {
-      downtownIsOpen = isOpen('11:00:00', '19:00:00', 'downtown');
     }
 
     return {
