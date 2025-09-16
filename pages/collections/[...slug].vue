@@ -57,23 +57,23 @@ export default {
     });
 
     const { data: post } = await useAsyncData(`collections-${route.fullPath}`, async () => {
-      const { data } = await seoConfig(props, 'collections');
+      const { data, error, status } = await seoConfig(props, 'collections');
 
       const post = computed(() => data.value?.at(0))
 
-      return post.value   
+      return post.value
     })
 
-    const embark_id = post?.acf?.embark_id;
+    const embark_id = post.value?.acf?.embark_id;
 
-    const title = post?.title?.rendered?.replace(/–/g, '-')
+    const title = post.value?.title?.rendered?.replace(/–/g, '-')
       .replace(/“/g, '"')
       .replace(/”/g, '"')
       .replace(/’/g, "'");
     
-    const excerpt = post?.excerpt?.rendered?.replace(/<\/?[^>]+(>|$)/g, '');
+    const excerpt = post.value?.excerpt?.rendered?.replace(/<\/?[^>]+(>|$)/g, '');
 
-    const components = post?.block_data?.map((component) => {
+    const components = post.value?.block_data?.map((component) => {
       component.type = component.blockName
         .replace('acf/','')
         .replace(/\//g,'-');
@@ -86,7 +86,6 @@ export default {
       };
     });
 
-    console.log('Finished collections slug without error')
     return {
       title,
       excerpt,
