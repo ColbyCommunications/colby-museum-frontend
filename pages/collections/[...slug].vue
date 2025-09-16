@@ -61,7 +61,7 @@ export default {
 
     const post = data.value?.at(0);
     const embark_id = post?.acf?.embark_id;
-
+    console.log('Got post data', post)
     const title = post?.title?.rendered?.replace(/–/g, '-')
       .replace(/“/g, '"')
       .replace(/”/g, '"')
