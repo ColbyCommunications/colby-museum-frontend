@@ -59,19 +59,17 @@ export default {
       pageTransition: transitionConfig,
     });
 
-    const post = data.value[0];
+    const post = data.value?.at(0);
+    const embark_id = post.acf?.embark_id;
 
-    const embark_id = post.acf.embark_id;
-
-    const title = post.title.rendered
-      .replace(/–/g, '-')
+    const title = post.title?.rendered?.replace(/–/g, '-')
       .replace(/“/g, '"')
       .replace(/”/g, '"')
       .replace(/’/g, "'");
     
-    const excerpt = post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '');
+    const excerpt = post.excerpt?.rendered?.replace(/<\/?[^>]+(>|$)/g, '');
 
-    const components = post.block_data.map((component) => {
+    const components = post?.block_data?.map((component) => {
       component.type = component.blockName
         .replace('acf/','')
         .replace(/\//g,'-');
