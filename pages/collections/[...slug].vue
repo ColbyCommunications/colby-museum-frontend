@@ -52,6 +52,7 @@ import seoConfig from '../helpers/seoConfig';
 
 export default {
   async setup(props) {
+    const route = useRoute()
     const { data } = await seoConfig(props, 'collections');
 
     definePageMeta({
@@ -87,6 +88,7 @@ export default {
       title,
       excerpt,
       embark_id,
+      fullPath: route.fullPath,
       components,
     }
   },
