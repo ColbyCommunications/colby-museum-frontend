@@ -45,8 +45,6 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 import transitionConfig from '../helpers/transitionConfig';
 import seoConfig from '../helpers/seoConfig';
 
