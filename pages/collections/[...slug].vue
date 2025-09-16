@@ -53,15 +53,21 @@ import seoConfig from '../helpers/seoConfig';
 export default {
   async setup(props) {
     const route = useRoute()
-    const { data } = await seoConfig(props, 'collections');
 
     definePageMeta({
       pageTransition: transitionConfig,
     });
 
-    const post = data.value?.at(0);
+    const { data: post } = await useAsyncData(`collections-${route.fullPath}`, async () => {
+      const { data } = await seoConfig(props, 'collections');
+
+      const post = computed(() => data.value?.at(0))
+
+      return post.value   
+    })
+
     const embark_id = post?.acf?.embark_id;
-    console.log('Got post data', post)
+
     const title = post?.title?.rendered?.replace(/–/g, '-')
       .replace(/“/g, '"')
       .replace(/”/g, '"')
