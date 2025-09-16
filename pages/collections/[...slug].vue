@@ -88,6 +88,7 @@ export default {
       };
     });
 
+    console.log('Finished collections slug without error')
     return {
       title,
       excerpt,
