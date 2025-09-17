@@ -45,32 +45,35 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 import transitionConfig from '../helpers/transitionConfig';
 import seoConfig from '../helpers/seoConfig';
 
 export default {
   async setup(props) {
-    const { data } = await seoConfig(props, 'collections');
+    const route = useRoute()
 
     definePageMeta({
       pageTransition: transitionConfig,
     });
 
-    const post = data.value[0];
+    const { data: post } = await useAsyncData(`collections-${route.fullPath}`, async () => {
+      const { data, error, status } = await seoConfig(props, 'collections');
 
-    const embark_id = post.acf.embark_id;
+      const post = computed(() => data.value?.at(0))
 
-    const title = post.title.rendered
-      .replace(/–/g, '-')
+      return post.value
+    })
+
+    const embark_id = post.value?.acf?.embark_id;
+
+    const title = post.value?.title?.rendered?.replace(/–/g, '-')
       .replace(/“/g, '"')
       .replace(/”/g, '"')
       .replace(/’/g, "'");
     
-    const excerpt = post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, '');
+    const excerpt = post.value?.excerpt?.rendered?.replace(/<\/?[^>]+(>|$)/g, '');
 
-    const components = post.block_data.map((component) => {
+    const components = post.value?.block_data?.map((component) => {
       component.type = component.blockName
         .replace('acf/','')
         .replace(/\//g,'-');
@@ -87,6 +90,7 @@ export default {
       title,
       excerpt,
       embark_id,
+      fullPath: route.fullPath,
       components,
     }
   },
