@@ -43,7 +43,7 @@
       </div>
       <div class="toggle-context__col">
         <ul
-          v-if="newItems.length > 0"
+          v-if="newItems?.length > 0"
           class="list-style-1"
           ref="list"
         >
