@@ -17,7 +17,7 @@
             <div
               class="vertical-curtain"
             />
-            <span v-html="item.text.replaceAll(`${this.interface.backend}`, '/').replace(/\/$/, '')" />
+            <span v-html="item.text.replaceAll(`${interface.backend}`, '/').replace(/\/$/, '')" />
           </li>
         </ol>
       </div>
