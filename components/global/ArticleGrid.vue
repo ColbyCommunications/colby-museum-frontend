@@ -1164,7 +1164,7 @@ export default {
 
         totalPages = response.value?.totalPages;
         newItems = response.value?.items
-        nextPageAvailable = response.value?.totalPages === currentPage
+        nextPageAvailable = currentPage < response.value?.totalPages
 
         pagination = pageRange(currentPage, response.value.totalPages, 6);
         isLoading = false;
