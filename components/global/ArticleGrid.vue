@@ -1156,15 +1156,22 @@ export default {
           showFuture,
           showCurrent,
         }
+
         const { data: response } = await useAsyncData(`postItems-${ Object.values(postItemsParams ).join('') }`, async () => {
           const posts = await getPostItems(postItemsParams) 
 
           return posts 
         })
 
+        if (!response.value) {
+          throw createError({
+            statusCode: 404,
+            statusMessage: 'Page Not Found'
+          })
+        }
         totalPages = response.value?.totalPages;
         newItems = response.value?.items
-        nextPageAvailable = response.value?.totalPages === currentPage
+        nextPageAvailable = currentPage < response.value?.totalPages
 
         pagination = pageRange(currentPage, response.value.totalPages, 6);
         isLoading = false;
