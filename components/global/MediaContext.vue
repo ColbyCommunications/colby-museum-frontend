@@ -691,7 +691,7 @@ export default {
   },
   methods: {
     renderGlide() {
-      setTimeout(() => {
+     
         this.animate();
         this.window = this.$refs.carousel.querySelector("[data-glide-window]");
 
@@ -731,8 +731,7 @@ export default {
             this.activeSlide = this.glide.index;
           });
           // this.glide.mount();
-        }
-      }, this.variant == 'overflow' ? 300 : 150);
+        };
     },
     changeSlide(s) {
       if (s == 'next') {
