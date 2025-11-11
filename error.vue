@@ -1,1490 +1,208 @@
 <template>
-  <Header
-    :primary="menus.site"
-    :utility="menus.utility"
-    :campusEvent="[]"
-    :downtownEvent="[]"
-    :globalOptions="[]"
-  />
-  <div class="page page--error">
-    <h1>Oops! {{ error?.message }}</h1>
+    <Header
+        :primary="mainMenu"
+        :utility="utilityMenu"
+        :campusEvent="campusCurrentEvents"
+        :downtownEvent="downtownCurrentEvents"
+        :globalOptions="globalOptions"
+    />
+    <NuxtLayout>
+        <div class="page--error">
+            <h1>Not Found</h1>
+            <p>Oops! Sorry, we couldn't find the page you were looking for.</p>
 
-    <AccordionSection :items="[{ heading: 'Details', context: `<h2>Error ${ error?.statusCode }</h2> ${error.stack}` }]"/>
-
-    <BigArrowBtn :url="'/'"
-                 :reverse="true"
-                 title="Go to Museum Home" />
-  </div>
-  <Footer :primary="menus.site"
-          :utility="menus.social"
-          :globalOptions="[]" />
+            <BigArrowBtn :url="'/'" :reverse="true" title="Go to Museum Home" />
+        </div>
+    </NuxtLayout>
+    <Footer :primary="mainMenu" :utility="socialMenu" :globalOptions="globalOptions" />
 </template>
 
 <style lang="scss">
-  @use "sass:map";
+    @use 'sass:map';
 
-  .hidden {
-    display: none;
-  }
-
-  div.page.page--error {
-    font-family: $font-primary;
-    margin: 1rem 3.75rem;
-
-    h1 {
-      font-size: 3rem;
-      margin: 0.5rem 0.5rem;
+    .hidden {
+        display: none;
     }
 
-    h2 {
-      font-size: 2.5rem;
-      margin: 1rem 0.5rem;
-    }
+    div.page--error {
+        font-family: $font-primary;
+        margin: 1rem 3.75rem;
 
-    p, span {
-      font-size: 2rem;
-      margin: 0.5rem 0.5rem;
-    }
-
-    button.trace-toggle {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 54px;
-      height: 54px;
-      padding: 0;
-      background-color: map.get($layout-colors, accent);
-      border: 5px solid map.get($layout-colors, color);
-      border-radius: 100%;
-      cursor: pointer;
-
-      .dark-mode & {
-        background-color: map.get($layout-dm-colors, accent);
-        border: 5px solid map.get($layout-dm-colors, color);
-      }
-
-      @include breakpoint(medium) {
-        width: 5.139vw; // 74 / 1440
-        height: 5.139vw; // 74 / 1440
-        border: 0.486vw solid map.get($layout-colors, color);
-
-        .dark-mode & {
-          border: 0.486vw solid map.get($layout-dm-colors, color);
+        h1 {
+            font-size: 3rem;
+            margin: 0.5rem 0.5rem;
         }
-      }
 
-      &:hover {
-        background-color: map.get($layout-colors, ambiant);
-      }
-    }
+        h2 {
+            font-size: 2.5rem;
+            margin: 1rem 0.5rem;
+        }
 
-    .big-arrow-btn {
-      margin: 0.5rem 0.5rem;
+        p,
+        span {
+            font-size: 2rem;
+            margin: 0.5rem 0.5rem;
+        }
+
+        button.trace-toggle {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 54px;
+            height: 54px;
+            padding: 0;
+            background-color: map.get($layout-colors, accent);
+            border: 5px solid map.get($layout-colors, color);
+            border-radius: 100%;
+            cursor: pointer;
+
+            .dark-mode & {
+                background-color: map.get($layout-dm-colors, accent);
+                border: 5px solid map.get($layout-dm-colors, color);
+            }
+
+            @include breakpoint(medium) {
+                width: 5.139vw; // 74 / 1440
+                height: 5.139vw; // 74 / 1440
+                border: 0.486vw solid map.get($layout-colors, color);
+
+                .dark-mode & {
+                    border: 0.486vw solid map.get($layout-dm-colors, color);
+                }
+            }
+
+            &:hover {
+                background-color: map.get($layout-colors, ambiant);
+            }
+        }
+
+        .big-arrow-btn {
+            margin: 0.5rem 0.5rem;
+        }
     }
-  }
 </style>
 
 <script>
-const defaultMenus = {
-    "site": [
-        {
-            "id": 344,
-            "title": "Plan Your Visit",
-            "url": "https://museum-backend.colby.edu/visit",
-            "children": [
-                {
-                    "ID": 346,
-                    "post_author": "1",
-                    "post_date": "2025-05-14 11:57:08",
-                    "post_date_gmt": "2024-03-18 21:29:13",
-                    "post_content": " ",
-                    "post_title": "",
-                    "post_excerpt": "",
-                    "post_status": "publish",
-                    "comment_status": "closed",
-                    "ping_status": "closed",
-                    "post_password": "",
-                    "post_name": "346",
-                    "to_ping": "",
-                    "pinged": "",
-                    "post_modified": "2025-05-14 11:57:08",
-                    "post_modified_gmt": "2025-05-14 15:57:08",
-                    "post_content_filtered": "",
-                    "post_parent": 13,
-                    "guid": "http://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/?p=346",
-                    "menu_order": 2,
-                    "post_type": "nav_menu_item",
-                    "post_mime_type": "",
-                    "comment_count": "0",
-                    "filter": "raw",
-                    "db_id": 346,
-                    "menu_item_parent": "344",
-                    "object_id": "57",
-                    "object": "page",
-                    "type": "post_type",
-                    "type_label": "Page",
-                    "url": "https://museum-backend.colby.edu/visit/campus",
-                    "title": "Colby Campus",
-                    "target": "",
-                    "attr_title": "",
-                    "description": "",
-                    "classes": [
-                        ""
-                    ],
-                    "xfn": ""
-                },
-                {
-                    "ID": 345,
-                    "post_author": "1",
-                    "post_date": "2025-05-14 11:57:08",
-                    "post_date_gmt": "2024-03-18 21:29:13",
-                    "post_content": " ",
-                    "post_title": "",
-                    "post_excerpt": "",
-                    "post_status": "publish",
-                    "comment_status": "closed",
-                    "ping_status": "closed",
-                    "post_password": "",
-                    "post_name": "345",
-                    "to_ping": "",
-                    "pinged": "",
-                    "post_modified": "2025-05-14 11:57:08",
-                    "post_modified_gmt": "2025-05-14 15:57:08",
-                    "post_content_filtered": "",
-                    "post_parent": 13,
-                    "guid": "http://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/?p=345",
-                    "menu_order": 3,
-                    "post_type": "nav_menu_item",
-                    "post_mime_type": "",
-                    "comment_count": "0",
-                    "filter": "raw",
-                    "db_id": 345,
-                    "menu_item_parent": "344",
-                    "object_id": "119",
-                    "object": "page",
-                    "type": "post_type",
-                    "type_label": "Page",
-                    "url": "https://museum-backend.colby.edu/visit/downtown",
-                    "title": "Downtown",
-                    "target": "",
-                    "attr_title": "",
-                    "description": "",
-                    "classes": [
-                        ""
-                    ],
-                    "xfn": ""
-                },
-                {
-                    "ID": 517,
-                    "post_author": "1",
-                    "post_date": "2025-05-14 11:57:08",
-                    "post_date_gmt": "2024-05-14 19:47:06",
-                    "post_content": " ",
-                    "post_title": "",
-                    "post_excerpt": "",
-                    "post_status": "publish",
-                    "comment_status": "closed",
-                    "ping_status": "closed",
-                    "post_password": "",
-                    "post_name": "517",
-                    "to_ping": "",
-                    "pinged": "",
-                    "post_modified": "2025-05-14 11:57:08",
-                    "post_modified_gmt": "2025-05-14 15:57:08",
-                    "post_content_filtered": "",
-                    "post_parent": 13,
-                    "guid": "http://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/?p=517",
-                    "menu_order": 4,
-                    "post_type": "nav_menu_item",
-                    "post_mime_type": "",
-                    "comment_count": "0",
-                    "filter": "raw",
-                    "db_id": 517,
-                    "menu_item_parent": "344",
-                    "object_id": "512",
-                    "object": "page",
-                    "type": "post_type",
-                    "type_label": "Page",
-                    "url": "https://museum-backend.colby.edu/visit/greene-block-studios",
-                    "title": "Greene Block + Studios",
-                    "target": "",
-                    "attr_title": "",
-                    "description": "",
-                    "classes": [
-                        ""
-                    ],
-                    "xfn": ""
-                }
-            ]
-        },
-        {
-            "id": 347,
-            "title": "Exhibitions and Events",
-            "url": "https://museum-backend.colby.edu/exhibitions-and-events",
-            "children": [
-                {
-                    "ID": 348,
-                    "post_author": "1",
-                    "post_date": "2025-05-14 11:57:08",
-                    "post_date_gmt": "2024-03-18 21:29:13",
-                    "post_content": " ",
-                    "post_title": "",
-                    "post_excerpt": "",
-                    "post_status": "publish",
-                    "comment_status": "closed",
-                    "ping_status": "closed",
-                    "post_password": "",
-                    "post_name": "348",
-                    "to_ping": "",
-                    "pinged": "",
-                    "post_modified": "2025-05-14 11:57:08",
-                    "post_modified_gmt": "2025-05-14 15:57:08",
-                    "post_content_filtered": "",
-                    "post_parent": 218,
-                    "guid": "http://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/?p=348",
-                    "menu_order": 6,
-                    "post_type": "nav_menu_item",
-                    "post_mime_type": "",
-                    "comment_count": "0",
-                    "filter": "raw",
-                    "db_id": 348,
-                    "menu_item_parent": "347",
-                    "object_id": "246",
-                    "object": "page",
-                    "type": "post_type",
-                    "type_label": "Page",
-                    "url": "https://museum-backend.colby.edu/exhibitions-and-events/exhibitions",
-                    "title": "Exhibitions",
-                    "target": "",
-                    "attr_title": "",
-                    "description": "",
-                    "classes": [
-                        ""
-                    ],
-                    "xfn": ""
-                },
-                {
-                    "ID": 3727,
-                    "post_author": "1",
-                    "post_date": "2025-05-14 11:57:08",
-                    "post_date_gmt": "2025-02-03 00:46:50",
-                    "post_content": "",
-                    "post_title": "Events",
-                    "post_excerpt": "",
-                    "post_status": "publish",
-                    "comment_status": "closed",
-                    "ping_status": "closed",
-                    "post_password": "",
-                    "post_name": "events",
-                    "to_ping": "",
-                    "pinged": "",
-                    "post_modified": "2025-05-14 11:57:08",
-                    "post_modified_gmt": "2025-05-14 15:57:08",
-                    "post_content_filtered": "",
-                    "post_parent": 0,
-                    "guid": "https://museum-backend.colby.edu/?p=3727",
-                    "menu_order": 7,
-                    "post_type": "nav_menu_item",
-                    "post_mime_type": "",
-                    "comment_count": "0",
-                    "filter": "raw",
-                    "db_id": 3727,
-                    "menu_item_parent": "347",
-                    "object_id": "3727",
-                    "object": "custom",
-                    "type": "custom",
-                    "type_label": "Custom Link",
-                    "title": "Events",
-                    "url": "https://museum-backend.colby.edu/events/page-1",
-                    "target": "",
-                    "attr_title": "",
-                    "description": "",
-                    "classes": [
-                        ""
-                    ],
-                    "xfn": ""
-                }
-            ]
-        },
-        {
-            "id": 364,
-            "title": "Collection",
-            "url": "https://museum-backend.colby.edu/collection",
-            "children": [
-                {
-                    "ID": 481,
-                    "post_author": "1",
-                    "post_date": "2025-05-14 11:57:08",
-                    "post_date_gmt": "2024-05-14 19:14:11",
-                    "post_content": " ",
-                    "post_title": "",
-                    "post_excerpt": "",
-                    "post_status": "publish",
-                    "comment_status": "closed",
-                    "ping_status": "closed",
-                    "post_password": "",
-                    "post_name": "481",
-                    "to_ping": "",
-                    "pinged": "",
-                    "post_modified": "2025-05-14 11:57:08",
-                    "post_modified_gmt": "2025-05-14 15:57:08",
-                    "post_content_filtered": "",
-                    "post_parent": 362,
-                    "guid": "http://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/?p=481",
-                    "menu_order": 9,
-                    "post_type": "nav_menu_item",
-                    "post_mime_type": "",
-                    "comment_count": "0",
-                    "filter": "raw",
-                    "db_id": 481,
-                    "menu_item_parent": "364",
-                    "object_id": "454",
-                    "object": "page",
-                    "type": "post_type",
-                    "type_label": "Page",
-                    "url": "https://museum-backend.colby.edu/collection/about-the-collection",
-                    "title": "About the Collection",
-                    "target": "",
-                    "attr_title": "",
-                    "description": "",
-                    "classes": [
-                        ""
-                    ],
-                    "xfn": ""
-                },
-                {
-                    "ID": 603,
-                    "post_author": "1",
-                    "post_date": "2025-05-14 11:57:08",
-                    "post_date_gmt": "2024-06-17 20:16:44",
-                    "post_content": "",
-                    "post_title": "Search the Collection",
-                    "post_excerpt": "",
-                    "post_status": "publish",
-                    "comment_status": "closed",
-                    "ping_status": "closed",
-                    "post_password": "",
-                    "post_name": "search-the-collection",
-                    "to_ping": "",
-                    "pinged": "",
-                    "post_modified": "2025-05-14 11:57:08",
-                    "post_modified_gmt": "2025-05-14 15:57:08",
-                    "post_content_filtered": "",
-                    "post_parent": 0,
-                    "guid": "https://museum-backend.colby.edu/?p=603",
-                    "menu_order": 10,
-                    "post_type": "nav_menu_item",
-                    "post_mime_type": "",
-                    "comment_count": "0",
-                    "filter": "raw",
-                    "db_id": 603,
-                    "menu_item_parent": "364",
-                    "object_id": "603",
-                    "object": "custom",
-                    "type": "custom",
-                    "type_label": "Custom Link",
-                    "title": "Search the Collection",
-                    "url": "/objects/page-1?has_image=false",
-                    "target": "",
-                    "attr_title": "",
-                    "description": "",
-                    "classes": [
-                        ""
-                    ],
-                    "xfn": ""
-                },
-                {
-                    "ID": 402,
-                    "post_author": "1",
-                    "post_date": "2025-05-14 11:57:08",
-                    "post_date_gmt": "2024-04-01 00:22:11",
-                    "post_content": " ",
-                    "post_title": "",
-                    "post_excerpt": "",
-                    "post_status": "publish",
-                    "comment_status": "closed",
-                    "ping_status": "closed",
-                    "post_password": "",
-                    "post_name": "402",
-                    "to_ping": "",
-                    "pinged": "",
-                    "post_modified": "2025-05-14 11:57:08",
-                    "post_modified_gmt": "2025-05-14 15:57:08",
-                    "post_content_filtered": "",
-                    "post_parent": 362,
-                    "guid": "http://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/?p=402",
-                    "menu_order": 11,
-                    "post_type": "nav_menu_item",
-                    "post_mime_type": "",
-                    "comment_count": "0",
-                    "filter": "raw",
-                    "db_id": 402,
-                    "menu_item_parent": "364",
-                    "object_id": "396",
-                    "object": "page",
-                    "type": "post_type",
-                    "type_label": "Page",
-                    "url": "https://museum-backend.colby.edu/collection/requests",
-                    "title": "Requests",
-                    "target": "",
-                    "attr_title": "",
-                    "description": "",
-                    "classes": [
-                        ""
-                    ],
-                    "xfn": ""
-                }
-            ]
-        },
-        {
-            "id": 349,
-            "title": "Learn",
-            "url": "https://museum-backend.colby.edu/learn",
-            "children": [
-                {
-                    "ID": 487,
-                    "post_author": "1",
-                    "post_date": "2025-05-14 11:57:08",
-                    "post_date_gmt": "2024-05-14 19:20:15",
-                    "post_content": " ",
-                    "post_title": "",
-                    "post_excerpt": "",
-                    "post_status": "publish",
-                    "comment_status": "closed",
-                    "ping_status": "closed",
-                    "post_password": "",
-                    "post_name": "487",
-                    "to_ping": "",
-                    "pinged": "",
-                    "post_modified": "2025-05-14 11:57:08",
-                    "post_modified_gmt": "2025-05-14 15:57:08",
-                    "post_content_filtered": "",
-                    "post_parent": 121,
-                    "guid": "http://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/?p=487",
-                    "menu_order": 13,
-                    "post_type": "nav_menu_item",
-                    "post_mime_type": "",
-                    "comment_count": "0",
-                    "filter": "raw",
-                    "db_id": 487,
-                    "menu_item_parent": "349",
-                    "object_id": "485",
-                    "object": "page",
-                    "type": "post_type",
-                    "type_label": "Page",
-                    "url": "https://museum-backend.colby.edu/learn/k-12",
-                    "title": "K–12 Students and Educators",
-                    "target": "",
-                    "attr_title": "",
-                    "description": "",
-                    "classes": [
-                        ""
-                    ],
-                    "xfn": ""
-                },
-                {
-                    "ID": 490,
-                    "post_author": "1",
-                    "post_date": "2025-05-14 11:57:08",
-                    "post_date_gmt": "2024-05-14 19:21:31",
-                    "post_content": " ",
-                    "post_title": "",
-                    "post_excerpt": "",
-                    "post_status": "publish",
-                    "comment_status": "closed",
-                    "ping_status": "closed",
-                    "post_password": "",
-                    "post_name": "490",
-                    "to_ping": "",
-                    "pinged": "",
-                    "post_modified": "2025-05-14 11:57:08",
-                    "post_modified_gmt": "2025-05-14 15:57:08",
-                    "post_content_filtered": "",
-                    "post_parent": 121,
-                    "guid": "http://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/?p=490",
-                    "menu_order": 14,
-                    "post_type": "nav_menu_item",
-                    "post_mime_type": "",
-                    "comment_count": "0",
-                    "filter": "raw",
-                    "db_id": 490,
-                    "menu_item_parent": "349",
-                    "object_id": "488",
-                    "object": "page",
-                    "type": "post_type",
-                    "type_label": "Page",
-                    "url": "https://museum-backend.colby.edu/learn/academic-engagement",
-                    "title": "Academic Engagement",
-                    "target": "",
-                    "attr_title": "",
-                    "description": "",
-                    "classes": [
-                        ""
-                    ],
-                    "xfn": ""
-                },
-                {
-                    "ID": 493,
-                    "post_author": "1",
-                    "post_date": "2025-05-14 11:57:08",
-                    "post_date_gmt": "2024-05-14 19:23:37",
-                    "post_content": " ",
-                    "post_title": "",
-                    "post_excerpt": "",
-                    "post_status": "publish",
-                    "comment_status": "closed",
-                    "ping_status": "closed",
-                    "post_password": "",
-                    "post_name": "493",
-                    "to_ping": "",
-                    "pinged": "",
-                    "post_modified": "2025-05-14 11:57:08",
-                    "post_modified_gmt": "2025-05-14 15:57:08",
-                    "post_content_filtered": "",
-                    "post_parent": 121,
-                    "guid": "http://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/?p=493",
-                    "menu_order": 15,
-                    "post_type": "nav_menu_item",
-                    "post_mime_type": "",
-                    "comment_count": "0",
-                    "filter": "raw",
-                    "db_id": 493,
-                    "menu_item_parent": "349",
-                    "object_id": "491",
-                    "object": "page",
-                    "type": "post_type",
-                    "type_label": "Page",
-                    "url": "https://museum-backend.colby.edu/learn/community-engagement",
-                    "title": "Community Engagement",
-                    "target": "",
-                    "attr_title": "",
-                    "description": "",
-                    "classes": [
-                        ""
-                    ],
-                    "xfn": ""
-                },
-                {
-                    "ID": 499,
-                    "post_author": "1",
-                    "post_date": "2025-05-14 11:57:08",
-                    "post_date_gmt": "2024-05-14 19:41:43",
-                    "post_content": " ",
-                    "post_title": "",
-                    "post_excerpt": "",
-                    "post_status": "publish",
-                    "comment_status": "closed",
-                    "ping_status": "closed",
-                    "post_password": "",
-                    "post_name": "499",
-                    "to_ping": "",
-                    "pinged": "",
-                    "post_modified": "2025-05-14 11:57:08",
-                    "post_modified_gmt": "2025-05-14 15:57:08",
-                    "post_content_filtered": "",
-                    "post_parent": 121,
-                    "guid": "http://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/?p=499",
-                    "menu_order": 16,
-                    "post_type": "nav_menu_item",
-                    "post_mime_type": "",
-                    "comment_count": "0",
-                    "filter": "raw",
-                    "db_id": 499,
-                    "menu_item_parent": "349",
-                    "object_id": "497",
-                    "object": "page",
-                    "type": "post_type",
-                    "type_label": "Page",
-                    "url": "https://museum-backend.colby.edu/learn/publications",
-                    "title": "Publications",
-                    "target": "",
-                    "attr_title": "",
-                    "description": "",
-                    "classes": [
-                        ""
-                    ],
-                    "xfn": ""
-                },
-                {
-                    "ID": 3961,
-                    "post_author": "4",
-                    "post_date": "2025-05-14 11:57:08",
-                    "post_date_gmt": "2025-02-19 15:47:56",
-                    "post_content": " ",
-                    "post_title": "",
-                    "post_excerpt": "",
-                    "post_status": "publish",
-                    "comment_status": "closed",
-                    "ping_status": "closed",
-                    "post_password": "",
-                    "post_name": "3961",
-                    "to_ping": "",
-                    "pinged": "",
-                    "post_modified": "2025-05-14 11:57:08",
-                    "post_modified_gmt": "2025-05-14 15:57:08",
-                    "post_content_filtered": "",
-                    "post_parent": 121,
-                    "guid": "https://museum-backend.colby.edu/?p=3961",
-                    "menu_order": 17,
-                    "post_type": "nav_menu_item",
-                    "post_mime_type": "",
-                    "comment_count": "0",
-                    "filter": "raw",
-                    "db_id": 3961,
-                    "menu_item_parent": "349",
-                    "object_id": "500",
-                    "object": "page",
-                    "type": "post_type",
-                    "type_label": "Page",
-                    "url": "https://museum-backend.colby.edu/learn/whistler-studies",
-                    "title": "Whistler Studies",
-                    "target": "",
-                    "attr_title": "",
-                    "description": "",
-                    "classes": [
-                        ""
-                    ],
-                    "xfn": ""
-                },
-                {
-                    "ID": 5735,
-                    "post_author": "1",
-                    "post_date": "2025-05-14 11:57:08",
-                    "post_date_gmt": "2025-04-01 17:46:43",
-                    "post_content": " ",
-                    "post_title": "",
-                    "post_excerpt": "",
-                    "post_status": "publish",
-                    "comment_status": "closed",
-                    "ping_status": "closed",
-                    "post_password": "",
-                    "post_name": "5735",
-                    "to_ping": "",
-                    "pinged": "",
-                    "post_modified": "2025-05-14 11:57:08",
-                    "post_modified_gmt": "2025-05-14 15:57:08",
-                    "post_content_filtered": "",
-                    "post_parent": 121,
-                    "guid": "https://museum-backend.colby.edu/?p=5735",
-                    "menu_order": 18,
-                    "post_type": "nav_menu_item",
-                    "post_mime_type": "",
-                    "comment_count": "0",
-                    "filter": "raw",
-                    "db_id": 5735,
-                    "menu_item_parent": "349",
-                    "object_id": "3959",
-                    "object": "page",
-                    "type": "post_type",
-                    "type_label": "Page",
-                    "url": "https://museum-backend.colby.edu/learn/media-archive",
-                    "title": "Media Archive",
-                    "target": "",
-                    "attr_title": "",
-                    "description": "",
-                    "classes": [
-                        ""
-                    ],
-                    "xfn": ""
-                },
-                {
-                    "ID": 496,
-                    "post_author": "1",
-                    "post_date": "2025-05-14 11:57:08",
-                    "post_date_gmt": "2024-05-14 19:40:03",
-                    "post_content": " ",
-                    "post_title": "",
-                    "post_excerpt": "",
-                    "post_status": "publish",
-                    "comment_status": "closed",
-                    "ping_status": "closed",
-                    "post_password": "",
-                    "post_name": "496",
-                    "to_ping": "",
-                    "pinged": "",
-                    "post_modified": "2025-05-14 11:57:08",
-                    "post_modified_gmt": "2025-05-14 15:57:08",
-                    "post_content_filtered": "",
-                    "post_parent": 121,
-                    "guid": "http://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/?p=496",
-                    "menu_order": 19,
-                    "post_type": "nav_menu_item",
-                    "post_mime_type": "",
-                    "comment_count": "0",
-                    "filter": "raw",
-                    "db_id": 496,
-                    "menu_item_parent": "349",
-                    "object_id": "494",
-                    "object": "page",
-                    "type": "post_type",
-                    "type_label": "Page",
-                    "url": "https://museum-backend.colby.edu/learn/schedule-a-tour",
-                    "title": "Schedule a Tour",
-                    "target": "",
-                    "attr_title": "",
-                    "description": "",
-                    "classes": [
-                        ""
-                    ],
-                    "xfn": ""
-                }
-            ]
-        },
-        {
-            "id": 350,
-            "title": "Lunder Institute",
-            "url": "https://museum-backend.colby.edu/lunder-institute",
-            "children": [
-                {
-                    "ID": 514,
-                    "post_author": "1",
-                    "post_date": "2025-05-14 11:57:08",
-                    "post_date_gmt": "2024-05-14 19:47:06",
-                    "post_content": " ",
-                    "post_title": "",
-                    "post_excerpt": "",
-                    "post_status": "publish",
-                    "comment_status": "closed",
-                    "ping_status": "closed",
-                    "post_password": "",
-                    "post_name": "514",
-                    "to_ping": "",
-                    "pinged": "",
-                    "post_modified": "2025-05-14 11:57:08",
-                    "post_modified_gmt": "2025-05-14 15:57:08",
-                    "post_content_filtered": "",
-                    "post_parent": 187,
-                    "guid": "http://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/?p=514",
-                    "menu_order": 21,
-                    "post_type": "nav_menu_item",
-                    "post_mime_type": "",
-                    "comment_count": "0",
-                    "filter": "raw",
-                    "db_id": 514,
-                    "menu_item_parent": "350",
-                    "object_id": "506",
-                    "object": "page",
-                    "type": "post_type",
-                    "type_label": "Page",
-                    "url": "https://museum-backend.colby.edu/lunder-institute/who-we-are",
-                    "title": "Who We Are",
-                    "target": "",
-                    "attr_title": "",
-                    "description": "",
-                    "classes": [
-                        ""
-                    ],
-                    "xfn": ""
-                },
-                {
-                    "ID": 3957,
-                    "post_author": "4",
-                    "post_date": "2025-05-14 11:57:08",
-                    "post_date_gmt": "2025-02-18 21:59:59",
-                    "post_content": " ",
-                    "post_title": "",
-                    "post_excerpt": "",
-                    "post_status": "publish",
-                    "comment_status": "closed",
-                    "ping_status": "closed",
-                    "post_password": "",
-                    "post_name": "3957",
-                    "to_ping": "",
-                    "pinged": "",
-                    "post_modified": "2025-05-14 11:57:08",
-                    "post_modified_gmt": "2025-05-14 15:57:08",
-                    "post_content_filtered": "",
-                    "post_parent": 187,
-                    "guid": "https://museum-backend.colby.edu/?p=3957",
-                    "menu_order": 22,
-                    "post_type": "nav_menu_item",
-                    "post_mime_type": "",
-                    "comment_count": "0",
-                    "filter": "raw",
-                    "db_id": 3957,
-                    "menu_item_parent": "350",
-                    "object_id": "3950",
-                    "object": "page",
-                    "type": "post_type",
-                    "type_label": "Page",
-                    "url": "https://museum-backend.colby.edu/lunder-institute/fellows",
-                    "title": "Fellows",
-                    "target": "",
-                    "attr_title": "",
-                    "description": "",
-                    "classes": [
-                        ""
-                    ],
-                    "xfn": ""
-                },
-                {
-                    "ID": 3956,
-                    "post_author": "4",
-                    "post_date": "2025-05-14 11:57:08",
-                    "post_date_gmt": "2025-02-18 21:59:59",
-                    "post_content": " ",
-                    "post_title": "",
-                    "post_excerpt": "",
-                    "post_status": "publish",
-                    "comment_status": "closed",
-                    "ping_status": "closed",
-                    "post_password": "",
-                    "post_name": "3956",
-                    "to_ping": "",
-                    "pinged": "",
-                    "post_modified": "2025-05-14 11:57:08",
-                    "post_modified_gmt": "2025-05-14 15:57:08",
-                    "post_content_filtered": "",
-                    "post_parent": 187,
-                    "guid": "https://museum-backend.colby.edu/?p=3956",
-                    "menu_order": 23,
-                    "post_type": "nav_menu_item",
-                    "post_mime_type": "",
-                    "comment_count": "0",
-                    "filter": "raw",
-                    "db_id": 3956,
-                    "menu_item_parent": "350",
-                    "object_id": "3953",
-                    "object": "page",
-                    "type": "post_type",
-                    "type_label": "Page",
-                    "url": "https://museum-backend.colby.edu/lunder-institute/lunder-institute-at",
-                    "title": "Lunder Institute @",
-                    "target": "",
-                    "attr_title": "",
-                    "description": "",
-                    "classes": [
-                        ""
-                    ],
-                    "xfn": ""
-                },
-                {
-                    "ID": 515,
-                    "post_author": "1",
-                    "post_date": "2025-05-14 11:57:08",
-                    "post_date_gmt": "2024-05-14 19:47:06",
-                    "post_content": " ",
-                    "post_title": "",
-                    "post_excerpt": "",
-                    "post_status": "publish",
-                    "comment_status": "closed",
-                    "ping_status": "closed",
-                    "post_password": "",
-                    "post_name": "515",
-                    "to_ping": "",
-                    "pinged": "",
-                    "post_modified": "2025-05-14 11:57:08",
-                    "post_modified_gmt": "2025-05-14 15:57:08",
-                    "post_content_filtered": "",
-                    "post_parent": 187,
-                    "guid": "http://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/?p=515",
-                    "menu_order": 24,
-                    "post_type": "nav_menu_item",
-                    "post_mime_type": "",
-                    "comment_count": "0",
-                    "filter": "raw",
-                    "db_id": 515,
-                    "menu_item_parent": "350",
-                    "object_id": "508",
-                    "object": "page",
-                    "type": "post_type",
-                    "type_label": "Page",
-                    "url": "https://museum-backend.colby.edu/lunder-institute/summer-think-tank",
-                    "title": "Summer Think Tank",
-                    "target": "",
-                    "attr_title": "",
-                    "description": "",
-                    "classes": [
-                        ""
-                    ],
-                    "xfn": ""
-                },
-                {
-                    "ID": 516,
-                    "post_author": "1",
-                    "post_date": "2025-05-14 11:57:08",
-                    "post_date_gmt": "2024-05-14 19:47:06",
-                    "post_content": " ",
-                    "post_title": "",
-                    "post_excerpt": "",
-                    "post_status": "publish",
-                    "comment_status": "closed",
-                    "ping_status": "closed",
-                    "post_password": "",
-                    "post_name": "516",
-                    "to_ping": "",
-                    "pinged": "",
-                    "post_modified": "2025-05-14 11:57:08",
-                    "post_modified_gmt": "2025-05-14 15:57:08",
-                    "post_content_filtered": "",
-                    "post_parent": 187,
-                    "guid": "http://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/?p=516",
-                    "menu_order": 25,
-                    "post_type": "nav_menu_item",
-                    "post_mime_type": "",
-                    "comment_count": "0",
-                    "filter": "raw",
-                    "db_id": 516,
-                    "menu_item_parent": "350",
-                    "object_id": "510",
-                    "object": "page",
-                    "type": "post_type",
-                    "type_label": "Page",
-                    "url": "https://museum-backend.colby.edu/lunder-institute/audio-archive",
-                    "title": "Audio Archive",
-                    "target": "",
-                    "attr_title": "",
-                    "description": "",
-                    "classes": [
-                        ""
-                    ],
-                    "xfn": ""
-                },
-                {
-                    "ID": 4749,
-                    "post_author": "1",
-                    "post_date": "2025-05-14 11:57:08",
-                    "post_date_gmt": "2025-03-24 21:31:16",
-                    "post_content": "",
-                    "post_title": "Lunder Institute News",
-                    "post_excerpt": "",
-                    "post_status": "publish",
-                    "comment_status": "closed",
-                    "ping_status": "closed",
-                    "post_password": "",
-                    "post_name": "lunder-institute-news",
-                    "to_ping": "",
-                    "pinged": "",
-                    "post_modified": "2025-05-14 11:57:08",
-                    "post_modified_gmt": "2025-05-14 15:57:08",
-                    "post_content_filtered": "",
-                    "post_parent": 0,
-                    "guid": "https://museum-backend.colby.edu/?p=4749",
-                    "menu_order": 26,
-                    "post_type": "nav_menu_item",
-                    "post_mime_type": "",
-                    "comment_count": "0",
-                    "filter": "raw",
-                    "db_id": 4749,
-                    "menu_item_parent": "350",
-                    "object_id": "4749",
-                    "object": "custom",
-                    "type": "custom",
-                    "type_label": "Custom Link",
-                    "title": "Lunder Institute News",
-                    "url": "https://museum-backend.colby.edu/news/page-1?category=6",
-                    "target": "",
-                    "attr_title": "",
-                    "description": "",
-                    "classes": [
-                        ""
-                    ],
-                    "xfn": ""
-                },
-                {
-                    "ID": 11759,
-                    "post_author": "4",
-                    "post_date": "2025-05-14 11:57:08",
-                    "post_date_gmt": "2025-04-27 00:22:41",
-                    "post_content": " ",
-                    "post_title": "",
-                    "post_excerpt": "",
-                    "post_status": "publish",
-                    "comment_status": "closed",
-                    "ping_status": "closed",
-                    "post_password": "",
-                    "post_name": "11759",
-                    "to_ping": "",
-                    "pinged": "",
-                    "post_modified": "2025-05-14 11:57:08",
-                    "post_modified_gmt": "2025-05-14 15:57:08",
-                    "post_content_filtered": "",
-                    "post_parent": 187,
-                    "guid": "https://museum-backend.colby.edu/?p=11759",
-                    "menu_order": 27,
-                    "post_type": "nav_menu_item",
-                    "post_mime_type": "",
-                    "comment_count": "0",
-                    "filter": "raw",
-                    "db_id": 11759,
-                    "menu_item_parent": "350",
-                    "object_id": "7418",
-                    "object": "page",
-                    "type": "post_type",
-                    "type_label": "Page",
-                    "url": "https://museum-backend.colby.edu/lunder-institute/past-projects-programs-and-partnerships",
-                    "title": "Past Projects, Programs, and Partnerships",
-                    "target": "",
-                    "attr_title": "",
-                    "description": "",
-                    "classes": [
-                        ""
-                    ],
-                    "xfn": ""
-                }
-            ]
-        },
-        {
-            "id": 368,
-            "title": "About",
-            "url": "https://museum-backend.colby.edu/about",
-            "children": [
-                {
-                    "ID": 532,
-                    "post_author": "1",
-                    "post_date": "2025-05-14 11:57:08",
-                    "post_date_gmt": "2024-05-14 19:56:22",
-                    "post_content": " ",
-                    "post_title": "",
-                    "post_excerpt": "",
-                    "post_status": "publish",
-                    "comment_status": "closed",
-                    "ping_status": "closed",
-                    "post_password": "",
-                    "post_name": "532",
-                    "to_ping": "",
-                    "pinged": "",
-                    "post_modified": "2025-05-14 11:57:08",
-                    "post_modified_gmt": "2025-05-14 15:57:08",
-                    "post_content_filtered": "",
-                    "post_parent": 366,
-                    "guid": "http://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/?p=532",
-                    "menu_order": 29,
-                    "post_type": "nav_menu_item",
-                    "post_mime_type": "",
-                    "comment_count": "0",
-                    "filter": "raw",
-                    "db_id": 532,
-                    "menu_item_parent": "368",
-                    "object_id": "518",
-                    "object": "page",
-                    "type": "post_type",
-                    "type_label": "Page",
-                    "url": "https://museum-backend.colby.edu/about/mission-vision",
-                    "title": "Mission and Vision",
-                    "target": "",
-                    "attr_title": "",
-                    "description": "",
-                    "classes": [
-                        ""
-                    ],
-                    "xfn": ""
-                },
-                {
-                    "ID": 534,
-                    "post_author": "1",
-                    "post_date": "2025-05-14 11:57:08",
-                    "post_date_gmt": "2024-05-14 19:56:22",
-                    "post_content": " ",
-                    "post_title": "",
-                    "post_excerpt": "",
-                    "post_status": "publish",
-                    "comment_status": "closed",
-                    "ping_status": "closed",
-                    "post_password": "",
-                    "post_name": "534",
-                    "to_ping": "",
-                    "pinged": "",
-                    "post_modified": "2025-05-14 11:57:08",
-                    "post_modified_gmt": "2025-05-14 15:57:08",
-                    "post_content_filtered": "",
-                    "post_parent": 366,
-                    "guid": "http://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/?p=534",
-                    "menu_order": 30,
-                    "post_type": "nav_menu_item",
-                    "post_mime_type": "",
-                    "comment_count": "0",
-                    "filter": "raw",
-                    "db_id": 534,
-                    "menu_item_parent": "368",
-                    "object_id": "522",
-                    "object": "page",
-                    "type": "post_type",
-                    "type_label": "Page",
-                    "url": "https://museum-backend.colby.edu/about/staff-and-board",
-                    "title": "Staff and Board",
-                    "target": "",
-                    "attr_title": "",
-                    "description": "",
-                    "classes": [
-                        ""
-                    ],
-                    "xfn": ""
-                },
-                {
-                    "ID": 535,
-                    "post_author": "1",
-                    "post_date": "2025-05-14 11:57:08",
-                    "post_date_gmt": "2024-05-14 19:56:22",
-                    "post_content": " ",
-                    "post_title": "",
-                    "post_excerpt": "",
-                    "post_status": "publish",
-                    "comment_status": "closed",
-                    "ping_status": "closed",
-                    "post_password": "",
-                    "post_name": "535",
-                    "to_ping": "",
-                    "pinged": "",
-                    "post_modified": "2025-05-14 11:57:08",
-                    "post_modified_gmt": "2025-05-14 15:57:08",
-                    "post_content_filtered": "",
-                    "post_parent": 366,
-                    "guid": "http://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/?p=535",
-                    "menu_order": 31,
-                    "post_type": "nav_menu_item",
-                    "post_mime_type": "",
-                    "comment_count": "0",
-                    "filter": "raw",
-                    "db_id": 535,
-                    "menu_item_parent": "368",
-                    "object_id": "524",
-                    "object": "page",
-                    "type": "post_type",
-                    "type_label": "Page",
-                    "url": "https://museum-backend.colby.edu/about/history",
-                    "title": "History",
-                    "target": "",
-                    "attr_title": "",
-                    "description": "",
-                    "classes": [
-                        ""
-                    ],
-                    "xfn": ""
-                },
-                {
-                    "ID": 3885,
-                    "post_author": "1",
-                    "post_date": "2025-05-14 11:57:08",
-                    "post_date_gmt": "2025-02-05 22:19:05",
-                    "post_content": "",
-                    "post_title": "Museum News",
-                    "post_excerpt": "",
-                    "post_status": "publish",
-                    "comment_status": "closed",
-                    "ping_status": "closed",
-                    "post_password": "",
-                    "post_name": "museum-news",
-                    "to_ping": "",
-                    "pinged": "",
-                    "post_modified": "2025-05-14 11:57:08",
-                    "post_modified_gmt": "2025-05-14 15:57:08",
-                    "post_content_filtered": "",
-                    "post_parent": 0,
-                    "guid": "https://museum-backend.colby.edu/?p=3885",
-                    "menu_order": 32,
-                    "post_type": "nav_menu_item",
-                    "post_mime_type": "",
-                    "comment_count": "0",
-                    "filter": "raw",
-                    "db_id": 3885,
-                    "menu_item_parent": "368",
-                    "object_id": "3885",
-                    "object": "custom",
-                    "type": "custom",
-                    "type_label": "Custom Link",
-                    "title": "Museum News",
-                    "url": "https://museum-backend.colby.edu/news/page-1",
-                    "target": "",
-                    "attr_title": "",
-                    "description": "",
-                    "classes": [
-                        ""
-                    ],
-                    "xfn": ""
-                },
-                {
-                    "ID": 537,
-                    "post_author": "1",
-                    "post_date": "2025-05-14 11:57:08",
-                    "post_date_gmt": "2024-05-14 19:56:22",
-                    "post_content": " ",
-                    "post_title": "",
-                    "post_excerpt": "",
-                    "post_status": "publish",
-                    "comment_status": "closed",
-                    "ping_status": "closed",
-                    "post_password": "",
-                    "post_name": "537",
-                    "to_ping": "",
-                    "pinged": "",
-                    "post_modified": "2025-05-14 11:57:08",
-                    "post_modified_gmt": "2025-05-14 15:57:08",
-                    "post_content_filtered": "",
-                    "post_parent": 366,
-                    "guid": "http://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/?p=537",
-                    "menu_order": 33,
-                    "post_type": "nav_menu_item",
-                    "post_mime_type": "",
-                    "comment_count": "0",
-                    "filter": "raw",
-                    "db_id": 537,
-                    "menu_item_parent": "368",
-                    "object_id": "528",
-                    "object": "page",
-                    "type": "post_type",
-                    "type_label": "Page",
-                    "url": "https://museum-backend.colby.edu/about/opportunities",
-                    "title": "Internships &amp; Career Opportunities",
-                    "target": "",
-                    "attr_title": "",
-                    "description": "",
-                    "classes": [
-                        ""
-                    ],
-                    "xfn": ""
-                },
-                {
-                    "ID": 538,
-                    "post_author": "1",
-                    "post_date": "2025-05-14 11:57:08",
-                    "post_date_gmt": "2024-05-14 19:56:22",
-                    "post_content": " ",
-                    "post_title": "",
-                    "post_excerpt": "",
-                    "post_status": "publish",
-                    "comment_status": "closed",
-                    "ping_status": "closed",
-                    "post_password": "",
-                    "post_name": "538",
-                    "to_ping": "",
-                    "pinged": "",
-                    "post_modified": "2025-05-14 11:57:08",
-                    "post_modified_gmt": "2025-05-14 15:57:08",
-                    "post_content_filtered": "",
-                    "post_parent": 366,
-                    "guid": "http://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/?p=538",
-                    "menu_order": 34,
-                    "post_type": "nav_menu_item",
-                    "post_mime_type": "",
-                    "comment_count": "0",
-                    "filter": "raw",
-                    "db_id": 538,
-                    "menu_item_parent": "368",
-                    "object_id": "530",
-                    "object": "page",
-                    "type": "post_type",
-                    "type_label": "Page",
-                    "url": "https://museum-backend.colby.edu/about/faq",
-                    "title": "FAQ",
-                    "target": "",
-                    "attr_title": "",
-                    "description": "",
-                    "classes": [
-                        ""
-                    ],
-                    "xfn": ""
-                },
-                {
-                    "ID": 12692,
-                    "post_author": "1",
-                    "post_date": "2025-05-14 11:57:08",
-                    "post_date_gmt": "2025-05-06 14:46:32",
-                    "post_content": "",
-                    "post_title": "Contact Us",
-                    "post_excerpt": "",
-                    "post_status": "publish",
-                    "comment_status": "closed",
-                    "ping_status": "closed",
-                    "post_password": "",
-                    "post_name": "contact-us",
-                    "to_ping": "",
-                    "pinged": "",
-                    "post_modified": "2025-05-14 11:57:08",
-                    "post_modified_gmt": "2025-05-14 15:57:08",
-                    "post_content_filtered": "",
-                    "post_parent": 0,
-                    "guid": "https://museum-backend.colby.edu/?p=12692",
-                    "menu_order": 35,
-                    "post_type": "nav_menu_item",
-                    "post_mime_type": "",
-                    "comment_count": "0",
-                    "filter": "raw",
-                    "db_id": 12692,
-                    "menu_item_parent": "368",
-                    "object_id": "12692",
-                    "object": "custom",
-                    "type": "custom",
-                    "type_label": "Custom Link",
-                    "title": "Contact Us",
-                    "url": "https://museum-backend.colby.edu/contact-us",
-                    "target": "",
-                    "attr_title": "",
-                    "description": "",
-                    "classes": [
-                        ""
-                    ],
-                    "xfn": ""
-                }
-            ]
-        },
-        {
-            "id": 371,
-            "title": "Support",
-            "url": "https://museum-backend.colby.edu/support",
-            "children": [
-                {
-                    "ID": 541,
-                    "post_author": "1",
-                    "post_date": "2025-05-14 11:57:08",
-                    "post_date_gmt": "2024-05-14 20:00:40",
-                    "post_content": " ",
-                    "post_title": "",
-                    "post_excerpt": "",
-                    "post_status": "publish",
-                    "comment_status": "closed",
-                    "ping_status": "closed",
-                    "post_password": "",
-                    "post_name": "541",
-                    "to_ping": "",
-                    "pinged": "",
-                    "post_modified": "2025-05-14 11:57:08",
-                    "post_modified_gmt": "2025-05-14 15:57:08",
-                    "post_content_filtered": "",
-                    "post_parent": 369,
-                    "guid": "http://master-7rqtwti-fr35dlu44eniu.us-4.platformsh.site/?p=541",
-                    "menu_order": 37,
-                    "post_type": "nav_menu_item",
-                    "post_mime_type": "",
-                    "comment_count": "0",
-                    "filter": "raw",
-                    "db_id": 541,
-                    "menu_item_parent": "371",
-                    "object_id": "539",
-                    "object": "page",
-                    "type": "post_type",
-                    "type_label": "Page",
-                    "url": "https://museum-backend.colby.edu/support/friends-of-art",
-                    "title": "Friends of Art",
-                    "target": "",
-                    "attr_title": "",
-                    "description": "",
-                    "classes": [
-                        ""
-                    ],
-                    "xfn": ""
-                },
-                {
-                    "ID": 13001,
-                    "post_author": "4",
-                    "post_date": "2025-05-14 11:57:08",
-                    "post_date_gmt": "2025-05-14 15:55:44",
-                    "post_content": " ",
-                    "post_title": "",
-                    "post_excerpt": "",
-                    "post_status": "publish",
-                    "comment_status": "closed",
-                    "ping_status": "closed",
-                    "post_password": "",
-                    "post_name": "13001",
-                    "to_ping": "",
-                    "pinged": "",
-                    "post_modified": "2025-05-14 11:57:08",
-                    "post_modified_gmt": "2025-05-14 15:57:08",
-                    "post_content_filtered": "",
-                    "post_parent": 369,
-                    "guid": "https://museum-backend.colby.edu/?p=13001",
-                    "menu_order": 38,
-                    "post_type": "nav_menu_item",
-                    "post_mime_type": "",
-                    "comment_count": "0",
-                    "filter": "raw",
-                    "db_id": 13001,
-                    "menu_item_parent": "371",
-                    "object_id": "389",
-                    "object": "page",
-                    "type": "post_type",
-                    "type_label": "Page",
-                    "url": "https://museum-backend.colby.edu/support/summer-luncheon-2025",
-                    "title": "Summer Luncheon",
-                    "target": "",
-                    "attr_title": "",
-                    "description": "",
-                    "classes": [
-                        ""
-                    ],
-                    "xfn": ""
-                }
-            ]
-        }
-    ],
-    "social": [
-        {
-            "id": 413,
-            "title": "IG: @colbymuseum",
-            "url": "https://www.instagram.com/colbymuseum/?hl=en",
-            "children": ""
-        },
-        {
-            "id": 3958,
-            "title": "IG: @lunderinstitute",
-            "url": "https://www.instagram.com/lunderinstitute/?hl=en",
-            "children": ""
-        },
-        {
-            "id": 414,
-            "title": "Facebook",
-            "url": "https://www.facebook.com/ColbyMuseum/",
-            "children": ""
-        },
-        {
-            "id": 416,
-            "title": "LinkedIn",
-            "url": "https://www.linkedin.com/company/colby-college-museum-of-art",
-            "children": ""
-        },
-        {
-            "id": 417,
-            "title": "YouTube",
-            "url": "https://www.youtube.com/channel/UCDb0LqRJgjM1NnpTE5Mzjgw",
-            "children": ""
-        },
-        {
-            "id": 13768,
-            "title": "Colby",
-            "url": "https://www.colby.edu/",
-            "children": ""
-        }
-    ],
-    "utility": [
-        {
-            "id": 4100,
-            "title": "About Colby Arts",
-            "url": "https://arts.colby.edu/about/",
-            "children": ""
-        },
-        {
-            "id": 4099,
-            "title": "Spaces and Organizations",
-            "url": "https://arts.colby.edu/spaces-and-organizations/",
-            "children": ""
-        },
-        {
-            "id": 4101,
-            "title": "Events",
-            "url": "https://arts.colby.edu/events/",
-            "children": ""
-        }
-    ]
-}
+    import { gsap } from 'gsap';
+    import { ScrollTrigger } from 'gsap/ScrollTrigger';
+    import { ScrollSmoother } from 'gsap/ScrollSmoother';
 
-export default {
-  props: {
-    error: {
-      type: Object,
-    }
-  },
-  setup(props) {
-    useSeoMeta({
-      title: 'Not Found | Colby College Museum of Art'
-    })
+    import { useInterfaceStore } from '~/store/interface';
 
-    return { trace: ref(false), menus: defaultMenus }
-  },
-  methods: {
-    toggleTrace() {
-      this.trace = !this.trace
+    import footerItems from '~/assets/data/footer.yml';
+
+    function formatTime(t) {
+        const time = t.split(':');
+        const hour = parseInt(time[0]);
+        const min = time[1];
+        const sec = parseInt(time[2]);
+        const ampm = hour >= 12 ? ' p.m.' : ' a.m.';
+
+        return `${hour == 12 || hour == 0 ? 12 : hour % 12}:${min
+            .replace(/\s/g, '')
+            .replace('am', ' a.m.')
+            .replace('pm', ' p.m.')
+            .replace(' - ', '&ndash;')}`;
     }
-  }
-};
+
+    export default {
+        async setup() {
+            let footerItems = [];
+            const iface = useInterfaceStore();
+            const { data } = await useAsyncData('app', async () => {
+                const menus = await $fetch(`${useInterfaceStore().endpoint}menus`);
+
+                const { acf: globalOptions } = await $fetch(
+                    `${useInterfaceStore().endpointv3}options/options`
+                );
+
+                const events = await $fetch(
+                    `${useInterfaceStore().endpoint}events?categories_exclude=1&chronologies=9`
+                );
+
+                return { menus, globalOptions, events };
+            });
+
+            const menus = data.value?.menus ?? {};
+            const events = data.value?.events ?? [];
+            const globalOptions = data.value?.globalOptions ?? {};
+
+            const mainMenu = menus.site;
+            const utilityMenu = menus.utility;
+            const socialMenu = menus.social;
+
+            const campusEvents = events.filter((event) => event.acf.location == 'campus');
+            const downtownEvents = events.filter((event) => event.acf.location == 'downtown');
+
+            let campusCurrentEvents = [];
+            if (campusEvents.length >= 1) {
+                campusCurrentEvents = campusEvents.map((i) => ({
+                    heading: i.title.rendered,
+                    location: i.acf.location,
+                    time: `${formatTime(i.acf.start_time)}-${formatTime(i.acf.end_time)}`,
+                    button: {
+                        title: 'Event Details',
+                        url: i.link,
+                    },
+                }));
+            } else {
+                campusCurrentEvents = [
+                    {
+                        location: 'No event scheduled for today.',
+                        // time: new Date().getDay() == 0 ? '12:00 p.m.–5:00 p.m.' : '10:00 a.m.–5:00 p.m.',
+                        button: {
+                            title: "What's On",
+                            url: '/exhibitions/page-1?chronology=current&location=campus',
+                        },
+                    },
+                ];
+            }
+
+            let downtownCurrentEvents = [];
+            if (downtownEvents.length >= 1) {
+                downtownCurrentEvents = downtownEvents.map((i) => ({
+                    heading: i.title.rendered,
+                    location: i.acf.location,
+                    time: `${formatTime(i.acf.start_time)}-${formatTime(i.acf.end_time)}`,
+                    button: {
+                        title: 'Event Details',
+                        url: i.link,
+                    },
+                }));
+            } else {
+                downtownCurrentEvents = [
+                    {
+                        location: 'No event scheduled for today.',
+                        // time: '11:00 a.m.–7:00 p.m.',
+                        button: {
+                            title: "What's On",
+                            url: '/exhibitions/page-1?chronology=current&location=downtown',
+                        },
+                    },
+                ];
+            }
+
+            return {
+                globalOptions,
+                interface: iface,
+                mainMenu,
+                utilityMenu,
+                socialMenu,
+                headerItems: [],
+                footerItems: [],
+                campusCurrentEvents,
+                downtownCurrentEvents,
+            };
+        },
+        mounted() {
+            gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+
+            setTimeout(() => {
+                // ScrollSmoother.create({
+                //     smooth: 1.1,
+                //     effects: true,
+                // });
+            }, 600);
+        },
+    };
 </script>
