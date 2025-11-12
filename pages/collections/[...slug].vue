@@ -59,7 +59,7 @@
 
     // 4. Fetch data
     const post = await useFetchContent(route.params.slug, props, 'collections');
-    console.log(post);
+
     // 5. Process data
     const embark_id = post.value?.pageData?.acf?.embark_id;
 
