@@ -25,7 +25,6 @@
     // 1. Imports
     import { onMounted, ref, computed } from 'vue';
     import transitionConfig from '../helpers/transitionConfig';
-    import seoConfig from '../helpers/seoConfig';
 
     // 2. Define Props
     const props = defineProps({

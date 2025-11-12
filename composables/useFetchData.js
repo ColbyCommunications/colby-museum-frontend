@@ -1,12 +1,12 @@
 import seoConfig from '../helpers/seoConfig';
 
-export const useFetchContent = async (path, props) => {
+export const useFetchContent = async (path, props, type) => {
     // 1. Create a unique key for useAsyncData
     const key = `content-${path}`;
 
     // 2. Fetch the data
     const { data, error } = await useAsyncData(key, async () => {
-        const { data } = await seoConfig(props);
+        const { data } = await seoConfig(props, type);
 
         // Using computed here is fine, but we only need the value
         const pageDataValue = data.value?.at(0);
