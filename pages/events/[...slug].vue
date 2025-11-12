@@ -75,14 +75,8 @@
         pageTransition: transitionConfig,
     });
 
-    // const { data: post } = await useAsyncData(`events-${route.params.slug}`, async () => {
-    //   const { data } = await seoConfig({interface: iface}, 'events')
-    //   const post = computed( () => data.value?.at(0) )
-    //   return post.value
-    // })
-
     const post = await useFetchContent(route.params.slug, { interface: iface }, 'events');
-    console.log(post);
+
     // All these variables are automatically exposed to the template
     const title = post.value?.pageData?.title?.rendered
         .replace(/–/g, '-')
