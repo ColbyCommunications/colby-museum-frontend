@@ -50,7 +50,6 @@ const isOpen = (hours, location) => {
 
         // Special conditional for Sunday hours. Will clean up duplications later.
     } else {
-        console.log('foo');
         var s = hoursToday[`${location}_day_open_time`].split(':');
         var dt1 = new Date(
             dt.getFullYear(),

@@ -128,7 +128,6 @@
             let downtownIsOpen = false;
 
             let campusIsOpenData = isOpen(props.globalOptions.campus_hours, 'campus');
-            console.log(campusIsOpenData);
             campusIsOpen = campusIsOpenData.isOpen;
             let campusIsOpenUntil = campusIsOpenData.until;
             let downtownIsOpenData = isOpen(props.globalOptions.downtown_hours, 'downtown');
