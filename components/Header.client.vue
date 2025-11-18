@@ -126,7 +126,7 @@
             const iface = useInterfaceStore();
             let campusIsOpen = false;
             let downtownIsOpen = false;
-            console.log(props);
+
             let campusIsOpenData = isOpen(props.globalOptions.campus_hours, 'campus');
             console.log(campusIsOpenData);
             campusIsOpen = campusIsOpenData.isOpen;
