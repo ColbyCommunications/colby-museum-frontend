@@ -90,7 +90,7 @@
             {
                 location: 'No event scheduled for today.',
                 button: {
-                    title: "What's On",
+                    title: "What's On View",
                     url: '/exhibitions/page-1?chronology=current&location=campus',
                 },
             },
@@ -113,7 +113,7 @@
             {
                 location: 'No event scheduled for today.',
                 button: {
-                    title: "What's On",
+                    title: "What's On View",
                     url: '/exhibitions/page-1?chronology=current&location=downtown',
                 },
             },
