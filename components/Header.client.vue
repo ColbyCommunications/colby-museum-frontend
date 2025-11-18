@@ -29,15 +29,15 @@
                         @debounced-input="recieveInput"
                     />
                     <SuperDropdown
-                        :class="[campusIsOpen ? 'open' : 'closed']"
+                        :class="[dropdownClassCampus]"
                         :size="'large'"
-                        :heading="'Campus Today'"
+                        :heading="dropdownHeadingCampus"
                         :events="campusEvent"
                     />
                     <SuperDropdown
-                        :class="[downtownIsOpen ? 'open' : 'closed']"
+                        :class="[dropdownClassDowntown]"
                         :size="'large'"
-                        :heading="'Downtown Today'"
+                        :heading="dropdownHeadingDowntown"
                         :events="downtownEvent"
                     />
                 </div>
@@ -127,8 +127,13 @@
             let campusIsOpen = false;
             let downtownIsOpen = false;
 
-            campusIsOpen = isOpen(props.globalOptions.campus_hours, 'campus');
-            downtownIsOpen = isOpen(props.globalOptions.downtown_hours, 'downtown');
+            let campusIsOpenData = isOpen(props.globalOptions.campus_hours, 'campus');
+            console.log(campusIsOpenData);
+            campusIsOpen = campusIsOpenData.isOpen;
+            let campusIsOpenUntil = campusIsOpenData.until;
+            let downtownIsOpenData = isOpen(props.globalOptions.downtown_hours, 'downtown');
+            downtownIsOpen = downtownIsOpenData.isOpen;
+            let downtownIsOpenUntil = downtownIsOpenData.until;
 
             if (props.globalOptions) {
                 if (props.globalOptions.campus_closed_override) {
@@ -148,6 +153,8 @@
                 input: ref(''),
                 campusIsOpen,
                 downtownIsOpen,
+                campusIsOpenUntil,
+                downtownIsOpenUntil,
             };
         },
         props: {
@@ -170,6 +177,34 @@
             globalOptions: {
                 type: Object,
                 required: false,
+            },
+        },
+        computed: {
+            dropdownClassCampus() {
+                // This is the same ternary logic, just moved
+                return this.campusIsOpen ? 'open' : 'closed';
+            },
+            dropdownClassDowntown() {
+                // This is the same ternary logic, just moved
+                return this.downtownIsOpen ? 'open' : 'closed';
+            },
+            dropdownHeadingCampus() {
+                // We use the ternary to get the status...
+                const status = this.campusIsOpen
+                    ? `until ${this.campusIsOpenUntil}`
+                    : `until ${this.campusIsOpenUntil}`;
+
+                // ...and then return the full string.
+                return `Campus Today - ${status}`;
+            },
+            dropdownHeadingDowntown() {
+                // We use the ternary to get the status...
+                const status = this.downtownIsOpen
+                    ? `until ${this.downtownIsOpenUntil}`
+                    : `until ${this.downtownIsOpenUntil}`;
+
+                // ...and then return the full string.
+                return `Downtown Today - ${status}`;
             },
         },
         methods: {
