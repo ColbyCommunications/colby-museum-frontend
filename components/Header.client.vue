@@ -196,7 +196,7 @@
                     : `until ${this.campusIsOpenUntil}`;
 
                 // ...and then return the full string.
-                return `Campus Today - ${status}`;
+                return `Campus Today — ${status}`;
             },
             dropdownHeadingDowntown() {
                 // We use the ternary to get the status...
@@ -205,7 +205,7 @@
                     : `until ${this.downtownIsOpenUntil}`;
 
                 // ...and then return the full string.
-                return `Downtown Today - ${status}`;
+                return `Downtown Today — ${status}`;
             },
         },
         methods: {
