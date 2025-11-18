@@ -126,7 +126,7 @@
             const iface = useInterfaceStore();
             let campusIsOpen = false;
             let downtownIsOpen = false;
-
+            console.log(props);
             let campusIsOpenData = isOpen(props.globalOptions.campus_hours, 'campus');
             console.log(campusIsOpenData);
             campusIsOpen = campusIsOpenData.isOpen;
@@ -138,10 +138,12 @@
             if (props.globalOptions) {
                 if (props.globalOptions.campus_closed_override) {
                     campusIsOpen = false;
+                    campusIsOpenUntil = props.globalOptions.campus_closed_override_message;
                 }
 
                 if (props.globalOptions.downtown_closed_override) {
                     downtownIsOpen = false;
+                    downtownIsOpenUntil = props.globalOptions.downtown_closed_override_message;
                 }
             }
 
