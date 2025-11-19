@@ -4,7 +4,7 @@
         role="banner"
         ref="header"
         :class="[
-            searchActive ? 'header--search-active' : '',
+            iface.search ? 'header--search-active' : '',
             drawerActive ? 'header--drawer-active' : '',
         ]"
     >
@@ -23,11 +23,7 @@
                     <Logo />
                 </NuxtLink>
                 <div class="header__activity">
-                    <SearchInput
-                        ref="searchInput"
-                        :placeholder="'Search Colby Museum'"
-                        @debounced-input="recieveInput"
-                    />
+                    <SearchInput ref="searchInput" :placeholder="'Search Colby Museum'" />
                     <SuperDropdown
                         :class="[dropdownClassCampus]"
                         :size="'large'"
@@ -44,7 +40,7 @@
                 <div class="header__btn-group">
                     <SearchBtn
                         class="header__search-btn"
-                        :class="{ active: searchActive }"
+                        :class="{ active: iface.search }"
                         @click="toggleSearch()"
                     />
                     <button
@@ -63,6 +59,7 @@
                     <ul>
                         <li
                             v-for="(item, index) in primary"
+                            :key="index"
                             :class="{ active: active == index }"
                             @keyup.left="keyboardLeft($event)"
                             @keyup.right="keyboardRight($event)"
@@ -70,11 +67,7 @@
                             <NuxtLink
                                 :to="item.url.replace(/^.*\/\/[^\/]+/, '').replace(/\/$/, '')"
                                 @click="closeDrawer()"
-                                @mousedown="
-                                    (event) => {
-                                        event.preventDefault();
-                                    }
-                                "
+                                @mousedown.prevent
                                 >{{ item.title.replace('amp;', '') }}</NuxtLink
                             >
                             <button
@@ -85,7 +78,7 @@
                                 <IconArrow />
                             </button>
                             <ul v-if="item.children" class="header__dropdown">
-                                <li v-for="(child, index) in item.children">
+                                <li v-for="(child, cIndex) in item.children" :key="cIndex">
                                     <NuxtLink
                                         :to="
                                             $route.path ==
@@ -117,155 +110,171 @@
     </header>
 </template>
 
-<script>
+<script setup>
+    import { ref, computed } from 'vue';
     import { useInterfaceStore } from '~/store/interface';
     import isOpen from '../helpers/isOpen';
 
-    export default {
-        setup(props) {
-            const iface = useInterfaceStore();
-            let campusIsOpen = false;
-            let downtownIsOpen = false;
-
-            let campusIsOpenData = isOpen(props.globalOptions.campus_hours, 'campus');
-            campusIsOpen = campusIsOpenData.isOpen;
-            let campusIsOpenUntil = campusIsOpenData.until;
-            let downtownIsOpenData = isOpen(props.globalOptions.downtown_hours, 'downtown');
-            downtownIsOpen = downtownIsOpenData.isOpen;
-            let downtownIsOpenUntil = downtownIsOpenData.until;
-
-            if (props.globalOptions) {
-                if (props.globalOptions.campus_closed_override) {
-                    campusIsOpen = false;
-                    campusIsOpenUntil = props.globalOptions.campus_closed_override_message;
-                }
-
-                if (props.globalOptions.downtown_closed_override) {
-                    downtownIsOpen = false;
-                    downtownIsOpenUntil = props.globalOptions.downtown_closed_override_message;
-                }
-            }
-
-            return {
-                interface: iface,
-                active: ref(undefined),
-                drawerActive: ref(false),
-                searchActive: ref(false),
-                input: ref(''),
-                campusIsOpen,
-                downtownIsOpen,
-                campusIsOpenUntil,
-                downtownIsOpenUntil,
-            };
+    // --- Props ---
+    const props = defineProps({
+        utility: {
+            type: Array,
+            required: false,
         },
-        props: {
-            utility: {
-                type: Array,
-                required: false,
-            },
-            primary: {
-                type: Array,
-                required: false,
-            },
-            campusEvent: {
-                type: Array,
-                required: false,
-            },
-            downtownEvent: {
-                type: Array,
-                required: false,
-            },
-            globalOptions: {
-                type: Object,
-                required: false,
-            },
+        primary: {
+            type: Array,
+            required: false,
         },
-        computed: {
-            dropdownClassCampus() {
-                // This is the same ternary logic, just moved
-                return this.campusIsOpen ? 'open' : 'closed';
-            },
-            dropdownClassDowntown() {
-                // This is the same ternary logic, just moved
-                return this.downtownIsOpen ? 'open' : 'closed';
-            },
-            dropdownHeadingCampus() {
-                // We use the ternary to get the status...
-                const status = this.campusIsOpen
-                    ? `until ${this.campusIsOpenUntil}`
-                    : `until ${this.campusIsOpenUntil}`;
-
-                // ...and then return the full string.
-                return `Campus Today — ${status}`;
-            },
-            dropdownHeadingDowntown() {
-                // We use the ternary to get the status...
-                const status = this.downtownIsOpen
-                    ? `until ${this.downtownIsOpenUntil}`
-                    : `until ${this.downtownIsOpenUntil}`;
-
-                // ...and then return the full string.
-                return `Downtown Today — ${status}`;
-            },
+        campusEvent: {
+            type: Array,
+            required: false,
         },
-        methods: {
-            toggleSearch() {
-                this.searchActive = !this.searchActive;
-                this.closeDrawer();
-            },
-            toggleDrawer() {
-                window.scrollTo(0, 0);
-                this.drawerActive = !this.drawerActive;
-                this.active = undefined;
+        downtownEvent: {
+            type: Array,
+            required: false,
+        },
+        globalOptions: {
+            type: Object,
+            required: false,
+        },
+    });
 
-                if (this.drawerActive == true) {
-                    document.body.style.overflow = 'hidden';
-                } else {
-                    document.body.style.overflow = '';
-                }
+    // --- Setup & State ---
+    const iface = useInterfaceStore();
+    const route = useRoute();
 
-                this.interface.setDrawer(this.drawerActive);
-            },
-            closeDrawer() {
-                window.scrollTo(0, 0);
-                this.drawerActive = false;
-                this.active = undefined;
-                document.body.style.overflow = '';
-            },
-            toggleActive(i) {
-                if (this.active == i) {
-                    this.active = undefined;
-                } else {
-                    this.active = i;
-                }
-            },
-            recieveInput(input) {
-                const component = this;
-                const slug = this.$route.params.slug;
-
-                component.input = input;
-
+    watch(
+        () => iface.debouncedSearchText,
+        (newSearchTerm) => {
+            // This code only runs 2 seconds AFTER the user stops typing
+            if (newSearchTerm) {
                 navigateTo({
                     path: '/search',
                     query: {
                         page: 1,
-                        search: component.input,
+                        search: newSearchTerm,
                     },
                 });
-            },
-            keyboardRight(e) {
-                if (e.srcElement.parentNode.nextSibling) {
-                    e.srcElement.parentNode.nextSibling.getElementsByTagName('a')[0].focus();
-                } else {
-                    // this.$refs.header.getElementsByClassName('header__search-btn')[0].focus();
-                }
-            },
-            keyboardLeft(e) {
-                if (e.srcElement.parentNode.previousSibling) {
-                    e.srcElement.parentNode.previousSibling.getElementsByTagName('a')[0].focus();
-                }
-            },
-        },
+            }
+        }
+    );
+
+    // Template Refs
+    const header = ref(null);
+    const searchInput = ref(null);
+
+    // Reactive State
+    const active = ref(undefined);
+    const drawerActive = ref(false);
+    const searchActive = ref(false);
+    const input = ref('');
+
+    // --- Computed Logic (Opening Hours) ---
+
+    // Calculate Campus Status
+    const campusStatus = computed(() => {
+        // Guard clause if globalOptions isn't loaded yet
+        if (!props.globalOptions) return { isOpen: false, until: '' };
+
+        let status = isOpen(props.globalOptions.campus_hours, 'campus');
+        let isOpenBool = status.isOpen;
+        let untilStr = status.until;
+
+        if (props.globalOptions.campus_closed_override) {
+            isOpenBool = false;
+            untilStr = props.globalOptions.campus_closed_override_message;
+        }
+
+        return { isOpen: isOpenBool, until: untilStr };
+    });
+
+    // Calculate Downtown Status
+    const downtownStatus = computed(() => {
+        if (!props.globalOptions) return { isOpen: false, until: '' };
+
+        let status = isOpen(props.globalOptions.downtown_hours, 'downtown');
+        let isOpenBool = status.isOpen;
+        let untilStr = status.until;
+
+        if (props.globalOptions.downtown_closed_override) {
+            isOpenBool = false;
+            untilStr = props.globalOptions.downtown_closed_override_message;
+        }
+
+        return { isOpen: isOpenBool, until: untilStr };
+    });
+
+    // Dropdown Classes
+    const dropdownClassCampus = computed(() => (campusStatus.value.isOpen ? 'open' : 'closed'));
+    const dropdownClassDowntown = computed(() => (downtownStatus.value.isOpen ? 'open' : 'closed'));
+
+    // Dropdown Headings
+    const dropdownHeadingCampus = computed(() => {
+        const status = `until ${campusStatus.value.until}`;
+        return `Campus Today — ${status}`;
+    });
+
+    const dropdownHeadingDowntown = computed(() => {
+        const status = `until ${downtownStatus.value.until}`;
+        return `Downtown Today — ${status}`;
+    });
+
+    // --- Methods ---
+
+    const closeDrawer = () => {
+        if (process.client) window.scrollTo(0, 0);
+        drawerActive.value = false;
+        active.value = undefined;
+        if (process.client) document.body.style.overflow = '';
+    };
+
+    const toggleSearch = () => {
+        searchActive.value = !searchActive.value;
+        iface.setSearch(!searchActive.value);
+        closeDrawer();
+    };
+
+    const toggleDrawer = () => {
+        if (process.client) window.scrollTo(0, 0);
+        drawerActive.value = !drawerActive.value;
+        active.value = undefined;
+
+        if (process.client) {
+            if (drawerActive.value === true) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
+        }
+
+        iface.setDrawer(drawerActive.value);
+    };
+
+    const toggleActive = (i) => {
+        if (active.value === i) {
+            active.value = undefined;
+        } else {
+            active.value = i;
+        }
+    };
+
+    const keyboardRight = (e) => {
+        // Note: e.srcElement is non-standard, but kept for compatibility with original logic.
+        // e.target is preferred.
+        const target = e.target || e.srcElement;
+        if (target.parentNode.nextSibling) {
+            target.parentNode.nextSibling.getElementsByTagName('a')[0].focus();
+        } else {
+            // Logic commented out in original, keeping it commented
+            // header.value.getElementsByClassName('header__search-btn')[0].focus();
+        }
+    };
+
+    const keyboardLeft = (e) => {
+        const target = e.target || e.srcElement;
+        if (target.parentNode.previousSibling) {
+            target.parentNode.previousSibling.getElementsByTagName('a')[0].focus();
+        }
     };
 </script>
 
