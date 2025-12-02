@@ -16,6 +16,17 @@
         </button>
         <div class="super-dropdown__drawer">
             <ActivityTag v-if="events" />
+            <div
+                v-if="events"
+                style="
+                    color: white;
+                    font-family: 'Libre Franklin', sans-serif;
+                    font-size: 0.85rem;
+                    margin-bottom: 15px;
+                "
+            >
+                Today's Hours: {{ hours }}
+            </div>
             <div v-if="events" v-for="(event, index) in events" class="super-dropdown__event">
                 <div class="super-dropdown__event-heading" v-html="event.heading" />
                 <div
@@ -91,6 +102,11 @@
                 type: Boolean,
                 required: false,
                 default: false,
+            },
+            hours: {
+                type: String,
+                required: false,
+                default: '',
             },
         },
         methods: {

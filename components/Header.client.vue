@@ -29,12 +29,14 @@
                         :size="'large'"
                         :heading="dropdownHeadingCampus"
                         :events="campusEvent"
+                        :hours="dropdownHoursCampus"
                     />
                     <SuperDropdown
                         :class="[dropdownClassDowntown]"
                         :size="'large'"
                         :heading="dropdownHeadingDowntown"
                         :events="downtownEvent"
+                        :hours="dropdownHoursDowntown"
                     />
                 </div>
                 <div class="header__btn-group">
@@ -179,13 +181,14 @@
         let status = isOpen(props.globalOptions.campus_hours, 'campus');
         let isOpenBool = status.isOpen;
         let untilStr = status.until;
+        let hours = status.hours;
 
         if (props.globalOptions.campus_closed_override) {
             isOpenBool = false;
             untilStr = props.globalOptions.campus_closed_override_message;
         }
 
-        return { isOpen: isOpenBool, until: untilStr };
+        return { isOpen: isOpenBool, until: untilStr, hours };
     });
 
     // Calculate Downtown Status
@@ -195,13 +198,14 @@
         let status = isOpen(props.globalOptions.downtown_hours, 'downtown');
         let isOpenBool = status.isOpen;
         let untilStr = status.until;
+        let hours = status.hours;
 
         if (props.globalOptions.downtown_closed_override) {
             isOpenBool = false;
             untilStr = props.globalOptions.downtown_closed_override_message;
         }
 
-        return { isOpen: isOpenBool, until: untilStr };
+        return { isOpen: isOpenBool, until: untilStr, hours };
     });
 
     // Dropdown Classes
@@ -210,13 +214,35 @@
 
     // Dropdown Headings
     const dropdownHeadingCampus = computed(() => {
-        const status = `until ${campusStatus.value.until}`;
-        return `Campus Today — ${status}`;
+        return `Campus Today`;
+    });
+
+    // Campus Hours
+    const dropdownHoursCampus = computed(() => {
+        let status;
+        if (campusStatus.value.isOpen) {
+            status = campusStatus.value.hours;
+        } else {
+            status = `closed until ${campusStatus.value.until}`;
+        }
+
+        return `${status}`;
     });
 
     const dropdownHeadingDowntown = computed(() => {
-        const status = `until ${downtownStatus.value.until}`;
-        return `Downtown Today — ${status}`;
+        return `Downtown Today`;
+    });
+
+    // Dropdown Hours
+    const dropdownHoursDowntown = computed(() => {
+        let status;
+        if (downtownStatus.value.isOpen) {
+            status = downtownStatus.value.hours;
+        } else {
+            status = `closed until ${downtownStatus.value.until}`;
+        }
+
+        return `${status}`;
     });
 
     // --- Methods ---
