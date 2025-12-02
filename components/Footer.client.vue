@@ -16,9 +16,7 @@
                         globalOptions?.campus_phone_number
                     }}</a>
 
-                    <span :class="[dropdownClassCampus.value ? 'open' : 'closed']"
-                        >{{ dropdownHeadingCampus }}
-                    </span>
+                    <span :class="[dropdownClassCampus]">{{ dropdownHeadingCampus }} </span>
                 </div>
                 <div class="footer__location">
                     <h2>Downtown Location</h2>
@@ -33,9 +31,7 @@
                         globalOptions?.downtown_phone_number
                     }}</a>
 
-                    <span :class="[dropdownClassDowntown.value ? 'open' : 'closed']"
-                        >{{ dropdownHeadingDowntown }}
-                    </span>
+                    <span :class="[dropdownClassDowntown]">{{ dropdownHeadingDowntown }} </span>
                 </div>
             </div>
             <div class="footer__links">
