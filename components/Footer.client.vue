@@ -16,15 +16,9 @@
                         globalOptions?.campus_phone_number
                     }}</a>
 
-                    <div style="margin-top: 1rem">
-                        <SuperDropdown
-                            :class="[dropdownClassCampus]"
-                            :size="'large'"
-                            :heading="dropdownHeadingCampus"
-                            :events="campusEvent"
-                            width="95%"
-                        />
-                    </div>
+                    <span :class="[dropdownClassCampus.value ? 'open' : 'closed']"
+                        >{{ dropdownHeadingCampus }}
+                    </span>
                 </div>
                 <div class="footer__location">
                     <h2>Downtown Location</h2>
@@ -39,15 +33,9 @@
                         globalOptions?.downtown_phone_number
                     }}</a>
 
-                    <div style="margin-top: 1rem">
-                        <SuperDropdown
-                            :class="[dropdownClassDowntown]"
-                            :size="'large'"
-                            :heading="dropdownHeadingDowntown"
-                            :events="downtownEvent"
-                            width="95%"
-                        />
-                    </div>
+                    <span :class="[dropdownClassDowntown.value ? 'open' : 'closed']"
+                        >{{ dropdownHeadingDowntown }}
+                    </span>
                 </div>
             </div>
             <div class="footer__links">
@@ -392,6 +380,8 @@
                     margin-left: 0.417vw;
                 }
             }
+
+            width: 100%;
         }
 
         &__location + &__location {

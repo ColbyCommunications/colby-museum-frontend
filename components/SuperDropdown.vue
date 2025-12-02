@@ -7,7 +7,6 @@
             sort ? 'super-dropdown--sort' : '',
         ]"
         @mouseleave="active = false"
-        :style="dynamicStyles"
     >
         <button class="super-dropdown__btn" @click="toggleActive()">
             <span class="super-dropdown__heading">
@@ -17,12 +16,7 @@
         </button>
         <div class="super-dropdown__drawer">
             <ActivityTag v-if="events" />
-            <div
-                v-if="events"
-                v-for="(event, index) in events"
-                :key="index"
-                class="super-dropdown__event"
-            >
+            <div v-if="events" v-for="(event, index) in events" class="super-dropdown__event">
                 <div class="super-dropdown__event-heading" v-html="event.heading" />
                 <div
                     class="super-dropdown__event-paragraph paragraph-style-3"
@@ -34,12 +28,13 @@
                             class="super-dropdown__event-time paragraph-style-3"
                             v-text="event.time"
                         />
+                        <!-- <ActivityTag /> -->
                     </span>
                     <a
                         v-if="
-                            route.fullPath ==
+                            $route.fullPath ==
                                 '/exhibitions/page-1?chronology=current&location=campus' ||
-                            route.fullPath ==
+                            $route.fullPath ==
                                 '/exhibitions/page-1?chronology=current&location=downtown'
                         "
                         class="btn btn--light btn--small"
@@ -58,7 +53,7 @@
                 </div>
             </div>
             <ul class="super-dropdown__ul" v-if="items">
-                <li v-for="(item, index) in items" :key="index">
+                <li v-for="(item, index) in items">
                     <NuxtLink :to="item.url" target="_blank">{{ item.title }}</NuxtLink>
                 </li>
             </ul>
@@ -67,51 +62,42 @@
     </div>
 </template>
 
-<script setup>
-    import { ref } from 'vue';
-
-    // --- Props ---
-    const props = defineProps({
-        size: {
-            type: String,
-            required: false,
-            default: 'medium',
+<script>
+    export default {
+        setup() {
+            return {
+                active: ref(false),
+            };
         },
-        heading: {
-            type: String,
-            required: true,
+        props: {
+            size: {
+                type: String,
+                required: false,
+                default: 'medium',
+            },
+            heading: {
+                type: String,
+                required: true,
+            },
+            items: {
+                type: Array,
+                required: false,
+            },
+            events: {
+                type: Object,
+                required: false,
+            },
+            sort: {
+                type: Boolean,
+                required: false,
+                default: false,
+            },
         },
-        items: {
-            type: Array,
-            required: false,
+        methods: {
+            toggleActive() {
+                this.active = !this.active;
+            },
         },
-        events: {
-            type: [Object, Array], // Updated to allow Array since it is iterated in template
-            required: false,
-        },
-        sort: {
-            type: Boolean,
-            required: false,
-            default: false,
-        },
-        width: {
-            type: String,
-            required: false,
-            default: undefined,
-        },
-    });
-
-    // --- State & Hooks ---
-    const route = useRoute();
-    const active = ref(false);
-
-    const dynamicStyles = ref({
-        width: props.size === 'large' ? props.width : '',
-    });
-
-    // --- Methods ---
-    const toggleActive = () => {
-        active.value = !active.value;
     };
 </script>
 
