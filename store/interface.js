@@ -4,10 +4,8 @@ import debounce from 'lodash.debounce';
 // 1. Define the core logic for the debounced function outside the store
 // 🛑 FIX: The function now explicitly accepts 'ctx' (the store instance) and 'value'.
 const debouncedSearchFn = debounce(function (ctx, value) {
-    console.log('here');
     // 🛑 FIX: Use the context argument (ctx) to access and modify the state.
     ctx.debouncedSearchText = value;
-    console.log(`[Pinia] Debounced search text updated: ${value}`);
 }, 2000);
 
 export const useInterfaceStore = defineStore('interface', {
@@ -25,7 +23,6 @@ export const useInterfaceStore = defineStore('interface', {
 
     actions: {
         setSearchText(searchText) {
-            console.log('[Pinia] setSearchText called with:', searchText);
             this.searchText = searchText;
             debouncedSearchFn(this, searchText);
         },
