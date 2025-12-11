@@ -926,6 +926,14 @@
                     limit: perPage,
                 };
             }
+
+            if (alphabeticalOrder) {
+                pageParams.orderby = 'title';
+            }
+
+            if (reverseOrder) {
+                pageParams.order = 'asc';
+            }
         }
 
         // NB: Requesting raw() to use headers
@@ -934,8 +942,6 @@
         const pageResp = await $fetch.raw(pageReqUrl.href, {
             params: pageParams,
         });
-
-        console.log(pageResp);
 
         const totalPages = pageResp.headers.get('x-wp-totalpages');
 
