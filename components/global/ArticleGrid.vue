@@ -900,14 +900,14 @@
             if (showChronology === 'past' || showPast) {
                 pageParams = {
                     chronology: 'past',
-                    orderBy: 'end_date',
+                    orderby: 'end_date',
                     order: 'DESC',
                     limit: perPage,
                     page,
                 };
             } else if (showChronology === 'future' || showFuture) {
                 pageParams = {
-                    orderBy: 'end_date',
+                    orderby: 'end_date',
                     order: 'DESC',
                     chronology: 'future',
                     page,
@@ -916,7 +916,7 @@
             } else {
                 // assuming current
                 pageParams = {
-                    orderBy: 'date',
+                    orderby: 'date',
                     order: 'ASC',
                     chronology: 'current',
                     page,
@@ -931,6 +931,8 @@
         const pageResp = await $fetch.raw(pageReqUrl.href, {
             params: pageParams,
         });
+
+        console.log(pageResp);
 
         const totalPages = pageResp.headers.get('x-wp-totalpages');
 
