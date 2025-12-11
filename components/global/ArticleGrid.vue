@@ -1480,6 +1480,7 @@
                         showChronology: props.showChronology,
                         perPage: props.per_page,
                         endpoint: iface.endpoint,
+                        endpointExhibitions: iface.endpointcustom,
                         route: route,
                     };
 
@@ -1771,6 +1772,7 @@
                     showFuture: this.showFuture,
                     perPage: this.per_page,
                     endpoint: this.interface.endpoint,
+                    endpointExhibitions: this.interface.endpointcustom,
                     alphabeticalOrder: this.alphabeticalOrder,
                     reverseOrder: this.reverseOrder,
                     route: this.$route,
