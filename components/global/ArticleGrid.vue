@@ -899,11 +899,11 @@
         if (itemsType === 'exhibitions') {
             if (showChronology === 'past' || showPast) {
                 pageParams = {
+                    chronology: 'past',
                     orderBy: 'end_date',
                     order: 'DESC',
-                    chronology: 'past',
-                    page,
                     limit: perPage,
+                    page,
                 };
             } else if (showChronology === 'future' || showFuture) {
                 pageParams = {
