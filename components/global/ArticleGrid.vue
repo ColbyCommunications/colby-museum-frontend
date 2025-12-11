@@ -895,9 +895,12 @@
             }
         }
 
+        console.log(showChronology);
+        console.log(showCurrent);
+
         // todo: make dry (from Brandon)
         if (itemsType === 'exhibitions') {
-            if (showChronology === 'past' || showPast) {
+            if (showPast) {
                 pageParams = {
                     chronology: 'past',
                     orderby: 'end_date',
@@ -905,7 +908,7 @@
                     limit: perPage,
                     page,
                 };
-            } else if (showChronology === 'future' || showFuture) {
+            } else if (showFuture) {
                 pageParams = {
                     orderby: 'end_date',
                     order: 'DESC',
@@ -913,7 +916,7 @@
                     page,
                     limit: perPage,
                 };
-            } else if (showChronology === 'current' || showCurrent) {
+            } else if (showCurrent) {
                 // assuming current
                 pageParams = {
                     orderby: 'date',
