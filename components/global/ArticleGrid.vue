@@ -819,7 +819,7 @@
         showFuture,
         perPage,
         endpoint,
-        endpointExhibitions,
+        endpointCustom,
         alphabeticalOrder,
         reverseOrder,
         route,
@@ -849,7 +849,7 @@
         }
 
         if (reverseOrder) {
-            pageParams.order = 'asc';
+            pageParams.order = 'ASC';
         }
 
         if (
@@ -900,6 +900,7 @@
 
         // todo: make dry (from Brandon)
         if (itemsType === 'exhibitions') {
+            endpoint = endpointCustom;
             if (showPast) {
                 pageParams = {
                     chronology: 'past',
@@ -929,15 +930,17 @@
 
             if (alphabeticalOrder) {
                 pageParams.orderby = 'title';
+                pageParams.order = 'DESC';
             }
 
             if (reverseOrder) {
-                pageParams.order = 'asc';
+                pageParams.orderby = 'title';
+                pageParams.order = 'ASC';
             }
         }
 
         // NB: Requesting raw() to use headers
-        const pageReqUrl = new URL(itemsType, endpointExhibitions);
+        const pageReqUrl = new URL(itemsType, endpoint);
 
         const pageResp = await $fetch.raw(pageReqUrl.href, {
             params: pageParams,
@@ -1440,7 +1443,7 @@
                     const postItemsParams = {
                         alphabeticalOrder,
                         endpoint: iface.endpoint,
-                        endpointExhibitions: iface.endpointcustom,
+                        endpointCustom: iface.endpointcustom,
                         itemsCategory: props.items_category,
                         itemsType: props.items_type,
                         page: currentPage,
@@ -1491,7 +1494,7 @@
                         showChronology: props.showChronology,
                         perPage: props.per_page,
                         endpoint: iface.endpoint,
-                        endpointExhibitions: iface.endpointcustom,
+                        endpointCustom: iface.endpointcustom,
                         route: route,
                     };
 
@@ -1783,7 +1786,7 @@
                     showFuture: this.showFuture,
                     perPage: this.per_page,
                     endpoint: this.interface.endpoint,
-                    endpointExhibitions: this.interface.endpointcustom,
+                    endpointCustom: this.interface.endpointcustom,
                     alphabeticalOrder: this.alphabeticalOrder,
                     reverseOrder: this.reverseOrder,
                     route: this.$route,
