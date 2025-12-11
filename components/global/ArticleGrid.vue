@@ -913,7 +913,7 @@
                     page,
                     limit: perPage,
                 };
-            } else {
+            } else if (showChronology === 'current' || showCurrent) {
                 // assuming current
                 pageParams = {
                     orderby: 'date',
