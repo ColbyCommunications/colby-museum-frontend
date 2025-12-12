@@ -1393,6 +1393,9 @@
                 break;
 
             case props.items_type === 'events' || props.items_type === 'exhibitions': {
+                if (route.query.search) {
+                    searchInputRef.value = route.query.search;
+                }
                 if (route.query.chronology) {
                     if (route.query.chronology === 'past') {
                         showPast.value = true;
@@ -1831,7 +1834,7 @@
         }
     };
 
-    const recieveInput = (val) => {
+    const recieveInput = () => {
         input.value = searchInputRef.value;
 
         if (props.items_type === 'objects' && props.page) {
