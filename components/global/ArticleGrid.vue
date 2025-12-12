@@ -878,6 +878,7 @@
                     chronology: 'future',
                     page,
                     limit: perPage,
+                    location,
                 };
             } else if (showCurrent) {
                 pageParams = {
@@ -901,6 +902,10 @@
 
             if (searchTerm) {
                 pageParams.search = searchTerm;
+            }
+
+            if (route.query.location) {
+                pageParams.location = route.query.location;
             }
         }
 
