@@ -887,6 +887,14 @@
                     page,
                     limit: perPage,
                 };
+            } else {
+                pageParams = {
+                    orderby: 'date',
+                    order: 'DESC',
+                    chronology: 'all',
+                    page,
+                    limit: perPage,
+                };
             }
 
             if (alphabeticalOrder) {
