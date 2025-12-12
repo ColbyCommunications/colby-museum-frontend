@@ -849,19 +849,19 @@
             pageParams.variant = '14';
         }
 
-        if (itemsType === 'events') {
-            if (showChronology) {
-                pageParams['filter[orderby]'] = 'meta_value';
-                pageParams['filter[order]'] = 'DESC';
-                pageParams['filter[meta_key]'] = 'date';
-            } else {
-                pageParams['filter[orderby]'] = 'meta_value';
-                pageParams['filter[order]'] = 'ASC';
-                pageParams['filter[meta_key]'] = 'date';
-            }
-        }
+        // if (itemsType === 'events') {
+        //     if (showChronology) {
+        //         pageParams['filter[orderby]'] = 'meta_value';
+        //         pageParams['filter[order]'] = 'DESC';
+        //         pageParams['filter[meta_key]'] = 'date';
+        //     } else {
+        //         pageParams['filter[orderby]'] = 'meta_value';
+        //         pageParams['filter[order]'] = 'ASC';
+        //         pageParams['filter[meta_key]'] = 'date';
+        //     }
+        // }
 
-        if (itemsType === 'exhibitions') {
+        if (itemsType === 'exhibitions' || 'events') {
             endpoint = endpointCustom;
             if (showPast) {
                 pageParams = {
@@ -928,29 +928,29 @@
             };
         });
 
-        if (alphabeticalOrder === false) {
-            if (itemsType === 'events') {
-                if (showChronology === 'future') {
-                    postItems.sort((a, b) => a.event_date.getTime() - b.event_date.getTime());
-                } else if (showChronology === 'past') {
-                    postItems.sort((a, b) =>
-                        itemsType === 'events'
-                            ? b.event_date.getTime() - a.event_date.getTime()
-                            : b.end_date.getTime() - a.end_date.getTime()
-                    );
-                } else {
-                    if (route.query.variant === 'traveling') {
-                        postItems.sort((a, b) => b.event_date.getTime() - a.event_date.getTime());
-                    } else {
-                        postItems.sort((a, b) =>
-                            itemsType === 'events'
-                                ? a.event_date.getTime() - b.event_date.getTime()
-                                : b.event_date.getTime() - a.event_date.getTime()
-                        );
-                    }
-                }
-            }
-        }
+        // if (alphabeticalOrder === false) {
+        //     if (itemsType === 'events') {
+        //         if (showChronology === 'future') {
+        //             postItems.sort((a, b) => a.event_date.getTime() - b.event_date.getTime());
+        //         } else if (showChronology === 'past') {
+        //             postItems.sort((a, b) =>
+        //                 itemsType === 'events'
+        //                     ? b.event_date.getTime() - a.event_date.getTime()
+        //                     : b.end_date.getTime() - a.end_date.getTime()
+        //             );
+        //         } else {
+        //             if (route.query.variant === 'traveling') {
+        //                 postItems.sort((a, b) => b.event_date.getTime() - a.event_date.getTime());
+        //             } else {
+        //                 postItems.sort((a, b) =>
+        //                     itemsType === 'events'
+        //                         ? a.event_date.getTime() - b.event_date.getTime()
+        //                         : b.event_date.getTime() - a.event_date.getTime()
+        //                 );
+        //             }
+        //         }
+        //     }
+        // }
 
         return { items: postItems, totalPages };
     };
