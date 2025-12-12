@@ -27,16 +27,22 @@
                 per_page >= 20
             "
             class="filter"
-            ref="filter"
+            ref="filterRef"
         >
             <div class="filter__inner grid">
                 <div class="filter__input">
                     <div class="horizontal-curtain" />
-                    <SearchInput
-                        ref="searchInput"
-                        :placeholder="'Search'"
-                        @debounced-input="recieveInput"
-                    />
+
+                    <div class="search">
+                        <SearchBtn disabled />
+                        <input
+                            class="input search__input"
+                            :placeholder="'Search'"
+                            type="search"
+                            v-model="searchInputRef"
+                            @keyup.enter="recieveInput"
+                        />
+                    </div>
                 </div>
                 <div class="filter__button">
                     <div class="horizontal-curtain" />
@@ -278,7 +284,7 @@
                     </button>
                 </div>
             </div>
-            <div ref="drawer">
+            <div ref="drawerRef">
                 <div class="filter__drawer" :class="{ 'filter__drawer--active': drawerActive }">
                     <div class="filter__drawer-top">
                         <h3 class="filter__heading heading-style-3" v-text="'Filters'" />
@@ -581,7 +587,8 @@
     </div>
 </template>
 
-<script>
+<script setup>
+    import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue';
     import gsap from 'gsap';
 
     import { useInterfaceStore } from '~/store/interface';
@@ -590,6 +597,8 @@
     import filtersExhibitions from '~/assets/data/filters-exhibitions.yml';
     import filtersObjects from '~/assets/data/filters-objects.yml';
     import filtersSort from '~/assets/data/filters-sort.yml';
+
+    // --- Constants & Config ---
 
     const sorters = filtersSort.map((f) => ({
         name: f.name,
@@ -604,12 +613,8 @@
     const username = 'Fr2fpegcBZ';
     const password = 'Vi7vGnL3h2rtW5SuECoKRwTf';
 
-    /**
-     * @function makeElasticQuery
-     *
-     *
-     *
-     **/
+    // --- Helper Functions ---
+
     const makeElasticQuery = ({
         searchTerm,
         activeFilters,
@@ -734,11 +739,6 @@
                         size: 3000,
                         order: { _key: 'asc' },
                     },
-                    // TODO: Add 'missing' handling with code path in filter assignments to check for 'No Maker' and use a not exists query
-                    // TODO: Add filter block here as .filtered, use to populate facets
-                    // "aggs": {
-                    //  "filtered": {}
-                    // }
                 },
                 year: {
                     terms: {
@@ -748,8 +748,6 @@
                     },
                     aggs: {
                         start: { max: { field: 'dates.start_year' } },
-                        // TODO: Add filter block here as .filtered, use to populate facets
-                        // "filtered": {}
                     },
                 },
                 type: {
@@ -758,7 +756,6 @@
                         exclude: [''],
                         size: 300,
                         order: { _key: 'asc' },
-                        // TODO: Add filter block here as .filtered, use to populate facets
                     },
                 },
             },
@@ -774,19 +771,10 @@
         return output.aggregations;
     };
 
-    /**
-     * @function getPost
-     *
-     * @param {Number} i Post number to get
-     * @param {String} endpoint WP Rest endpoint to use
-     **/
     const getPost = async (i, endpoint) => {
         const pagesUrl = new URL(`pages/${i}`, endpoint);
         const postsUrl = new URL(`posts/${i}`, endpoint);
 
-        // TODO: WTF!! Either check for empty return or sense post vs page another way.
-        // Remove this soon!
-        let page, post;
         try {
             const page = await $fetch(pagesUrl.href);
             return page;
@@ -794,20 +782,8 @@
             const post = await $fetch(postsUrl.href);
             return post;
         }
-
-        return;
     };
 
-    /**
-     * @function getPostItems
-     *
-     * @param {String} page The page to request
-     * @param {String} itemsCategory The category item type
-     * @param {String} searchTerm The term to search for, if any
-     * @param {String} endpoint The WP endpoint to request from
-     *
-     * @returns {Array} Sorted array of post items
-     **/
     const getPostItems = async ({
         page,
         itemsCategory,
@@ -824,8 +800,6 @@
         reverseOrder,
         route,
     }) => {
-        // Construct the URL, validate it, and request
-        const terminated = endpoint.endsWith('/') ? endpoint : endpoint + '/';
         const catsParams = { parent: itemsCategory };
         const catsUrl = new URL('categories', endpoint);
 
@@ -856,26 +830,18 @@
             (showChronology == 'current' || showCurrent) &&
             (itemsType === 'events' || itemsType === 'exhibitions')
         ) {
-            // SHOW ONLY CURRENT
-
             pageParams.chronologies = '9';
         } else if (
             (showChronology === 'past' || showPast) &&
             (itemsType === 'events' || itemsType === 'exhibitions')
         ) {
-            // SHOW ONLY PAST
-
             pageParams.chronologies = '8';
         } else if (
             (showChronology === 'future' || showFuture) &&
             (itemsType === 'events' || itemsType === 'exhibitions')
         ) {
-            // EXCLUDE PAST AND CURRENT
-
             pageParams.chronologies_exclude = '8,9';
         } else if (itemsType === 'events') {
-            // EXCLUDE PAST AS LONG AS WE ARENT IN EXHIBITIONS
-
             pageParams.chronologies_exclude = '8';
         }
 
@@ -895,10 +861,6 @@
             }
         }
 
-        console.log(showChronology);
-        console.log(showCurrent);
-
-        // todo: make dry (from Brandon)
         if (itemsType === 'exhibitions') {
             endpoint = endpointCustom;
             if (showPast) {
@@ -918,7 +880,6 @@
                     limit: perPage,
                 };
             } else if (showCurrent) {
-                // assuming current
                 pageParams = {
                     orderby: 'date',
                     order: 'ASC',
@@ -937,9 +898,12 @@
                 pageParams.orderby = 'title';
                 pageParams.order = 'ASC';
             }
+
+            if (searchTerm) {
+                pageParams.search = searchTerm;
+            }
         }
 
-        // NB: Requesting raw() to use headers
         const pageReqUrl = new URL(itemsType, endpoint);
 
         const pageResp = await $fetch.raw(pageReqUrl.href, {
@@ -964,8 +928,6 @@
             };
         });
 
-        // Temporary solution for ordering by start date
-        // NB: Sort _this_ result page -- p. useless if totalPages > 1 🙃!
         if (alphabeticalOrder === false) {
             if (itemsType === 'events') {
                 if (showChronology === 'future') {
@@ -991,12 +953,9 @@
         }
 
         return { items: postItems, totalPages };
-        // return { items: [], totalPages: 0 };
     };
 
-    // Loads from _count API
     const getObjectCount = async (query, endpoint, username, password, perPage) => {
-        // Create a mutable clone and remove keys not legal in count requests
         let q = { ...query };
         delete q.size;
         delete q.from;
@@ -1007,12 +966,6 @@
         return { totalObjects: response.count, totalPages: response.count / perPage };
     };
 
-    /**
-     * @function getImage
-     *
-     * @param {Number} i Image number to fetch
-     * @param {String} endpoint WP REST Endpoint to use
-     **/
     const getImage = async (i, endpoint) => {
         if (!i) return;
 
@@ -1026,9 +979,7 @@
             imageAspect = mediaDetails.height / mediaDetails.width;
         }
 
-        // Below, the image object is pulling DESCRIPTION field from
-        // the Media Library instead of CAPTION for formatting purposes
-        const mappedData = {
+        return {
             artist_name: imageObj.acf.artist_name,
             object_title: imageObj.acf.object_title,
             object_creation_date: imageObj.acf.object_creation_date,
@@ -1061,11 +1012,8 @@
                 },
             },
         };
-
-        return mappedData;
     };
 
-    // Loads from _search API
     const getObjectItems = async (page, searchTerm, queryArgs) => {
         const searchQuery = makeElasticQuery({ searchTerm, page, ...queryArgs });
         const { totalObjects, totalPages } = await getObjectCount(
@@ -1141,13 +1089,6 @@
         return { items, totalObjects, totalPages, query: searchQuery };
     };
 
-    /**
-     * @function loadFilters
-     *
-     * @param {String} items_type Filter type to load
-     * @param {Array} activeFilters Currently loaded filters
-     *
-     **/
     const loadFilters = (items_type, activeFilters) => {
         let active = activeFilters ?? [];
         let filtersConfig;
@@ -1176,22 +1117,10 @@
         return filters;
     };
 
-    /**
-     * @function wrapArray
-     *
-     * @param {Any|Array} item - the item to wrap
-     *
-     * @returns `item` if it's an array or Array(item)
-     *
-     **/
     const wrapArray = (item) => {
         return Array.isArray(item) ? item : [item];
     };
 
-    /**
-     * @function formatDate
-     *
-     **/
     const formatDate = (d, style) => {
         switch (style) {
             case 'numeric':
@@ -1227,12 +1156,6 @@
         }
     };
 
-    /**
-     * @function pageRange
-     *
-     * @returns {Array} Range of page numbers to render in the pagination control
-     *
-     **/
     const pageRange = (currentPage, totalPages, rangeSize) => {
         const range = [];
         const startPage = Math.max(1, currentPage - Math.floor(rangeSize / 2));
@@ -1264,820 +1187,737 @@
         return false;
     };
 
-    export default {
-        async setup(props) {
-            const route = useRoute();
-            const iface = useInterfaceStore();
+    // --- Component Setup ---
 
-            let activeFilters = props.activeFilters ?? [];
-            let aggregationMakerList = [];
-            let aggregationTypeList = [];
-            let aggregationYearList = [];
-            let aggregationMediumList = [];
-            let aggregationSupportList = [];
-            let alphabeticalOrder = false;
-            let reverseOrder = false;
-            let currentPage = props.page ?? 1;
-            let objectsSort = 'desc';
-            let objectsSortBy = 'accession';
-            let showPast = false;
-            let showCurrent = false;
-            let showFuture = false;
-            let filters = loadFilters(props.items_type, activeFilters);
-            let newItems = [];
-            let totalObjects = undefined;
-            let isLoading = true;
-            let nextPageAvailable = false;
-            let aggregations = {};
-            let pagination = [];
-            let location = [];
-
-            let items, totalPages;
-
-            // Set up the grid's various forms based on component input params
-            switch (true) {
-                case props.items_type === 'objects':
-                    activeFilters = route.query.has_image !== 'false' ? ['Has Image'] : [];
-                    aggregationMakerList = route.query.maker ? wrapArray(route.query.maker) : [];
-                    aggregationYearList = route.query.year ? wrapArray(route.query.year) : [];
-                    aggregationTypeList = route.query.type ? wrapArray(route.query.type) : [];
-
-                    if (route.query.sort === 'desc' || !route.query.sort) {
-                        objectsSort = 'desc';
-                    } else {
-                        objectsSort = route.query.sort;
-                    }
-
-                    if (route.query.sortby === 'accession' || !route.query.sort) {
-                        objectsSortBy = 'accession';
-                    } else {
-                        objectsSortBy = route.query.sortby;
-                    }
-
-                    const queryArgs = {
-                        ...props,
-                        activeFilters,
-                        aggregationMakerList,
-                        aggregationMediumList,
-                        aggregationSupportList,
-                        aggregationYearList,
-                        aggregationTypeList,
-                        objectsSortBy,
-                        objectsSort,
-                    };
-
-                    const { data } = await useAsyncData(
-                        `articlegrid-${props.page}-${route.query.search}`,
-                        async () => {
-                            let response;
-                            if (props.page) {
-                                response = await getObjectItems(
-                                    props.page,
-                                    route.query.search,
-                                    queryArgs
-                                );
-                            } else {
-                                response = await getObjectItems(1, route.query.search, queryArgs);
-                            }
-
-                            // Establishes aggregations. Prevents them from changing everytime we make a
-                            // request to the endpoint.
-                            const aggregations = await getAggregations({
-                                query: response.query,
-                                username,
-                                password,
-                            });
-
-                            return {
-                                items: response.items,
-                                totalObjects: response.totalObjects,
-                                totalPages: response.totalPages,
-                                aggregations,
-                            };
-                        }
-                    );
-
-                    newItems = data.value?.items;
-                    totalObjects = data.value?.totalObjects;
-                    totalPages = data.value?.totalPages;
-                    aggregations = data.value?.aggregations;
-
-                    // Check paged hit lengths and disable buttons
-                    if (newItems?.length < props.per_page + 1) {
-                        nextPageAvailable = false;
-                    } else {
-                        nextPageAvailable = true;
-                    }
-
-                    isLoading = false;
-                    break;
-                case props.items_type == 'collection':
-                    const args = {
-                        ...props,
-                        searchTerm: route.query.search,
-                        activeFilters,
-                        aggregationMakerList,
-                        aggregationMediumList,
-                        aggregationSupportList,
-                        aggregationYearList,
-                        aggregationTypeList,
-                        objectsSortBy,
-                        objectsSort,
-                        page: currentPage,
-                    };
-
-                    const { data: collexData } = await useAsyncData(
-                        `collection-${currentPage}-${route.query.search}-${props.embark_ID}`,
-                        async () => {
-                            const {
-                                items: hits,
-                                query: searchQuery,
-                                totalObjects,
-                                totalPages,
-                            } = await getObjectItems(currentPage, route.query.search, args);
-                            // const aggregations = await getAggregations(searchQuery, username, password);
-
-                            return { hits, totalObjects, totalPages };
-                        }
-                    );
-
-                    newItems = collexData.value?.hits;
-                    totalObjects = collexData.value?.totalObjects;
-                    totalPages = collexData.value?.totalPages;
-
-                    // Check paged hit lengths and disable buttons
-                    if (collexData.value?.hits?.length < props.per_page + 1) {
-                        nextPageAvailable = false;
-                    } else {
-                        nextPageAvailable = true;
-                    }
-
-                    isLoading = false;
-                    break;
-
-                case props.items_type === 'events' || props.items_type === 'exhibitions': {
-                    if (route.query.chronology) {
-                        // Deal with chronology flags. Different sorting order based on chronology
-                        if (route.query.chronology === 'past') {
-                            showPast = true;
-                        } else if (route.query.chronology === 'current') {
-                            showCurrent = true;
-                        } else if (route.query.chronology === 'future') {
-                            showFuture = true;
-                        }
-
-                        filters[1].items.find(
-                            (item) => item.name === route.query.chronology
-                        ).active = true;
-                    }
-
-                    if (route.query.location) {
-                        location = route.query.location ? wrapArray(route.query.location) : [];
-                        location.forEach((l) => {
-                            filters[0].items.find((item) => item.name == l).active = true;
-                        });
-
-                        activeFilters.push(...location);
-                    }
-
-                    const postItemsParams = {
-                        alphabeticalOrder,
-                        endpoint: iface.endpoint,
-                        endpointCustom: iface.endpointcustom,
-                        itemsCategory: props.items_category,
-                        itemsType: props.items_type,
-                        page: currentPage,
-                        perPage: props.per_page,
-                        reverseOrder,
-                        route: route,
-                        searchTerm: route.query.search,
-                        showChronology: props.showChronology,
-                        showPast,
-                        showFuture,
-                        showCurrent,
-                    };
-
-                    const { data: response } = await useAsyncData(
-                        `postItems-${Object.values(postItemsParams).join('')}`,
-                        async () => {
-                            const posts = await getPostItems(postItemsParams);
-
-                            return posts;
-                            // return { items: [], totalPages: 0 };
-                        }
-                    );
-
-                    if (!response.value) {
-                        throw createError({
-                            statusCode: 404,
-                            statusMessage: 'Page Not Found',
-                        });
-                    }
-                    totalPages = response.value?.totalPages;
-                    newItems = response.value?.items;
-
-                    nextPageAvailable = currentPage < response.value?.totalPages;
-
-                    pagination = pageRange(currentPage, response.value.totalPages, 6);
-                    isLoading = false;
-
-                    break;
-                }
-
-                // If selecting group of posts
-                case props.items_type != 'manual': {
-                    const postItemsParams = {
-                        page: currentPage,
-                        itemsCategory: props.items_category,
-                        itemsType: props.items_type,
-                        searchTerm: route.query.search,
-                        showChronology: props.showChronology,
-                        perPage: props.per_page,
-                        endpoint: iface.endpoint,
-                        endpointCustom: iface.endpointcustom,
-                        route: route,
-                    };
-
-                    const { data: posts } = await useAsyncData(
-                        `ag-manual-${Object.values(postItemsParams).join('')}`,
-                        async () => {
-                            const p = await getPostItems(postItemsParams);
-
-                            return p;
-                        }
-                    );
-
-                    newItems = posts.value?.items;
-                    totalPages = posts.value?.totalPages;
-                    nextPageAvailable = posts.value?.totalPages === currentPage;
-
-                    pagination = pageRange(currentPage, posts.value?.totalPages, 6);
-                    isLoading = false;
-
-                    break;
-                }
-                // If selecting items individually
-                case typeof props.items === 'number':
-                    // Generate a signature for this async batch of reqs from the req IDs
-                    const reqSignature = Object.entries(props.blockData)
-                        .filter(
-                            ([k, v]) =>
-                                k.endsWith('_image') ||
-                                k.endsWith('_heading') ||
-                                k.endsWith('_subheading')
-                        )
-                        .map(([k, v]) => v)
-                        .join('-');
-
-                    const { data: postDatas } = await useAsyncData(
-                        `ag-number-${route.fullPath}-${props.items}-${reqSignature}`,
-                        async () => {
-                            const posts = [...Array(props.items)].map(async (el, i) => {
-                                const entryType = props.blockData[`items_${i}_entry_type`];
-
-                                if (entryType === 'selection') {
-                                    const selection = props.blockData[`items_${i}_post_selection`];
-                                    const post = await getPost(selection, iface.endpoint);
-
-                                    return new Promise((resolve, reject) => {
-                                        resolve({
-                                            post,
-                                            heading: undefined,
-                                            subheading: undefined,
-                                            subheadgin2: undefined,
-                                            paragraph_entry_type: undefined,
-                                            paragraph: undefined,
-                                            button: undefined,
-                                            image: undefined,
-                                            openNewTab: openNewTab(props.blockData, i),
-                                        });
-                                    });
-                                }
-
-                                let image;
-                                if (props.blockData[`items_${i}_image`]) {
-                                    image = await getImage(
-                                        props.blockData[`items_${i}_image`],
-                                        iface.endpoint
-                                    );
-                                }
-
-                                return new Promise((resolve, reject) => {
-                                    resolve({
-                                        post: undefined,
-                                        heading: props.blockData[`items_${i}_heading`],
-                                        subheading: props.blockData[`items_${i}_subheading`],
-                                        subheading2: props.blockData[`items_${i}_subheading2`],
-                                        paragraph_entry_type:
-                                            props.blockData[`items_${i}_paragraph_entry_type`],
-                                        paragraph: props.blockData[`items_${i}_paragraph`],
-                                        button: props.blockData[`items_${i}_button`],
-                                        image,
-                                        openNewTab: openNewTab(props.blockData, i),
-                                    });
-                                });
-                            });
-
-                            const items = await Promise.all(posts);
-
-                            return items;
-                        }
-                    );
-
-                    newItems = postDatas.value;
-                    break;
-            }
-
-            return {
-                interface: iface,
-                newItems: ref(newItems),
-                totalPages,
-                totalObjects,
-                currentPage,
-                pages: undefined,
-                nextPageAvailable,
-                pagination,
-                filters,
-                sorters,
-                activeFilters: ref(activeFilters),
-                showPast,
-                showCurrent,
-                showFuture,
-                drawerActive: ref(false),
-                reverseOrder: ref(false),
-                alphabeticalOrder: ref(false),
-                location: [],
-                input: ref(undefined),
-                objectsSort: ref(objectsSort),
-                objectsSortBy: ref(objectsSortBy),
-                aggregations: ref(aggregations),
-                aggregationMakerList: ref(aggregationMakerList),
-                aggregationMediumList: ref(aggregationMediumList),
-                aggregationSupportList: ref(aggregationSupportList),
-                aggregationYearList: ref(aggregationYearList),
-                aggregationTypeList: ref(aggregationTypeList),
-                isLoading,
-            };
+    const props = defineProps({
+        variant: {
+            type: String,
+            required: false,
+            default: 'default',
         },
-        watch: {
-            newItems: {
-                deep: true,
-                async handler() {
-                    this.animate();
-                },
-            },
+        bordered: {
+            required: false,
+            default: false,
         },
-        computed: {
-            filteredItems() {
-                let filteredItems;
+        hover: {
+            type: String,
+            required: false,
+            default: 'default',
+        },
+        columns: {
+            type: String,
+            required: false,
+            default: '4',
+        },
+        button_type: {
+            type: String,
+            required: false,
+        },
+        items_type: {
+            required: false,
+            default: 'manual',
+        },
+        items_category: {
+            required: false,
+            default: 5,
+        },
+        embark_ID: {
+            required: false,
+        },
+        per_page: {
+            required: false,
+            default: 20,
+        },
+        page: {
+            required: false,
+        },
+        showChronology: {
+            required: false,
+        },
+        showVariant: {
+            required: false,
+        },
+        items: {
+            required: false,
+        },
+        blockData: {
+            type: Object,
+            required: false,
+        },
+        activeFilters: {
+            type: Array,
+            required: false,
+            default: () => [],
+        },
+    });
 
-                if (this.activeFilters.length > 0 && this.newItems[0]?.post) {
-                    filteredItems = this.newItems.filter((item) =>
-                        Object.values(item.post.acf).some((k) => this.activeFilters.includes(k))
-                    );
+    const route = useRoute();
+    const iface = useInterfaceStore();
+
+    // Refs for state
+    const activeFilters = ref(props.activeFilters ?? []);
+    const aggregationMakerList = ref([]);
+    const aggregationTypeList = ref([]);
+    const aggregationYearList = ref([]);
+    const aggregationMediumList = ref([]);
+    const aggregationSupportList = ref([]);
+    const alphabeticalOrder = ref(false);
+    const reverseOrder = ref(false);
+    const currentPage = ref(props.page ?? 1);
+    const objectsSort = ref('desc');
+    const objectsSortBy = ref('accession');
+    const showPast = ref(false);
+    const showCurrent = ref(false);
+    const showFuture = ref(false);
+    const filters = ref(loadFilters(props.items_type, activeFilters.value));
+    const newItems = ref([]);
+    const totalObjects = ref(undefined);
+    const totalPages = ref(undefined);
+    const isLoading = ref(true);
+    const nextPageAvailable = ref(false);
+    const aggregations = ref({});
+    const pagination = ref([]);
+    const location = ref([]);
+    const input = ref(undefined);
+    const drawerActive = ref(false);
+
+    // Template Refs
+    const filterRef = ref(null);
+    const drawerRef = ref(null);
+    const searchInputRef = ref(null);
+
+    // Initial Data Loading Logic (migrated from original setup switch)
+    const initData = async () => {
+        switch (true) {
+            case props.items_type === 'objects':
+                activeFilters.value = route.query.has_image !== 'false' ? ['Has Image'] : [];
+                aggregationMakerList.value = route.query.maker ? wrapArray(route.query.maker) : [];
+                aggregationYearList.value = route.query.year ? wrapArray(route.query.year) : [];
+                aggregationTypeList.value = route.query.type ? wrapArray(route.query.type) : [];
+
+                if (route.query.sort === 'desc' || !route.query.sort) {
+                    objectsSort.value = 'desc';
                 } else {
-                    filteredItems = this.newItems;
+                    objectsSort.value = route.query.sort;
                 }
 
-                return filteredItems;
-            },
-        },
-        props: {
-            variant: {
-                type: String,
-                required: false,
-                default: 'default',
-            },
-            bordered: {
-                required: false,
-                default: false,
-            },
-            hover: {
-                type: String,
-                required: false,
-                default: 'default',
-            },
-            columns: {
-                type: String,
-                required: false,
-                default: '4',
-            },
-            button_type: {
-                type: String,
-                required: false,
-            },
-            items_type: {
-                required: false,
-                default: 'manual',
-            },
-            items_category: {
-                required: false,
-                default: 5,
-            },
-            embark_ID: {
-                required: false,
-            },
-            per_page: {
-                required: false,
-                default: 20,
-            },
-            page: {
-                required: false,
-            },
-            showChronology: {
-                required: false,
-            },
-            showVariant: {
-                required: false,
-            },
-            items: {
-                required: false,
-            },
-            blockData: {
-                type: Object,
-                required: false,
-            },
-        },
-        mounted() {
-            if (this.$refs.drawer) {
-                document.body.appendChild(this.$refs.drawer);
-            }
-
-            this.animate();
-        },
-        beforeUnmount() {
-            if (this.$refs.drawer) {
-                const drawer = this.$refs.drawer;
-
-                gsap.to(drawer.querySelector('.filter__drawer'), {
-                    x: '100%',
-                    duration: 0.4,
-                    onComplete: () => {
-                        drawer.remove();
-                    },
-                });
-            }
-        },
-        methods: {
-            async getObjects(page, searchTerm) {
-                let filterYPosition;
-
-                this.currentPage = page;
-
-                if (page === undefined && this.$refs.filter) {
-                    setTimeout(() => {
-                        filterYPosition =
-                            window.scrollY + this.$refs.filter.getBoundingClientRect().top;
-                        window.scrollTo({ top: filterYPosition });
-                    }, 600);
+                if (route.query.sortby === 'accession' || !route.query.sort) {
+                    objectsSortBy.value = 'accession';
+                } else {
+                    objectsSortBy.value = route.query.sortby;
                 }
 
                 const queryArgs = {
-                    searchTerm,
-                    activeFilters: this.activeFilters,
-                    page: this.page,
-                    per_page: this.per_page,
-                    embark_ID: this.embark_ID,
-                    aggregationMakerList: this.aggregationMakerList,
-                    aggregationMediumList: this.aggregationMediumList,
-                    aggregationSupportList: this.aggregationSupportList,
-                    aggregationYearList: this.aggregationYearList,
-                    aggregationTypeList: this.aggregationTypeList,
-                    objectsSortBy: this.objectsSortBy,
-                    objectsSort: this.objectsSort,
-                    variant: this.variant,
+                    ...props,
+                    activeFilters: activeFilters.value,
+                    aggregationMakerList: aggregationMakerList.value,
+                    aggregationMediumList: aggregationMediumList.value,
+                    aggregationSupportList: aggregationSupportList.value,
+                    aggregationYearList: aggregationYearList.value,
+                    aggregationTypeList: aggregationTypeList.value,
+                    objectsSortBy: objectsSortBy.value,
+                    objectsSort: objectsSort.value,
                 };
-                const {
-                    items: hits,
-                    query: searchQuery,
-                    totalObjects,
-                    totalPages,
-                } = await getObjectItems(page, searchTerm, queryArgs);
 
-                this.newItems = hits;
-                this.totalObjects = totalObjects;
-                this.totalPages = totalPages;
-
-                // Check paged hit lengths and disable buttons
-                if (hits.length < this.per_page + 1) {
-                    this.nextPageAvailable = false;
-                } else {
-                    this.nextPageAvailable = true;
-                }
-
-                // Establishes aggregations. Prevents them from changing everytime we make a
-                // request to the endpoint.
-                if (this.aggregations === undefined) {
-                    this.aggregations = await getAggregations(searchQuery, username, password);
-                }
-
-                this.animate();
-                this.isLoading = false;
-            },
-            async getPosts(page, searchTerm) {
-                const postItemsParams = {
-                    page,
-                    itemsCategory: this.items_category,
-                    itemsType: this.items_type,
-                    searchTerm,
-                    showChronology: this.showChronology,
-                    showCurrent: this.showCurrent,
-                    showPast: this.showPast,
-                    showFuture: this.showFuture,
-                    perPage: this.per_page,
-                    endpoint: this.interface.endpoint,
-                    endpointCustom: this.interface.endpointcustom,
-                    alphabeticalOrder: this.alphabeticalOrder,
-                    reverseOrder: this.reverseOrder,
-                    route: this.$route,
-                };
-                const { items, totalPages } = await getPostItems(postItemsParams);
-
-                this.currentPage = page;
-                this.totalPages = totalPages;
-                this.nextPageAvailable = totalPages === this.currentPage;
-                this.newItems = items;
-
-                this.pagination = pageRange(page, totalPages, 6);
-
-                this.isLoading = false;
-            },
-            formatDate,
-            resetFilter() {
-                if (this.items_type == 'objects') {
-                    this.aggregationMakerList = [];
-                    this.aggregationMediumList = [];
-                    this.aggregationSupportList = [];
-                    this.aggregationYearList = [];
-                    this.aggregationTypeList = [];
-
-                    // for (const a of this.$refs.aggregationSelectOption) {
-                    //   a.selectedIndex = 0;
-                    // }
-                }
-
-                if (this.items_type == 'exhibitions' || this.items_type == 'events') {
-                    this.location = [];
-                    this.showPast = false;
-                    this.showCurrent = false;
-                    this.showFuture = false;
-                }
-
-                this.filters = loadFilters(this.items_type, this.activeFilters);
-
-                this.$refs.searchInput.$data.input = '';
-                this.$refs.searchInput.debounceInput();
-                this.items_type == 'objects' && this.$route.query.has_image != false
-                    ? (this.activeFilters = ['Has Image'])
-                    : (this.activeFilters = []);
-
-                this.triggerNavigateTo();
-            },
-            toggleFilter(term, filter) {
-                term.active = !term.active;
-
-                if (term.active == true) {
-                    this.activeFilters.push(term.name);
-
-                    if (filter == 'location') {
-                        this.location.push(term.name);
-                    }
-                } else {
-                    const index = this.activeFilters.indexOf(term.name);
-                    const location_index = this.location.indexOf(term.name);
-
-                    this.activeFilters.splice(index, 1);
-
-                    if (filter == 'location') {
-                        this.location.splice(location_index, 1);
-                    }
-                }
-
-                if (this.items_type == 'objects') {
-                    this.triggerNavigateTo();
-                    this.getObjects(
-                        1,
-                        this.$refs.searchInput.input ? this.$refs.searchInput.input : undefined
-                    );
-                } else {
-                    this.triggerNavigateTo();
-                    this.getPosts(
-                        1,
-                        this.$refs.searchInput.input ? this.$refs.searchInput.input : undefined
-                    );
-                }
-            },
-            toggleChronology(term) {
-                term.active = !term.active;
-
-                if (term.name == 'past') {
-                    this.showPast = !this.showPast;
-                    this.showCurrent = false;
-                    this.showFuture = false;
-                    this.filters[1].items.find((item) => item.name == 'current').active = false;
-                    this.filters[1].items.find((item) => item.name == 'future').active = false;
-                } else if (term.name == 'current') {
-                    this.showCurrent = !this.showCurrent;
-                    this.showPast = false;
-                    this.showFuture = false;
-                    this.filters[1].items.find((item) => item.name == 'past').active = false;
-                    this.filters[1].items.find((item) => item.name == 'future').active = false;
-                } else if (term.name == 'future') {
-                    this.showFuture = !this.showFuture;
-                    this.showCurrent = false;
-                    this.showPast = false;
-                    this.filters[1].items.find((item) => item.name == 'past').active = false;
-                    this.filters[1].items.find((item) => item.name == 'current').active = false;
-                }
-
-                this.triggerNavigateTo();
-                this.getPosts(1, this.input);
-            },
-            toggleOrder(term) {
-                term.active = !term.active;
-
-                this.reverseOrder = !this.reverseOrder;
-
-                this.getPosts(1);
-            },
-            toggleAlphabetical(term) {
-                if (this.items_type == 'objects') {
-                    if (term == `Accession Number Descending`) {
-                        this.objectsSortBy = 'accession';
-                        this.objectsSort = 'desc';
-                    } else if (term == `Accession Number Ascending`) {
-                        this.objectsSortBy = 'accession';
-                        this.objectsSort = 'asc';
-                    } else if (term == `Alphabetical from  'A'`) {
-                        this.objectsSortBy = 'title';
-                        this.objectsSort = 'asc';
-                    } else if (term == `Alphabetical from  'Z'`) {
-                        this.objectsSortBy = 'title';
-                        this.objectsSort = 'desc';
-                    } else if (term == `By Artist Name Descending`) {
-                        this.objectsSortBy = 'name';
-                        this.objectsSort = 'desc';
-                    } else if (term == `By Artist Name Ascending`) {
-                        this.objectsSortBy = 'name';
-                        this.objectsSort = 'asc';
-                    } else if (term == `By Year`) {
-                        this.objectsSort = 'year';
-                    }
-
-                    this.triggerNavigateTo();
-                    this.getObjects(
-                        1,
-                        this.$refs.searchInput.input ? this.$refs.searchInput.input : undefined
-                    );
-                } else {
-                    if (term == `Alphabetical from  'A'`) {
-                        if (this.reverseOrder == true && this.alphabeticalOrder == true) {
-                            this.reverseOrder = false;
-                            this.alphabeticalOrder = false;
+                const { data } = await useAsyncData(
+                    `articlegrid-${props.page}-${route.query.search}`,
+                    async () => {
+                        let response;
+                        if (props.page) {
+                            response = await getObjectItems(
+                                props.page,
+                                route.query.search,
+                                queryArgs
+                            );
                         } else {
-                            this.reverseOrder = true;
-                            this.alphabeticalOrder = true;
+                            response = await getObjectItems(1, route.query.search, queryArgs);
                         }
-                    } else if (term == `Alphabetical from  'Z'`) {
-                        if (this.reverseOrder == false && this.alphabeticalOrder == true) {
-                            this.reverseOrder = false;
-                            this.alphabeticalOrder = false;
-                        } else {
-                            this.reverseOrder = false;
-                            this.alphabeticalOrder = true;
-                        }
-                    }
 
-                    this.getPosts(
-                        1,
-                        this.$refs.searchInput.input ? this.$refs.searchInput.input : undefined
-                    );
-                }
-            },
-            recieveInput(input) {
-                this.input = input;
-
-                if (this.items_type === 'objects' && this.page) {
-                    this.triggerNavigateTo();
-                    this.getObjects(1, input);
-                } else if (this.items_type === 'objects') {
-                    this.getObjects(1, input);
-                } else {
-                    this.triggerNavigateTo();
-
-                    this.getPosts(1, input);
-                }
-            },
-            aggregationChange(e, key) {
-                const drawer = this.$refs.drawer.querySelector('.filter__drawer');
-                let term;
-
-                if (e.target == undefined) {
-                    term = e;
-                } else {
-                    term = e.target.value;
-                }
-
-                if (key == 'maker') {
-                    this.aggregationMakerList.includes(term)
-                        ? this.aggregationMakerList.splice(
-                              this.aggregationMakerList.indexOf(term),
-                              1
-                          )
-                        : this.aggregationMakerList.push(term);
-                }
-
-                if (key == 'medium') {
-                    this.aggregationMediumList.includes(term)
-                        ? this.aggregationMediumList.splice(
-                              this.aggregationMediumList.indexOf(term),
-                              1
-                          )
-                        : this.aggregationMMediumList.push(term);
-                }
-
-                if (key == 'support') {
-                    this.aggregationSupportList.includes(term)
-                        ? this.aggregationSupportList.splice(
-                              this.aggregationSupportList.indexOf(term),
-                              1
-                          )
-                        : this.aggregationSupportList.push(term);
-                }
-
-                if (key == 'year') {
-                    this.aggregationYearList.includes(term)
-                        ? this.aggregationYearList.splice(this.aggregationYearList.indexOf(term), 1)
-                        : this.aggregationYearList.push(term);
-                }
-
-                if (key == 'type') {
-                    this.aggregationTypeList.includes(term)
-                        ? this.aggregationTypeList.splice(this.aggregationTypeList.indexOf(term), 1)
-                        : this.aggregationTypeList.push(term);
-                }
-
-                this.triggerNavigateTo();
-
-                this.getObjects(1, this.input);
-            },
-            triggerNavigateTo() {
-                let chrono = '';
-
-                if (this.showPast === true) {
-                    chrono = 'past';
-                } else if (this.showCurrent === true) {
-                    chrono = 'current';
-                } else if (this.showFuture === true) {
-                    chrono = 'future';
-                }
-
-                // These are seperate due to differences in Elasticsearch REST API and Wordpress REST API options
-                if (this.items_type === 'objects') {
-                    navigateTo({
-                        path: `/objects/page-1`,
-                        query: {
-                            search: this.input,
-                            maker: this.aggregationMakerList,
-                            year: this.aggregationYearList,
-                            type: this.aggregationTypeList,
-                            sort: this.objectsSort,
-                            sortby: this.objectsSortBy,
-                            embark_id: this.$route.query.embark_id,
-                            has_image: this.activeFilters.includes('Has Image') ? true : false,
-                        },
-                    });
-                } else {
-                    navigateTo({
-                        path: `/${this.items_type}/page-1`,
-                        query: {
-                            search: this.input,
-                            chronology: chrono,
-                            location: this.location,
-                            variant: this.$route.query.variant,
-                        },
-                    });
-                }
-            },
-            drawerScrollTop() {
-                const drawer = this.$refs.drawer.querySelector('.filter__drawer');
-
-                drawer.scrollTop = 0;
-            },
-            animate() {
-                setTimeout(() => {
-                    if (this.$refs.filter?.querySelector('.horizontal-curtain')) {
-                        gsap.to(this.$refs.filter.querySelectorAll('.horizontal-curtain'), {
-                            width: 0,
-                            duration: 0.4,
-                            stagger: 0.1,
-                            ease: 'expo.out',
+                        const aggs = await getAggregations({
+                            query: response.query,
+                            username,
+                            password,
                         });
+
+                        return {
+                            items: response.items,
+                            totalObjects: response.totalObjects,
+                            totalPages: response.totalPages,
+                            aggregations: aggs,
+                        };
                     }
-                }, 150);
-            },
-        },
+                );
+
+                newItems.value = data.value?.items;
+                totalObjects.value = data.value?.totalObjects;
+                totalPages.value = data.value?.totalPages;
+                aggregations.value = data.value?.aggregations;
+
+                nextPageAvailable.value = !(newItems.value?.length < props.per_page + 1);
+                isLoading.value = false;
+                break;
+
+            case props.items_type == 'collection':
+                const args = {
+                    ...props,
+                    searchTerm: route.query.search,
+                    activeFilters: activeFilters.value,
+                    aggregationMakerList: aggregationMakerList.value,
+                    aggregationMediumList: aggregationMediumList.value,
+                    aggregationSupportList: aggregationSupportList.value,
+                    aggregationYearList: aggregationYearList.value,
+                    aggregationTypeList: aggregationTypeList.value,
+                    objectsSortBy: objectsSortBy.value,
+                    objectsSort: objectsSort.value,
+                    page: currentPage.value,
+                };
+
+                const { data: collexData } = await useAsyncData(
+                    `collection-${currentPage.value}-${route.query.search}-${props.embark_ID}`,
+                    async () => {
+                        const {
+                            items: hits,
+                            totalObjects: tObj,
+                            totalPages: tPages,
+                        } = await getObjectItems(currentPage.value, route.query.search, args);
+                        return { hits, tObj, tPages };
+                    }
+                );
+
+                newItems.value = collexData.value?.hits;
+                totalObjects.value = collexData.value?.tObj;
+                totalPages.value = collexData.value?.tPages;
+
+                nextPageAvailable.value = !(collexData.value?.hits?.length < props.per_page + 1);
+                isLoading.value = false;
+                break;
+
+            case props.items_type === 'events' || props.items_type === 'exhibitions': {
+                if (route.query.chronology) {
+                    if (route.query.chronology === 'past') {
+                        showPast.value = true;
+                    } else if (route.query.chronology === 'current') {
+                        showCurrent.value = true;
+                    } else if (route.query.chronology === 'future') {
+                        showFuture.value = true;
+                    }
+                    filters.value[1].items.find(
+                        (item) => item.name === route.query.chronology
+                    ).active = true;
+                }
+
+                if (route.query.location) {
+                    location.value = route.query.location ? wrapArray(route.query.location) : [];
+                    location.value.forEach((l) => {
+                        filters.value[0].items.find((item) => item.name == l).active = true;
+                    });
+                    activeFilters.value.push(...location.value);
+                }
+
+                const postItemsParams = {
+                    alphabeticalOrder: alphabeticalOrder.value,
+                    endpoint: iface.endpoint,
+                    endpointCustom: iface.endpointcustom,
+                    itemsCategory: props.items_category,
+                    itemsType: props.items_type,
+                    page: currentPage.value,
+                    perPage: props.per_page,
+                    reverseOrder: reverseOrder.value,
+                    route: route,
+                    searchTerm: route.query.search,
+                    showChronology: props.showChronology,
+                    showPast: showPast.value,
+                    showFuture: showFuture.value,
+                    showCurrent: showCurrent.value,
+                };
+
+                const { data: response } = await useAsyncData(
+                    `postItems-${Object.values(postItemsParams).join('')}`,
+                    async () => {
+                        return await getPostItems(postItemsParams);
+                    }
+                );
+
+                if (!response.value) {
+                    throw createError({
+                        statusCode: 404,
+                        statusMessage: 'Page Not Found',
+                    });
+                }
+                totalPages.value = response.value?.totalPages;
+                newItems.value = response.value?.items;
+
+                nextPageAvailable.value = currentPage.value < response.value?.totalPages;
+                pagination.value = pageRange(currentPage.value, response.value.totalPages, 6);
+                isLoading.value = false;
+                break;
+            }
+
+            case props.items_type != 'manual': {
+                const postItemsParams = {
+                    page: currentPage.value,
+                    itemsCategory: props.items_category,
+                    itemsType: props.items_type,
+                    searchTerm: route.query.search,
+                    showChronology: props.showChronology,
+                    perPage: props.per_page,
+                    endpoint: iface.endpoint,
+                    endpointCustom: iface.endpointcustom,
+                    route: route,
+                };
+
+                const { data: posts } = await useAsyncData(
+                    `ag-manual-${Object.values(postItemsParams).join('')}`,
+                    async () => {
+                        return await getPostItems(postItemsParams);
+                    }
+                );
+
+                newItems.value = posts.value?.items;
+                totalPages.value = posts.value?.totalPages;
+                nextPageAvailable.value = posts.value?.totalPages === currentPage.value;
+
+                pagination.value = pageRange(currentPage.value, posts.value?.totalPages, 6);
+                isLoading.value = false;
+                break;
+            }
+
+            case typeof props.items === 'number':
+                const reqSignature = Object.entries(props.blockData)
+                    .filter(
+                        ([k, v]) =>
+                            k.endsWith('_image') ||
+                            k.endsWith('_heading') ||
+                            k.endsWith('_subheading')
+                    )
+                    .map(([k, v]) => v)
+                    .join('-');
+
+                const { data: postDatas } = await useAsyncData(
+                    `ag-number-${route.fullPath}-${props.items}-${reqSignature}`,
+                    async () => {
+                        const posts = [...Array(props.items)].map(async (el, i) => {
+                            const entryType = props.blockData[`items_${i}_entry_type`];
+
+                            if (entryType === 'selection') {
+                                const selection = props.blockData[`items_${i}_post_selection`];
+                                const post = await getPost(selection, iface.endpoint);
+                                return {
+                                    post,
+                                    heading: undefined,
+                                    subheading: undefined,
+                                    subheadgin2: undefined,
+                                    paragraph_entry_type: undefined,
+                                    paragraph: undefined,
+                                    button: undefined,
+                                    image: undefined,
+                                    openNewTab: openNewTab(props.blockData, i),
+                                };
+                            }
+
+                            let image;
+                            if (props.blockData[`items_${i}_image`]) {
+                                image = await getImage(
+                                    props.blockData[`items_${i}_image`],
+                                    iface.endpoint
+                                );
+                            }
+
+                            return {
+                                post: undefined,
+                                heading: props.blockData[`items_${i}_heading`],
+                                subheading: props.blockData[`items_${i}_subheading`],
+                                subheading2: props.blockData[`items_${i}_subheading2`],
+                                paragraph_entry_type:
+                                    props.blockData[`items_${i}_paragraph_entry_type`],
+                                paragraph: props.blockData[`items_${i}_paragraph`],
+                                button: props.blockData[`items_${i}_button`],
+                                image,
+                                openNewTab: openNewTab(props.blockData, i),
+                            };
+                        });
+                        return await Promise.all(posts);
+                    }
+                );
+
+                newItems.value = postDatas.value;
+                break;
+        }
     };
+    // Execute initialization
+    await initData();
+
+    // --- Computed ---
+
+    const filteredItems = computed(() => {
+        let result;
+        if (activeFilters.value.length > 0 && newItems.value[0]?.post) {
+            result = newItems.value.filter((item) =>
+                Object.values(item.post.acf).some((k) => activeFilters.value.includes(k))
+            );
+        } else {
+            result = newItems.value;
+        }
+        return result;
+    });
+
+    // --- Methods ---
+
+    const triggerNavigateTo = () => {
+        let chrono = '';
+        if (showPast.value === true) {
+            chrono = 'past';
+        } else if (showCurrent.value === true) {
+            chrono = 'current';
+        } else if (showFuture.value === true) {
+            chrono = 'future';
+        }
+
+        if (props.items_type === 'objects') {
+            navigateTo({
+                path: `/objects/page-1`,
+                query: {
+                    search: input.value,
+                    maker: aggregationMakerList.value,
+                    year: aggregationYearList.value,
+                    type: aggregationTypeList.value,
+                    sort: objectsSort.value,
+                    sortby: objectsSortBy.value,
+                    embark_id: route.query.embark_id,
+                    has_image: activeFilters.value.includes('Has Image') ? true : false,
+                },
+            });
+        } else {
+            navigateTo({
+                path: `/${props.items_type}/page-1`,
+                query: {
+                    search: input.value,
+                    chronology: chrono,
+                    location: location.value,
+                    variant: route.query.variant,
+                },
+            });
+        }
+    };
+
+    const animate = () => {
+        setTimeout(() => {
+            if (filterRef.value?.querySelector('.horizontal-curtain')) {
+                gsap.to(filterRef.value.querySelectorAll('.horizontal-curtain'), {
+                    width: 0,
+                    duration: 0.4,
+                    stagger: 0.1,
+                    ease: 'expo.out',
+                });
+            }
+        }, 150);
+    };
+
+    const drawerScrollTop = () => {
+        if (!drawerRef.value) return;
+        const drawer = drawerRef.value.querySelector('.filter__drawer');
+        if (drawer) drawer.scrollTop = 0;
+    };
+
+    const getObjects = async (page, searchTerm) => {
+        let filterYPosition;
+        currentPage.value = page;
+
+        if (page === undefined && filterRef.value) {
+            setTimeout(() => {
+                filterYPosition = window.scrollY + filterRef.value.getBoundingClientRect().top;
+                window.scrollTo({ top: filterYPosition });
+            }, 600);
+        }
+
+        const queryArgs = {
+            searchTerm,
+            activeFilters: activeFilters.value,
+            page: props.page, // or currentPage.value? Original used props.page in some contexts but updated local currentPage.
+            per_page: props.per_page,
+            embark_ID: props.embark_ID,
+            aggregationMakerList: aggregationMakerList.value,
+            aggregationMediumList: aggregationMediumList.value,
+            aggregationSupportList: aggregationSupportList.value,
+            aggregationYearList: aggregationYearList.value,
+            aggregationTypeList: aggregationTypeList.value,
+            objectsSortBy: objectsSortBy.value,
+            objectsSort: objectsSort.value,
+            variant: props.variant,
+        };
+
+        const {
+            items: hits,
+            query: searchQuery,
+            totalObjects: tObj,
+            totalPages: tPages,
+        } = await getObjectItems(page, searchTerm, queryArgs);
+
+        newItems.value = hits;
+        totalObjects.value = tObj;
+        totalPages.value = tPages;
+
+        nextPageAvailable.value = !(hits.length < props.per_page + 1);
+
+        if (aggregations.value === undefined) {
+            aggregations.value = await getAggregations(searchQuery, username, password);
+        }
+
+        animate();
+        isLoading.value = false;
+    };
+
+    const getPosts = async (page, searchTerm) => {
+        const postItemsParams = {
+            page,
+            itemsCategory: props.items_category,
+            itemsType: props.items_type,
+            searchTerm,
+            showChronology: props.showChronology,
+            showCurrent: showCurrent.value,
+            showPast: showPast.value,
+            showFuture: showFuture.value,
+            perPage: props.per_page,
+            endpoint: iface.endpoint,
+            endpointCustom: iface.endpointcustom,
+            alphabeticalOrder: alphabeticalOrder.value,
+            reverseOrder: reverseOrder.value,
+            route: route,
+        };
+        const { items, totalPages: tPages } = await getPostItems(postItemsParams);
+
+        currentPage.value = page;
+        totalPages.value = tPages;
+        nextPageAvailable.value = tPages === currentPage.value;
+        newItems.value = items;
+        pagination.value = pageRange(page, tPages, 6);
+        isLoading.value = false;
+    };
+
+    const resetFilter = () => {
+        if (props.items_type == 'objects') {
+            aggregationMakerList.value = [];
+            aggregationMediumList.value = [];
+            aggregationSupportList.value = [];
+            aggregationYearList.value = [];
+            aggregationTypeList.value = [];
+        }
+
+        if (props.items_type == 'exhibitions' || props.items_type == 'events') {
+            location.value = [];
+            showPast.value = false;
+            showCurrent.value = false;
+            showFuture.value = false;
+        }
+
+        filters.value = loadFilters(props.items_type, activeFilters.value);
+
+        if (props.items_type == 'objects' && route.query.has_image != false) {
+            activeFilters.value = ['Has Image'];
+        } else {
+            activeFilters.value = [];
+        }
+
+        // Reset input ref
+        if (searchInputRef.value) {
+            // Assuming the SearchInput component exposes 'input'
+            // If not, this might need adjustment based on that child component
+            searchInputRef.value = '';
+        }
+
+        triggerNavigateTo();
+    };
+
+    const toggleFilter = (term, filterName) => {
+        term.active = !term.active;
+
+        if (term.active == true) {
+            activeFilters.value.push(term.name);
+            if (filterName == 'location') {
+                location.value.push(term.name);
+            }
+        } else {
+            const index = activeFilters.value.indexOf(term.name);
+            const location_index = location.value.indexOf(term.name);
+
+            activeFilters.value.splice(index, 1);
+            if (filterName == 'location') {
+                location.value.splice(location_index, 1);
+            }
+        }
+
+        if (props.items_type == 'objects') {
+            triggerNavigateTo();
+            getObjects(1, searchInputRef.value);
+        } else {
+            triggerNavigateTo();
+            getPosts(1, searchInputRef.value);
+        }
+    };
+
+    const toggleChronology = (term) => {
+        term.active = !term.active;
+
+        if (term.name == 'past') {
+            showPast.value = !showPast.value;
+            showCurrent.value = false;
+            showFuture.value = false;
+            filters.value[1].items.find((item) => item.name == 'current').active = false;
+            filters.value[1].items.find((item) => item.name == 'future').active = false;
+        } else if (term.name == 'current') {
+            showCurrent.value = !showCurrent.value;
+            showPast.value = false;
+            showFuture.value = false;
+            filters.value[1].items.find((item) => item.name == 'past').active = false;
+            filters.value[1].items.find((item) => item.name == 'future').active = false;
+        } else if (term.name == 'future') {
+            showFuture.value = !showFuture.value;
+            showCurrent.value = false;
+            showPast.value = false;
+            filters.value[1].items.find((item) => item.name == 'past').active = false;
+            filters.value[1].items.find((item) => item.name == 'current').active = false;
+        }
+
+        triggerNavigateTo();
+        getPosts(1, input.value);
+    };
+
+    const toggleAlphabetical = (term) => {
+        if (props.items_type == 'objects') {
+            if (term == `Accession Number Descending`) {
+                objectsSortBy.value = 'accession';
+                objectsSort.value = 'desc';
+            } else if (term == `Accession Number Ascending`) {
+                objectsSortBy.value = 'accession';
+                objectsSort.value = 'asc';
+            } else if (term == `Alphabetical from  'A'`) {
+                objectsSortBy.value = 'title';
+                objectsSort.value = 'asc';
+            } else if (term == `Alphabetical from  'Z'`) {
+                objectsSortBy.value = 'title';
+                objectsSort.value = 'desc';
+            } else if (term == `By Artist Name Descending`) {
+                objectsSortBy.value = 'name';
+                objectsSort.value = 'desc';
+            } else if (term == `By Artist Name Ascending`) {
+                objectsSortBy.value = 'name';
+                objectsSort.value = 'asc';
+            } else if (term == `By Year`) {
+                objectsSort.value = 'year';
+            }
+
+            triggerNavigateTo();
+            getObjects(1, searchInputRef.value);
+        } else {
+            if (term == `Alphabetical from  'A'`) {
+                if (reverseOrder.value == true && alphabeticalOrder.value == true) {
+                    reverseOrder.value = false;
+                    alphabeticalOrder.value = false;
+                } else {
+                    reverseOrder.value = true;
+                    alphabeticalOrder.value = true;
+                }
+            } else if (term == `Alphabetical from  'Z'`) {
+                if (reverseOrder.value == false && alphabeticalOrder.value == true) {
+                    reverseOrder.value = false;
+                    alphabeticalOrder.value = false;
+                } else {
+                    reverseOrder.value = false;
+                    alphabeticalOrder.value = true;
+                }
+            }
+
+            getPosts(1, searchInputRef.value);
+        }
+    };
+
+    const recieveInput = (val) => {
+        input.value = searchInputRef.value;
+
+        if (props.items_type === 'objects' && props.page) {
+            triggerNavigateTo();
+            getObjects(1, searchInputRef.value);
+        } else if (props.items_type === 'objects') {
+            getObjects(1, searchInputRef.value);
+        } else {
+            triggerNavigateTo();
+            getPosts(1, searchInputRef.value);
+        }
+    };
+
+    const aggregationChange = (e, key) => {
+        let term;
+        if (e.target == undefined) {
+            term = e;
+        } else {
+            term = e.target.value;
+        }
+
+        if (key == 'maker') {
+            aggregationMakerList.value.includes(term)
+                ? aggregationMakerList.value.splice(aggregationMakerList.value.indexOf(term), 1)
+                : aggregationMakerList.value.push(term);
+        }
+
+        if (key == 'medium') {
+            aggregationMediumList.value.includes(term)
+                ? aggregationMediumList.value.splice(aggregationMediumList.value.indexOf(term), 1)
+                : aggregationMediumList.value.push(term);
+        }
+
+        if (key == 'support') {
+            aggregationSupportList.value.includes(term)
+                ? aggregationSupportList.value.splice(aggregationSupportList.value.indexOf(term), 1)
+                : aggregationSupportList.value.push(term);
+        }
+
+        if (key == 'year') {
+            aggregationYearList.value.includes(term)
+                ? aggregationYearList.value.splice(aggregationYearList.value.indexOf(term), 1)
+                : aggregationYearList.value.push(term);
+        }
+
+        if (key == 'type') {
+            aggregationTypeList.value.includes(term)
+                ? aggregationTypeList.value.splice(aggregationTypeList.value.indexOf(term), 1)
+                : aggregationTypeList.value.push(term);
+        }
+
+        triggerNavigateTo();
+        getObjects(1, input.value);
+    };
+
+    // --- Watchers ---
+
+    watch(
+        newItems,
+        async () => {
+            animate();
+        },
+        { deep: true }
+    );
+
+    // --- Lifecycle ---
+
+    onMounted(() => {
+        if (drawerRef.value) {
+            document.body.appendChild(drawerRef.value);
+        }
+        animate();
+    });
+
+    onBeforeUnmount(() => {
+        if (drawerRef.value) {
+            const drawer = drawerRef.value;
+            gsap.to(drawer.querySelector('.filter__drawer'), {
+                x: '100%',
+                duration: 0.4,
+                onComplete: () => {
+                    drawer.remove();
+                },
+            });
+        }
+    });
 </script>
 
 <style lang="scss">
