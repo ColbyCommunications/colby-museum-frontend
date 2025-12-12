@@ -878,7 +878,6 @@
                     chronology: 'future',
                     page,
                     limit: perPage,
-                    location,
                 };
             } else if (showCurrent) {
                 pageParams = {
