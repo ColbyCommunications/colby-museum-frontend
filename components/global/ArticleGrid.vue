@@ -882,7 +882,7 @@
             } else if (showCurrent) {
                 pageParams = {
                     orderby: 'date',
-                    order: 'ASC',
+                    order: 'DESC',
                     chronology: 'current',
                     page,
                     limit: perPage,
