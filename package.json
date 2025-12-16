@@ -14,7 +14,7 @@
     "@nuxtjs/sitemap": "7.2.6",
     "@playwright/test": "^1.54.2",
     "@types/node": "^24.2.0",
-    "nuxt": "3.15.4",
+    "nuxt": "^4.2.2",
     "vue": "3.5.13",
     "vue-router": "4.5.0",
     "xml2js": "^0.6.2"
