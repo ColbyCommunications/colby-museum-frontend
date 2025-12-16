@@ -873,7 +873,7 @@
                 };
             } else if (showFuture) {
                 pageParams = {
-                    orderby: 'end_date',
+                    orderby: 'date',
                     order: 'DESC',
                     chronology: 'future',
                     page,
