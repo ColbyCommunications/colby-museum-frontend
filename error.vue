@@ -11,7 +11,7 @@
             <h1>Not Found</h1>
             <p>Oops! Sorry, we couldn't find the page you were looking for.</p>
 
-            <BigArrowBtn :url="'/'" :reverse="true" title="Go to Museum Home" />
+            <BigArrowBtn :url="'/'" :reverse="true" title="Return to homepage" />
         </div>
     </NuxtLayout>
     <Footer :primary="mainMenu" :utility="socialMenu" :globalOptions="globalOptions" />
