@@ -951,6 +951,10 @@
             if (route.query.location) {
                 pageParams.location = route.query.location;
             }
+
+            if (route.query.variant === 'traveling') {
+                pageParams.variant = '14';
+            }
         }
 
         const pageReqUrl = new URL(itemsType, endpoint);
