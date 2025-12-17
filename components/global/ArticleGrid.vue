@@ -910,7 +910,7 @@
                 } else if (showFuture) {
                     pageParams = {
                         orderby: 'date',
-                        order: 'DESC',
+                        order: 'ASC',
                         chronology: 'future',
                         page,
                         limit: perPage,
@@ -918,7 +918,7 @@
                 } else if (showCurrent) {
                     pageParams = {
                         orderby: 'date',
-                        order: 'DESC',
+                        order: 'ASC',
                         chronology: 'current',
                         page,
                         limit: perPage,
