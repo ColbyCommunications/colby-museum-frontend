@@ -25,7 +25,7 @@
                     margin-bottom: 15px;
                 "
             >
-                Today's Hours: {{ hours }}
+                Today's hours: {{ hours }}
             </div>
             <div v-if="events" v-for="(event, index) in events" class="super-dropdown__event">
                 <div class="super-dropdown__event-heading" v-html="event.heading" />
@@ -405,9 +405,9 @@
             color: inherit;
         }
 
-        &__event-paragraph {
-            text-transform: capitalize;
-        }
+        // &__event-paragraph {
+        //     text-transform: capitalize;
+        // }
 
         &__event-bottom {
             margin-top: 0.8vh;
