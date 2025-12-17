@@ -863,38 +863,75 @@
 
         if (itemsType === 'exhibitions' || 'events') {
             endpoint = endpointCustom;
-            if (showPast) {
-                pageParams = {
-                    chronology: 'past',
-                    orderby: 'end_date',
-                    order: 'DESC',
-                    limit: perPage,
-                    page,
-                };
-            } else if (showFuture) {
-                pageParams = {
-                    orderby: 'date',
-                    order: 'DESC',
-                    chronology: 'future',
-                    page,
-                    limit: perPage,
-                };
-            } else if (showCurrent) {
-                pageParams = {
-                    orderby: 'date',
-                    order: 'DESC',
-                    chronology: 'current',
-                    page,
-                    limit: perPage,
-                };
-            } else {
-                pageParams = {
-                    orderby: 'date',
-                    order: 'DESC',
-                    chronology: 'all',
-                    page,
-                    limit: perPage,
-                };
+
+            if (itemsType === 'exhibitions') {
+                if (showPast) {
+                    pageParams = {
+                        chronology: 'past',
+                        orderby: 'end_date',
+                        order: 'DESC',
+                        limit: perPage,
+                        page,
+                    };
+                } else if (showFuture) {
+                    pageParams = {
+                        orderby: 'date',
+                        order: 'DESC',
+                        chronology: 'future',
+                        page,
+                        limit: perPage,
+                    };
+                } else if (showCurrent) {
+                    pageParams = {
+                        orderby: 'date',
+                        order: 'DESC',
+                        chronology: 'current',
+                        page,
+                        limit: perPage,
+                    };
+                } else {
+                    pageParams = {
+                        orderby: 'date',
+                        order: 'DESC',
+                        chronology: 'all',
+                        page,
+                        limit: perPage,
+                    };
+                }
+            } else if (itemsType === 'events') {
+                if (showPast) {
+                    pageParams = {
+                        chronology: 'past',
+                        orderby: 'end_date',
+                        order: 'DESC',
+                        limit: perPage,
+                        page,
+                    };
+                } else if (showFuture) {
+                    pageParams = {
+                        orderby: 'date',
+                        order: 'DESC',
+                        chronology: 'future',
+                        page,
+                        limit: perPage,
+                    };
+                } else if (showCurrent) {
+                    pageParams = {
+                        orderby: 'date',
+                        order: 'DESC',
+                        chronology: 'current',
+                        page,
+                        limit: perPage,
+                    };
+                } else {
+                    pageParams = {
+                        orderby: 'date',
+                        order: 'ASC',
+                        chronology: 'current-future',
+                        page,
+                        limit: perPage,
+                    };
+                }
             }
 
             if (alphabeticalOrder) {
