@@ -139,7 +139,7 @@
                 campusCurrentEvents = campusEvents.map((i) => ({
                     heading: i.title.rendered,
                     location: i.acf.location,
-                    time: `${formatTime(i.acf.start_time)}-${formatTime(i.acf.end_time)}`,
+                    time: `${formatTime(i.acf.start_time)}–${formatTime(i.acf.end_time)}`,
                     button: {
                         title: 'Event Details',
                         url: i.link,
