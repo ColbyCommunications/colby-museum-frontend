@@ -1,3 +1,5 @@
+import formatTimeRange from "./formatTimeRange";
+
 function convertTo12Hour(time24) {
     // 1. Split the time string into hours and minutes
     const [hours, minutes] = time24.split(':');
@@ -82,9 +84,9 @@ const isOpen = (hours, location) => {
         return {
             isOpen,
             until,
-            hours: `${convertTo12Hour(hoursToday[`${location}_day_open_time`])}–${convertTo12Hour(
+            hours: formatTimeRange(convertTo12Hour(hoursToday[`${location}_day_open_time`]), convertTo12Hour(
                 hoursToday[`${location}_day_close_time`]
-            )}`,
+            )),
         };
         // alert ('dt = ' + dt  + ',  dt1 = ' + dt1 + ', dt2 =' + dt2);
     }
