@@ -30,4 +30,4 @@ const formatTimeRange = (start, end) => {
     return `${formatAcfTime(start)}–${formatAcfTime(end)}`;
 };
 
-export default formatTimeRange;
+export { formatTimeRange, formatAcfTime };
