@@ -28,7 +28,7 @@
             "
             :subheading2="
                 post.type == 'events'
-                    ? `${formatTime(post.acf.start_time)}&ndash;${formatTime(post.acf.end_time)}`
+                    ? `${formatTimeRange(post.acf.start_time, post.acf.end_time)}`
                     : undefined
             "
             :image="stagedImage"
@@ -93,6 +93,7 @@
 
 <script>
     import { useInterfaceStore } from '~/store/interface';
+    import { formatTimeRange } from '~/helpers/formatTimeRange.js';
 
     const getImage = async (img, post, endpoint) => {
         let imageObj;
@@ -283,6 +284,7 @@
             },
         },
         methods: {
+            formatTimeRange,
             async updateImage() {
                 if (this.post && this.post.featured_media) {
                     const img = await getImage(
