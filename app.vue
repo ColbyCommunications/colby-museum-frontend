@@ -28,7 +28,7 @@
     import { ScrollTrigger } from 'gsap/ScrollTrigger';
     import { ScrollSmoother } from 'gsap/ScrollSmoother';
     import { useInterfaceStore } from '~/store/interface';
-    import formatTimeRange from './helpers/formatTimeRange';
+    import formatTimeRange from '~/helpers/formatTimeRange';
 
     // Helper function
     // function formatTime(t) {
