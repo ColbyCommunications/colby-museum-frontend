@@ -45,20 +45,20 @@
     //         .replace(' - ', '&ndash;')}`;
     // }
 
-    // // --- Logic from setup() is now at the top level ---
+    // --- Logic from setup() is now at the top level ---
 
-    // const iface = useInterfaceStore(); // This variable is now used directly in the template
+    const iface = useInterfaceStore(); // This variable is now used directly in the template
 
-    // const { data } = await useAsyncData('app', async () => {
-    //     const menus = await $fetch(`${useInterfaceStore().endpoint}menus`);
-    //     const { acf: globalOptions } = await $fetch(
-    //         `${useInterfaceStore().endpointv3}options/options`
-    //     );
-    //     const events = await $fetch(
-    //         `${useInterfaceStore().endpoint}events?categories_exclude=1&chronologies=9`
-    //     );
-    //     return { menus, globalOptions, events };
-    // });
+    const { data } = await useAsyncData('app', async () => {
+        const menus = await $fetch(`${useInterfaceStore().endpoint}menus`);
+        const { acf: globalOptions } = await $fetch(
+            `${useInterfaceStore().endpointv3}options/options`
+        );
+        const events = await $fetch(
+            `${useInterfaceStore().endpoint}events?categories_exclude=1&chronologies=9`
+        );
+        return { menus, globalOptions, events };
+    });
 
     // --- Data processing ---
 
