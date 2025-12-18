@@ -25,7 +25,7 @@ const formatAcfTime = (timeString) => {
     return `${formattedTime} ${ampm}`;
 };
 
-const formatRange = (start, end) => {
+const formatTimeRange = (start, end) => {
     if (!start || !end) return '';
     return `${formatAcfTime(start)}–${formatAcfTime(end)}`;
 };
