@@ -28,36 +28,37 @@
     import { ScrollTrigger } from 'gsap/ScrollTrigger';
     import { ScrollSmoother } from 'gsap/ScrollSmoother';
     import { useInterfaceStore } from '~/store/interface';
+    import formatTimeRange from './helpers/formatTimeRange';
 
     // Helper function
-    function formatTime(t) {
-        const time = t.split(':');
-        const hour = parseInt(time[0]);
-        const min = time[1];
-        const sec = parseInt(time[2]);
-        const ampm = hour >= 12 ? ' p.m.' : ' a.m.';
+    // function formatTime(t) {
+    //     const time = t.split(':');
+    //     const hour = parseInt(time[0]);
+    //     const min = time[1];
+    //     const sec = parseInt(time[2]);
+    //     const ampm = hour >= 12 ? ' p.m.' : ' a.m.';
 
-        return `${hour == 12 || hour == 0 ? 12 : hour % 12}:${min
-            .replace(/\s/g, '')
-            .replace('am', ' a.m.')
-            .replace('pm', ' p.m.')
-            .replace(' - ', '&ndash;')}`;
-    }
+    //     return `${hour == 12 || hour == 0 ? 12 : hour % 12}:${min
+    //         .replace(/\s/g, '')
+    //         .replace('am', ' a.m.')
+    //         .replace('pm', ' p.m.')
+    //         .replace(' - ', '&ndash;')}`;
+    // }
 
-    // --- Logic from setup() is now at the top level ---
+    // // --- Logic from setup() is now at the top level ---
 
-    const iface = useInterfaceStore(); // This variable is now used directly in the template
+    // const iface = useInterfaceStore(); // This variable is now used directly in the template
 
-    const { data } = await useAsyncData('app', async () => {
-        const menus = await $fetch(`${useInterfaceStore().endpoint}menus`);
-        const { acf: globalOptions } = await $fetch(
-            `${useInterfaceStore().endpointv3}options/options`
-        );
-        const events = await $fetch(
-            `${useInterfaceStore().endpoint}events?categories_exclude=1&chronologies=9`
-        );
-        return { menus, globalOptions, events };
-    });
+    // const { data } = await useAsyncData('app', async () => {
+    //     const menus = await $fetch(`${useInterfaceStore().endpoint}menus`);
+    //     const { acf: globalOptions } = await $fetch(
+    //         `${useInterfaceStore().endpointv3}options/options`
+    //     );
+    //     const events = await $fetch(
+    //         `${useInterfaceStore().endpoint}events?categories_exclude=1&chronologies=9`
+    //     );
+    //     return { menus, globalOptions, events };
+    // });
 
     // --- Data processing ---
 
@@ -79,7 +80,7 @@
         campusCurrentEvents = campusEvents.map((i) => ({
             heading: i.title.rendered,
             location: i.acf.location,
-            time: `${formatTime(i.acf.start_time)}–${formatTime(i.acf.end_time)}`,
+            time: `${formatTimeRange(i.acf.start_time, i.acf.end_time)}`,
             button: {
                 title: 'Event Details',
                 url: i.link,
@@ -102,7 +103,7 @@
         downtownCurrentEvents = downtownEvents.map((i) => ({
             heading: i.title.rendered,
             location: i.acf.location,
-            time: `${formatTime(i.acf.start_time)}-${formatTime(i.acf.end_time)}`,
+            time: `${formatTimeRange(i.acf.start_time, i.acf.end_time)}`,
             button: {
                 title: 'Event Details',
                 url: i.link,
