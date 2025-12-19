@@ -88,4 +88,7 @@ export default defineNuxtConfig({
 
     devtools: { enabled: process.mode === 'development' },
     compatibilityDate: '2025-08-26',
+    nitro: {
+        preset: 'cloudflare_pages',
+    },
 });
