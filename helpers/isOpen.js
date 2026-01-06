@@ -30,6 +30,7 @@ const isOpen = (hours, location) => {
 
     const hoursToday = hours.find((day) => day[`${location}_day_label`] === dayLabel);
     const indexHoursToday = hours.findIndex((day) => day === hoursToday);
+
     // Return false (closed) if Monday for Campus or Tuesday for downtown
     if (
         hoursToday[`${location}_day_open_time`] === '' ||
