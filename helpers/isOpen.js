@@ -1,4 +1,4 @@
-import { formatTimeRange, formatAcfTime } from "./formatTimeRange";
+import { formatTimeRange, formatAcfTime } from './formatTimeRange';
 
 // function convertTo12Hour(time24) {
 //     // 1. Split the time string into hours and minutes
@@ -39,7 +39,7 @@ const isOpen = (hours, location) => {
         for (let i = indexHoursToday; i < hours.length; i++) {
             if (hours[i][`${location}_day_open_time`] && hours[i][`${location}_day_close_time`]) {
                 nextOpenTime =
-                    convertTo12Hour(hours[i][`${location}_day_open_time`]) +
+                    formatAcfTime(hours[i][`${location}_day_open_time`]) +
                     ` ${hours[i][`${location}_day_label`].slice(0, 3)}`;
                 break;
             }
@@ -84,7 +84,8 @@ const isOpen = (hours, location) => {
         return {
             isOpen,
             until,
-            hours: formatTimeRange(hoursToday[`${location}_day_open_time`], 
+            hours: formatTimeRange(
+                hoursToday[`${location}_day_open_time`],
                 hoursToday[`${location}_day_close_time`]
             ),
         };
