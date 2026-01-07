@@ -26,6 +26,7 @@
         "@pinia/nuxt": "0.5.5",
         "algoliasearch": "4.24.0",
         "axios": "1.7.2",
+        "commander": "^13.1.0",
         "gsap": "^3.14.2",
         "isomorphic-dompurify": "^2.26.0",
         "ldrs": "^1.1.2",
