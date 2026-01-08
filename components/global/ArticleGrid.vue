@@ -849,19 +849,8 @@
             pageParams.variant = '14';
         }
 
-        // if (itemsType === 'events') {
-        //     if (showChronology) {
-        //         pageParams['filter[orderby]'] = 'meta_value';
-        //         pageParams['filter[order]'] = 'DESC';
-        //         pageParams['filter[meta_key]'] = 'date';
-        //     } else {
-        //         pageParams['filter[orderby]'] = 'meta_value';
-        //         pageParams['filter[order]'] = 'ASC';
-        //         pageParams['filter[meta_key]'] = 'date';
-        //     }
-        // }
-
         if (itemsType === 'exhibitions' || itemsType === 'events') {
+            console.log('itemsType exhibitions or events');
             endpoint = endpointCustom;
 
             if (itemsType === 'exhibitions') {
@@ -958,6 +947,9 @@
         }
 
         const pageReqUrl = new URL(itemsType, endpoint);
+
+        console.log(pageReqUrl);
+        console.log(pageParams);
 
         const pageResp = await $fetch.raw(pageReqUrl.href, {
             params: pageParams,
@@ -1496,18 +1488,20 @@
                     }
                 );
 
-                if (!response.value) {
-                    throw createError({
-                        statusCode: 404,
-                        statusMessage: 'Page Not Found',
-                    });
-                }
-                totalPages.value = response.value?.totalPages;
-                newItems.value = response.value?.items;
+                console.log(response.value);
 
-                nextPageAvailable.value = currentPage.value < response.value?.totalPages;
-                pagination.value = pageRange(currentPage.value, response.value.totalPages, 6);
-                isLoading.value = false;
+                // if (!response.value) {
+                //     throw createError({
+                //         statusCode: 404,
+                //         statusMessage: 'Page Not Found',
+                //     });
+                // }
+                // totalPages.value = response.value?.totalPages;
+                // newItems.value = response.value?.items;
+
+                // nextPageAvailable.value = currentPage.value < response.value?.totalPages;
+                // pagination.value = pageRange(currentPage.value, response.value.totalPages, 6);
+                // isLoading.value = false;
                 break;
             }
 
