@@ -861,7 +861,7 @@
         //     }
         // }
 
-        if (itemsType === 'exhibitions' || 'events') {
+        if (itemsType === 'exhibitions' || itemsType === 'events') {
             endpoint = endpointCustom;
 
             if (itemsType === 'exhibitions') {
