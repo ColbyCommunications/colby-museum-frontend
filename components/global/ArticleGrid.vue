@@ -800,6 +800,7 @@
         reverseOrder,
         route,
     }) => {
+        console.log('getPostItems');
         const catsParams = { parent: itemsCategory };
         const catsUrl = new URL('categories', endpoint);
 
@@ -848,6 +849,7 @@
         if (route.query.variant === 'traveling') {
             pageParams.variant = '14';
         }
+        console.log(itemsType);
 
         if (itemsType === 'exhibitions' || itemsType === 'events') {
             console.log('itemsType exhibitions or events');
