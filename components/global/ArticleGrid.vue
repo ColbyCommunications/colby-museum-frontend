@@ -949,6 +949,11 @@
 
         const pageResp = await $fetch.raw(pageReqUrl.href, {
             params: pageParams,
+            headers: {
+                // This fools Cloudflare into thinking Nuxt is a browser
+                'User-Agent':
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            },
         });
 
         const totalPages = pageResp.headers.get('x-wp-totalpages');
@@ -992,8 +997,7 @@
         //         }
         //     }
         // }
-        console.log(postItems);
-        console.log(totalPages);
+
         return { items: postItems, totalPages };
     };
 
@@ -1477,7 +1481,7 @@
                     showCurrent: showCurrent.value,
                 };
 
-                const { data: response } = await useAsyncData(
+                const { data: response, error } = await useAsyncData(
                     `postItems-${Object.values(postItemsParams).join('')}`,
                     async () => {
                         return await getPostItems(postItemsParams);
