@@ -849,19 +849,7 @@
             pageParams.variant = '14';
         }
 
-        // if (itemsType === 'events') {
-        //     if (showChronology) {
-        //         pageParams['filter[orderby]'] = 'meta_value';
-        //         pageParams['filter[order]'] = 'DESC';
-        //         pageParams['filter[meta_key]'] = 'date';
-        //     } else {
-        //         pageParams['filter[orderby]'] = 'meta_value';
-        //         pageParams['filter[order]'] = 'ASC';
-        //         pageParams['filter[meta_key]'] = 'date';
-        //     }
-        // }
-
-        if (itemsType === 'exhibitions' || 'events') {
+        if (itemsType === 'exhibitions' || itemsType === 'events') {
             endpoint = endpointCustom;
 
             if (itemsType === 'exhibitions') {
