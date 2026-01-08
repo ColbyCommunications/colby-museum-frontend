@@ -138,7 +138,7 @@
                                             }"
                                         />
                                         <Context
-                                            v-else-if="(items_type = 'collections')"
+                                            v-else-if="items_type === 'collections'"
                                             :size="'embark'"
                                             :heading="item.heading"
                                             :subheading="item.subheading"
