@@ -800,7 +800,6 @@
         reverseOrder,
         route,
     }) => {
-        console.log('getPostItems');
         const catsParams = { parent: itemsCategory };
         const catsUrl = new URL('categories', endpoint);
 
@@ -849,10 +848,8 @@
         if (route.query.variant === 'traveling') {
             pageParams.variant = '14';
         }
-        console.log(itemsType);
 
         if (itemsType === 'exhibitions' || itemsType === 'events') {
-            console.log('itemsType exhibitions or events');
             endpoint = endpointCustom;
 
             if (itemsType === 'exhibitions') {
@@ -950,9 +947,6 @@
 
         const pageReqUrl = new URL(itemsType, endpoint);
 
-        console.log(pageReqUrl);
-        console.log(pageParams);
-
         const pageResp = await $fetch.raw(pageReqUrl.href, {
             params: pageParams,
             headers: {
@@ -1003,8 +997,7 @@
         //         }
         //     }
         // }
-        console.log(postItems);
-        console.log(totalPages);
+
         return { items: postItems, totalPages };
     };
 
@@ -1495,24 +1488,18 @@
                     }
                 );
 
-                if (error.value) {
-                    console.error('AsyncData Error:', error.value); // This is the smoking gun
-                } else {
-                    console.log(response.value);
+                if (!response.value) {
+                    throw createError({
+                        statusCode: 404,
+                        statusMessage: 'Page Not Found',
+                    });
                 }
+                totalPages.value = response.value?.totalPages;
+                newItems.value = response.value?.items;
 
-                // if (!response.value) {
-                //     throw createError({
-                //         statusCode: 404,
-                //         statusMessage: 'Page Not Found',
-                //     });
-                // }
-                // totalPages.value = response.value?.totalPages;
-                // newItems.value = response.value?.items;
-
-                // nextPageAvailable.value = currentPage.value < response.value?.totalPages;
-                // pagination.value = pageRange(currentPage.value, response.value.totalPages, 6);
-                // isLoading.value = false;
+                nextPageAvailable.value = currentPage.value < response.value?.totalPages;
+                pagination.value = pageRange(currentPage.value, response.value.totalPages, 6);
+                isLoading.value = false;
                 break;
             }
 
