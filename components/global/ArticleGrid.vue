@@ -1004,7 +1004,8 @@
         //         }
         //     }
         // }
-
+        console.log(postItems);
+        console.log(totalPages);
         return { items: postItems, totalPages };
     };
 
@@ -1446,6 +1447,7 @@
                 break;
 
             case props.items_type === 'events' || props.items_type === 'exhibitions': {
+                console.log('init data - events or exhibits');
                 if (route.query.search) {
                     searchInputRef.value = route.query.search;
                 }
