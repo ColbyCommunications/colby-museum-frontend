@@ -1483,14 +1483,18 @@
                     showCurrent: showCurrent.value,
                 };
 
-                const { data: response } = await useAsyncData(
+                const { data: response, error } = await useAsyncData(
                     `postItems-${Object.values(postItemsParams).join('')}`,
                     async () => {
                         return await getPostItems(postItemsParams);
                     }
                 );
 
-                console.log(response.value);
+                if (error.value) {
+                    console.error('AsyncData Error:', error.value); // This is the smoking gun
+                } else {
+                    console.log(response.value);
+                }
 
                 // if (!response.value) {
                 //     throw createError({
