@@ -10,10 +10,13 @@ const debouncedSearchFn = debounce(function (ctx, value) {
 
 export const useInterfaceStore = defineStore('interface', {
     state: () => ({
-        backend: 'https://museum-backend.colby.edu/',
-        endpoint: 'https://museum-backend.colby.edu/wp-json/wp/v2/',
-        endpointv3: 'https://museum-backend.colby.edu/wp-json/acf/v3/',
-        endpointcustom: 'https://museum-backend.colby.edu/wp-json/custom/v1/',
+        backend: 'https://maintenance-01-5-2026-lewyc3q-fr35dlu44eniu.us-4.platformsh.site/',
+        endpoint:
+            'https://maintenance-01-5-2026-lewyc3q-fr35dlu44eniu.us-4.platformsh.site/wp-json/wp/v2/',
+        endpointv3:
+            'https://maintenance-01-5-2026-lewyc3q-fr35dlu44eniu.us-4.platformsh.site/wp-json/acf/v3/',
+        endpointcustom:
+            'https://maintenance-01-5-2026-lewyc3q-fr35dlu44eniu.us-4.platformsh.site/wp-json/custom/v1/',
         drawer: false,
         dark: false,
         modal: false,
