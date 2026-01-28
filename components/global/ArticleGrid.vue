@@ -853,7 +853,7 @@
             endpoint = endpointCustom;
 
             if (itemsType === 'exhibitions') {
-                if (showPast) {
+                if (showPast || showChronology === 'past') {
                     pageParams = {
                         chronology: 'past',
                         orderby: 'end_date',
@@ -861,7 +861,7 @@
                         limit: perPage,
                         page,
                     };
-                } else if (showFuture) {
+                } else if (showFuture || showChronology === 'future') {
                     pageParams = {
                         orderby: 'date',
                         order: 'DESC',
@@ -869,7 +869,7 @@
                         page,
                         limit: perPage,
                     };
-                } else if (showCurrent) {
+                } else if (showCurrent || showChronology === 'current') {
                     pageParams = {
                         orderby: 'date',
                         order: 'DESC',
@@ -887,7 +887,7 @@
                     };
                 }
             } else if (itemsType === 'events') {
-                if (showPast) {
+                if (showPast || showChronology === 'past') {
                     pageParams = {
                         chronology: 'past',
                         orderby: 'end_date',
@@ -895,7 +895,7 @@
                         limit: perPage,
                         page,
                     };
-                } else if (showFuture) {
+                } else if (showFuture || showChronology === 'future') {
                     pageParams = {
                         orderby: 'date',
                         order: 'ASC',
@@ -903,7 +903,7 @@
                         page,
                         limit: perPage,
                     };
-                } else if (showCurrent) {
+                } else if (showCurrent || showChronology === 'current') {
                     pageParams = {
                         orderby: 'date',
                         order: 'ASC',
