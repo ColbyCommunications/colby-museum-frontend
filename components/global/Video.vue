@@ -1,13 +1,64 @@
+<script setup>
+import { ref, onMounted } from 'vue';
+import getImage from '~/helpers/getImage';
+import { useInterfaceStore } from "~/store/interface";
+import YTPlayer from 'yt-player'; // Assuming this is installed
+
+// 1. Define Props
+const props = defineProps({
+  id: {
+    type: String,
+    required: true,
+  },
+  image: {
+    required: true,
+  },
+  blockData: {
+    type: Object,
+    required: false,
+  }
+});
+
+// 2. Setup State & Refs
+const iface = useInterfaceStore();
+const active = ref(false);
+const iframeRef = ref(null); // Corresponds to ref="iframeRef" in template
+const videoRef = ref(null);  // Corresponds to ref="videoRef" in template
+let player = null;           // Logic variable, doesn't need to be reactive
+
+// 3. Async Data Fetching
+// In Nuxt 3 <script setup>, top-level await is supported
+const { data: newImage } = await useAsyncData(`video-poster-${props.image}`, async () => {
+  return await getImage(props.image, iface.endpoint);
+});
+
+// 4. Methods
+const setActive = () => {
+  active.value = true;
+  if (player) {
+    player.play();
+  }
+};
+
+// 5. Lifecycle Hooks
+onMounted(() => {
+  if (iframeRef.value) {
+    player = new YTPlayer(iframeRef.value);
+    player.load(props.id);
+  }
+});
+</script>
+
 <template>
   <div class="grid grid--video">
     <div
-      ref="video"
-      @click="setActive()"
+      ref="videoRef"
+      @click="setActive"
       class="video"
     >
       <div
         class="video__overlay"
-        :class="{'video__overlay--active': active == true}"
+        :class="{'video__overlay--active': active === true}"
       >
         <IconPlay />
         <Picture
@@ -17,64 +68,15 @@
           :sizes="newImage.media_details.sizes"
         />
       </div>
-      <div ref="iframe" class="video__iframe"></div>
+      <div ref="iframeRef" class="video__iframe"></div>
     </div>
   </div>
 </template>
 
-<script>
-import getImage from '~/helpers/getImage'  
-import { useInterfaceStore } from "~/store/interface";
-import YTPlayer from 'yt-player';
-
-export default {
-  async setup(props) {
-    const iface = useInterfaceStore();
-
-    const { data } = await useAsyncData( `video-poster-${props.image}`, async () => {
-      const img = await getImage(props.image, iface.endpoint);
-
-      return img
-    })
-
-    return {
-      interface: iface,
-      active: false,
-      player: null,
-      newImage: data.value,
-    };
-  },
-  mounted() {
-    this.player = new YTPlayer(this.$refs.iframe);
-
-    this.player.load(this.id);
-  },
-  props: {
-    id: {
-      type: String,
-      required: true,
-    },
-    image: {
-      required: true,
-    },
-    blockData: {
-      type: Object,
-      required: false,
-    }
-  },
-  methods: {
-    setActive() {
-      this.active = true;
-
-      this.player.play();
-    },
-  },
-}
-</script>
-
 <style lang="scss">
 @use "sass:map";
 
+/* Styles remain exactly the same */
 .video {
   position: relative;
   padding-bottom: 56.25%;
