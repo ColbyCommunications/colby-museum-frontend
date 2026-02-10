@@ -425,7 +425,7 @@
     import fetchWith from '~/helpers/fetchWith';
     import formatDate from '~/helpers/formatDate';
     import getImage from '~/helpers/getImage';
-    import { getCurrentInstance } from 'vue';
+    import { useId } from 'vue';
 
     const getPosts = async ({ items_type, showChronology, showVariant }, endpoint) => {
         let endpointParams = new URLSearchParams([
@@ -670,8 +670,8 @@
             const route = useRoute();
             const iface = useInterfaceStore();
 
-            const instance = getCurrentInstance();
-            const uniqueId = instance ? instance.uid : Math.random();
+            // const instance = getCurrentInstance();
+            const uniqueId = useId();
 
             const { data: items } = await useAsyncData(
                 `mc-${props.items_type}-${props.collection ?? props.items ?? 'component'}-${props.showChronology}-${uniqueId}`,
