@@ -99,7 +99,7 @@
                                                     items_type == 'exhibitions')
                                             "
                                             :size="'small'"
-                                            :heading="item.post.post_title"
+                                            :heading="item.post.title.rendered"
                                             :subheading="
                                                 formatDate(item.post.acf.date, 'events') +
                                                 (item.post.acf.end_date &&
