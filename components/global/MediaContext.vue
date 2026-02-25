@@ -95,8 +95,8 @@
                                         <Context
                                             v-else-if="
                                                 item.post &&
-                                                (item.post.post_type == 'events' ||
-                                                    item.post.post_type == 'exhibitions')
+                                                (items_type == 'events' ||
+                                                    items_type == 'exhibitions')
                                             "
                                             :size="'small'"
                                             :heading="item.post.post_title"
@@ -237,7 +237,7 @@
                                             "
                                             :size="'small'"
                                             :paragraph="
-                                                item.post.excerpt.rendered.replace(
+                                                item.post.post_excerpt.replace(
                                                     /<\/?[^>]+(>|$)/g,
                                                     ''
                                                 )
@@ -427,66 +427,89 @@
     import getImage from '~/helpers/getImage';
     import { useId } from 'vue';
 
-    const getPosts = async ({ items_type, showChronology, showVariant }, endpoint) => {
-        let endpointParams = new URLSearchParams([
-            ['chronology', showChronology],
-            ['type', items_type],
-            ['per_page', 8],
-            ['page', 1],
-        ]);
+    const getPosts = async ({ items_type, showChronology, showVariant }, endpoint, endpointCustom) => {
+        
+        let pageParams = {};
 
-        if (
-            showChronology == 'current' &&
-            (items_type == 'events' || items_type == 'exhibitions')
-        ) {
-            endpointParams.append('key', 'date');
-            endpointParams.append('order', 'asc');
-        } else if (
-            showChronology == 'past' &&
-            (items_type == 'events' || items_type == 'exhibitions')
-        ) {
-            endpointParams.append('key', 'end_date');
-            endpointParams.append('order', 'desc');
-        } else if (
-            showChronology == 'future' &&
-            (items_type == 'events' || items_type == 'exhibitions')
-        ) {
-            endpointParams.append('key', 'date');
-            endpointParams.append('order', 'asc');
-        } else {
-            if (showVariant != 'traveling') {
-                // EXCLUDE PAST AS LONG AS WE ARENT IN TRAVELING EXHIBITIONS
-                endpointParams.append('key', 'date');
-                endpointParams.append('order', 'asc');
+        if (items_type === 'exhibitions' || items_type === 'events') {
+            endpoint = endpointCustom;
+
+            if (items_type === 'exhibitions') {
+                if (showChronology === 'past') {
+                    pageParams = {
+                        chronology: 'past',
+                        orderby: 'end_date',
+                        order: 'DESC',
+                        limit: 8,
+                        page: 1,
+                    };
+                } else if (showChronology === 'future') {
+                    pageParams = {
+                        orderby: 'date',
+                        order: 'DESC',
+                        chronology: 'future',
+                        page: 1,
+                        limit: 8,
+                    };
+                } else if (showChronology === 'current') {
+                    pageParams = {
+                        orderby: 'date',
+                        order: 'DESC',
+                        chronology: 'current',
+                        page: 1,
+                        limit: 8,
+                    };
+                } 
+            } else if (items_type === 'events') {
+          
+                if (showChronology === 'past') {
+                    pageParams = {
+                        chronology: 'past',
+                        orderby: 'end_date',
+                        order: 'DESC',
+                        limit: 8,
+                        page: 1,
+                    };
+                } else if (showChronology === 'future') {
+                    pageParams = {
+                        orderby: 'date',
+                        order: 'ASC',
+                        chronology: 'future',
+                        page: 1,
+                        limit: 8,
+                    };
+                } else if (showChronology === 'current') {
+                    pageParams = {
+                        orderby: 'date',
+                        order: 'ASC',
+                        chronology: 'current',
+                        page: 1,
+                        limit: 8,
+                    };
+                } 
+            }
+    
+            if (showVariant === 'traveling') {
+                pageParams.variant = '14';
             }
         }
 
-        if (showVariant == 'traveling') {
-            // TODO: Verify this is correct, was: type = '&variant=14';
-            endpointParams.append('variant', 14);
-        }
+        const pageReqUrl = new URL(items_type, endpoint);
 
-        const data = await $fetch(`${endpoint}eoe?${endpointParams.toString()}`);
+        const data = await $fetch.raw(pageReqUrl.href, {
+            params: pageParams,
+            headers: {
+                // This fools Cloudflare into thinking Nuxt is a browser
+                'User-Agent':
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            },
+        });
 
-        let newItems = data.map((i) => ({
+        let newItems = data._data.map((i) => ({
             post: i,
             event_date: i.acf.date ? formatDate(i.acf.date, 'events-raw') : undefined,
             end_date: i.acf.end_date ? formatDate(i.acf.end_date, 'events-raw') : undefined,
         }));
-
-        // Temporary solution for ordering by start date
-        if (items_type == 'events') {
-            newItems.sort((a, b) => a.event_date.getTime() - b.event_date.getTime());
-        } else if (items_type == 'exhibitions') {
-            if (showChronology == 'future') {
-                newItems.sort((a, b) => a.event_date.getTime() - b.event_date.getTime());
-            } else if (showChronology == 'past') {
-                newItems.sort((a, b) => b.end_date.getTime() - a.end_date.getTime());
-            } else {
-                newItems.sort((a, b) => b.event_date.getTime() - a.event_date.getTime());
-            }
-        }
-
         return newItems;
     };
 
@@ -681,7 +704,7 @@
                         props.items_type !== 'objects' &&
                         props.items_type !== 'collection'
                     ) {
-                        return await getPosts(props, iface.endpoint);
+                        return await getPosts(props, iface.endpoint, iface.endpointcustom);
                     } else if (props.items_type === 'collection') {
                         const post = await getPost(props.collection, iface.endpoint);
 

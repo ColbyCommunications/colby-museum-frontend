@@ -853,7 +853,7 @@
             endpoint = endpointCustom;
 
             if (itemsType === 'exhibitions') {
-                if (showPast || showChronology === 'past') {
+                if (showPast) {
                     pageParams = {
                         chronology: 'past',
                         orderby: 'end_date',
@@ -861,7 +861,7 @@
                         limit: perPage,
                         page,
                     };
-                } else if (showFuture || showChronology === 'future') {
+                } else if (showFuture) {
                     pageParams = {
                         orderby: 'date',
                         order: 'DESC',
@@ -869,7 +869,7 @@
                         page,
                         limit: perPage,
                     };
-                } else if (showCurrent || showChronology === 'current') {
+                } else if (showCurrent) {
                     pageParams = {
                         orderby: 'date',
                         order: 'DESC',
@@ -887,7 +887,7 @@
                     };
                 }
             } else if (itemsType === 'events') {
-                if (showPast || showChronology === 'past') {
+                if (showPast) {
                     pageParams = {
                         chronology: 'past',
                         orderby: 'end_date',
@@ -895,7 +895,7 @@
                         limit: perPage,
                         page,
                     };
-                } else if (showFuture || showChronology === 'future') {
+                } else if (showFuture) {
                     pageParams = {
                         orderby: 'date',
                         order: 'ASC',
@@ -903,7 +903,7 @@
                         page,
                         limit: perPage,
                     };
-                } else if (showCurrent || showChronology === 'current') {
+                } else if (showCurrent) {
                     pageParams = {
                         orderby: 'date',
                         order: 'ASC',
@@ -1454,6 +1454,14 @@
                     filters.value[1].items.find(
                         (item) => item.name === route.query.chronology
                     ).active = true;
+                } else {
+                    if (props.showChronology === 'past') {
+                        showPast.value = true;
+                    } else if (props.showChronology === 'current') {
+                        showCurrent.value = true;
+                    } else if (props.showChronology === 'future') {
+                        showFuture.value = true;
+                    }
                 }
 
                 if (route.query.location) {
