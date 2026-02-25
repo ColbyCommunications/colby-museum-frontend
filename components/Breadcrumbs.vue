@@ -59,70 +59,84 @@
 </template>
 
 <script setup>
-    import { ref, onMounted } from 'vue';
-    import gsap from 'gsap';
+ import { ref, onMounted, watch, nextTick } from 'vue';
+import gsap from 'gsap';
 
-    // 1. Replaces the 'props' option
-    const props = defineProps({
-        items: {
-            required: false,
-        },
-        current: {
-            type: Object,
-            // Use a factory function for object/array defaults
-            default: () => ({
-                url: '/',
-                title: '',
-            }),
-        },
-        manual: {
-            required: false,
-        },
-    });
+const props = defineProps({
+    items: {
+        required: false,
+    },
+    current: {
+        type: Object,
+        default: () => ({
+            url: '/',
+            title: '',
+        }),
+    },
+    manual: {
+        required: false,
+    },
+});
 
-    // 2. Replaces this.$refs.breadcrumbs
-    // This 'breadcrumbs' ref is automatically linked to the ref="breadcrumbs" in the template
-    const breadcrumbs = ref(null);
+const breadcrumbs = ref(null);
+let mm; // Declare matchMedia outside so we can access it to clear it
 
-    // 3. Replaces the 'animate' method
-    const animate = () => {
-        let mm = gsap.matchMedia();
+const animate = () => {
+    // 1. If an animation already exists, kill it so we don't duplicate ScrollTriggers
+    if (mm) {
+        mm.revert(); 
+    }
 
-        let list = breadcrumbs.value; // Use breadcrumbs.value instead of this.$refs.breadcrumbs
+    mm = gsap.matchMedia();
+    let list = breadcrumbs.value;
 
-        if (list) {
-            let listWords = list.querySelectorAll('.context__word span');
+    if (list) {
+        // 2. REVERTED: Grab ALL spans so the innermost text gets animated too
+        let listWords = list.querySelectorAll('.context__word span');
 
-            mm.add('(prefers-reduced-motion: no-preference)', () => {
-                gsap.to(listWords, {
-                    scrollTrigger: {
-                        trigger: breadcrumbs.value, // Use .value
-                        toggleActions: 'restart none restart none',
-                        start: 'top 85%',
-                    },
-                    y: 0,
-                    duration: 0.4,
-                    stagger: 0.05,
-                    ease: 'expo.out',
-                });
+        mm.add('(prefers-reduced-motion: no-preference)', () => {
+            gsap.to(listWords, {
+                scrollTrigger: {
+                    trigger: breadcrumbs.value,
+                    toggleActions: 'restart none restart none',
+                    start: 'top 85%',
+                },
+                y: 0,
+                duration: 0.4,
+                stagger: 0.05,
+                ease: 'expo.out',
             });
+        });
 
-            mm.add('(prefers-reduced-motion: reduce)', () => {
-                gsap.to(listWords, {
-                    y: 0,
-                    duration: 0,
-                    ease: 'expo.out',
-                });
+        mm.add('(prefers-reduced-motion: reduce)', () => {
+            gsap.to(listWords, {
+                y: 0,
+                duration: 0,
+                ease: 'expo.out',
             });
+        });
+    }
+};
+
+onMounted(() => {
+    setTimeout(() => {
+        animate();
+    }, 100);
+});
+
+// Watch for the async data to finish loading
+watch(
+    () => props.items,
+    async (newItems) => {
+        if (newItems && newItems.length > 0) {
+            // Wait for Vue to physically render the new <li> elements
+            await nextTick();
+            // Re-run the animation (the old one will be cleared automatically now)
+            animate();
         }
-    };
-
-    // 4. Replaces the 'mounted' hook
-    onMounted(() => {
-        setTimeout(() => {
-            animate(); // Call the function directly
-        }, 100);
-    });
+    },
+    { deep: true }
+);
 </script>
 
 <style lang="scss">
