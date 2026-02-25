@@ -446,7 +446,7 @@
                 } else if (showChronology === 'future') {
                     pageParams = {
                         orderby: 'date',
-                        order: 'DESC',
+                        order: 'ASC',
                         chronology: 'future',
                         page: 1,
                         limit: 8,
