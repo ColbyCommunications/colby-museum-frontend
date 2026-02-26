@@ -94,6 +94,7 @@
 <script>
     import { useInterfaceStore } from '~/store/interface';
     import { formatTimeRange } from '~/helpers/formatTimeRange.js';
+    import formatDate from '~/helpers/formatDate.js';
 
     const getImage = async (img, post, endpoint) => {
         let imageObj;
@@ -285,6 +286,7 @@
         },
         methods: {
             formatTimeRange,
+            formatDate,
             async updateImage() {
                 if (this.post && this.post.featured_media) {
                     const img = await getImage(
@@ -305,37 +307,6 @@
                         target: this.button.target,
                     };
                 }
-            },
-            formatDate(d, style) {
-                let formattedDate;
-
-                if (style == 'numeric') {
-                    formattedDate = new Date(d)
-                        .toLocaleDateString('en-US', {
-                            year: '2-digit',
-                            month: 'numeric',
-                            day: 'numeric',
-                            hour12: false,
-                        })
-                        .replaceAll('/', '.');
-                } else if (style == 'events') {
-                    formattedDate = new Date(
-                        `${d.substr(0, 4)}-${d.substr(4, 2)}-${d.substr(6, 2)}T00:00:00`
-                    ).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: '2-digit',
-                        hour12: false,
-                    });
-                } else {
-                    formattedDate = new Date(d).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: '2-digit',
-                        hour12: false,
-                    });
-                }
-                return formattedDate;
             },
             formatTime(t) {
                 const time = t.split(':');

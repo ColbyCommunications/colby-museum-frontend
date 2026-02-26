@@ -1439,7 +1439,7 @@
                 break;
 
             case props.items_type === 'events' || props.items_type === 'exhibitions': {
-                console.log('init data - events or exhibits');
+
                 if (route.query.search) {
                     searchInputRef.value = route.query.search;
                 }
