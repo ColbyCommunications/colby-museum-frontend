@@ -45,7 +45,7 @@
                     <li class="current">
                         <span class="context__word">
                             <span>
-                                <NuxtLink :to="current.url" aria-current="page">
+                                <NuxtLink :to="current.url" aria-current="page" :aria-label="`${current.title} page`">
                                     <IconArrow />
                                     <span v-html="current.title" />
                                 </NuxtLink>
