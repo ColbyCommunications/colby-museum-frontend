@@ -160,6 +160,7 @@
                                                     .replace(/^.*\/\/[^\/]+/, '')
                                                     .replace(/\/$/, '')
                                             "
+                                            :aria-label="item.post.title.rendered"
                                         >
                                             <PictureLoader
                                                 :classes="'object-cover'"
