@@ -440,7 +440,7 @@
                     :hover="hover"
                     :bordered="bordered"
                     :button_type="button_type"
-                    :openNewTab="item.openNewTab"
+                    :openNewTab="item?.openNewTab"
                 />
             </div>
             <div v-else v-for="(item, index) in items" class="article-grid__item">
