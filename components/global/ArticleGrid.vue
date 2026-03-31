@@ -36,11 +36,10 @@
                     <div class="search">
                         <SearchBtn disabled />
                         <input
-                            ref="searchInputEl"
-                            v-model="searchInput"
                             class="input search__input"
-                            placeholder="Search"
+                            :placeholder="'Search'"
                             type="search"
+                            v-model="searchInputRef"
                             @keyup.enter="recieveInput"
                         />
                     </div>
@@ -285,86 +284,74 @@
                     </button>
                 </div>
             </div>
-            <Teleport to="body">
-                <div ref="drawerRef">
-                    <div class="filter__drawer" :class="{ 'filter__drawer--active': drawerActive }">
-                        <div class="filter__drawer-top">
-                            <h3 class="filter__heading heading-style-3" v-text="'Filters'" />
-                            <button class="filter__close-btn" @click="drawerActive = !drawerActive">
-                                <IconX />
-                                <span class="sr-only" v-text="'Close Filter Drawer'" />
-                            </button>
-                        </div>
-                        <div class="filter__drawer-group">
-                            <button
-                                class="filter__clear-btn checkbox checkbox--small"
-                                @click="resetFilter()"
-                            >
-                                <IconX />
-                                <label v-text="'Clear filters'" />
-                            </button>
-                        </div>
-                        <div v-if="aggregations" class="filter__drawer-group">
-                            <SuperDropdown
-                                v-for="(aggregation, key, index) in aggregations"
-                                :size="'large'"
-                                :heading="key"
-                                :sort="true"
-                                @mouseleave="drawerScrollTop()"
-                            >
-                                <ul class="filter__list">
-                                    <li v-for="(bucket, index) in aggregation.buckets">
-                                        <div
-                                            class="checkbox checkbox--small"
-                                            :class="[
-                                                aggregationMakerList.includes(bucket.key) ||
-                                                aggregationTypeList.includes(bucket.key) ||
-                                                aggregationYearList.includes(bucket.key)
-                                                    ? 'checkbox--active'
-                                                    : '',
-                                            ]"
-                                        >
-                                            <div class="checkbox__main">
-                                                <input
-                                                    type="radio"
-                                                    :name="`filter_${key}`"
-                                                    :value="bucket.key"
-                                                    @click="aggregationChange($event, key)"
-                                                />
-                                            </div>
-                                            <label
-                                                v-html="bucket.key"
-                                                @click="aggregationChange($event, key)"
-                                            />
-                                        </div>
-                                    </li>
-                                </ul>
-                            </SuperDropdown>
-                        </div>
-                        <div v-for="(filter, index) in filters" class="filter__drawer-group">
-                            <h3 class="heading-style-3" v-text="filter.name" />
+            <div ref="drawerRef">
+                <div class="filter__drawer" :class="{ 'filter__drawer--active': drawerActive }">
+                    <div class="filter__drawer-top">
+                        <h3 class="filter__heading heading-style-3" v-text="'Filters'" />
+                        <button class="filter__close-btn" @click="drawerActive = !drawerActive">
+                            <IconX />
+                            <span class="sr-only" v-text="'Close Filter Drawer'" />
+                        </button>
+                    </div>
+                    <div class="filter__drawer-group">
+                        <button
+                            class="filter__clear-btn checkbox checkbox--small"
+                            @click="resetFilter()"
+                        >
+                            <IconX />
+                            <label v-text="'Clear filters'" />
+                        </button>
+                    </div>
+                    <div v-if="aggregations" class="filter__drawer-group">
+                        <SuperDropdown
+                            v-for="(aggregation, key, index) in aggregations"
+                            :size="'large'"
+                            :heading="key"
+                            :sort="true"
+                            @mouseleave="drawerScrollTop()"
+                        >
                             <ul class="filter__list">
-                                <li v-for="(item, index) in filter.items">
+                                <li v-for="(bucket, index) in aggregation.buckets">
                                     <div
                                         class="checkbox checkbox--small"
-                                        :class="[item.active ? 'checkbox--active' : '']"
+                                        :class="[
+                                            aggregationMakerList.includes(bucket.key) ||
+                                            aggregationTypeList.includes(bucket.key) ||
+                                            aggregationYearList.includes(bucket.key)
+                                                ? 'checkbox--active'
+                                                : '',
+                                        ]"
                                     >
                                         <div class="checkbox__main">
                                             <input
                                                 type="radio"
-                                                :name="`filter_${filter.name}`"
-                                                :value="item.name"
-                                                @click="
-                                                    item.name == 'past' ||
-                                                    item.name == 'current' ||
-                                                    item.name == 'future'
-                                                        ? toggleChronology(item)
-                                                        : toggleFilter(item, filter.name)
-                                                "
+                                                :name="`filter_${key}`"
+                                                :value="bucket.key"
+                                                @click="aggregationChange($event, key)"
                                             />
                                         </div>
                                         <label
-                                            v-text="item.name == 'future' ? 'upcoming' : item.name"
+                                            v-html="bucket.key"
+                                            @click="aggregationChange($event, key)"
+                                        />
+                                    </div>
+                                </li>
+                            </ul>
+                        </SuperDropdown>
+                    </div>
+                    <div v-for="(filter, index) in filters" class="filter__drawer-group">
+                        <h3 class="heading-style-3" v-text="filter.name" />
+                        <ul class="filter__list">
+                            <li v-for="(item, index) in filter.items">
+                                <div
+                                    class="checkbox checkbox--small"
+                                    :class="[item.active ? 'checkbox--active' : '']"
+                                >
+                                    <div class="checkbox__main">
+                                        <input
+                                            type="radio"
+                                            :name="`filter_${filter.name}`"
+                                            :value="item.name"
                                             @click="
                                                 item.name == 'past' ||
                                                 item.name == 'current' ||
@@ -374,12 +361,22 @@
                                             "
                                         />
                                     </div>
-                                </li>
-                            </ul>
-                        </div>
+                                    <label
+                                        v-text="item.name == 'future' ? 'upcoming' : item.name"
+                                        @click="
+                                            item.name == 'past' ||
+                                            item.name == 'current' ||
+                                            item.name == 'future'
+                                                ? toggleChronology(item)
+                                                : toggleFilter(item, filter.name)
+                                        "
+                                    />
+                                </div>
+                            </li>
+                        </ul>
                     </div>
                 </div>
-            </Teleport>
+            </div>
         </div>
         <div class="article-grid__inner grid">
             <div
@@ -434,7 +431,7 @@
             </div>
             <div
                 v-else-if="typeof items === 'number' || items_type != 'manual'"
-                v-for="(item, index) in (newItems?.slice(0, per_page) || [])"
+                v-for="(item, index) in newItems.slice(0, per_page)"
                 class="article-grid__item"
             >
                 <Article
@@ -443,7 +440,7 @@
                     :hover="hover"
                     :bordered="bordered"
                     :button_type="button_type"
-                    :openNewTab="item?.openNewTab"
+                    :openNewTab="item.openNewTab"
                 />
             </div>
             <div v-else v-for="(item, index) in items" class="article-grid__item">
@@ -1083,13 +1080,11 @@
             const img = i._source.Images.length > 0 ? i._source.Images[0] : undefined;
             const imgUrl = img
                 ? `https://ccma-iiif-cache-service.fly.dev/iiif/2/${img.IIIF_URL.substring(
-                    img.IIIF_URL.lastIndexOf('/') + 1
-                ).replace(/\.[^/.]+$/, '')}/full/${encodeURIComponent(
-                    `${queryArgs.columns === '6' ? '300,' : '400,'}`
-                )}/0/default.jpg`
+                      img.IIIF_URL.lastIndexOf('/') + 1
+                  ).replace(/\.[^/.]+$/, '')}/full/${encodeURIComponent(
+                      `${queryArgs.columns === '6' ? '300,' : '400,'}`
+                  )}/0/default.jpg`
                 : '';
-
-            const blankIndex = (Number(i._source.embark_ID) % 3) + 1;
 
             return {
                 size: 'embark',
@@ -1103,37 +1098,41 @@
                 },
                 image: img
                     ? {
-                        caption: {
-                            rendered: i._source.Disp_Medium,
-                        },
-                        alt_text: i._source.Disp_Medium,
-                        media_details: {
-                            sizes: {
-                                full: {
-                                    source_url: imgUrl,
-                                },
-                                mobile: {
-                                    source_url: imgUrl,
-                                },
-                            },
-                        },
-                    }
+                          caption: {
+                              rendered: i._source.Disp_Medium,
+                          },
+                          alt_text: i._source.Disp_Medium,
+                          media_details: {
+                              sizes: {
+                                  full: {
+                                      source_url: imgUrl,
+                                  },
+                                  mobile: {
+                                      source_url: imgUrl,
+                                  },
+                              },
+                          },
+                      }
                     : {
-                        caption: {
-                            rendered: 'No Image Available',
-                        },
-                        alt_text: 'No Image Available',
-                        media_details: {
-                            sizes: {
-                                full: {
-                                    source_url: `/blanks/blank_${blankIndex}.png`,
-                                },
-                                mobile: {
-                                    source_url: `/blanks/blank_${blankIndex}.png`,
-                                },
-                            },
-                        },
-                    },
+                          caption: {
+                              rendered: 'No Image Available',
+                          },
+                          alt_text: 'No Image Available',
+                          media_details: {
+                              sizes: {
+                                  full: {
+                                      source_url: `/blanks/blank_${Math.floor(
+                                          Math.random() * (3 - 1 + 1) + 1
+                                      )}.png`,
+                                  },
+                                  mobile: {
+                                      source_url: `/blanks/blank_${Math.floor(
+                                          Math.random() * (3 - 1 + 1) + 1
+                                      )}.png`,
+                                  },
+                              },
+                          },
+                      },
             };
         });
 
@@ -1335,13 +1334,13 @@
     // Template Refs
     const filterRef = ref(null);
     const drawerRef = ref(null);
-    const searchInput = ref('');
-    const searchInputEl = ref(null);
+    const searchInputRef = ref(null);
 
     // Initial Data Loading Logic (migrated from original setup switch)
     const initData = async () => {
         switch (true) {
             case props.items_type === 'objects':
+                console.log('initData branch: objects');
                 activeFilters.value = route.query.has_image !== 'false' ? ['Has Image'] : [];
                 aggregationMakerList.value = route.query.maker ? wrapArray(route.query.maker) : [];
                 aggregationYearList.value = route.query.year ? wrapArray(route.query.year) : [];
@@ -1410,6 +1409,7 @@
                 break;
 
             case props.items_type == 'collection':
+            console.log('initData branch: collection');
                 const args = {
                     ...props,
                     searchTerm: route.query.search,
@@ -1445,9 +1445,10 @@
                 break;
 
             case props.items_type === 'events' || props.items_type === 'exhibitions': {
+                console.log('initData branch: events/exhibitions');
 
                 if (route.query.search) {
-                    searchInput.value = route.query.search;
+                    searchInputRef.value = route.query.search;
                 }
                 if (route.query.chronology) {
                     if (route.query.chronology === 'past') {
@@ -1518,6 +1519,7 @@
             }
 
             case props.items_type != 'manual': {
+                console.log('initData branch: non-manual');
                 const postItemsParams = {
                     page: currentPage.value,
                     itemsCategory: props.items_category,
@@ -1547,6 +1549,7 @@
             }
 
             case typeof props.items === 'number':
+                console.log('initData branch: manual items');
                 const reqSignature = Object.entries(props.blockData)
                     .filter(
                         ([k, v]) =>
@@ -1603,11 +1606,27 @@
                         return await Promise.all(posts);
                     }
                 );
-                
+
                 newItems.value = postDatas.value;
                 break;
         }
     };
+
+
+    if (import.meta.server) {
+        console.log('[SSR] items_type:', props.items_type);
+        console.log('[SSR] items:', props.items, typeof props.items);
+        console.log('[SSR] has blockData:', !!props.blockData);
+        console.log('[SSR] blockData keys:', Object.keys(props.blockData || {}).length);
+    }
+
+    if (import.meta.client) {
+        console.log('[CLIENT] items_type:', props.items_type);
+        console.log('[CLIENT] items:', props.items, typeof props.items);
+        console.log('[CLIENT] has blockData:', !!props.blockData);
+        console.log('[CLIENT] blockData keys:', Object.keys(props.blockData || {}).length);
+    }
+
     // Execute initialization
     await initData();
 
@@ -1783,10 +1802,10 @@
         }
 
         // Reset input ref
-        if (searchInput.value) {
+        if (searchInputRef.value) {
             // Assuming the SearchInput component exposes 'input'
             // If not, this might need adjustment based on that child component
-            searchInput.value = '';
+            searchInputRef.value = '';
         }
 
         triggerNavigateTo();
@@ -1812,10 +1831,10 @@
 
         if (props.items_type == 'objects') {
             triggerNavigateTo();
-            getObjects(1, searchInput.value);
+            getObjects(1, searchInputRef.value);
         } else {
             triggerNavigateTo();
-            getPosts(1, searchInput.value);
+            getPosts(1, searchInputRef.value);
         }
     };
 
@@ -1871,7 +1890,7 @@
             }
 
             triggerNavigateTo();
-            getObjects(1, searchInput.value);
+            getObjects(1, searchInputRef.value);
         } else {
             if (term == `Alphabetical from  'A'`) {
                 if (reverseOrder.value == true && alphabeticalOrder.value == true) {
@@ -1891,21 +1910,21 @@
                 }
             }
 
-            getPosts(1, searchInput.value);
+            getPosts(1, searchInputRef.value);
         }
     };
 
     const recieveInput = () => {
-        input.value = searchInput.value;
+        input.value = searchInputRef.value;
 
         if (props.items_type === 'objects' && props.page) {
             triggerNavigateTo();
-            getObjects(1, searchInput.value);
+            getObjects(1, searchInputRef.value);
         } else if (props.items_type === 'objects') {
-            getObjects(1, searchInput.value);
+            getObjects(1, searchInputRef.value);
         } else {
             triggerNavigateTo();
-            getPosts(1, searchInput.value);
+            getPosts(1, searchInputRef.value);
         }
     };
 
@@ -1964,9 +1983,9 @@
     // --- Lifecycle ---
 
     onMounted(() => {
-        // if (drawerRef.value) {
-        //     document.body.appendChild(drawerRef.value);
-        // }
+        if (drawerRef.value) {
+            document.body.appendChild(drawerRef.value);
+        }
         animate();
     });
 
@@ -1976,9 +1995,9 @@
             gsap.to(drawer.querySelector('.filter__drawer'), {
                 x: '100%',
                 duration: 0.4,
-                // onComplete: () => {
-                //     drawer.remove();
-                // },
+                onComplete: () => {
+                    drawer.remove();
+                },
             });
         }
     });
