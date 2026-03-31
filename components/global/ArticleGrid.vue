@@ -1561,7 +1561,7 @@
                     .join('-');
 
                 const { data: postDatas } = await useAsyncData(
-                    `ag-number-${route.fullPath}-${props.items}-${reqSignature}`,
+                    `ag-number-${props.items_type}-${props.items}-${reqSignature}`,
                     async () => {
                         const posts = [...Array(props.items)].map(async (el, i) => {
                             const entryType = props.blockData[`items_${i}_entry_type`];
