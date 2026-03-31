@@ -395,7 +395,7 @@
             />
             <div
                 v-if="items_type == 'posts' && currentPage == 1 && per_page >= 20"
-                v-for="(item, index) in newItems.slice(1)"
+                v-for="(item, index) in newItems.slice(1) || []"
                 class="article-grid__item"
             >
                 <Article
@@ -1601,7 +1601,7 @@
                         return await Promise.all(posts);
                     }
                 );
-                console.log(postDatas.value);
+                
                 newItems.value = postDatas.value;
                 break;
         }
