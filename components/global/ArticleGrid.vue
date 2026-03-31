@@ -1519,7 +1519,6 @@
             }
 
             case props.items_type != 'manual': {
-                console.log('initData branch: non-manual');
                 const postItemsParams = {
                     page: currentPage.value,
                     itemsCategory: props.items_category,
@@ -1611,21 +1610,6 @@
                 break;
         }
     };
-
-
-    if (import.meta.server) {
-        console.log('[SSR] items_type:', props.items_type);
-        console.log('[SSR] items:', props.items, typeof props.items);
-        console.log('[SSR] has blockData:', !!props.blockData);
-        console.log('[SSR] blockData keys:', Object.keys(props.blockData || {}).length);
-    }
-
-    if (import.meta.client) {
-        console.log('[CLIENT] items_type:', props.items_type);
-        console.log('[CLIENT] items:', props.items, typeof props.items);
-        console.log('[CLIENT] has blockData:', !!props.blockData);
-        console.log('[CLIENT] blockData keys:', Object.keys(props.blockData || {}).length);
-    }
 
     // Execute initialization
     await initData();
