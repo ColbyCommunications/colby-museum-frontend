@@ -1601,7 +1601,7 @@
                         return await Promise.all(posts);
                     }
                 );
-
+                console.log(postDatas.value);
                 newItems.value = postDatas.value;
                 break;
         }
