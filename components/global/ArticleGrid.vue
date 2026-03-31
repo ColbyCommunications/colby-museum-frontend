@@ -284,74 +284,86 @@
                     </button>
                 </div>
             </div>
-            <div ref="drawerRef">
-                <div class="filter__drawer" :class="{ 'filter__drawer--active': drawerActive }">
-                    <div class="filter__drawer-top">
-                        <h3 class="filter__heading heading-style-3" v-text="'Filters'" />
-                        <button class="filter__close-btn" @click="drawerActive = !drawerActive">
-                            <IconX />
-                            <span class="sr-only" v-text="'Close Filter Drawer'" />
-                        </button>
-                    </div>
-                    <div class="filter__drawer-group">
-                        <button
-                            class="filter__clear-btn checkbox checkbox--small"
-                            @click="resetFilter()"
-                        >
-                            <IconX />
-                            <label v-text="'Clear filters'" />
-                        </button>
-                    </div>
-                    <div v-if="aggregations" class="filter__drawer-group">
-                        <SuperDropdown
-                            v-for="(aggregation, key, index) in aggregations"
-                            :size="'large'"
-                            :heading="key"
-                            :sort="true"
-                            @mouseleave="drawerScrollTop()"
-                        >
+            <Teleport to="body">
+                <div ref="drawerRef">
+                    <div class="filter__drawer" :class="{ 'filter__drawer--active': drawerActive }">
+                        <div class="filter__drawer-top">
+                            <h3 class="filter__heading heading-style-3" v-text="'Filters'" />
+                            <button class="filter__close-btn" @click="drawerActive = !drawerActive">
+                                <IconX />
+                                <span class="sr-only" v-text="'Close Filter Drawer'" />
+                            </button>
+                        </div>
+                        <div class="filter__drawer-group">
+                            <button
+                                class="filter__clear-btn checkbox checkbox--small"
+                                @click="resetFilter()"
+                            >
+                                <IconX />
+                                <label v-text="'Clear filters'" />
+                            </button>
+                        </div>
+                        <div v-if="aggregations" class="filter__drawer-group">
+                            <SuperDropdown
+                                v-for="(aggregation, key, index) in aggregations"
+                                :size="'large'"
+                                :heading="key"
+                                :sort="true"
+                                @mouseleave="drawerScrollTop()"
+                            >
+                                <ul class="filter__list">
+                                    <li v-for="(bucket, index) in aggregation.buckets">
+                                        <div
+                                            class="checkbox checkbox--small"
+                                            :class="[
+                                                aggregationMakerList.includes(bucket.key) ||
+                                                aggregationTypeList.includes(bucket.key) ||
+                                                aggregationYearList.includes(bucket.key)
+                                                    ? 'checkbox--active'
+                                                    : '',
+                                            ]"
+                                        >
+                                            <div class="checkbox__main">
+                                                <input
+                                                    type="radio"
+                                                    :name="`filter_${key}`"
+                                                    :value="bucket.key"
+                                                    @click="aggregationChange($event, key)"
+                                                />
+                                            </div>
+                                            <label
+                                                v-html="bucket.key"
+                                                @click="aggregationChange($event, key)"
+                                            />
+                                        </div>
+                                    </li>
+                                </ul>
+                            </SuperDropdown>
+                        </div>
+                        <div v-for="(filter, index) in filters" class="filter__drawer-group">
+                            <h3 class="heading-style-3" v-text="filter.name" />
                             <ul class="filter__list">
-                                <li v-for="(bucket, index) in aggregation.buckets">
+                                <li v-for="(item, index) in filter.items">
                                     <div
                                         class="checkbox checkbox--small"
-                                        :class="[
-                                            aggregationMakerList.includes(bucket.key) ||
-                                            aggregationTypeList.includes(bucket.key) ||
-                                            aggregationYearList.includes(bucket.key)
-                                                ? 'checkbox--active'
-                                                : '',
-                                        ]"
+                                        :class="[item.active ? 'checkbox--active' : '']"
                                     >
                                         <div class="checkbox__main">
                                             <input
                                                 type="radio"
-                                                :name="`filter_${key}`"
-                                                :value="bucket.key"
-                                                @click="aggregationChange($event, key)"
+                                                :name="`filter_${filter.name}`"
+                                                :value="item.name"
+                                                @click="
+                                                    item.name == 'past' ||
+                                                    item.name == 'current' ||
+                                                    item.name == 'future'
+                                                        ? toggleChronology(item)
+                                                        : toggleFilter(item, filter.name)
+                                                "
                                             />
                                         </div>
                                         <label
-                                            v-html="bucket.key"
-                                            @click="aggregationChange($event, key)"
-                                        />
-                                    </div>
-                                </li>
-                            </ul>
-                        </SuperDropdown>
-                    </div>
-                    <div v-for="(filter, index) in filters" class="filter__drawer-group">
-                        <h3 class="heading-style-3" v-text="filter.name" />
-                        <ul class="filter__list">
-                            <li v-for="(item, index) in filter.items">
-                                <div
-                                    class="checkbox checkbox--small"
-                                    :class="[item.active ? 'checkbox--active' : '']"
-                                >
-                                    <div class="checkbox__main">
-                                        <input
-                                            type="radio"
-                                            :name="`filter_${filter.name}`"
-                                            :value="item.name"
+                                            v-text="item.name == 'future' ? 'upcoming' : item.name"
                                             @click="
                                                 item.name == 'past' ||
                                                 item.name == 'current' ||
@@ -361,22 +373,12 @@
                                             "
                                         />
                                     </div>
-                                    <label
-                                        v-text="item.name == 'future' ? 'upcoming' : item.name"
-                                        @click="
-                                            item.name == 'past' ||
-                                            item.name == 'current' ||
-                                            item.name == 'future'
-                                                ? toggleChronology(item)
-                                                : toggleFilter(item, filter.name)
-                                        "
-                                    />
-                                </div>
-                            </li>
-                        </ul>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </Teleport>
         </div>
         <div class="article-grid__inner grid">
             <div
@@ -1962,9 +1964,9 @@
     // --- Lifecycle ---
 
     onMounted(() => {
-        if (drawerRef.value) {
-            document.body.appendChild(drawerRef.value);
-        }
+        // if (drawerRef.value) {
+        //     document.body.appendChild(drawerRef.value);
+        // }
         animate();
     });
 
@@ -1974,9 +1976,9 @@
             gsap.to(drawer.querySelector('.filter__drawer'), {
                 x: '100%',
                 duration: 0.4,
-                onComplete: () => {
-                    drawer.remove();
-                },
+                // onComplete: () => {
+                //     drawer.remove();
+                // },
             });
         }
     });
