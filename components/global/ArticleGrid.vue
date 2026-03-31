@@ -395,7 +395,7 @@
             />
             <div
                 v-if="items_type == 'posts' && currentPage == 1 && per_page >= 20"
-                v-for="(item, index) in newItems.slice(1) || []"
+                v-for="(item, index) in newItems.slice(1)"
                 class="article-grid__item"
             >
                 <Article
@@ -431,7 +431,7 @@
             </div>
             <div
                 v-else-if="typeof items === 'number' || items_type != 'manual'"
-                v-for="(item, index) in newItems.slice(0, per_page)"
+                v-for="(item, index) in newItems.slice(0, per_page) || []"
                 class="article-grid__item"
             >
                 <Article
