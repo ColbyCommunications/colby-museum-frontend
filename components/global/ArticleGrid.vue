@@ -36,10 +36,11 @@
                     <div class="search">
                         <SearchBtn disabled />
                         <input
+                            ref="searchInputEl"
+                            v-model="searchInput"
                             class="input search__input"
-                            :placeholder="'Search'"
+                            placeholder="Search"
                             type="search"
-                            v-model="searchInputRef"
                             @keyup.enter="recieveInput"
                         />
                     </div>
@@ -1082,11 +1083,13 @@
             const img = i._source.Images.length > 0 ? i._source.Images[0] : undefined;
             const imgUrl = img
                 ? `https://ccma-iiif-cache-service.fly.dev/iiif/2/${img.IIIF_URL.substring(
-                      img.IIIF_URL.lastIndexOf('/') + 1
-                  ).replace(/\.[^/.]+$/, '')}/full/${encodeURIComponent(
-                      `${queryArgs.columns === '6' ? '300,' : '400,'}`
-                  )}/0/default.jpg`
+                    img.IIIF_URL.lastIndexOf('/') + 1
+                ).replace(/\.[^/.]+$/, '')}/full/${encodeURIComponent(
+                    `${queryArgs.columns === '6' ? '300,' : '400,'}`
+                )}/0/default.jpg`
                 : '';
+
+            const blankIndex = (Number(i._source.embark_ID) % 3) + 1;
 
             return {
                 size: 'embark',
@@ -1100,41 +1103,37 @@
                 },
                 image: img
                     ? {
-                          caption: {
-                              rendered: i._source.Disp_Medium,
-                          },
-                          alt_text: i._source.Disp_Medium,
-                          media_details: {
-                              sizes: {
-                                  full: {
-                                      source_url: imgUrl,
-                                  },
-                                  mobile: {
-                                      source_url: imgUrl,
-                                  },
-                              },
-                          },
-                      }
+                        caption: {
+                            rendered: i._source.Disp_Medium,
+                        },
+                        alt_text: i._source.Disp_Medium,
+                        media_details: {
+                            sizes: {
+                                full: {
+                                    source_url: imgUrl,
+                                },
+                                mobile: {
+                                    source_url: imgUrl,
+                                },
+                            },
+                        },
+                    }
                     : {
-                          caption: {
-                              rendered: 'No Image Available',
-                          },
-                          alt_text: 'No Image Available',
-                          media_details: {
-                              sizes: {
-                                  full: {
-                                      source_url: `/blanks/blank_${Math.floor(
-                                          Math.random() * (3 - 1 + 1) + 1
-                                      )}.png`,
-                                  },
-                                  mobile: {
-                                      source_url: `/blanks/blank_${Math.floor(
-                                          Math.random() * (3 - 1 + 1) + 1
-                                      )}.png`,
-                                  },
-                              },
-                          },
-                      },
+                        caption: {
+                            rendered: 'No Image Available',
+                        },
+                        alt_text: 'No Image Available',
+                        media_details: {
+                            sizes: {
+                                full: {
+                                    source_url: `/blanks/blank_${blankIndex}.png`,
+                                },
+                                mobile: {
+                                    source_url: `/blanks/blank_${blankIndex}.png`,
+                                },
+                            },
+                        },
+                    },
             };
         });
 
@@ -1336,7 +1335,8 @@
     // Template Refs
     const filterRef = ref(null);
     const drawerRef = ref(null);
-    const searchInputRef = ref(null);
+    const searchInput = ref('');
+    const searchInputEl = ref(null);
 
     // Initial Data Loading Logic (migrated from original setup switch)
     const initData = async () => {
@@ -1447,7 +1447,7 @@
             case props.items_type === 'events' || props.items_type === 'exhibitions': {
 
                 if (route.query.search) {
-                    searchInputRef.value = route.query.search;
+                    searchInput.value = route.query.search;
                 }
                 if (route.query.chronology) {
                     if (route.query.chronology === 'past') {
@@ -1783,10 +1783,10 @@
         }
 
         // Reset input ref
-        if (searchInputRef.value) {
+        if (searchInput.value) {
             // Assuming the SearchInput component exposes 'input'
             // If not, this might need adjustment based on that child component
-            searchInputRef.value = '';
+            searchInput.value = '';
         }
 
         triggerNavigateTo();
@@ -1812,10 +1812,10 @@
 
         if (props.items_type == 'objects') {
             triggerNavigateTo();
-            getObjects(1, searchInputRef.value);
+            getObjects(1, searchInput.value);
         } else {
             triggerNavigateTo();
-            getPosts(1, searchInputRef.value);
+            getPosts(1, searchInput.value);
         }
     };
 
@@ -1871,7 +1871,7 @@
             }
 
             triggerNavigateTo();
-            getObjects(1, searchInputRef.value);
+            getObjects(1, searchInput.value);
         } else {
             if (term == `Alphabetical from  'A'`) {
                 if (reverseOrder.value == true && alphabeticalOrder.value == true) {
@@ -1891,21 +1891,21 @@
                 }
             }
 
-            getPosts(1, searchInputRef.value);
+            getPosts(1, searchInput.value);
         }
     };
 
     const recieveInput = () => {
-        input.value = searchInputRef.value;
+        input.value = searchInput.value;
 
         if (props.items_type === 'objects' && props.page) {
             triggerNavigateTo();
-            getObjects(1, searchInputRef.value);
+            getObjects(1, searchInput.value);
         } else if (props.items_type === 'objects') {
-            getObjects(1, searchInputRef.value);
+            getObjects(1, searchInput.value);
         } else {
             triggerNavigateTo();
-            getPosts(1, searchInputRef.value);
+            getPosts(1, searchInput.value);
         }
     };
 
