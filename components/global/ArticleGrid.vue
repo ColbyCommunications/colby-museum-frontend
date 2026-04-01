@@ -465,8 +465,7 @@
             <div class="pagination__inner grid">
                 <div class="pagination__main">
                     <NuxtLink
-                        v-if="page"
-                        v-show="currentPage > 1"
+                        v-if="page && currentPage > 1"
                         class="pagination__btn pagination__btn--prev"
                         :class="[currentPage == 1 ? 'pagination__btn--inactive' : '']"
                         :to="`/${items_type == 'posts' ? 'news' : items_type}/page-${
@@ -490,8 +489,7 @@
                         ><IconArrow />Previous</NuxtLink
                     >
                     <button
-                        v-else
-                        v-show="currentPage > 1"
+                        v-else-if="currentPage > 1"
                         aria-label="Previous Page"
                         class="pagination__btn pagination__btn--prev"
                         :class="[currentPage == 1 ? 'pagination__btn--inactive' : '']"
@@ -546,8 +544,7 @@
                         </li>
                     </ul>
                     <NuxtLink
-                        v-if="page"
-                        v-show="currentPage < Number(totalPages)"
+                        v-if="page && currentPage < Number(totalPages)"
                         class="pagination__btn pagination__btn--next"
                         :class="[currentPage == Number(totalPages) ? 'pagination__btn--inactive' : '']"
                         :to="`/${items_type == 'posts' ? 'news' : items_type}/page-${
@@ -570,8 +567,7 @@
                         >Next<IconArrow
                     /></NuxtLink>
                     <button
-                        v-else
-                        v-show="currentPage < Number(totalPages)"
+                        v-else-if="currentPage < Number(totalPages)"
                         aria-label="Next Page"
                         class="pagination__btn pagination__btn--next"
                         :class="[
