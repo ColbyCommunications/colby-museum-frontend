@@ -1021,7 +1021,7 @@
 
         const url = new URL(`media/${i}`, endpoint);
         const imageObj = await $fetch(url.href);
-
+        console.log(imageObj);
         const mediaDetails = imageObj.media_details;
 
         let imageAspect;
