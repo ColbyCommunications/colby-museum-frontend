@@ -1,85 +1,58 @@
-$route.<template>
-  <div class="page page--default">
-    <Breadcrumbs
-      v-if="$route.params.slug != ''"
-      :current="{
-        title: title,
-        url: $route.fullPath,
-      }"
-      :manual="{
-        title: 'Lunder Institute News',
-        url: '/news/page-1?category=6',
-      }"
-    />
-    <IntroContext
-      :heading="title"
-      :headingElement="'h1'"
-      :subheading="excerpt"
-    />
-    <BaseModule
-      v-for="(item, index) in components"
-      :moduleData="item"
-    />
-  </div>
+<template>
+    <div class="page page--default">
+        <Breadcrumbs
+            v-if="$route.params.slug != ''"
+            :current="{
+                title: title,
+                url: $route.fullPath,
+            }"
+            :manual="{
+                title: 'Lunder Institute News',
+                url: '/news/page-1?category=6',
+            }"
+        />
+        <IntroContext :heading="title" :headingElement="'h1'" :subheading="excerpt" />
+        <BaseModule v-for="(item, index) in components" :moduleData="item" />
+    </div>
 </template>
 
-<script>
-import axios from 'axios';
+<script setup>
+    // Imports are moved to the top level
+    import transitionConfig from '../helpers/transitionConfig';
+    import { useInterfaceStore } from '~/store/interface';
+    // `axios` and `seoConfig` were imported but not used, so they are omitted.
 
-import transitionConfig from '../helpers/transitionConfig';
-import seoConfig from '../helpers/seoConfig';
-import { useInterfaceStore } from '~/store/interface';
-
-export default {
-  async setup(props) {
-    const route = useRoute()
-    const iface = useInterfaceStore()
+    // All logic from `setup()` is now at the top level
+    const route = useRoute();
+    const iface = useInterfaceStore();
 
     definePageMeta({
-      pageTransition: transitionConfig,
+        pageTransition: transitionConfig,
     });
 
-    const { data: post } = await useAsyncData(`lunder-news-${route.params.slug}`, async () => {
-      const { data } = await seoConfig({interface: iface}, 'posts');
+    // Top-level await can be used in <script setup>
+    const post = await useFetchContent(route.params.slug, { interface: iface }, 'posts');
 
-      const post = computed(() => data.value.at(0));
+    // These variables are automatically exposed to the template
+    const title = post.value?.pageData?.title?.rendered
+        .replace(/–/g, '-')
+        .replace(/“/g, '"')
+        .replace(/”/g, '"')
+        .replace(/’/g, "'");
 
-      return post.value
-    })
+    const excerpt = post.value?.pageData?.excerpt?.rendered?.replace(/<\/?[^>]+(>|$)/g, '');
 
-    const title = post.value?.title?.rendered
-      .replace(/–/g, '-')
-      .replace(/“/g, '"')
-      .replace(/”/g, '"')
-      .replace(/’/g, "'");
-    
-    const excerpt = post.value?.excerpt?.rendered?.replace(/<\/?[^>]+(>|$)/g, '');
+    const components = post.value?.pageData?.block_data?.map((component) => {
+        component.type = component.blockName.replace('acf/', '').replace(/\//g, '-');
 
-    const components = post.value?.block_data?.map((component) => {
-      
-      component.type = component.blockName
-        .replace('acf/','')
-        .replace(/\//g,'-');
-
-      return {
-        type: component.type,
-        ...component.attrs.data,
-        attrs: component.attrs.data ? undefined : component.attrs,
-        innerHTML: component.rendered ? component.rendered : undefined,
-      };
+        return {
+            type: component.type,
+            ...component.attrs.data,
+            attrs: component.attrs.data ? undefined : component.attrs,
+            innerHTML: component.rendered ? component.rendered : undefined,
+        };
     });
 
-    return {
-      title,
-      excerpt,
-      components,
-      breadcrumbs: []
-    };
-  },
-  props: {
-    interface: {
-      required: false,
-    },
-  },
-}
+    // The `props` block is removed as it was unused.
+    // The `return` statement is not needed in <script setup>.
 </script>

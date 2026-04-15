@@ -1,6 +1,7 @@
 import ViteYaml from '@modyfi/vite-plugin-yaml';
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
+
 export default defineNuxtConfig({
     app: {
         head: {
@@ -86,5 +87,12 @@ export default defineNuxtConfig({
     },
 
     devtools: { enabled: process.mode === 'development' },
-    compatibilityDate: '2025-08-26'
+    compatibilityDate: '2025-08-26',
+    nitro: {
+        preset: 'cloudflare_pages',
+        cloudflare: {
+            deployConfig: true,
+            nodeCompat: true,
+        },
+    },
 });

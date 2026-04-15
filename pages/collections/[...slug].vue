@@ -1,103 +1,87 @@
 <template>
-  <div class="page page--default">
-    <Breadcrumbs
-      v-if="$route.params.slug != ''"
-      :current="{
-        title: title,
-        url: fullPath,
-      }"
-      :manual="[
-        {
-          title: 'Collection',
-          url: '/collection',
-        },
-        {
-          title: 'About the Collection',
-          url: '/collection/about-the-collection',
-        }
-      ]"
-    />
-    <IntroContext
-      :heading="title"
-      :headingElement="'h1'"
-      :subheading="excerpt"
-    />
-    <BaseModule
-      v-for="(item, index) in components"
-      :moduleData="item"
-    />
-    <BigArrowBtnSection
-      :button="{
-        reverse: true,
-        title: 'About the Collection',
-        url: '/collection/about-the-collection'
-      }"
-    />
-    <BigArrowBtnSection
-      v-if="embark_id"
-      :align="'right'"
-      :button="{
-        title: 'View all works in this collection',
-        url: `/objects/page-1?embark_id=${embark_id}`
-      }"
-    />
-  </div>
+    <div class="page page--default">
+        <Breadcrumbs
+            v-if="route.params.slug != ''"
+            :current="{
+                title: title,
+                url: fullPath,
+            }"
+            :manual="[
+                {
+                    title: 'Collection',
+                    url: '/collection',
+                },
+                {
+                    title: 'About the Collection',
+                    url: '/collection/about-the-collection',
+                },
+            ]"
+        />
+        <IntroContext :heading="title" :headingElement="'h1'" :subheading="excerpt" />
+        <BaseModule v-for="(item, index) in components" :key="index" :moduleData="item" />
+        <BigArrowBtnSection
+            :button="{
+                reverse: true,
+                title: 'About the Collection',
+                url: '/collection/about-the-collection',
+            }"
+        />
+        <BigArrowBtnSection
+            v-if="embark_id"
+            :align="'right'"
+            :button="{
+                title: 'View all works in this collection',
+                url: `/objects/page-1?embark_id=${embark_id}`,
+            }"
+        />
+    </div>
 </template>
 
-<script>
-import transitionConfig from '../helpers/transitionConfig';
-import seoConfig from '../helpers/seoConfig';
+<script setup>
+    import transitionConfig from '../helpers/transitionConfig';
+    // import seoConfig from '../helpers/seoConfig';
 
-export default {
-  async setup(props) {
-    const route = useRoute()
+    // 1. Define Props
+    const props = defineProps({
+        interface: {
+            required: false,
+        },
+    });
 
+    // 2. Get route object and define fullPath
+    const route = useRoute();
+    const fullPath = route.fullPath;
+
+    // 3. Set page meta
     definePageMeta({
-      pageTransition: transitionConfig,
+        pageTransition: transitionConfig,
     });
 
-    const { data: post } = await useAsyncData(`collections-${route.fullPath}`, async () => {
-      const { data, error, status } = await seoConfig(props, 'collections');
+    // 4. Fetch data
+    const post = await useFetchContent(route.params.slug, props, 'collections');
 
-      const post = computed(() => data.value?.at(0))
+    // 5. Process data
+    const embark_id = post.value?.pageData?.acf?.embark_id;
 
-      return post.value
-    })
+    const title = post.value?.pageData?.title?.rendered
+        ?.replace(/–/g, '-')
+        .replace(/“/g, '"')
+        .replace(/”/g, '"')
+        .replace(/’/g, "'");
 
-    const embark_id = post.value?.acf?.embark_id;
+    const excerpt = post.value?.pageData?.excerpt?.rendered?.replace(/<\/?[^>]+(>|$)/g, '');
 
-    const title = post.value?.title?.rendered?.replace(/–/g, '-')
-      .replace(/“/g, '"')
-      .replace(/”/g, '"')
-      .replace(/’/g, "'");
-    
-    const excerpt = post.value?.excerpt?.rendered?.replace(/<\/?[^>]+(>|$)/g, '');
+    const components = post.value?.pageData?.block_data?.map((component) => {
+        component.type = component.blockName.replace('acf/', '').replace(/\//g, '-');
 
-    const components = post.value?.block_data?.map((component) => {
-      component.type = component.blockName
-        .replace('acf/','')
-        .replace(/\//g,'-');
-
-      return {
-        type: component.type,
-        ...component.attrs.data,
-        attrs: component.attrs.data ? undefined : component.attrs,
-        innerHTML: component.rendered ? component.rendered : undefined,
-      };
+        return {
+            type: component.type,
+            ...component.attrs.data,
+            attrs: component.attrs.data ? undefined : component.attrs,
+            innerHTML: component.rendered ? component.rendered : undefined,
+        };
     });
 
-    return {
-      title,
-      excerpt,
-      embark_id,
-      fullPath: route.fullPath,
-      components,
-    }
-  },
-  props: {
-    interface: {
-      required: false,
-    },
-  }
-}
+    // All variables defined here (title, excerpt, embark_id, fullPath, components)
+    // are automatically available to the template. No 'return' is needed.
 </script>

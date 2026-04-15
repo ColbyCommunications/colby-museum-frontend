@@ -57,6 +57,7 @@
         v-if="button"
         :to="fixedUrl"
         :target="button.target"
+        :aria-label="heading"
       >
         <Picture
           :alt="image.alt_text"
