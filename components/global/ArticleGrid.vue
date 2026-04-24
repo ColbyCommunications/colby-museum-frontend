@@ -1017,7 +1017,7 @@
 
         const url = new URL(`media/${i}`, endpoint);
         const imageObj = await $fetch(url.href);
-        console.log(imageObj);
+
         const mediaDetails = imageObj.media_details;
 
         let imageAspect;
@@ -1601,7 +1601,6 @@
                         return await Promise.all(posts);
                     }
                 );
-                console.log(postDatas.value);
                 newItems.value = postDatas.value;
                 break;
         }
