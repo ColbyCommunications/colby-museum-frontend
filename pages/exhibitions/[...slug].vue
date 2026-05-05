@@ -36,8 +36,8 @@
                 {
                     heading: 'Dates',
                     paragraph: end_date
-                        ? `${String(date)}&ndash;${String(end_date)}`
-                        : String(date),
+                        ? `${formatDate(String(date))}&ndash;${formatDate(String(end_date))}`
+                        : formatDate(String(date)),
                 },
             ]"
         />
@@ -49,6 +49,7 @@
     import transitionConfig from '../helpers/transitionConfig';
     // import seoConfig from '../helpers/seoConfig';
     import { useInterfaceStore } from '~/store/interface';
+    import formatDate from '~/helpers/formatDate';
 
     // Get route and props
     const route = useRoute();
