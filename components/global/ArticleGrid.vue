@@ -454,7 +454,7 @@
         </div>
         <div
             v-if="
-                Number(totalPages) &&
+                Number(totalPages) > 1 &&
                 per_page >= 20 &&
                 items_type != 'collection' &&
                 items_type != 'manual' &&
@@ -510,7 +510,7 @@
                             } | ${totalObjects} Total Objects`
                         "
                     />
-                    <ul v-else>
+                    <ul v-else-if="Number(totalPages) > 1">
                         <li
                             v-for="index in pagination"
                             :class="[currentPage == index ? 'active' : '']"
