@@ -11,7 +11,7 @@ const debouncedSearchFn = debounce(function (ctx, value) {
 export const useInterfaceStore = defineStore('interface', {
     state: () => ({
         backend: 'https://maintenance-06-3-2026-mqrbz6i-fr35dlu44eniu.us-4.platformsh.site/',
-        endpoint: 'https://maintenance-06-3-2026-mqrbz6i-fr35dlu44eniu.us-4.platformsh.site/wp/v2/',
+        endpoint: 'https://maintenance-06-3-2026-mqrbz6i-fr35dlu44eniu.us-4.platformsh.site/wp-json/wp/v2/',
         endpointv3: 'https://maintenance-06-3-2026-mqrbz6i-fr35dlu44eniu.us-4.platformsh.site/wp-json/acf/v3/',
         endpointcustom: 'https://maintenance-06-3-2026-mqrbz6i-fr35dlu44eniu.us-4.platformsh.site/wp-json/custom/v1/',
         drawer: false,
