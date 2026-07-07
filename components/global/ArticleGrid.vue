@@ -581,7 +581,7 @@
                                 : getPosts(currentPage + 1, input)
                         "
                     >
-                        Next<IconArrow />
+                        <IconArrow />Next
                     </button>
                 </div>
             </div>
@@ -801,6 +801,7 @@
         alphabeticalOrder,
         reverseOrder,
         route,
+        location,
     }) => {
         const catsParams = { parent: itemsCategory };
         const catsUrl = new URL('categories', endpoint);
@@ -813,7 +814,7 @@
             page: page,
             per_page: perPage,
             categories_exclude: '1',
-            categories: categories + [itemsCategory],
+            categories: [...categories, itemsCategory],
         };
 
         if (searchTerm) {
@@ -938,8 +939,12 @@
                 pageParams.search = searchTerm;
             }
 
-            if (route.query.location) {
-                pageParams.location = route.query.location;
+            // Bind location using [] notation to force PHP to parse it as an array
+            // This triggers an `IN` (OR) query natively in WordPress REST API
+            if (location && location.length > 0) {
+                pageParams['location[]'] = wrapArray(location);
+            } else if (route.query.location) {
+                pageParams['location[]'] = wrapArray(route.query.location);
             }
 
             if (route.query.variant === 'traveling') {
@@ -975,30 +980,6 @@
                 end_date: i.acf.end_date ? formatDate(i.acf.end_date, 'events-raw') : undefined,
             };
         });
-
-        // if (alphabeticalOrder === false) {
-        //     if (itemsType === 'events') {
-        //         if (showChronology === 'future') {
-        //             postItems.sort((a, b) => a.event_date.getTime() - b.event_date.getTime());
-        //         } else if (showChronology === 'past') {
-        //             postItems.sort((a, b) =>
-        //                 itemsType === 'events'
-        //                     ? b.event_date.getTime() - a.event_date.getTime()
-        //                     : b.end_date.getTime() - a.end_date.getTime()
-        //             );
-        //         } else {
-        //             if (route.query.variant === 'traveling') {
-        //                 postItems.sort((a, b) => b.event_date.getTime() - a.event_date.getTime());
-        //             } else {
-        //                 postItems.sort((a, b) =>
-        //                     itemsType === 'events'
-        //                         ? a.event_date.getTime() - b.event_date.getTime()
-        //                         : b.event_date.getTime() - a.event_date.getTime()
-        //                 );
-        //             }
-        //         }
-        //     }
-        // }
 
         return { items: postItems, totalPages };
     };
@@ -1470,9 +1451,10 @@
                 }
 
                 if (route.query.location) {
-                    location.value = route.query.location ? wrapArray(route.query.location) : [];
+                    location.value = wrapArray(route.query.location);
                     location.value.forEach((l) => {
-                        filters.value[0].items.find((item) => item.name == l).active = true;
+                        const filterItem = filters.value[0].items.find((item) => item.name == l);
+                        if (filterItem) filterItem.active = true;
                     });
                     activeFilters.value.push(...location.value);
                 }
@@ -1487,6 +1469,7 @@
                     perPage: props.per_page,
                     reverseOrder: reverseOrder.value,
                     route: route,
+                    location: location.value,
                     searchTerm: route.query.search,
                     showChronology: props.showChronology,
                     showPast: showPast.value,
@@ -1527,6 +1510,7 @@
                     endpoint: iface.endpoint,
                     endpointCustom: iface.endpointcustom,
                     route: route,
+                    location: location.value,
                 };
 
                 const { data: posts } = await useAsyncData(
@@ -1657,7 +1641,8 @@
                 query: {
                     search: input.value,
                     chronology: chrono,
-                    location: location.value,
+                    // Keep native Vue array serialization (?location=campus&location=downtown)
+                    location: location.value.length > 0 ? location.value : undefined,
                     variant: route.query.variant,
                 },
             });
@@ -1747,6 +1732,7 @@
             alphabeticalOrder: alphabeticalOrder.value,
             reverseOrder: reverseOrder.value,
             route: route,
+            location: location.value,
         };
         const { items, totalPages: tPages } = await getPostItems(postItemsParams);
 
@@ -1774,25 +1760,19 @@
             showFuture.value = false;
         }
 
-        // 1. Set activeFilters state BEFORE loading filters
-        // Use !== 'false' to correctly check against stringified URL query params
         if (props.items_type == 'objects' && route.query.has_image !== 'false') {
             activeFilters.value = ['Has Image'];
         } else {
             activeFilters.value = [];
         }
 
-        // 2. Generate UI filters using the cleared state
         filters.value = loadFilters(props.items_type, activeFilters.value);
 
-        // 3. Reset both the input field and the internal search state
         searchInputRef.value = '';
         input.value = '';
 
-        // Update URL parameters
         triggerNavigateTo();
 
-        // 4. Explicitly fetch the unfiltered data
         if (props.items_type == 'objects') {
             getObjects(1, input.value);
         } else {
