@@ -546,7 +546,9 @@
                     <NuxtLink
                         v-if="page && currentPage < Number(totalPages)"
                         class="pagination__btn pagination__btn--next"
-                        :class="[currentPage == Number(totalPages) ? 'pagination__btn--inactive' : '']"
+                        :class="[
+                            currentPage == Number(totalPages) ? 'pagination__btn--inactive' : '',
+                        ]"
                         :to="`/${items_type == 'posts' ? 'news' : items_type}/page-${
                             Number(page) + 1
                         }${
@@ -765,7 +767,7 @@
             `https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/stage/_search`,
             aggsQuery,
             username,
-            password
+            password,
         );
 
         return output.aggregations;
@@ -1067,7 +1069,7 @@
             endpoint,
             username,
             password,
-            queryArgs.per_page
+            queryArgs.per_page,
         );
 
         const response = await fetchWith(`${endpoint}/_search`, searchQuery, username, password);
@@ -1076,9 +1078,9 @@
             const img = i._source.Images.length > 0 ? i._source.Images[0] : undefined;
             const imgUrl = img
                 ? `https://ccma-iiif-cache-service.fly.dev/iiif/2/${img.IIIF_URL.substring(
-                      img.IIIF_URL.lastIndexOf('/') + 1
+                      img.IIIF_URL.lastIndexOf('/') + 1,
                   ).replace(/\.[^/.]+$/, '')}/full/${encodeURIComponent(
-                      `${queryArgs.columns === '6' ? '300,' : '400,'}`
+                      `${queryArgs.columns === '6' ? '300,' : '400,'}`,
                   )}/0/default.jpg`
                 : '';
 
@@ -1118,12 +1120,12 @@
                               sizes: {
                                   full: {
                                       source_url: `/blanks/blank_${Math.floor(
-                                          Math.random() * (3 - 1 + 1) + 1
+                                          Math.random() * (3 - 1 + 1) + 1,
                                       )}.png`,
                                   },
                                   mobile: {
                                       source_url: `/blanks/blank_${Math.floor(
-                                          Math.random() * (3 - 1 + 1) + 1
+                                          Math.random() * (3 - 1 + 1) + 1,
                                       )}.png`,
                                   },
                               },
@@ -1181,7 +1183,7 @@
 
             case 'events':
                 return new Date(
-                    `${d.substr(0, 4)}-${d.substr(4, 2)}-${d.substr(6, 2)}T00:00:00`
+                    `${d.substr(0, 4)}-${d.substr(4, 2)}-${d.substr(6, 2)}T00:00:00`,
                 ).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
@@ -1374,7 +1376,7 @@
                             response = await getObjectItems(
                                 props.page,
                                 route.query.search,
-                                queryArgs
+                                queryArgs,
                             );
                         } else {
                             response = await getObjectItems(1, route.query.search, queryArgs);
@@ -1392,7 +1394,7 @@
                             totalPages: response.totalPages,
                             aggregations: aggs,
                         };
-                    }
+                    },
                 );
 
                 newItems.value = data.value?.items;
@@ -1405,7 +1407,7 @@
                 break;
 
             case props.items_type == 'collection':
-            console.log('initData branch: collection');
+                console.log('initData branch: collection');
                 const args = {
                     ...props,
                     searchTerm: route.query.search,
@@ -1429,7 +1431,7 @@
                             totalPages: tPages,
                         } = await getObjectItems(currentPage.value, route.query.search, args);
                         return { hits, tObj, tPages };
-                    }
+                    },
                 );
 
                 newItems.value = collexData.value?.hits;
@@ -1455,7 +1457,7 @@
                         showFuture.value = true;
                     }
                     filters.value[1].items.find(
-                        (item) => item.name === route.query.chronology
+                        (item) => item.name === route.query.chronology,
                     ).active = true;
                 } else {
                     if (props.showChronology === 'past') {
@@ -1496,7 +1498,7 @@
                     `postItems-${Object.values(postItemsParams).join('')}`,
                     async () => {
                         return await getPostItems(postItemsParams);
-                    }
+                    },
                 );
 
                 if (!response.value) {
@@ -1531,7 +1533,7 @@
                     `ag-manual-${Object.values(postItemsParams).join('')}`,
                     async () => {
                         return await getPostItems(postItemsParams);
-                    }
+                    },
                 );
 
                 newItems.value = posts.value?.items;
@@ -1550,7 +1552,7 @@
                         ([k, v]) =>
                             k.endsWith('_image') ||
                             k.endsWith('_heading') ||
-                            k.endsWith('_subheading')
+                            k.endsWith('_subheading'),
                     )
                     .map(([k, v]) => v)
                     .join('-');
@@ -1581,7 +1583,7 @@
                             if (props.blockData[`items_${i}_image`]) {
                                 image = await getImage(
                                     props.blockData[`items_${i}_image`],
-                                    iface.endpoint
+                                    iface.endpoint,
                                 );
                             }
 
@@ -1599,7 +1601,7 @@
                             };
                         });
                         return await Promise.all(posts);
-                    }
+                    },
                 );
                 newItems.value = postDatas.value;
                 break;
@@ -1615,7 +1617,7 @@
         let result;
         if (activeFilters.value.length > 0 && newItems.value[0]?.post) {
             result = newItems.value.filter((item) =>
-                Object.values(item.post.acf).some((k) => activeFilters.value.includes(k))
+                Object.values(item.post.acf).some((k) => activeFilters.value.includes(k)),
             );
         } else {
             result = newItems.value;
@@ -1772,22 +1774,30 @@
             showFuture.value = false;
         }
 
-        filters.value = loadFilters(props.items_type, activeFilters.value);
-
-        if (props.items_type == 'objects' && route.query.has_image != false) {
+        // 1. Set activeFilters state BEFORE loading filters
+        // Use !== 'false' to correctly check against stringified URL query params
+        if (props.items_type == 'objects' && route.query.has_image !== 'false') {
             activeFilters.value = ['Has Image'];
         } else {
             activeFilters.value = [];
         }
 
-        // Reset input ref
-        if (searchInputRef.value) {
-            // Assuming the SearchInput component exposes 'input'
-            // If not, this might need adjustment based on that child component
-            searchInputRef.value = '';
-        }
+        // 2. Generate UI filters using the cleared state
+        filters.value = loadFilters(props.items_type, activeFilters.value);
 
+        // 3. Reset both the input field and the internal search state
+        searchInputRef.value = '';
+        input.value = '';
+
+        // Update URL parameters
         triggerNavigateTo();
+
+        // 4. Explicitly fetch the unfiltered data
+        if (props.items_type == 'objects') {
+            getObjects(1, input.value);
+        } else {
+            getPosts(1, input.value);
+        }
     };
 
     const toggleFilter = (term, filterName) => {
@@ -1956,7 +1966,7 @@
         async () => {
             animate();
         },
-        { deep: true }
+        { deep: true },
     );
 
     // --- Lifecycle ---
