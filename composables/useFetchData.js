@@ -1,31 +1,74 @@
 import seoConfig from '../helpers/seoConfig';
 
-export const useFetchContent = async (path, props, type) => {
-    // 1. Create a unique key for useAsyncData
-    const key = `content-${path}`;
+// composables/useFetchData.js
+export const useFetchContent = async (path, props, type = 'pages') => {
+    const normalizedPath = (path || '/')
+        .replace(/^\/+|\/+$/g, '') || 'home';
 
-    // 2. Fetch the data
-    const { data, error } = await useAsyncData(key, async () => {
-        const { data } = await seoConfig(props, type);
+    const finalSlug = normalizedPath.split('/').pop();
 
-        // Using computed here is fine, but we only need the value
-        const pageDataValue = data.value?.at(0);
+    const key = `content:${type}:${normalizedPath}`;
 
-        // Guard against pageDataValue being null if data.value is empty
-        if (!pageDataValue) {
-            return { pageData: null, breadcrumbs: [] };
+    const { data, error } = await useAsyncData(
+        key,
+        async () => {
+            const pages = await $fetch(`${props.interface.endpoint}${type}`, {
+                method: 'GET',
+                query: {
+                    slug: finalSlug,
+                    _embed: 'wp:featuredmedia',
+                },
+                headers: {
+                    'Cache-Control': 'no-cache',
+                },
+                cache: 'no-store',
+            });
+
+            const candidates = Array.isArray(pages) ? pages : [];
+
+            const pageDataValue =
+                candidates.find((page) => {
+                    if (!page?.link) return false;
+
+                    try {
+                        const wpPath = new URL(page.link).pathname
+                            .replace(/^\/+|\/+$/g, '');
+
+                        return wpPath === normalizedPath;
+                    } catch {
+                        return false;
+                    }
+                }) || candidates[0] || null;
+
+            if (!pageDataValue) {
+                return {
+                    pageData: null,
+                    breadcrumbs: [],
+                };
+            }
+
+            const breadcrumbs = await $fetch(
+                `https://museum-backend.colby.edu/wp-json/wp/v2/breadcrumbs/${pageDataValue.id}`,
+                {
+                    headers: {
+                        'Cache-Control': 'no-cache',
+                    },
+                    cache: 'no-store',
+                }
+            );
+
+            return {
+                pageData: pageDataValue,
+                breadcrumbs: breadcrumbs || [],
+            };
+        },
+        {
+            server: true,
+            lazy: false,
+            dedupe: 'cancel',
         }
+    );
 
-        const url = `https://museum-backend.colby.edu/wp-json/wp/v2/breadcrumbs/${pageDataValue.id}`;
-
-        const crumbData = await $fetch(url);
-        const breadcrumbs = crumbData ? crumbData : [];
-
-        // Return the raw values
-        return { pageData: pageDataValue, breadcrumbs };
-    });
-
-    // 3. Check for errors from the fetch itself
     if (error.value) {
         throw createError({
             statusCode: error.value.statusCode || 500,
@@ -34,8 +77,7 @@ export const useFetchContent = async (path, props, type) => {
         });
     }
 
-    // 4. Check if data is null or empty (the 404 condition)
-    if (!data.value.pageData) {
+    if (!data.value?.pageData) {
         throw createError({
             statusCode: 404,
             statusMessage: 'Page Not Found',
@@ -43,6 +85,5 @@ export const useFetchContent = async (path, props, type) => {
         });
     }
 
-    // 5. If everything is good, return the data
     return data;
 };

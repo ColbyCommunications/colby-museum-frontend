@@ -1,102 +1,118 @@
 <template>
     <div class="page page--default">
         <Breadcrumbs
-            v-if="route.params.slug != ''"
+            v-if="normalizedPath !== 'home'"
             :items="breadcrumbs"
             :current="{
                 title: title,
                 url: fullPath,
             }"
         />
+
         <IntroContext
             :class="[
                 heading_visible ? '' : 'sr-only--heading',
                 excerpt_visible ? '' : 'sr-only--excerpt',
             ]"
             :heading="title"
-            :headingElement="'h1'"
+            headingElement="h1"
             :subheading="excerpt"
         />
-        <BaseModule v-for="(item, index) in components" :moduleData="item" />
+
+        <BaseModule
+            v-for="(item, index) in components"
+            :key="`${item.type}-${index}`"
+            :moduleData="item"
+        />
     </div>
 </template>
 
 <script setup>
-    // 1. Imports
-    import { onMounted, ref, computed } from 'vue';
-    import transitionConfig from '../helpers/transitionConfig';
+import { onMounted, ref, computed } from 'vue';
+import transitionConfig from '../helpers/transitionConfig';
 
-    // 2. Define Props
-    const props = defineProps({
-        interface: {
-            required: false,
-        },
-    });
+const props = defineProps({
+    interface: {
+        required: false,
+    },
+});
 
-    // 3. Page Meta and Route
-    definePageMeta({
-        pageTransition: transitionConfig,
-    });
-    const route = useRoute();
-    const fullPath = route.fullPath;
+definePageMeta({
+    pageTransition: transitionConfig,
+});
 
-    const data = await useFetchContent(route.path, props, undefined, route);
+const route = useRoute();
 
-    // 6. Data Transformation
-    // These are now top-level constants, automatically exposed to the template
-    const pageData = data.value.pageData;
-    const breadcrumbs = data.value.breadcrumbs;
+const normalizedPath = computed(() => {
+    const slug = route.params.slug;
 
-    const title = pageData?.title?.rendered
-        .replace(/–/g, '-')
-        .replace(/“/g, '"')
-        .replace(/”/g, '"')
-        .replace(/’/g, "'");
+    if (!slug) {
+        return 'home';
+    }
 
-    const excerpt = pageData?.excerpt?.rendered.replace(/<\/?[^>]+(>|$)/g, '');
-    const intro_visible = pageData?.acf?.intro_visible;
-    const heading_visible = pageData?.acf?.heading_visible;
-    const excerpt_visible = pageData?.acf?.excerpt_visible;
+    return Array.isArray(slug)
+        ? slug.join('/')
+        : slug;
+});
 
-    const components = (pageData?.block_data ?? []).map((comp, i) => {
-        let component = { ...comp };
-        component.type = component.blockName.replace('acf/', '').replace(/\//g, '-');
+const fullPath = computed(() => route.fullPath);
 
-        return {
-            layoutPosition: i,
-            type: component.type,
-            ...component.attrs.data,
-            attrs: component.attrs.data ? undefined : component.attrs,
-            innerHTML: component.rendered ? component.rendered : undefined,
-        };
-    });
+const content = await useFetchContent(normalizedPath.value, props);
 
-    // 7. Methods (converted to a local function)
-    const hasFileExtension = (fileName) => {
-        return fileName.includes('.pdf');
+const pageData = content.value.pageData;
+const breadcrumbs = content.value.breadcrumbs;
+
+const title = pageData?.title?.rendered
+    ?.replace(/–/g, '-')
+    .replace(/“/g, '"')
+    .replace(/”/g, '"')
+    .replace(/’/g, "'") ?? '';
+
+const excerpt = pageData?.excerpt?.rendered
+    ?.replace(/<\/?[^>]+(>|$)/g, '') ?? '';
+
+const heading_visible = pageData?.acf?.heading_visible;
+const excerpt_visible = pageData?.acf?.excerpt_visible;
+
+const components = (pageData?.block_data ?? []).map((comp, i) => {
+    const component = { ...comp };
+
+    component.type = component.blockName
+        .replace('acf/', '')
+        .replace(/\//g, '-');
+
+    return {
+        layoutPosition: i,
+        type: component.type,
+        ...component.attrs?.data,
+        attrs: component.attrs?.data ? undefined : component.attrs,
+        innerHTML: component.rendered ? component.rendered : undefined,
     };
+});
 
-    // 8. Lifecycle Hooks (mounted)
-    const timeLeft = ref(1);
+const hasFileExtension = (fileName) => {
+    return fileName.includes('.pdf');
+};
 
-    onMounted(() => {
-        setInterval(async () => {
-            if (timeLeft.value === 1) {
-                // Use route.path (from useRoute) instead of this.$route.path
-                if (hasFileExtension(route.path)) {
-                    // Use props.interface instead of this.interface
-                    navigateTo(`${props.interface.backend}${route.path}`, {
-                        external: true,
-                    });
+const timeLeft = ref(1);
 
+onMounted(() => {
+    setInterval(async () => {
+        if (timeLeft.value === 1) {
+            if (hasFileExtension(route.path)) {
+                navigateTo(`${props.interface.backend}${route.path}`, {
+                    external: true,
+                });
+
+                history.pushState(null, document.title, location.href);
+
+                window.addEventListener('popstate', () => {
                     history.pushState(null, document.title, location.href);
-                    window.addEventListener('popstate', (event) => {
-                        history.pushState(null, document.title, location.href);
-                    });
-                }
+                });
             }
+        }
 
-            timeLeft.value = timeLeft.value - 1;
-        }, 100);
-    });
+        timeLeft.value = timeLeft.value - 1;
+    }, 100);
+});
 </script>
