@@ -48,99 +48,111 @@
 </template>
 
 <script setup>
-    import transitionConfig from '../helpers/transitionConfig';
-    // seoConfig is not used in the final code, but was in the original imports
-    // import seoConfig from '../helpers/seoConfig';
-    import { useInterfaceStore } from '~/store/interface';
+import { computed } from 'vue';
+import transitionConfig from '../helpers/transitionConfig';
+import { useInterfaceStore } from '~/store/interface';
 
-    // Helper function
-    const formatTime = (t) => {
-        const time = t.split(':');
-        const hour = parseInt(time[0]);
-        const min = time[1];
-        const sec = parseInt(time[2]);
-        const ampm = hour >= 12 ? ' p.m.' : ' a.m.';
+const route = useRoute();
+const iface = useInterfaceStore();
 
-        return `${hour == 12 || hour == 0 ? 12 : hour % 12}:${min
-            .replace(/\s/g, '')
-            .replace('am', ' a.m.')
-            .replace('pm', ' p.m.')}`;
+definePageMeta({
+    pageTransition: transitionConfig,
+});
+
+const normalizedPath = computed(() => {
+    const slug = route.params.slug;
+
+    if (!slug) {
+        return '';
+    }
+
+    return Array.isArray(slug)
+        ? slug.join('/')
+        : slug;
+});
+
+const fullPath = route.fullPath;
+
+const formatTime = (t) => {
+    if (!t || typeof t !== 'string') {
+        return '';
+    }
+
+    const time = t.split(':');
+
+    if (time.length < 2) {
+        return '';
+    }
+
+    const hour = parseInt(time[0], 10);
+    const min = time[1];
+
+    const ampm = hour >= 12 ? ' p.m.' : ' a.m.';
+    const displayHour = hour === 12 || hour === 0 ? 12 : hour % 12;
+
+    return `${displayHour}:${min.replace(/\s/g, '')}${ampm}`;
+};
+
+const formatAcfDate = (value) => {
+    if (!value || typeof value !== 'string' || value.length < 8) {
+        return '';
+    }
+
+    return new Date(
+        `${value.substr(0, 4)}-${value.substr(4, 2)}-${value.substr(6, 2)}T00:00:00`
+    ).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: '2-digit',
+        hour12: false,
+    });
+};
+
+const post = await useFetchContent(
+    normalizedPath.value,
+    { interface: iface },
+    'events'
+);
+
+const pageData = post.value?.pageData ?? {};
+
+const title = pageData?.title?.rendered
+    ?.replace(/–/g, '-')
+    .replace(/“/g, '"')
+    .replace(/”/g, '"')
+    .replace(/’/g, "'") ?? '';
+
+const excerpt = pageData?.excerpt?.rendered
+    ?.replace(/<\/?[^>]+(>|$)/g, '') ?? '';
+
+const heading_visible = pageData?.acf?.heading_visible;
+const excerpt_visible = pageData?.acf?.excerpt_visible;
+const location = pageData?.acf?.location;
+const address = pageData?.acf?.address;
+
+const date = formatAcfDate(pageData?.acf?.date);
+const end_date = formatAcfDate(pageData?.acf?.end_date);
+
+const start_time = pageData?.acf?.start_time
+    ? formatTime(pageData.acf.start_time)
+    : '';
+
+const end_time = pageData?.acf?.end_time
+    ? formatTime(pageData.acf.end_time)
+    : '';
+
+const components = (pageData?.block_data ?? []).map((component) => {
+    const normalizedComponent = { ...component };
+
+    normalizedComponent.type = normalizedComponent.blockName
+        .replace('acf/', '')
+        .replace(/\//g, '-');
+
+    return {
+        type: normalizedComponent.type,
+        ...normalizedComponent.attrs?.data,
+        attrs: normalizedComponent.attrs?.data ? undefined : normalizedComponent.attrs,
+        innerHTML: normalizedComponent.rendered ? normalizedComponent.rendered : undefined,
     };
-
-    // All setup logic is now at the top level
-    const route = useRoute();
-    const iface = useInterfaceStore();
-
-    definePageMeta({
-        pageTransition: transitionConfig,
-    });
-
-    const post = await useFetchContent(route.params.slug, { interface: iface }, 'events');
-
-    // All these variables are automatically exposed to the template
-    const title = post.value?.pageData?.title?.rendered
-        .replace(/–/g, '-')
-        .replace(/“/g, '"')
-        .replace(/”/g, '"')
-        .replace(/’/g, "'");
-
-    const excerpt = post.value?.pageData?.excerpt?.rendered.replace(/<\/?[^>]+(>|$)/g, '');
-    const intro_visible = post.value?.pageData?.acf?.intro_visible;
-    const heading_visible = post.value?.pageData?.acf?.heading_visible;
-    const excerpt_visible = post.value?.pageData?.acf?.excerpt_visible;
-    const location = post.value?.pageData?.acf?.location;
-    const address = post.value?.pageData?.acf?.address;
-
-    let date = '';
-    if (post.value?.pageData?.acf?.date) {
-        date = new Date(
-            `${post.value.pageData.acf.date.substr(0, 4)}-${post.value.pageData.acf.date.substr(
-                4,
-                2
-            )}-${post.value.pageData.acf.date.substr(6, 2)}T00:00:00`
-        ).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: '2-digit',
-            hour12: false,
-        });
-    }
-
-    let end_date = '';
-    if (post.value?.pageData?.acf?.end_date) {
-        end_date = new Date(
-            `${post.value.pageData.acf.end_date.substr(
-                0,
-                4
-            )}-${post.value.pageData.acf.end_date.substr(
-                4,
-                2
-            )}-${post.value.pageData.acf.end_date.substr(6, 2)}T00:00:00`
-        ).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: '2-digit',
-            hour12: false,
-        });
-    }
-
-    const start_time = post.value?.pageData?.acf?.start_time
-        ? formatTime(post.value.pageData.acf.start_time)
-        : 'sup';
-    const end_time = post.value?.pageData?.acf?.end_time
-        ? formatTime(post.value.pageData.acf.end_time)
-        : 'dood';
-
-    const components = (post.value?.pageData?.block_data ?? []).map((component) => {
-        component.type = component.blockName.replace('acf/', '').replace(/\//g, '-');
-
-        return {
-            type: component.type,
-            ...component.attrs.data,
-            attrs: component.attrs.data ? undefined : component.attrs,
-            innerHTML: component.rendered ? component.rendered : undefined,
-        };
-    });
-
-    const fullPath = route.fullPath;
+});
 </script>
