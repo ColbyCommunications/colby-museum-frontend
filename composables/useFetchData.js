@@ -1,28 +1,31 @@
-import seoConfig from '../helpers/seoConfig';
-
 export const useFetchContent = async (path, props, type) => {
-    // 1. Create a unique key for useAsyncData
+    // 1. Create a truly unique key per route path
     const key = `content-${path}`;
 
     // 2. Fetch the data
     const { data, error } = await useAsyncData(key, async () => {
+        // NOTE: Ensure seoConfig knows about the path or handles dynamic fetching!
         const { data } = await seoConfig(props, type);
 
-        // Using computed here is fine, but we only need the value
         const pageDataValue = data.value?.at(0);
 
-        // Guard against pageDataValue being null if data.value is empty
         if (!pageDataValue) {
             return { pageData: null, breadcrumbs: [] };
         }
 
-        const url = `https://museum-backend.colby.edu/wp-json/wp/v2/breadcrumbs/${pageDataValue.id}`;
+        // Add a server-only cache buster so Cloudflare workers fetch fresh from WP
+        const cacheBuster = process.server ? `?_cb=${Date.now()}` : '';
+        const url = `https://museum-backend.colby.edu/wp-json/wp/v2/breadcrumbs/${pageDataValue.id}${cacheBuster}`;
 
         const crumbData = await $fetch(url);
         const breadcrumbs = crumbData ? crumbData : [];
 
-        // Return the raw values
         return { pageData: pageDataValue, breadcrumbs };
+    }, {
+        // CRUCIAL FOR SSR WORKERS: 
+        // Returning null tells Nuxt to always execute the fetch block on server boots 
+        // rather than fetching stale data from the Worker's active instance memory.
+        getCachedData: () => null
     });
 
     // 3. Check for errors from the fetch itself
@@ -35,7 +38,7 @@ export const useFetchContent = async (path, props, type) => {
     }
 
     // 4. Check if data is null or empty (the 404 condition)
-    if (!data.value.pageData) {
+    if (!data.value || !data.value.pageData) {
         throw createError({
             statusCode: 404,
             statusMessage: 'Page Not Found',
@@ -43,6 +46,5 @@ export const useFetchContent = async (path, props, type) => {
         });
     }
 
-    // 5. If everything is good, return the data
     return data;
 };
