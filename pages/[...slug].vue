@@ -41,7 +41,7 @@
     const fullPath = route.fullPath;
 
     const data = await useFetchContent('home', props);
-
+    console.log(data);
     // 6. Data Transformation
     // These are now top-level constants, automatically exposed to the template
     const pageData = data.value.pageData;
