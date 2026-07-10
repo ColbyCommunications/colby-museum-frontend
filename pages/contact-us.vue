@@ -5,6 +5,15 @@
             :headingElement="'h1'"
             :subheading="'Fill in the form below, and we will direct your message to the appropriate department.'"
         />
+        <div class="grid">
+            <p class="newsletter-signup paragraph-style-2">
+                <a target="_blank" href="https://lp.constantcontactpages.com/sl/D0wL9EF"
+                    >Sign up for our newsletter</a
+                >
+                to stay informed about upcoming exhibitions, events, and the latest news from the
+                Colby Museum.
+            </p>
+        </div>
         <FormsContact />
     </div>
 </template>
@@ -99,3 +108,11 @@
         },
     };
 </script>
+<style lang="scss">
+    .page--default {
+        .newsletter-signup {
+            margin-top: -2rem !important;
+            grid-column-start: 1 !important;
+        }
+    }
+</style>
