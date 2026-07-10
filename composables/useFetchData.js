@@ -1,7 +1,22 @@
-import seoConfig from '../helpers/seoConfig';
+import { unref } from 'vue';
 
 // composables/useFetchData.js
 export const useFetchContent = async (path, props, type = 'pages') => {
+
+    let rawPath = unref(path);
+
+    if (Array.isArray(rawPath)) {
+        rawPath = rawPath.join('/');
+    }
+
+    if (!rawPath) {
+        rawPath = 'home';
+    }
+
+    if (typeof rawPath !== 'string') {
+        rawPath = String(rawPath);
+    }
+    
     const normalizedPath = (path || '/')
         .replace(/^\/+|\/+$/g, '') || 'home';
 
