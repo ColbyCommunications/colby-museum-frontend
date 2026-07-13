@@ -73,24 +73,32 @@ const normalizedPath = computed(() => {
 
 const fullPath = route.fullPath;
 
-const formatTime = (t) => {
-    if (!t || typeof t !== 'string') {
+const formatTime = (value) => {
+    if (!value || typeof value !== 'string') {
         return '';
     }
 
-    const time = t.split(':');
+    const raw = value.trim().toLowerCase();
 
-    if (time.length < 2) {
-        return '';
+    const match = raw.match(/^(\d{1,2}):(\d{2})(?::\d{2})?\s*(am|pm|a\.m\.|p\.m\.)?$/);
+
+    if (!match) {
+        return value;
     }
 
-    const hour = parseInt(time[0], 10);
-    const min = time[1];
+    let hour = Number(match[1]);
+    const minutes = match[2];
+    const meridiem = match[3]?.replace(/\./g, '');
 
-    const ampm = hour >= 12 ? ' p.m.' : ' a.m.';
-    const displayHour = hour === 12 || hour === 0 ? 12 : hour % 12;
+    if (meridiem === 'am' || meridiem === 'pm') {
+        const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+        return `${displayHour}:${minutes} ${meridiem === 'am' ? 'a.m.' : 'p.m.'}`;
+    }
 
-    return `${displayHour}:${min.replace(/\s/g, '')}${ampm}`;
+    const computedMeridiem = hour >= 12 ? 'p.m.' : 'a.m.';
+    const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+
+    return `${displayHour}:${minutes} ${computedMeridiem}`;
 };
 
 const formatAcfDate = (value) => {
