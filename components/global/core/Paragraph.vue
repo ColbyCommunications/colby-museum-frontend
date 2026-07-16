@@ -1,6 +1,6 @@
 <template>
   <div ref="paragraphRef" class="core-paragraph grid paragraph-style-2" >
-    <p v-html="attrs.content.replace(`${iface.backend}`, '/').replace(/\/$/, '')" :style="{ fontWeight: attrs.style?.typography?.fontWeight, fontStyle: attrs.style?.typography?.fontStyle }" :class="attrs.fontSize"/>
+    <p v-html="attrs.content.replace(`${iface.backend}`, '/').replace(/\/$/, '')" :style="{ fontWeight: attrs.style?.typography?.fontWeight, fontStyle: attrs.style?.typography?.fontStyle, textAlign:attrs.style?.typography?.textAlign }" :class="attrs.fontSize"/>
   </div>
 </template>
 
