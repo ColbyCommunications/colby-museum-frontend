@@ -148,8 +148,8 @@
                                         <Context
                                             v-else-if="
                                                 item.post &&
-                                                (items_type == 'events' ||
-                                                    items_type == 'exhibitions')
+                                                (item.post.type == 'events' ||
+                                                    item.post.type == 'exhibitions')
                                             "
                                             :size="'small'"
                                             :heading="item.post.title.rendered"
@@ -206,7 +206,14 @@
                                             :button="item.button"
                                         />
                                     </div>
-                                    <div v-if="item.post" class="media-context__image">
+                                    <div
+                                        v-if="item.post"
+                                        class="media-context__image"
+                                        :class="{
+                                            'media-context__image--true-aspect':
+                                                variant === 'offset' && item.true_aspect_ratio,
+                                        }"
+                                    >
                                         <NuxtLink
                                             :to="
                                                 item.post.link
@@ -229,17 +236,26 @@
                                             v-if="
                                                 !item.post &&
                                                 item.image.caption &&
+                                                item.image.caption.rendered &&
                                                 variant == 'full-width'
                                             "
                                             class="media-context__caption"
                                             v-html="
                                                 item.image.caption.rendered.replace(
                                                     /<\/?[^>]+(>|$)/g,
+                                                    '',
                                                 )
                                             "
                                         />
                                     </div>
-                                    <div v-else class="media-context__image">
+                                    <div
+                                        v-else
+                                        class="media-context__image"
+                                        :class="{
+                                            'media-context__image--true-aspect':
+                                                variant === 'offset' && item.true_aspect_ratio,
+                                        }"
+                                    >
                                         <NuxtLink
                                             v-if="item.button && item.image"
                                             :to="
@@ -886,6 +902,12 @@
                                             paragraph: undefined,
                                             button: undefined,
                                             image: undefined,
+                                            true_aspect_ratio: Boolean(
+                                                props.blockData[`items_${i}_true_aspect_ratio`] ==
+                                                    1 ||
+                                                props.blockData[`items_${i}_true_aspect_ratio`] ===
+                                                    true,
+                                            ),
                                             openNewTab: openNewTab(props.blockData, i),
                                         };
                                     }
@@ -907,6 +929,11 @@
                                         paragraph: props.blockData[`items_${i}_paragraph`],
                                         button: props.blockData[`items_${i}_button`],
                                         image: processedImage,
+                                        true_aspect_ratio: Boolean(
+                                            props.blockData[`items_${i}_true_aspect_ratio`] == 1 ||
+                                            props.blockData[`items_${i}_true_aspect_ratio`] ===
+                                                true,
+                                        ),
                                         openNewTab: openNewTab(props.blockData, i),
                                     };
                                 }),
@@ -1396,6 +1423,37 @@
             background-color: transparent;
             border: 0;
             appearance: none;
+
+            /* Native Aspect Ratio Mode for Offset Variant */
+            &--true-aspect {
+                padding-bottom: 0 !important;
+                height: auto !important;
+                display: block !important;
+
+                > a {
+                    position: relative !important;
+                    display: block;
+                    width: 100%;
+                    height: auto !important;
+                }
+
+                picture {
+                    display: block;
+                    width: 100%;
+                    height: auto;
+                }
+
+                img,
+                video.media-context__video {
+                    position: relative !important;
+                    display: block !important;
+                    width: auto !important;
+                    max-width: 100% !important;
+                    height: auto !important;
+                    max-height: none !important;
+                    margin: 0 auto !important;
+                }
+            }
 
             @include breakpoint(medium) {
                 padding-bottom: 74%;
