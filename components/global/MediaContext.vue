@@ -360,7 +360,16 @@
                                         <Context
                                             v-else
                                             :size="'small'"
-                                            :paragraph="item.paragraph"
+                                            :paragraph="
+                                                item.show_descriptions &&
+                                                item.image &&
+                                                item.image.caption
+                                                    ? item.image.caption.rendered.replace(
+                                                          /<\/?[^>]+(>|$)/g,
+                                                          '',
+                                                      )
+                                                    : undefined
+                                            "
                                         />
                                     </div>
                                 </li>
@@ -886,6 +895,11 @@
 
                             return { fetchedItems: collectionItems, featuredItem: null };
                         } else if (typeof props.items === 'number') {
+                            const showDescriptions = Boolean(
+                                props.blockData?.show_descriptions == 1 ||
+                                props.blockData?.show_descriptions === true,
+                            );
+
                             const these = await Promise.all(
                                 [...Array(props.items)].map(async (el, i) => {
                                     const entryType = props.blockData[`items_${i}_entry_type`];
@@ -898,10 +912,10 @@
                                             heading: undefined,
                                             subheading: undefined,
                                             subheadgin2: undefined,
-                                            paragraph_entry_type: undefined,
                                             paragraph: undefined,
                                             button: undefined,
                                             image: undefined,
+                                            show_descriptions: showDescriptions,
                                             true_aspect_ratio: Boolean(
                                                 props.blockData[`items_${i}_true_aspect_ratio`] ==
                                                     1 ||
@@ -924,11 +938,10 @@
                                         heading: props.blockData[`items_${i}_heading`],
                                         subheading: props.blockData[`items_${i}_subheading`],
                                         subheading2: props.blockData[`items_${i}_subheading2`],
-                                        paragraph_entry_type:
-                                            props.blockData[`items_${i}_paragraph_entry_type`],
                                         paragraph: props.blockData[`items_${i}_paragraph`],
                                         button: props.blockData[`items_${i}_button`],
                                         image: processedImage,
+                                        show_descriptions: showDescriptions,
                                         true_aspect_ratio: Boolean(
                                             props.blockData[`items_${i}_true_aspect_ratio`] == 1 ||
                                             props.blockData[`items_${i}_true_aspect_ratio`] ===
@@ -1426,32 +1439,25 @@
 
             /* Native Aspect Ratio Mode for Offset Variant */
             &--true-aspect {
-                padding-bottom: 0 !important;
-                height: auto !important;
-                display: block !important;
-
                 > a {
-                    position: relative !important;
-                    display: block;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
                     width: 100%;
-                    height: auto !important;
+                    height: 100%;
+                    display: block;
                 }
 
                 picture {
                     display: block;
                     width: 100%;
-                    height: auto;
+                    height: 100%;
                 }
 
                 img,
                 video.media-context__video {
-                    position: relative !important;
-                    display: block !important;
-                    width: auto !important;
-                    max-width: 100% !important;
-                    height: auto !important;
-                    max-height: none !important;
-                    margin: 0 auto !important;
+                    object-fit: scale-down !important;
+                    object-position: center !important;
                 }
             }
 
