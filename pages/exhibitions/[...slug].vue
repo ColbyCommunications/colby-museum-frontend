@@ -1,7 +1,7 @@
 <template>
     <div class="page page--default">
         <Breadcrumbs
-            v-if="route.params.slug != ''"
+            v-if="normalizedPath !== ''"
             :current="{
                 title: title,
                 url: fullPath,
@@ -46,24 +46,33 @@
 </template>
 
 <script setup>
+    import { computed } from 'vue';
     import transitionConfig from '../helpers/transitionConfig';
-    // import seoConfig from '../helpers/seoConfig';
     import { useInterfaceStore } from '~/store/interface';
     import formatDate from '~/helpers/formatDate';
 
-    // Get route and props
     const route = useRoute();
     const fullPath = route.fullPath;
-    const props = defineProps(); // Gets props passed to the component
+    const props = defineProps();
 
-    // Set page meta
     definePageMeta({
         pageTransition: transitionConfig,
     });
 
-    // Fetch data
+    const normalizedPath = computed(() => {
+        const slug = route.params.slug;
+
+        if (!slug) {
+            return '';
+        }
+
+        return Array.isArray(slug)
+            ? slug.join('/')
+            : slug;
+    });
+
     const data = await useFetchContent(
-        route.params.slug,
+        normalizedPath.value,
         {
             ...props,
             interface: useInterfaceStore(),
@@ -71,31 +80,33 @@
         'exhibitions'
     );
 
-    // Process data
     const pageData = data.value?.pageData ?? {};
 
     const title = pageData?.title?.rendered
         ?.replace(/–/g, '-')
         .replace(/“/g, '"')
         .replace(/”/g, '"')
-        .replace(/’/g, "'");
+        .replace(/’/g, "'") ?? '';
 
-    const excerpt = pageData?.excerpt?.rendered?.replace(/<\/?[^>]+(>|$)/g, '');
+    const excerpt = pageData?.excerpt?.rendered?.replace(/<\/?[^>]+(>|$)/g, '') ?? '';
     const location = pageData?.acf?.location;
     const address = pageData?.acf?.address;
 
-    // Date formatting
     const postDate = pageData?.acf?.date;
-    const date = new Date(
-        `${postDate?.substr(0, 4)}-${postDate?.substr(4, 2)}-${postDate?.substr(6, 2)}T00:00:00`
-    ).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: '2-digit',
-        hour12: false,
-    });
 
-    let end_date;
+    const date = postDate
+        ? new Date(
+              `${postDate.substr(0, 4)}-${postDate.substr(4, 2)}-${postDate.substr(6, 2)}T00:00:00`
+          ).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: '2-digit',
+              hour12: false,
+          })
+        : '';
+
+    let end_date = '';
+
     if (pageData?.acf?.end_date) {
         end_date = new Date(
             `${pageData.acf.end_date.substr(0, 4)}-${pageData.acf.end_date.substr(
@@ -110,21 +121,21 @@
         });
     }
 
-    // Component mapping
-    const components = pageData?.block_data?.map((component) => {
-        component.type = component.blockName.replace('acf/', '').replace(/\//g, '-');
+    const components = (pageData?.block_data ?? []).map((component) => {
+        const normalizedComponent = { ...component };
+
+        normalizedComponent.type = normalizedComponent.blockName
+            .replace('acf/', '')
+            .replace(/\//g, '-');
 
         return {
-            type: component.type,
-            ...component.attrs.data,
-            attrs: component.attrs.data ? undefined : component.attrs,
-            innerHTML: component.rendered ? component.rendered : undefined,
+            type: normalizedComponent.type,
+            ...normalizedComponent.attrs?.data,
+            attrs: normalizedComponent.attrs?.data ? undefined : normalizedComponent.attrs,
+            innerHTML: normalizedComponent.rendered ? normalizedComponent.rendered : undefined,
         };
     });
 
-    // Hardcoded values from original return statement
     const heading_visible = true;
     const excerpt_visible = true;
-
-    // The `formatTime` method was removed as it was not used.
 </script>
