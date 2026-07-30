@@ -9,10 +9,7 @@
 
 const cleanMediaCaption = (html = '') => {
     return String(html)
-        .replace(
-            /<div[^>]*class=["'][^"']*wp-(?:video|audio)[^"']*["'][^>]*>[\s\S]*?<\/div>/gi,
-            '',
-        )
+        .replace(/<div[^>]*class=["'][^"']*wp-(?:video|audio)[^"']*["'][^>]*>[\s\S]*?<\/div>/gi, '')
         .replace(/<(video|audio)\b[^>]*>[\s\S]*?<\/\1>/gi, '')
         .replace(/<source\b[^>]*\/?>/gi, '')
         .replace(/<img\b[^>]*\/?>/gi, '')
@@ -81,7 +78,9 @@ const getImage = async (img, endpoint) => {
 
         // Use the actual WordPress attachment caption, not its description.
         caption: {
-            rendered: cleanMediaCaption(imageData.caption?.rendered || ''),
+            rendered: cleanMediaCaption(
+                imageData.description?.rendered || imageData.caption?.rendered || '',
+            ),
         },
 
         media_details: {
