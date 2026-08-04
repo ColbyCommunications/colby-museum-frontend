@@ -87,6 +87,7 @@
                                         @click="toggleModal()"
                                     >
                                         <Picture
+                                            v-if="item.image"
                                             :classes="'object-cover'"
                                             :alt="item.image.alt_text"
                                             :sizes="item.image.media_details.sizes"
@@ -95,7 +96,7 @@
                                     </button>
                                     <div class="media-context__image" v-else>
                                         <NuxtLink
-                                            v-if="item.button"
+                                            v-if="item.button && item.image"
                                             :to="
                                                 item.button.url
                                                     .replace(/^.*\/\/[^\/]+/, '')
@@ -110,7 +111,7 @@
                                             />
                                         </NuxtLink>
                                         <VueImageZoomer
-                                            v-else-if="artificialDelayFinished"
+                                            v-else-if="artificialDelayFinished && item.image"
                                             :regular="
                                                 item.image.media_details.sizes.full.source_url
                                             "
@@ -118,7 +119,11 @@
                                             :lazyload="index == 0 ? false : true"
                                         />
                                         <div
-                                            v-if="item.image.caption && variant == 'full-width'"
+                                            v-if="
+                                                item.image &&
+                                                item.image.caption &&
+                                                variant == 'full-width'
+                                            "
                                             class="media-context__caption"
                                             v-html="
                                                 item.image.caption.rendered.replace(
@@ -235,6 +240,7 @@
                                         <div
                                             v-if="
                                                 !item.post &&
+                                                item.image &&
                                                 item.image.caption &&
                                                 item.image.caption.rendered &&
                                                 variant == 'full-width'
@@ -491,6 +497,10 @@
                         :title="'Next Slide'"
                     />
                 </div>
+                <!-- 
+                  FIX: Added safety checks below to gracefully skip captions 
+                  if `item.image` or `item.image.caption` is null/undefined 
+                -->
                 <div class="media-context__mini-captions">
                     <div class="vertical-curtain" ref="pcurtain" />
                     <div v-if="typeof items != 'number'" v-for="(item, index) in items">
@@ -500,7 +510,10 @@
                                 'media-context__context-panel--active': activeSlide == index,
                             }"
                         >
-                            <span v-html="item.image.caption.rendered" />
+                            <span
+                                v-if="item.image && item.image.caption"
+                                v-html="item.image.caption.rendered"
+                            />
                         </p>
                     </div>
                     <div v-else v-for="(item, index) in newItems">
@@ -519,7 +532,10 @@
                                 'media-context__context-panel--active': activeSlide == index,
                             }"
                         >
-                            <span v-html="item.image.caption.rendered" />
+                            <span
+                                v-if="item.image && item.image.caption"
+                                v-html="item.image.caption.rendered"
+                            />
                         </p>
                     </div>
                 </div>
