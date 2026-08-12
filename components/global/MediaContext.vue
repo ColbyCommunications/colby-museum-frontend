@@ -643,13 +643,92 @@
         return newItems;
     };
 
-    const getPost = async (i, endpoint, type = 'post') => {
+    // Updated preview-aware getPost helper
+    const getPost = async (i, endpoint, type = 'post', isPreview = false) => {
+        if (!i) return null;
+
+        if (isPreview) {
+            try {
+                const post = await $fetch(`/api/wp-draft/${i}`, {
+                    query: { type },
+                });
+                return Array.isArray(post) ? post.at(0) : post;
+            } catch (err) {
+                console.error('Failed to fetch draft post via proxy:', err);
+            }
+        }
+
         try {
             const posts = await $fetch(`${endpoint}eoe/${i}?type=${type}`);
             return Array.isArray(posts) ? posts.at(0) : posts;
         } catch (e) {
-            console.error('Failed to fetch singular post:', e);
-            return null;
+            // Fallback: If public endpoint fails or post is a draft, query via server proxy
+            try {
+                const post = await $fetch(`/api/wp-draft/${i}`, {
+                    query: { type },
+                });
+                return Array.isArray(post) ? post.at(0) : post;
+            } catch (err) {
+                console.error('Failed to fetch singular post:', err);
+                return null;
+            }
+        }
+    };
+
+    // Helper for safe media fetching
+    const fetchImageSafely = async (rawImage, endpoint, isPreview = false) => {
+        if (!rawImage) return null;
+
+        if (isPreview) {
+            try {
+                const imageObj = await $fetch(`/api/wp-draft/${rawImage}`, {
+                    query: { type: 'media' },
+                });
+                const mediaDetails = imageObj.media_details || {};
+                let imageAspect;
+                if (mediaDetails.height > 0 && mediaDetails.width > 0) {
+                    imageAspect = mediaDetails.height / mediaDetails.width;
+                }
+                return {
+                    artist_name: imageObj.acf?.artist_name,
+                    object_title: imageObj.acf?.object_title,
+                    object_creation_date: imageObj.acf?.object_creation_date,
+                    alt_text: imageObj.alt_text,
+                    caption: {
+                        rendered: (imageObj.description?.rendered || '')
+                            .replace(/<img[^>]*>/g, '')
+                            .replace(/<p[^>]*>|<\/p>/g, '')
+                            .replace(/\r?\n|\r/g, '')
+                            .replace(/<a[^>]*>|<\/a>/g, ''),
+                    },
+                    media_details: {
+                        sizes: {
+                            full: { source_url: imageObj.source_url || imageObj.guid?.rendered },
+                            desktop: { aspect_ratio: imageAspect, source_url: imageObj.source_url || imageObj.guid?.rendered },
+                            mobile: { aspect_ratio: imageAspect, source_url: imageObj.source_url || imageObj.guid?.rendered },
+                        },
+                    },
+                };
+            } catch (e) {
+                // Ignore and try standard helper
+            }
+        }
+
+        try {
+            return await getImage(rawImage, endpoint);
+        } catch (e) {
+            try {
+                const imageObj = await $fetch(`/api/wp-draft/${rawImage}`, {
+                    query: { type: 'media' },
+                });
+                return {
+                    alt_text: imageObj.alt_text,
+                    caption: imageObj.caption || { rendered: '' },
+                    media_details: imageObj.media_details || { sizes: {} },
+                };
+            } catch (err) {
+                return null;
+            }
         }
     };
 
@@ -830,6 +909,8 @@
             const iface = useInterfaceStore();
             const uniqueId = useId();
 
+            const isPreview = route.path.startsWith('/preview') || !!route.query.id;
+
             const { data: items } = await useAsyncData(
                 `mc-${props.items_type}-${props.collection ?? props.items ?? 'component'}-${props.showChronology}-${uniqueId}`,
                 async () => {
@@ -845,6 +926,7 @@
                                               props.featured_event,
                                               iface.endpoint,
                                               'events',
+                                              isPreview,
                                           );
                             } else if (
                                 props.items_type === 'exhibitions' &&
@@ -857,6 +939,7 @@
                                               props.featured_exhibition,
                                               iface.endpoint,
                                               'exhibitions',
+                                              isPreview,
                                           );
                             }
                         }
@@ -906,8 +989,8 @@
 
                             return { fetchedItems, featuredItem: finalFeaturedItem };
                         } else if (props.items_type === 'collection') {
-                            const post = await getPost(props.collection, iface.endpoint);
                             const collectionItems = await getCollection(post.acf.embark_id);
+                            const post = await getPost(props.collection, iface.endpoint, 'post', isPreview);
 
                             return { fetchedItems: collectionItems, featuredItem: null };
                         } else if (typeof props.items === 'number') {
@@ -924,7 +1007,7 @@
                                         const selection =
                                             props.blockData[`items_${i}_posts_selection`];
                                         return {
-                                            post: await getPost(selection, iface.endpoint),
+                                            post: await getPost(selection, iface.endpoint, 'post', isPreview),
                                             heading: undefined,
                                             subheading: undefined,
                                             subheadgin2: undefined,
@@ -946,7 +1029,7 @@
                                         props.blockData[`items_${i}_file`] ||
                                         props.blockData[`items_${i}_image`];
                                     const processedImage = rawImage
-                                        ? await getImage(rawImage, iface.endpoint)
+                                        ? await fetchImageSafely(rawImage, iface.endpoint, isPreview)
                                         : null;
 
                                     return {

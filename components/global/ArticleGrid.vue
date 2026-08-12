@@ -998,10 +998,29 @@
     const getImage = async (i, endpoint) => {
         if (!i) return;
 
-        const url = new URL(`media/${i}`, endpoint);
-        const imageObj = await $fetch(url.href);
+        const route = useRoute();
+        const isPreview = route.path.startsWith('/preview') || !!route.query.id;
 
-        const mediaDetails = imageObj.media_details;
+        let imageObj;
+        try {
+            if (isPreview) {
+                // 🔒 In preview mode, call your Nuxt server proxy (which attaches WP Basic Auth)
+                imageObj = await $fetch(`/api/wp-draft/${i}`, {
+                    query: { type: 'media' },
+                });
+            } else {
+                // 🌐 On live public pages, fetch directly from WordPress
+                const url = new URL(`media/${i}`, endpoint);
+                imageObj = await $fetch(url.href);
+            }
+        } catch (err) {
+            // Fallback: If direct fetch fails, attempt through authenticated proxy
+            imageObj = await $fetch(`/api/wp-draft/${i}`, {
+                query: { type: 'media' },
+            });
+        }
+
+        const mediaDetails = imageObj.media_details || {};
 
         let imageAspect;
         if (mediaDetails.height > 0 && mediaDetails.width > 0) {
