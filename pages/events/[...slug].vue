@@ -138,8 +138,13 @@ const excerpt_visible = pageData?.acf?.excerpt_visible;
 const location = pageData?.acf?.location;
 const address = pageData?.acf?.address;
 
-const date = formatAcfDate(pageData?.acf?.date);
+let date = formatAcfDate(pageData?.acf?.date);
 const end_date = formatAcfDate(pageData?.acf?.end_date);
+
+// if range
+if (date !== end_date) {
+    date = `${date}&ndash;${end_date}`;
+}
 
 const start_time = pageData?.acf?.start_time
     ? formatTime(pageData.acf.start_time)
