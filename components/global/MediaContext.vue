@@ -679,6 +679,20 @@
     const fetchImageSafely = async (rawImage, endpoint, isPreview = false) => {
         if (!rawImage) return null;
 
+        // Helper to strip out auto-embedded videos, iframes, and unwanted markup from WP drafts
+        const cleanCaption = (htmlString) => {
+            if (!htmlString) return '';
+            return htmlString
+                .replace(/<figure[^>]*>|<\/figure>/gi, '') // Strips wrapper tags that cause margin overflow
+                .replace(/<img[^>]*>/gi, '')
+                .replace(/<p[^>]*>|<\/p>/gi, '')
+                .replace(/\r?\n|\r/gi, '')
+                .replace(/<a[^>]*>|<\/a>/gi, '')
+                .replace(/<video[^>]*>[\s\S]*?<\/video>/gi, '')
+                .replace(/<iframe[^>]*>[\s\S]*?<\/iframe>/gi, '')
+                .replace(/\[(?:video|embed)[^\]]*\]/gi, '');
+        };
+
         if (isPreview) {
             try {
                 const imageObj = await $fetch(`/api/wp-draft/${rawImage}`, {
@@ -694,18 +708,24 @@
                     object_title: imageObj.acf?.object_title,
                     object_creation_date: imageObj.acf?.object_creation_date,
                     alt_text: imageObj.alt_text,
+                    mime_type: imageObj.mime_type, // Required for template v-if
+                    source_url: imageObj.source_url || imageObj.guid?.rendered, // Required for video src
                     caption: {
-                        rendered: (imageObj.description?.rendered || '')
-                            .replace(/<img[^>]*>/g, '')
-                            .replace(/<p[^>]*>|<\/p>/g, '')
-                            .replace(/\r?\n|\r/g, '')
-                            .replace(/<a[^>]*>|<\/a>/g, ''),
+                        rendered: cleanCaption(
+                            imageObj.description?.rendered || imageObj.caption?.rendered,
+                        ),
                     },
                     media_details: {
                         sizes: {
                             full: { source_url: imageObj.source_url || imageObj.guid?.rendered },
-                            desktop: { aspect_ratio: imageAspect, source_url: imageObj.source_url || imageObj.guid?.rendered },
-                            mobile: { aspect_ratio: imageAspect, source_url: imageObj.source_url || imageObj.guid?.rendered },
+                            desktop: {
+                                aspect_ratio: imageAspect,
+                                source_url: imageObj.source_url || imageObj.guid?.rendered,
+                            },
+                            mobile: {
+                                aspect_ratio: imageAspect,
+                                source_url: imageObj.source_url || imageObj.guid?.rendered,
+                            },
                         },
                     },
                 };
@@ -723,7 +743,11 @@
                 });
                 return {
                     alt_text: imageObj.alt_text,
-                    caption: imageObj.caption || { rendered: '' },
+                    caption: {
+                        rendered: cleanCaption(
+                            imageObj.caption?.rendered || imageObj.description?.rendered,
+                        ),
+                    },
                     media_details: imageObj.media_details || { sizes: {} },
                 };
             } catch (err) {
@@ -990,7 +1014,12 @@
                             return { fetchedItems, featuredItem: finalFeaturedItem };
                         } else if (props.items_type === 'collection') {
                             const collectionItems = await getCollection(post.acf.embark_id);
-                            const post = await getPost(props.collection, iface.endpoint, 'post', isPreview);
+                            const post = await getPost(
+                                props.collection,
+                                iface.endpoint,
+                                'post',
+                                isPreview,
+                            );
 
                             return { fetchedItems: collectionItems, featuredItem: null };
                         } else if (typeof props.items === 'number') {
@@ -1007,7 +1036,12 @@
                                         const selection =
                                             props.blockData[`items_${i}_posts_selection`];
                                         return {
-                                            post: await getPost(selection, iface.endpoint, 'post', isPreview),
+                                            post: await getPost(
+                                                selection,
+                                                iface.endpoint,
+                                                'post',
+                                                isPreview,
+                                            ),
                                             heading: undefined,
                                             subheading: undefined,
                                             subheadgin2: undefined,
@@ -1029,8 +1063,13 @@
                                         props.blockData[`items_${i}_file`] ||
                                         props.blockData[`items_${i}_image`];
                                     const processedImage = rawImage
-                                        ? await fetchImageSafely(rawImage, iface.endpoint, isPreview)
+                                        ? await fetchImageSafely(
+                                              rawImage,
+                                              iface.endpoint,
+                                              isPreview,
+                                          )
                                         : null;
+                                    console.log('Processed Image:', processedImage);
 
                                     return {
                                         post: undefined,
@@ -1337,6 +1376,8 @@
     }
 
     .media-context {
+        overflow-x: clip; // Contains horizontal bleed from the slider track and wrappers
+
         &--inactive {
             display: none;
         }
