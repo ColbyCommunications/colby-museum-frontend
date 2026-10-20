@@ -73,13 +73,22 @@
                         <ChevronBtn @click="changeSlide('prev')" :title="'Previous Slide'" />
                         <ChevronBtn @click="changeSlide('next')" :title="'Next Slide'" />
                     </div>
-                    <div class="glide" data-glide-window>
+                    <div
+                        class="glide"
+                        data-glide-window
+                        role="group"
+                        aria-roledescription="carousel"
+                        aria-label="Museum image carousel"
+                    >
                         <div class="glide__track" data-glide-el="track">
                             <ul class="glide__slides">
                                 <li
                                     v-if="items_type == 'objects'"
                                     v-for="(item, index) in items"
                                     class="glide__slide"
+                                    role="group"
+                                    aria-roledescription="slide"
+                                    :aria-label="`Slide ${index + 1} of ${items.length}`"
                                 >
                                     <button
                                         class="media-context__image"
@@ -138,6 +147,9 @@
                                     v-else-if="newItems.length > 0"
                                     v-for="(item, index) in newItems"
                                     class="glide__slide"
+                                    role="group"
+                                    aria-roledescription="slide"
+                                    :aria-label="`Slide ${index + 1} of ${newItems.length}`"
                                 >
                                     <div v-if="variant == 'overflow'" class="glide__context">
                                         <Context
