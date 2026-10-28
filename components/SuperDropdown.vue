@@ -65,7 +65,10 @@
             </div>
             <ul class="super-dropdown__ul" v-if="items">
                 <li v-for="(item, index) in items">
-                    <NuxtLink :to="item.url" target="_blank">{{ item.title }}</NuxtLink>
+                    <NuxtLink :to="item.url" 
+                    target="_blank">
+                    :aria-current="$route.path === item.url.replace(/^.*\/\/[^\/]+/, '').replace(/\/$/, '') ? 'page' : undefined"
+                    {{ item.title }}</NuxtLink>
                 </li>
             </ul>
             <slot v-if="sort" />

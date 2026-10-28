@@ -68,6 +68,7 @@
                         >
                             <NuxtLink
                                 :to="item.url.replace(/^.*\/\/[^\/]+/, '').replace(/\/$/, '')"
+                                :aria-current="route.path === item.url.replace(/^.*\/\/[^\/]+/, '').replace(/\/$/, '') ? 'page' : undefined"                                
                                 @click="closeDrawer()"
                                 @mousedown.prevent
                                 >{{ item.title.replace('amp;', '') }}</NuxtLink
@@ -92,6 +93,7 @@
                                                       .replace(/^.*\/\/[^\/]+/, '')
                                                       .replace(/\/$/, '')
                                         "
+                                        :aria-current="$route.path === child.url.replace(/^.*\/\/[^\/]+/, '').replace(/\/$/, '') ? 'page' : undefined"
                                         @click="closeDrawer()"
                                         >{{ child.title.replace('amp;', '') }}</NuxtLink
                                     >
