@@ -9,9 +9,63 @@
         ref="mediacontext"
     >
         <div class="media-context__inner grid">
+            <!-- Static Featured Element -->
+            <div
+                v-if="variant == 'overflow' && featuredItem"
+                class="media-context__featured-static"
+            >
+                <div class="glide__context">
+                    <Context
+                        :size="'small'"
+                        :heading="featuredItem.post.title.rendered"
+                        :subheading="
+                            formatDate(featuredItem.post.acf.date, 'events') +
+                            (featuredItem.post.acf.end_date &&
+                            featuredItem.post.acf.date != featuredItem.post.acf.end_date
+                                ? `&ndash;${formatDate(featuredItem.post.acf.end_date, 'events')}`
+                                : '')
+                        "
+                        :subheading2="
+                            featuredItem.post.type == 'events'
+                                ? `${formatTime(featuredItem.post.acf.start_time)}&ndash;${formatTime(
+                                      featuredItem.post.acf.end_time,
+                                  )}`
+                                : undefined
+                        "
+                        :button="{
+                            title:
+                                featuredItem.post.type == 'events'
+                                    ? 'Event Details'
+                                    : 'Exhibition Details',
+                            url: featuredItem.post.link,
+                        }"
+                    />
+                </div>
+                <div class="media-context__image">
+                    <NuxtLink
+                        :to="featuredItem.post.link.replace(/^.*\/\/[^\/]+/, '').replace(/\/$/, '')"
+                        :aria-label="featuredItem.post.title.rendered"
+                    >
+                        <PictureLoader
+                            :classes="'object-cover'"
+                            :post="featuredItem.post"
+                            :loading="'eager'"
+                        />
+                    </NuxtLink>
+                </div>
+                <div class="glide__small-context">
+                    <Context
+                        :size="'small'"
+                        :paragraph="featuredItem.post.post_excerpt.replace(/<\/?[^>]+(>|$)/g, '')"
+                    />
+                </div>
+            </div>
+
+            <!-- Carousel Component -->
             <div ref="carousel" class="media-context__media">
                 <div class="media-context__media-inner">
                     <div class="horizontal-curtain" ref="curtain" />
+
                     <div
                         v-if="variant == 'overflow' && (newItems.length > 0 || items)"
                         class="media-context__chevrons"
@@ -33,6 +87,7 @@
                                         @click="toggleModal()"
                                     >
                                         <Picture
+                                            v-if="item.image"
                                             :classes="'object-cover'"
                                             :alt="item.image.alt_text"
                                             :sizes="item.image.media_details.sizes"
@@ -41,7 +96,7 @@
                                     </button>
                                     <div class="media-context__image" v-else>
                                         <NuxtLink
-                                            v-if="item.button"
+                                            v-if="item.button && item.image"
                                             :to="
                                                 item.button.url
                                                     .replace(/^.*\/\/[^\/]+/, '')
@@ -56,7 +111,7 @@
                                             />
                                         </NuxtLink>
                                         <VueImageZoomer
-                                            v-else-if="artificialDelayFinished"
+                                            v-else-if="artificialDelayFinished && item.image"
                                             :regular="
                                                 item.image.media_details.sizes.full.source_url
                                             "
@@ -64,12 +119,16 @@
                                             :lazyload="index == 0 ? false : true"
                                         />
                                         <div
-                                            v-if="item.image.caption && variant == 'full-width'"
+                                            v-if="
+                                                item.image &&
+                                                item.image.caption &&
+                                                variant == 'full-width'
+                                            "
                                             class="media-context__caption"
                                             v-html="
                                                 item.image.caption.rendered.replace(
                                                     /<\/?[^>]+(>|$)/g,
-                                                    ''
+                                                    '',
                                                 )
                                             "
                                         />
@@ -80,7 +139,6 @@
                                     v-for="(item, index) in newItems"
                                     class="glide__slide"
                                 >
-                                    <!-- Conditional logic for either manual or post image -->
                                     <div v-if="variant == 'overflow'" class="glide__context">
                                         <Context
                                             v-if="item.post && item.post.post_type == 'post'"
@@ -95,8 +153,8 @@
                                         <Context
                                             v-else-if="
                                                 item.post &&
-                                                (items_type == 'events' ||
-                                                    items_type == 'exhibitions')
+                                                (item.post.type == 'events' ||
+                                                    item.post.type == 'exhibitions')
                                             "
                                             :size="'small'"
                                             :heading="item.post.title.rendered"
@@ -106,16 +164,16 @@
                                                 item.post.acf.date != item.post.acf.end_date
                                                     ? `&ndash;${formatDate(
                                                           item.post.acf.end_date,
-                                                          'events'
+                                                          'events',
                                                       )}`
                                                     : '')
                                             "
                                             :subheading2="
                                                 item.post.post_type == 'events'
                                                     ? `${formatTime(
-                                                          item.post.acf.start_time
+                                                          item.post.acf.start_time,
                                                       )}&ndash;${formatTime(
-                                                          item.post.acf.end_time
+                                                          item.post.acf.end_time,
                                                       )}`
                                                     : undefined
                                             "
@@ -153,14 +211,25 @@
                                             :button="item.button"
                                         />
                                     </div>
-                                    <div v-if="item.post" class="media-context__image">
+                                    <div
+                                        v-if="item.post"
+                                        class="media-context__image"
+                                        :class="{
+                                            'media-context__image--true-aspect':
+                                                variant === 'offset' && item.true_aspect_ratio,
+                                        }"
+                                    >
                                         <NuxtLink
                                             :to="
                                                 item.post.link
                                                     .replace(/^.*\/\/[^\/]+/, '')
                                                     .replace(/\/$/, '')
                                             "
-                                            :aria-label="'title' in item.post ? item.post.title.rendered : item.post.post_title"
+                                            :aria-label="
+                                                'title' in item.post
+                                                    ? item.post.title.rendered
+                                                    : item.post.post_title
+                                            "
                                         >
                                             <PictureLoader
                                                 :classes="'object-cover'"
@@ -171,18 +240,28 @@
                                         <div
                                             v-if="
                                                 !item.post &&
+                                                item.image &&
                                                 item.image.caption &&
+                                                item.image.caption.rendered &&
                                                 variant == 'full-width'
                                             "
                                             class="media-context__caption"
                                             v-html="
                                                 item.image.caption.rendered.replace(
-                                                    /<\/?[^>]+(>|$)/g
+                                                    /<\/?[^>]+(>|$)/g,
+                                                    '',
                                                 )
                                             "
                                         />
                                     </div>
-                                    <div v-else class="media-context__image">
+                                    <div
+                                        v-else
+                                        class="media-context__image"
+                                        :class="{
+                                            'media-context__image--true-aspect':
+                                                variant === 'offset' && item.true_aspect_ratio,
+                                        }"
+                                    >
                                         <NuxtLink
                                             v-if="item.button && item.image"
                                             :to="
@@ -191,23 +270,53 @@
                                                     .replace(/\/$/, '')
                                             "
                                         >
+                                            <!-- Video Rendering -->
+                                            <video
+                                                v-if="item.image.mime_type?.startsWith('video/')"
+                                                :src="item.image.source_url"
+                                                autoplay
+                                                loop
+                                                muted
+                                                playsinline
+                                                preload="metadata"
+                                                class="media-context__video"
+                                            />
+                                            <!-- Image/GIF Rendering -->
                                             <Picture
+                                                v-else
                                                 :classes="'object-cover'"
-                                                :alt="item.image.alt_text"
+                                                :alt="item.image.alt_text || 'Media'"
                                                 :sizes="item.image.media_details.sizes"
                                                 :loading="index > 0 ? 'lazy' : 'eager'"
                                             />
                                         </NuxtLink>
-                                        <Picture
-                                            v-else-if="item.image"
-                                            :classes="'object-cover'"
-                                            :alt="item.image.alt_text"
-                                            :sizes="item.image.media_details.sizes"
-                                            :loading="index > 0 ? 'lazy' : 'eager'"
-                                        />
+
+                                        <template v-else-if="item.image">
+                                            <!-- Video Rendering -->
+                                            <video
+                                                v-if="item.image.mime_type?.startsWith('video/')"
+                                                :src="item.image.source_url"
+                                                autoplay
+                                                loop
+                                                muted
+                                                playsinline
+                                                preload="metadata"
+                                                class="media-context__video"
+                                            />
+                                            <!-- Image/GIF Rendering -->
+                                            <Picture
+                                                v-else
+                                                :classes="'object-cover'"
+                                                :alt="item.image.alt_text || 'Media'"
+                                                :sizes="item.image.media_details.sizes"
+                                                :loading="index > 0 ? 'lazy' : 'eager'"
+                                            />
+                                        </template>
+
                                         <div
                                             v-if="
                                                 item.image &&
+                                                item.image.caption &&
                                                 item.image.caption.rendered &&
                                                 variant == 'full-width'
                                             "
@@ -226,7 +335,7 @@
                                             :paragraph="
                                                 item.post.post_excerpt.replace(
                                                     /<\/?[^>]+(>|$)/g,
-                                                    ''
+                                                    '',
                                                 )
                                             "
                                         />
@@ -240,7 +349,7 @@
                                             :paragraph="
                                                 item.post.post_excerpt.replace(
                                                     /<\/?[^>]+(>|$)/g,
-                                                    ''
+                                                    '',
                                                 )
                                             "
                                         />
@@ -250,17 +359,25 @@
                                             :paragraph="
                                                 item.post.post_excerpt.replace(
                                                     /<\/?[^>]+(>|$)/g,
-                                                    ''
+                                                    '',
                                                 )
                                             "
                                         />
                                         <Context
                                             v-else
                                             :size="'small'"
-                                            :paragraph="item.paragraph"
+                                            :paragraph="
+                                                item.show_descriptions &&
+                                                item.image &&
+                                                item.image.caption
+                                                    ? item.image.caption.rendered.replace(
+                                                          /<\/?[^>]+(>|$)/g,
+                                                          '',
+                                                      )
+                                                    : undefined
+                                            "
                                         />
                                     </div>
-                                    <!-- END Conditional logic for either manual or post image -->
                                 </li>
                             </ul>
                         </div>
@@ -380,6 +497,10 @@
                         :title="'Next Slide'"
                     />
                 </div>
+                <!-- 
+                  FIX: Added safety checks below to gracefully skip captions 
+                  if `item.image` or `item.image.caption` is null/undefined 
+                -->
                 <div class="media-context__mini-captions">
                     <div class="vertical-curtain" ref="pcurtain" />
                     <div v-if="typeof items != 'number'" v-for="(item, index) in items">
@@ -389,7 +510,10 @@
                                 'media-context__context-panel--active': activeSlide == index,
                             }"
                         >
-                            <span v-html="item.image.caption.rendered" />
+                            <span
+                                v-if="item.image && item.image.caption"
+                                v-html="item.image.caption.rendered"
+                            />
                         </p>
                     </div>
                     <div v-else v-for="(item, index) in newItems">
@@ -408,7 +532,10 @@
                                 'media-context__context-panel--active': activeSlide == index,
                             }"
                         >
-                            <span v-html="item.image.caption.rendered" />
+                            <span
+                                v-if="item.image && item.image.caption"
+                                v-html="item.image.caption.rendered"
+                            />
                         </p>
                     </div>
                 </div>
@@ -428,8 +555,11 @@
     import getImage from '~/helpers/getImage';
     import { useId } from 'vue';
 
-    const getPosts = async ({ items_type, showChronology, showVariant }, endpoint, endpointCustom) => {
-        
+    const getPosts = async (
+        { items_type, showChronology, showVariant },
+        endpoint,
+        endpointCustom,
+    ) => {
         let pageParams = {};
 
         if (items_type === 'exhibitions' || items_type === 'events') {
@@ -460,9 +590,8 @@
                         page: 1,
                         limit: 8,
                     };
-                } 
+                }
             } else if (items_type === 'events') {
-          
                 if (showChronology === 'past') {
                     pageParams = {
                         chronology: 'past',
@@ -487,9 +616,9 @@
                         page: 1,
                         limit: 8,
                     };
-                } 
+                }
             }
-    
+
             if (showVariant === 'traveling') {
                 pageParams.variant = '14';
             }
@@ -500,7 +629,6 @@
         const data = await $fetch.raw(pageReqUrl.href, {
             params: pageParams,
             headers: {
-                // This fools Cloudflare into thinking Nuxt is a browser
                 'User-Agent':
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
             },
@@ -508,16 +636,124 @@
 
         let newItems = data._data.map((i) => ({
             post: i,
-            event_date: i.acf.date ? formatDate(i.acf.date, 'events-raw') : undefined,
-            end_date: i.acf.end_date ? formatDate(i.acf.end_date, 'events-raw') : undefined,
+            event_date: i.acf && i.acf.date ? formatDate(i.acf.date, 'events-raw') : undefined,
+            end_date:
+                i.acf && i.acf.end_date ? formatDate(i.acf.end_date, 'events-raw') : undefined,
         }));
         return newItems;
     };
 
-    const getPost = async (i, endpoint) => {
-        const posts = await $fetch(`${endpoint}eoe/${i}?type=post`);
+    // Updated preview-aware getPost helper
+    const getPost = async (i, endpoint, type = 'post', isPreview = false) => {
+        if (!i) return null;
 
-        return posts.at(0);
+        if (isPreview) {
+            try {
+                const post = await $fetch(`/api/wp-draft/${i}`, {
+                    query: { type },
+                });
+                return Array.isArray(post) ? post.at(0) : post;
+            } catch (err) {
+                console.error('Failed to fetch draft post via proxy:', err);
+            }
+        }
+
+        try {
+            const posts = await $fetch(`${endpoint}eoe/${i}?type=${type}`);
+            return Array.isArray(posts) ? posts.at(0) : posts;
+        } catch (e) {
+            // Fallback: If public endpoint fails or post is a draft, query via server proxy
+            try {
+                const post = await $fetch(`/api/wp-draft/${i}`, {
+                    query: { type },
+                });
+                return Array.isArray(post) ? post.at(0) : post;
+            } catch (err) {
+                console.error('Failed to fetch singular post:', err);
+                return null;
+            }
+        }
+    };
+
+    // Helper for safe media fetching
+    const fetchImageSafely = async (rawImage, endpoint, isPreview = false) => {
+        if (!rawImage) return null;
+
+        // Helper to strip out auto-embedded videos, iframes, and unwanted markup from WP drafts
+        const cleanCaption = (htmlString) => {
+            if (!htmlString) return '';
+            return htmlString
+                .replace(/<figure[^>]*>|<\/figure>/gi, '') // Strips wrapper tags that cause margin overflow
+                .replace(/<img[^>]*>/gi, '')
+                .replace(/<p[^>]*>|<\/p>/gi, '')
+                .replace(/\r?\n|\r/gi, '')
+                .replace(/<a[^>]*>|<\/a>/gi, '')
+                .replace(/<video[^>]*>[\s\S]*?<\/video>/gi, '')
+                .replace(/<iframe[^>]*>[\s\S]*?<\/iframe>/gi, '')
+                .replace(/\[(?:video|embed)[^\]]*\]/gi, '');
+        };
+
+        if (isPreview) {
+            try {
+                const imageObj = await $fetch(`/api/wp-draft/${rawImage}`, {
+                    query: { type: 'media' },
+                });
+                const mediaDetails = imageObj.media_details || {};
+                let imageAspect;
+                if (mediaDetails.height > 0 && mediaDetails.width > 0) {
+                    imageAspect = mediaDetails.height / mediaDetails.width;
+                }
+                return {
+                    artist_name: imageObj.acf?.artist_name,
+                    object_title: imageObj.acf?.object_title,
+                    object_creation_date: imageObj.acf?.object_creation_date,
+                    alt_text: imageObj.alt_text,
+                    mime_type: imageObj.mime_type, // Required for template v-if
+                    source_url: imageObj.source_url || imageObj.guid?.rendered, // Required for video src
+                    caption: {
+                        rendered: cleanCaption(
+                            imageObj.description?.rendered || imageObj.caption?.rendered,
+                        ),
+                    },
+                    media_details: {
+                        sizes: {
+                            full: { source_url: imageObj.source_url || imageObj.guid?.rendered },
+                            desktop: {
+                                aspect_ratio: imageAspect,
+                                source_url: imageObj.source_url || imageObj.guid?.rendered,
+                            },
+                            mobile: {
+                                aspect_ratio: imageAspect,
+                                source_url: imageObj.source_url || imageObj.guid?.rendered,
+                            },
+                        },
+                    },
+                };
+            } catch (e) {
+                // Ignore and try standard helper
+            }
+        }
+
+        try {
+            return await getImage(rawImage, endpoint);
+        } catch (e) {
+            try {
+                const imageObj = await $fetch(`/api/wp-draft/${rawImage}`, {
+                    query: { type: 'media' },
+                });
+                return {
+                    alt_text: imageObj.alt_text,
+                    caption: {
+                        rendered: cleanCaption(
+                            imageObj.caption?.rendered || imageObj.description?.rendered,
+                        ),
+                    },
+                    media_details: imageObj.media_details || { sizes: {} },
+                };
+            } catch (err) {
+                return null;
+            }
+        }
     };
 
     const getCollection = async (i) => {
@@ -543,15 +779,15 @@
             `https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/stage/_search`,
             query,
             username,
-            password
+            password,
         );
 
         const concatedObjs = (data.hits.hits ?? []).slice(0, 7);
 
-        component.newItems = await Promise.all(
-            concatedObjs.map(async (i) => {
-                return await getObject(i._id.replace('object/', ''));
-            })
+        return await Promise.all(
+            concatedObjs.map(async (item) => {
+                return await getObject(item._id.replace('object/', ''));
+            }),
         );
     };
 
@@ -563,13 +799,13 @@
                     username: 'Fr2fpegcBZ',
                     password: 'Vi7vGnL3h2rtW5SuECoKRwTf',
                 },
-            }
+            },
         );
 
         const img = data.Images.length > 0 ? data.Images[0] : undefined;
         const imgUrl = img
             ? `https://ccma-iiif-cache-service.fly.dev/iiif/2/${img.IIIF_URL.substring(
-                  img.IIIF_URL.lastIndexOf('/') + 1
+                  img.IIIF_URL.lastIndexOf('/') + 1,
               ).replace(/\.[^/.]+$/, '')}/full/${encodeURIComponent('400,')}/0/default.jpg`
             : '';
 
@@ -608,12 +844,12 @@
                           sizes: {
                               full: {
                                   source_url: `/blanks/blank_${Math.floor(
-                                      Math.random() * (3 - 1 + 1) + 1
+                                      Math.random() * (3 - 1 + 1) + 1,
                                   )}.png`,
                               },
                               mobile: {
                                   source_url: `/blanks/blank_${Math.floor(
-                                      Math.random() * (3 - 1 + 1) + 1
+                                      Math.random() * (3 - 1 + 1) + 1,
                                   )}.png`,
                               },
                           },
@@ -675,14 +911,16 @@
                 type: Object,
                 required: false,
             },
+            featured_event: {
+                type: [Object, Number, String],
+                required: false,
+            },
+            featured_exhibition: {
+                type: [Object, Number, String],
+                required: false,
+            },
         },
         watch: {
-            // items: {
-            //   deep: true,
-            //   async handler() {
-            //     this.renderGlide();
-            //   }
-            // },
             newItems: {
                 deep: true,
                 async handler() {
@@ -693,84 +931,180 @@
         async setup(props) {
             const route = useRoute();
             const iface = useInterfaceStore();
-
-            // const instance = getCurrentInstance();
             const uniqueId = useId();
+
+            const isPreview = route.path.startsWith('/preview') || !!route.query.id;
 
             const { data: items } = await useAsyncData(
                 `mc-${props.items_type}-${props.collection ?? props.items ?? 'component'}-${props.showChronology}-${uniqueId}`,
                 async () => {
-                    if (
-                        props.items_type !== 'manual' &&
-                        props.items_type !== 'objects' &&
-                        props.items_type !== 'collection'
-                    ) {
-                        return await getPosts(props, iface.endpoint, iface.endpointcustom);
-                    } else if (props.items_type === 'collection') {
-                        const post = await getPost(props.collection, iface.endpoint);
+                    try {
+                        let featuredPostData = null;
 
-                        return await getCollection(post.acf.embark_id);
-                    } else if (typeof props.items === 'number') {
-                        const these = await Promise.all(
-                            [...Array(props.items)].map(async (el, i) => {
-                                const entryType = props.blockData[`items_${i}_entry_type`];
+                        if (props.variant === 'overflow') {
+                            if (props.items_type === 'events' && props.featured_event) {
+                                featuredPostData =
+                                    typeof props.featured_event === 'object'
+                                        ? props.featured_event
+                                        : await getPost(
+                                              props.featured_event,
+                                              iface.endpoint,
+                                              'events',
+                                              isPreview,
+                                          );
+                            } else if (
+                                props.items_type === 'exhibitions' &&
+                                props.featured_exhibition
+                            ) {
+                                featuredPostData =
+                                    typeof props.featured_exhibition === 'object'
+                                        ? props.featured_exhibition
+                                        : await getPost(
+                                              props.featured_exhibition,
+                                              iface.endpoint,
+                                              'exhibitions',
+                                              isPreview,
+                                          );
+                            }
+                        }
 
-                                if (entryType === 'selection') {
-                                    const selection = props.blockData[`items_${i}_posts_selection`];
+                        if (
+                            props.items_type !== 'manual' &&
+                            props.items_type !== 'objects' &&
+                            props.items_type !== 'collection'
+                        ) {
+                            let fetchedItems = await getPosts(
+                                props,
+                                iface.endpoint,
+                                iface.endpointcustom,
+                            );
 
-                                    return new Promise(async (resolve, reject) => {
-                                        resolve({
-                                            post: await getPost(selection, iface.endpoint),
+                            let finalFeaturedItem = null;
+
+                            if (featuredPostData) {
+                                const normalizedPost = {
+                                    ...featuredPostData,
+                                    id: featuredPostData.ID || featuredPostData.id,
+                                    title: featuredPostData.title || {
+                                        rendered: featuredPostData.post_title,
+                                    },
+                                    post_excerpt: featuredPostData.post_excerpt || '',
+                                    type: featuredPostData.post_type || featuredPostData.type,
+                                    acf: featuredPostData.acf || {},
+                                };
+
+                                const featuredId = normalizedPost.id;
+
+                                fetchedItems = fetchedItems.filter((item) => {
+                                    const itemId = item.post ? item.post.ID || item.post.id : null;
+                                    return itemId !== featuredId;
+                                });
+
+                                finalFeaturedItem = {
+                                    post: normalizedPost,
+                                    event_date: normalizedPost.acf?.date
+                                        ? formatDate(normalizedPost.acf.date, 'events-raw')
+                                        : undefined,
+                                    end_date: normalizedPost.acf?.end_date
+                                        ? formatDate(normalizedPost.acf.end_date, 'events-raw')
+                                        : undefined,
+                                };
+                            }
+
+                            return { fetchedItems, featuredItem: finalFeaturedItem };
+                        } else if (props.items_type === 'collection') {
+                            const collectionItems = await getCollection(post.acf.embark_id);
+                            const post = await getPost(
+                                props.collection,
+                                iface.endpoint,
+                                'post',
+                                isPreview,
+                            );
+
+                            return { fetchedItems: collectionItems, featuredItem: null };
+                        } else if (typeof props.items === 'number') {
+                            const showDescriptions = Boolean(
+                                props.blockData?.show_descriptions == 1 ||
+                                props.blockData?.show_descriptions === true,
+                            );
+
+                            const these = await Promise.all(
+                                [...Array(props.items)].map(async (el, i) => {
+                                    const entryType = props.blockData[`items_${i}_entry_type`];
+
+                                    if (entryType === 'selection') {
+                                        const selection =
+                                            props.blockData[`items_${i}_posts_selection`];
+                                        return {
+                                            post: await getPost(
+                                                selection,
+                                                iface.endpoint,
+                                                'post',
+                                                isPreview,
+                                            ),
                                             heading: undefined,
                                             subheading: undefined,
                                             subheadgin2: undefined,
-                                            paragraph_entry_type: undefined,
                                             paragraph: undefined,
                                             button: undefined,
                                             image: undefined,
+                                            show_descriptions: showDescriptions,
+                                            true_aspect_ratio: Boolean(
+                                                props.blockData[`items_${i}_true_aspect_ratio`] ==
+                                                    1 ||
+                                                props.blockData[`items_${i}_true_aspect_ratio`] ===
+                                                    true,
+                                            ),
                                             openNewTab: openNewTab(props.blockData, i),
-                                        });
-                                    });
-                                }
+                                        };
+                                    }
 
-                                return new Promise(async (resolve, reject) => {
-                                    // 1. Safely retrieve the image ID/Data
-                                    const rawImage = props.blockData[`items_${i}_image`];
-
-                                    // 2. Only call getImage if rawImage exists, otherwise set to null
+                                    const rawImage =
+                                        props.blockData[`items_${i}_file`] ||
+                                        props.blockData[`items_${i}_image`];
                                     const processedImage = rawImage
-                                        ? await getImage(rawImage, iface.endpoint)
+                                        ? await fetchImageSafely(
+                                              rawImage,
+                                              iface.endpoint,
+                                              isPreview,
+                                          )
                                         : null;
+                                    console.log('Processed Image:', processedImage);
 
-                                    resolve({
+                                    return {
                                         post: undefined,
                                         heading: props.blockData[`items_${i}_heading`],
                                         subheading: props.blockData[`items_${i}_subheading`],
                                         subheading2: props.blockData[`items_${i}_subheading2`],
-                                        paragraph_entry_type:
-                                            props.blockData[`items_${i}_paragraph_entry_type`],
                                         paragraph: props.blockData[`items_${i}_paragraph`],
                                         button: props.blockData[`items_${i}_button`],
-
-                                        // 3. Assign the safely processed image
                                         image: processedImage,
-
+                                        show_descriptions: showDescriptions,
+                                        true_aspect_ratio: Boolean(
+                                            props.blockData[`items_${i}_true_aspect_ratio`] == 1 ||
+                                            props.blockData[`items_${i}_true_aspect_ratio`] ===
+                                                true,
+                                        ),
                                         openNewTab: openNewTab(props.blockData, i),
-                                    });
-                                });
-                            })
-                        );
+                                    };
+                                }),
+                            );
 
-                        return these;
+                            return { fetchedItems: these, featuredItem: null };
+                        }
+                    } catch (error) {
+                        console.error('Data fetching error inside useAsyncData:', error);
+                        return { fetchedItems: [], featuredItem: null };
                     }
-                }
+                },
             );
 
             return {
                 id: `${props.items_type}-${props.items}`,
                 interface: iface,
                 items_type: props.items_type,
-                newItems: items.value ? items.value : [],
+                newItems: items.value?.fetchedItems ? items.value.fetchedItems : [],
+                featuredItem: items.value?.featuredItem ? items.value.featuredItem : null,
                 activeSlide: ref(0),
                 window: undefined,
                 glide: undefined,
@@ -786,8 +1120,6 @@
         mounted() {
             this.renderGlide();
             if (this.items_type == 'objects') {
-                // this.renderGlide()
-
                 this.resizeZooms();
             }
         },
@@ -798,6 +1130,9 @@
         methods: {
             renderGlide() {
                 this.animate();
+
+                if (!this.$refs.carousel) return;
+
                 this.window = this.$refs.carousel.querySelector('[data-glide-window]');
 
                 let breakpoints = null;
@@ -822,6 +1157,9 @@
                 }
 
                 if (this.window) {
+                    const slideElements = this.window.querySelectorAll('.glide__slide');
+                    if (slideElements.length === 0) return;
+
                     this.glide = new Glide(this.window, {
                         type: 'slider',
                         gap: this.gap,
@@ -835,7 +1173,6 @@
                     this.glide.on('run', () => {
                         this.activeSlide = this.glide.index;
                     });
-                    // this.glide.mount();
                 }
             },
             changeSlide(s) {
@@ -915,11 +1252,11 @@
                                     height: 0,
                                     duration: 0.3,
                                     ease: 'expo.out',
-                                }
+                                },
                             );
                         }
                     },
-                    this.variant == 'overflow' ? 50 : 50
+                    this.variant == 'overflow' ? 50 : 50,
                 );
             },
             toggleModal() {
@@ -930,20 +1267,7 @@
                     const container = this.$refs.carousel.querySelector('.media-context__image');
                     const vhs = this.$refs.carousel.getElementsByClassName('vh--outer');
 
-                    // console.log(container.getBoundingClientRect().height)
-                    // console.log(container.getBoundingClientRect().width)
-
                     Array.from(vhs).forEach((vh) => {
-                        // if (window.innerWidth <= 430) {
-                        //   vh.querySelector('img').style.width = '100%';
-                        //   vh.querySelector('img').style.height = '100%';
-
-                        //   Object.assign(vh.style, {
-                        //     width: `100%`,
-                        //     height: `100%`,
-                        //   });
-
-                        //   console.log('Over 430');
                         if (
                             vh.querySelector('img').width >= container.getBoundingClientRect().width
                         ) {
@@ -978,7 +1302,82 @@
     @use 'sass:map';
     // @import "node_modules/@glidejs/glide/src/assets/sass/glide.core";
 
+    .media-context__featured-static {
+        grid-column: span 12 / span 12;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 24px;
+        margin-bottom: 40px;
+        border-bottom: 1px solid map.get($layout-colors, ambiant);
+
+        /* Matches the exact mobile padding used by the glide track */
+        padding: 0 calc(map.get($grid-column-gutter, large) / 2);
+        padding-bottom: 40px;
+
+        .dark-mode & {
+            border-bottom: 1px solid map.get($layout-dm-colors, ambiant);
+        }
+
+        @include breakpoint(medium) {
+            grid-column: 2 / span 10;
+            grid-template-columns: 4fr 6fr;
+            column-gap: 3vw;
+            margin-bottom: 6vh;
+
+            /* Reset horizontal padding on desktop since the grid-column offset handles the inset organically */
+            padding: 0;
+            padding-bottom: 6vh;
+        }
+
+        .glide__context {
+            @include breakpoint(medium) {
+                grid-column: 1;
+                grid-row: 1;
+                align-self: end;
+                margin-bottom: 0;
+            }
+        }
+
+        .media-context__image {
+            width: 100%;
+            padding-bottom: 70%;
+
+            @include breakpoint(medium) {
+                grid-column: 2;
+                grid-row: 1 / span 2;
+                padding-bottom: 60%;
+            }
+
+            img {
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+
+            video.media-context__video {
+                position: absolute;
+                inset: 0;
+                width: 100%;
+                height: 100%;
+                display: block;
+                object-fit: cover;
+                object-position: center;
+            }
+        }
+
+        .glide__small-context {
+            @include breakpoint(medium) {
+                grid-column: 1;
+                grid-row: 2;
+                align-self: start;
+                margin-top: 2vh;
+            }
+        }
+    }
+
     .media-context {
+        overflow-x: clip; // Contains horizontal bleed from the slider track and wrappers
+
         &--inactive {
             display: none;
         }
@@ -1178,6 +1577,30 @@
             border: 0;
             appearance: none;
 
+            /* Native Aspect Ratio Mode for Offset Variant */
+            &--true-aspect {
+                > a {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    display: block;
+                }
+
+                picture {
+                    display: block;
+                    width: 100%;
+                    height: 100%;
+                }
+
+                img,
+                video.media-context__video {
+                    object-fit: scale-down !important;
+                    object-position: center !important;
+                }
+            }
+
             @include breakpoint(medium) {
                 padding-bottom: 74%;
             }
@@ -1199,7 +1622,8 @@
             .media-context--overflow & {
                 padding-bottom: 0;
 
-                img {
+                img,
+                video.media-context__video {
                     position: static;
                 }
             }
@@ -1231,10 +1655,14 @@
                 }
             }
 
-            img {
+            img,
+            video.media-context__video {
                 position: absolute;
                 top: 0;
                 left: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
             }
 
             .vh--rel {

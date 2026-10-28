@@ -3,6 +3,17 @@ import ViteYaml from '@modyfi/vite-plugin-yaml';
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
 export default defineNuxtConfig({
+    runtimeConfig: {
+        // Private keys (Server-side ONLY)
+        wpPreviewSecret: process.env.NUXT_WP_PREVIEW_SECRET,
+        wpUser: process.env.NUXT_WP_USER,
+        wpAuthToken: process.env.NUXT_WP_AUTH_TOKEN,
+        wpUrl: process.env.NUXT_PUBLIC_PREVIEW_WP_URL || 'https://museum-backend.colby.edu',
+
+        public: {
+            wpUrl: process.env.NUXT_PUBLIC_PREVIEW_WP_URL || 'https://museum-backend.colby.edu'
+        }
+    },
     app: {
         head: {
             htmlAttrs: {

@@ -454,7 +454,7 @@
         </div>
         <div
             v-if="
-                Number(totalPages) &&
+                Number(totalPages) > 1 &&
                 per_page >= 20 &&
                 items_type != 'collection' &&
                 items_type != 'manual' &&
@@ -510,7 +510,7 @@
                             } | ${totalObjects} Total Objects`
                         "
                     />
-                    <ul v-else>
+                    <ul v-else-if="Number(totalPages) > 1">
                         <li
                             v-for="index in pagination"
                             :class="[currentPage == index ? 'active' : '']"
@@ -546,7 +546,9 @@
                     <NuxtLink
                         v-if="page && currentPage < Number(totalPages)"
                         class="pagination__btn pagination__btn--next"
-                        :class="[currentPage == Number(totalPages) ? 'pagination__btn--inactive' : '']"
+                        :class="[
+                            currentPage == Number(totalPages) ? 'pagination__btn--inactive' : '',
+                        ]"
                         :to="`/${items_type == 'posts' ? 'news' : items_type}/page-${
                             Number(page) + 1
                         }${
@@ -579,7 +581,7 @@
                                 : getPosts(currentPage + 1, input)
                         "
                     >
-                        Next<IconArrow />
+                        <IconArrow />Next
                     </button>
                 </div>
             </div>
@@ -765,7 +767,7 @@
             `https://ccma-search-proof-8365887253.us-east-1.bonsaisearch.net/stage/_search`,
             aggsQuery,
             username,
-            password
+            password,
         );
 
         return output.aggregations;
@@ -799,6 +801,7 @@
         alphabeticalOrder,
         reverseOrder,
         route,
+        location,
     }) => {
         const catsParams = { parent: itemsCategory };
         const catsUrl = new URL('categories', endpoint);
@@ -811,7 +814,7 @@
             page: page,
             per_page: perPage,
             categories_exclude: '1',
-            categories: categories + [itemsCategory],
+            categories: [...categories, itemsCategory],
         };
 
         if (searchTerm) {
@@ -936,8 +939,12 @@
                 pageParams.search = searchTerm;
             }
 
-            if (route.query.location) {
-                pageParams.location = route.query.location;
+            // Bind location using [] notation to force PHP to parse it as an array
+            // This triggers an `IN` (OR) query natively in WordPress REST API
+            if (location && location.length > 0) {
+                pageParams['location[]'] = wrapArray(location);
+            } else if (route.query.location) {
+                pageParams['location[]'] = wrapArray(route.query.location);
             }
 
             if (route.query.variant === 'traveling') {
@@ -974,30 +981,6 @@
             };
         });
 
-        // if (alphabeticalOrder === false) {
-        //     if (itemsType === 'events') {
-        //         if (showChronology === 'future') {
-        //             postItems.sort((a, b) => a.event_date.getTime() - b.event_date.getTime());
-        //         } else if (showChronology === 'past') {
-        //             postItems.sort((a, b) =>
-        //                 itemsType === 'events'
-        //                     ? b.event_date.getTime() - a.event_date.getTime()
-        //                     : b.end_date.getTime() - a.end_date.getTime()
-        //             );
-        //         } else {
-        //             if (route.query.variant === 'traveling') {
-        //                 postItems.sort((a, b) => b.event_date.getTime() - a.event_date.getTime());
-        //             } else {
-        //                 postItems.sort((a, b) =>
-        //                     itemsType === 'events'
-        //                         ? a.event_date.getTime() - b.event_date.getTime()
-        //                         : b.event_date.getTime() - a.event_date.getTime()
-        //                 );
-        //             }
-        //         }
-        //     }
-        // }
-
         return { items: postItems, totalPages };
     };
 
@@ -1015,10 +998,29 @@
     const getImage = async (i, endpoint) => {
         if (!i) return;
 
-        const url = new URL(`media/${i}`, endpoint);
-        const imageObj = await $fetch(url.href);
-        console.log(imageObj);
-        const mediaDetails = imageObj.media_details;
+        const route = useRoute();
+        const isPreview = route.path.startsWith('/preview') || !!route.query.id;
+
+        let imageObj;
+        try {
+            if (isPreview) {
+                // 🔒 In preview mode, call your Nuxt server proxy (which attaches WP Basic Auth)
+                imageObj = await $fetch(`/api/wp-draft/${i}`, {
+                    query: { type: 'media' },
+                });
+            } else {
+                // 🌐 On live public pages, fetch directly from WordPress
+                const url = new URL(`media/${i}`, endpoint);
+                imageObj = await $fetch(url.href);
+            }
+        } catch (err) {
+            // Fallback: If direct fetch fails, attempt through authenticated proxy
+            imageObj = await $fetch(`/api/wp-draft/${i}`, {
+                query: { type: 'media' },
+            });
+        }
+
+        const mediaDetails = imageObj.media_details || {};
 
         let imageAspect;
         if (mediaDetails.height > 0 && mediaDetails.width > 0) {
@@ -1067,7 +1069,7 @@
             endpoint,
             username,
             password,
-            queryArgs.per_page
+            queryArgs.per_page,
         );
 
         const response = await fetchWith(`${endpoint}/_search`, searchQuery, username, password);
@@ -1076,9 +1078,9 @@
             const img = i._source.Images.length > 0 ? i._source.Images[0] : undefined;
             const imgUrl = img
                 ? `https://ccma-iiif-cache-service.fly.dev/iiif/2/${img.IIIF_URL.substring(
-                      img.IIIF_URL.lastIndexOf('/') + 1
+                      img.IIIF_URL.lastIndexOf('/') + 1,
                   ).replace(/\.[^/.]+$/, '')}/full/${encodeURIComponent(
-                      `${queryArgs.columns === '6' ? '300,' : '400,'}`
+                      `${queryArgs.columns === '6' ? '300,' : '400,'}`,
                   )}/0/default.jpg`
                 : '';
 
@@ -1118,12 +1120,12 @@
                               sizes: {
                                   full: {
                                       source_url: `/blanks/blank_${Math.floor(
-                                          Math.random() * (3 - 1 + 1) + 1
+                                          Math.random() * (3 - 1 + 1) + 1,
                                       )}.png`,
                                   },
                                   mobile: {
                                       source_url: `/blanks/blank_${Math.floor(
-                                          Math.random() * (3 - 1 + 1) + 1
+                                          Math.random() * (3 - 1 + 1) + 1,
                                       )}.png`,
                                   },
                               },
@@ -1181,7 +1183,7 @@
 
             case 'events':
                 return new Date(
-                    `${d.substr(0, 4)}-${d.substr(4, 2)}-${d.substr(6, 2)}T00:00:00`
+                    `${d.substr(0, 4)}-${d.substr(4, 2)}-${d.substr(6, 2)}T00:00:00`,
                 ).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
@@ -1374,7 +1376,7 @@
                             response = await getObjectItems(
                                 props.page,
                                 route.query.search,
-                                queryArgs
+                                queryArgs,
                             );
                         } else {
                             response = await getObjectItems(1, route.query.search, queryArgs);
@@ -1392,7 +1394,7 @@
                             totalPages: response.totalPages,
                             aggregations: aggs,
                         };
-                    }
+                    },
                 );
 
                 newItems.value = data.value?.items;
@@ -1405,7 +1407,7 @@
                 break;
 
             case props.items_type == 'collection':
-            console.log('initData branch: collection');
+                console.log('initData branch: collection');
                 const args = {
                     ...props,
                     searchTerm: route.query.search,
@@ -1429,7 +1431,7 @@
                             totalPages: tPages,
                         } = await getObjectItems(currentPage.value, route.query.search, args);
                         return { hits, tObj, tPages };
-                    }
+                    },
                 );
 
                 newItems.value = collexData.value?.hits;
@@ -1455,7 +1457,7 @@
                         showFuture.value = true;
                     }
                     filters.value[1].items.find(
-                        (item) => item.name === route.query.chronology
+                        (item) => item.name === route.query.chronology,
                     ).active = true;
                 } else {
                     if (props.showChronology === 'past') {
@@ -1468,9 +1470,10 @@
                 }
 
                 if (route.query.location) {
-                    location.value = route.query.location ? wrapArray(route.query.location) : [];
+                    location.value = wrapArray(route.query.location);
                     location.value.forEach((l) => {
-                        filters.value[0].items.find((item) => item.name == l).active = true;
+                        const filterItem = filters.value[0].items.find((item) => item.name == l);
+                        if (filterItem) filterItem.active = true;
                     });
                     activeFilters.value.push(...location.value);
                 }
@@ -1485,6 +1488,7 @@
                     perPage: props.per_page,
                     reverseOrder: reverseOrder.value,
                     route: route,
+                    location: location.value,
                     searchTerm: route.query.search,
                     showChronology: props.showChronology,
                     showPast: showPast.value,
@@ -1496,7 +1500,7 @@
                     `postItems-${Object.values(postItemsParams).join('')}`,
                     async () => {
                         return await getPostItems(postItemsParams);
-                    }
+                    },
                 );
 
                 if (!response.value) {
@@ -1525,13 +1529,14 @@
                     endpoint: iface.endpoint,
                     endpointCustom: iface.endpointcustom,
                     route: route,
+                    location: location.value,
                 };
 
                 const { data: posts } = await useAsyncData(
                     `ag-manual-${Object.values(postItemsParams).join('')}`,
                     async () => {
                         return await getPostItems(postItemsParams);
-                    }
+                    },
                 );
 
                 newItems.value = posts.value?.items;
@@ -1550,7 +1555,7 @@
                         ([k, v]) =>
                             k.endsWith('_image') ||
                             k.endsWith('_heading') ||
-                            k.endsWith('_subheading')
+                            k.endsWith('_subheading'),
                     )
                     .map(([k, v]) => v)
                     .join('-');
@@ -1581,7 +1586,7 @@
                             if (props.blockData[`items_${i}_image`]) {
                                 image = await getImage(
                                     props.blockData[`items_${i}_image`],
-                                    iface.endpoint
+                                    iface.endpoint,
                                 );
                             }
 
@@ -1599,9 +1604,8 @@
                             };
                         });
                         return await Promise.all(posts);
-                    }
+                    },
                 );
-                console.log(postDatas.value);
                 newItems.value = postDatas.value;
                 break;
         }
@@ -1616,7 +1620,7 @@
         let result;
         if (activeFilters.value.length > 0 && newItems.value[0]?.post) {
             result = newItems.value.filter((item) =>
-                Object.values(item.post.acf).some((k) => activeFilters.value.includes(k))
+                Object.values(item.post.acf).some((k) => activeFilters.value.includes(k)),
             );
         } else {
             result = newItems.value;
@@ -1656,7 +1660,8 @@
                 query: {
                     search: input.value,
                     chronology: chrono,
-                    location: location.value,
+                    // Keep native Vue array serialization (?location=campus&location=downtown)
+                    location: location.value.length > 0 ? location.value : undefined,
                     variant: route.query.variant,
                 },
             });
@@ -1746,6 +1751,7 @@
             alphabeticalOrder: alphabeticalOrder.value,
             reverseOrder: reverseOrder.value,
             route: route,
+            location: location.value,
         };
         const { items, totalPages: tPages } = await getPostItems(postItemsParams);
 
@@ -1773,22 +1779,24 @@
             showFuture.value = false;
         }
 
-        filters.value = loadFilters(props.items_type, activeFilters.value);
-
-        if (props.items_type == 'objects' && route.query.has_image != false) {
+        if (props.items_type == 'objects' && route.query.has_image !== 'false') {
             activeFilters.value = ['Has Image'];
         } else {
             activeFilters.value = [];
         }
 
-        // Reset input ref
-        if (searchInputRef.value) {
-            // Assuming the SearchInput component exposes 'input'
-            // If not, this might need adjustment based on that child component
-            searchInputRef.value = '';
-        }
+        filters.value = loadFilters(props.items_type, activeFilters.value);
+
+        searchInputRef.value = '';
+        input.value = '';
 
         triggerNavigateTo();
+
+        if (props.items_type == 'objects') {
+            getObjects(1, input.value);
+        } else {
+            getPosts(1, input.value);
+        }
     };
 
     const toggleFilter = (term, filterName) => {
@@ -1957,7 +1965,7 @@
         async () => {
             animate();
         },
-        { deep: true }
+        { deep: true },
     );
 
     // --- Lifecycle ---
