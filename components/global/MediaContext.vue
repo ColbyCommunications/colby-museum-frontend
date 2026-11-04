@@ -29,7 +29,7 @@
                             featuredItem.post.type == 'events'
                                 ? `${formatTime(featuredItem.post.acf.start_time)}&ndash;${formatTime(
                                       featuredItem.post.acf.end_time,
-                                  )}`
+                                  )}${featuredItem.post.acf.timezone?.trim() ? ' (' + featuredItem.post.acf.timezone.trim() + ')' : ''}`
                                 : undefined
                         "
                         :button="{
@@ -174,7 +174,7 @@
                                                           item.post.acf.start_time,
                                                       )}&ndash;${formatTime(
                                                           item.post.acf.end_time,
-                                                      )}`
+                                                      )}${item.post.acf.timezone?.trim() ? ' (' + item.post.acf.timezone.trim() + ')' : ''}`
                                                     : undefined
                                             "
                                             :button="{

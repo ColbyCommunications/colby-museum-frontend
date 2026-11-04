@@ -39,7 +39,7 @@
                 },
                 {
                     heading: 'Time',
-                    paragraph: start_time + '&ndash;' + end_time,
+                    paragraph: start_time + '&ndash;' + end_time + (timezone ? ' (' + timezone + ')' : ''),
                 },
             ]"
         />
@@ -153,6 +153,8 @@ const start_time = pageData?.acf?.start_time
 const end_time = pageData?.acf?.end_time
     ? formatTime(pageData.acf.end_time)
     : '';
+
+const timezone = pageData?.acf?.timezone?.trim() || '';
 
 const components = (pageData?.block_data ?? []).map((component) => {
     const normalizedComponent = { ...component };

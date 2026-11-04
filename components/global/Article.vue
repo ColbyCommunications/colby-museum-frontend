@@ -28,7 +28,7 @@
             "
             :subheading2="
                 post.type == 'events'
-                    ? `${formatTimeRange(post.acf.start_time, post.acf.end_time)}`
+                    ? `${formatTimeRange(post.acf.start_time, post.acf.end_time)}${post.acf.timezone?.trim() ? ' (' + post.acf.timezone.trim() + ')' : ''}`
                     : undefined
             "
             :image="stagedImage"
